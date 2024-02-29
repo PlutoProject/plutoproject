@@ -10,3 +10,5 @@ plugins {
 }
 
 rootProject.name = "common"
+include("common-member")
+include("common-member-api")
