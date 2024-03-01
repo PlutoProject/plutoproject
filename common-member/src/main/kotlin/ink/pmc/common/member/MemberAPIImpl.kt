@@ -1,9 +1,9 @@
 package ink.pmc.common.member
 
-import ink.pmc.common.member.api.Member
-import ink.pmc.common.member.api.MemberAPI
-import ink.pmc.common.member.api.MemberManager
+import com.fasterxml.jackson.databind.ObjectMapper
+import ink.pmc.common.member.api.*
 import ink.pmc.common.member.api.dsl.MemberDSL
+import ink.pmc.common.member.api.punishment.Punishment
 
 object MemberAPIImpl : MemberAPI {
 
@@ -27,16 +27,28 @@ object MemberAPIImpl : MemberAPI {
 
             return internalMemberManager!!
         }
+    override val objectMapper: ObjectMapper = ObjectMapper().also {
+        it.addMixIn(Member::class.java, MemberMixin::class.java)
+        it.addMixIn(Punishment::class.java, PunishmentMixin::class.java)
+        it.addMixIn(Comment::class.java, CommentMixin::class.java)
+        it.addMixIn(MemberData::class.java, MemberDataMixin::class.java)
+    }
 
     override fun createMember(block: MemberDSL.() -> Unit): Member {
         val dsl = MemberDSL()
         dsl.block()
 
-        if (dsl.uuid == null || dsl.name == null || dsl.joinTime == null) {
+        if (dsl.uuid == null || dsl.name == null) {
             throw RuntimeException("Required information missed")
         }
 
-        return MemberImpl(dsl.uuid!!, dsl.name!!, dsl.joinTime!!)
+        val member = MemberImpl(dsl.uuid!!, dsl.name!!)
+
+        if (dsl.joinTime != null) {
+            member.joinTime = dsl.joinTime!!
+        }
+
+        return member
     }
 
 }

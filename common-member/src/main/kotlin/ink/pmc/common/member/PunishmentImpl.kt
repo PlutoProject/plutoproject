@@ -1,4 +1,4 @@
-package ink.pmc.common.member.punishment
+package ink.pmc.common.member
 
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
@@ -12,8 +12,11 @@ data class PunishmentImpl @JsonCreator constructor(
     @JsonProperty("id") override val id: Long,
     @JsonProperty("owner") override val owner: UUID,
     @JsonProperty("type") override val type: PunishmentType,
-    @JsonProperty("reason") override var reason: PunishmentReason = PunishmentReason.NONE,
-    @JsonProperty("executeDate") override val executeDate: Date = Date(),
-    @JsonProperty("isPardoned") override var isPardoned: Boolean = false,
-    @JsonProperty("pardonReason") override var pardonReason: PardonReason? = null,
-) : Punishment
+) : Punishment {
+
+    override var reason: PunishmentReason = PunishmentReason.NONE
+    override val executeDate: Date = Date()
+    override var isPardoned: Boolean = false
+    override var pardonReason: PardonReason? = null
+
+}

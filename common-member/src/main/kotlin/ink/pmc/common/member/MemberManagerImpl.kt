@@ -5,10 +5,12 @@ import com.github.benmanes.caffeine.cache.Caffeine
 import com.github.benmanes.caffeine.cache.LoadingCache
 import com.mongodb.client.MongoCollection
 import com.mongodb.client.model.Filters
+import ink.pmc.common.member.api.Comment
 import ink.pmc.common.member.api.Member
 import ink.pmc.common.member.api.MemberAPI
 import ink.pmc.common.member.api.MemberManager
 import ink.pmc.common.member.api.dsl.MemberDSL
+import ink.pmc.common.member.api.punishment.Punishment
 import org.bson.Document
 import org.mongojack.JacksonMongoCollection
 import java.time.Duration
@@ -16,8 +18,8 @@ import java.util.*
 
 class MemberManagerImpl(
     override val collection: JacksonMongoCollection<Member>,
-    override val punishmentIdMemberIndexCollection: MongoCollection<Document>,
-    override val commentIdMemberIndexCollection: MongoCollection<Document>
+    override val punishmentIndexCollection: MongoCollection<Document>,
+    override val commentIndexCollection: MongoCollection<Document>
 ) : MemberManager {
 
     private val cacheLoader: CacheLoader<UUID, Member> = CacheLoader<UUID, Member> {
@@ -31,14 +33,14 @@ class MemberManagerImpl(
         .build(cacheLoader)
 
     init {
-        if (punishmentIdMemberIndexCollection.find(Filters.exists("lastId")).first() == null) {
+        if (punishmentIndexCollection.find(Filters.exists("lastId")).first() == null) {
             val document = Document(mapOf("lastId" to -1L))
-            punishmentIdMemberIndexCollection.insertOne(document)
+            punishmentIndexCollection.insertOne(document)
         }
 
-        if (commentIdMemberIndexCollection.find(Filters.exists("lastId")).first() == null) {
+        if (commentIndexCollection.find(Filters.exists("lastId")).first() == null) {
             val document = Document(mapOf("lastId" to -1L, "emptyIds" to listOf<Long>()))
-            commentIdMemberIndexCollection.insertOne(document)
+            commentIndexCollection.insertOne(document)
         }
     }
 
@@ -78,6 +80,18 @@ class MemberManagerImpl(
 
     override fun nonExist(uuid: UUID): Boolean {
         return collection.find(Filters.eq("uuid", uuid)).first() == null
+    }
+
+    override fun lookupPunishment(id: Long): Punishment? {
+        val document = punishmentIndexCollection.find(Filters.eq("id", id)).first() ?: return null
+        val ownerUUID = document["owner"] as UUID
+        return get(ownerUUID)!!.getPunishment(id)
+    }
+
+    override fun lookupComment(id: Long): Comment? {
+        val document = commentIndexCollection.find(Filters.eq("id", id)).first() ?: return null
+        val ownerUUID = document["owner"] as UUID
+        return get(ownerUUID)!!.getComment(id)
     }
 
     override fun sync(member: Member) {

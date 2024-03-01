@@ -1,11 +1,8 @@
 package ink.pmc.common.member.api
 
-import ink.pmc.common.member.api.comment.Comment
-import ink.pmc.common.member.api.comment.CommentData
 import ink.pmc.common.member.api.dsl.PunishmentOptionsDSL
 import ink.pmc.common.member.api.punishment.PardonReason
 import ink.pmc.common.member.api.punishment.Punishment
-import ink.pmc.common.member.api.punishment.PunishmentData
 import ink.pmc.common.member.api.punishment.PunishmentOptions
 import java.util.*
 
@@ -17,9 +14,11 @@ interface Member {
     var joinTime: Date
     var lastJoinTime: Date?
     var lastQuitTime: Date?
-    val data: MutableMap<Any, Any>
-    val punishmentData: PunishmentData
-    val commentData: CommentData
+    val punishments: MutableCollection<Punishment>
+    var currentPunishment: Long?
+    var lastPunishment: Long?
+    val comments: MutableCollection<Comment>
+    val data: MemberData
     var bio: String?
 
     fun punish(options: PunishmentOptions): Punishment?
@@ -30,7 +29,13 @@ interface Member {
 
     fun getPunishment(id: Long): Punishment?
 
-    fun addComment(creator: UUID, content: String): Comment
+    fun currentPunishmentInstance(): Punishment? =
+        if (!punishments.any { it.id == currentPunishment }) null else punishments.first { it.id == currentPunishment }
+
+    fun lastPunishmentInstance(): Punishment? =
+        if (!punishments.any { it.id == lastPunishment }) null else punishments.first { it.id == lastPunishment }
+
+    fun createComment(creator: UUID, content: String): Comment
 
     fun removeComment(id: Long): Boolean
 
