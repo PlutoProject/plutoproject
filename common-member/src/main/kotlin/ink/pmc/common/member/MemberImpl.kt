@@ -123,7 +123,6 @@ data class MemberImpl @JsonCreator constructor(
         return comment
     }
 
-    @Suppress("UNCHECKED_CAST")
     override fun removeComment(id: Long): Boolean {
         comments.removeIf {
             it.id == id
