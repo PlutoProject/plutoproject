@@ -1,5 +1,6 @@
 package ink.pmc.common.member.api
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import ink.pmc.common.member.api.dsl.MemberDSL
 
 interface MemberAPI {
@@ -32,6 +33,7 @@ interface MemberAPI {
     }
 
     val memberManager: MemberManager
+    val objectMapper: ObjectMapper
 
     fun createMember(block: MemberDSL.() -> Unit): Member
 
