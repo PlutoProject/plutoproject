@@ -27,11 +27,11 @@ object MemberAPIImpl : MemberAPI {
 
             return internalMemberManager!!
         }
-    override val objectMapper: ObjectMapper = ObjectMapper().also {
-        it.addMixIn(Member::class.java, MemberMixin::class.java)
-        it.addMixIn(Punishment::class.java, PunishmentMixin::class.java)
-        it.addMixIn(Comment::class.java, CommentMixin::class.java)
-        it.addMixIn(MemberData::class.java, MemberDataMixin::class.java)
+    override val objectMapper: ObjectMapper = ObjectMapper().apply {
+        addMixIn(Member::class.java, MemberMixin::class.java)
+        addMixIn(Punishment::class.java, PunishmentMixin::class.java)
+        addMixIn(Comment::class.java, CommentMixin::class.java)
+        addMixIn(MemberData::class.java, MemberDataMixin::class.java)
     }
 
     override fun createMember(block: MemberDSL.() -> Unit): Member {
