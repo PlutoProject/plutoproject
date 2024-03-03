@@ -94,12 +94,23 @@ class MemberManagerImpl(
         return get(ownerUUID)!!.getComment(id)
     }
 
-    override fun sync(member: Member) {
-        cachedMember.refresh(member.uuid)
+    override fun sync(member: Member): Boolean {
+        try {
+            cachedMember.refresh(member.uuid)
+        } catch (e: Exception) {
+            return false
+        }
+
+        return true
     }
 
     override fun syncAll(): Boolean {
-        cachedMember.invalidateAll()
+        try {
+            cachedMember.invalidateAll()
+        } catch (e: Exception) {
+            return false
+        }
+
         return true
     }
 

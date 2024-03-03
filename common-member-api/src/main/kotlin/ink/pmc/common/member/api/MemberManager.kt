@@ -31,7 +31,7 @@ interface MemberManager {
 
     fun lookupComment(id: Long): Comment?
 
-    fun sync(member: Member)
+    fun sync(member: Member): Boolean
 
     fun syncAll(): Boolean
 
