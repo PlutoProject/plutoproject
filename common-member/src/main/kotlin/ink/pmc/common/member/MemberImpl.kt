@@ -38,7 +38,7 @@ data class MemberImpl @JsonCreator constructor(
     override var bio: String? = null
 
     override fun punish(options: PunishmentOptions): Punishment {
-        val collection = MemberAPIImpl.memberManager.punishmentIndexCollection
+        val collection = MemberAPI.instance.memberManager.punishmentIndexCollection
         val document = collection.find(Filters.exists("lastId")).first()
         val newId = document!!.getLong("lastId") + 1
 
@@ -94,7 +94,7 @@ data class MemberImpl @JsonCreator constructor(
 
 
     override fun createComment(creator: UUID, content: String): Comment {
-        val collection = MemberAPIImpl.memberManager.commentIndexCollection
+        val collection = MemberAPI.instance.memberManager.commentIndexCollection
 
         val emptyIds = collection.find(Filters.exists("emptyIds")).first()?.get(
             "emptyIds"
@@ -128,7 +128,7 @@ data class MemberImpl @JsonCreator constructor(
             it.id == id
         }
 
-        val collection = MemberAPIImpl.memberManager.commentIndexCollection
+        val collection = MemberAPI.instance.memberManager.commentIndexCollection
         val emptyIds = collection.find(Filters.exists("emptyIds")).first()?.get(
             "emptyIds"
         ) as? MutableList<Long>
