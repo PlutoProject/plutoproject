@@ -1,4 +1,4 @@
-package ink.pmc.common.member
+package ink.pmc.common.member.impl
 
 import com.github.benmanes.caffeine.cache.CacheLoader
 import com.github.benmanes.caffeine.cache.Caffeine

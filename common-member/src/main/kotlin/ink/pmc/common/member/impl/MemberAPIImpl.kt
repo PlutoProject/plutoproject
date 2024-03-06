@@ -1,4 +1,4 @@
-package ink.pmc.common.member
+package ink.pmc.common.member.impl
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import ink.pmc.common.member.api.*
