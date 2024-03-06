@@ -36,6 +36,7 @@ data class MemberImpl @JsonCreator constructor(
     override val comments: MutableCollection<Comment> = mutableSetOf()
     override val data: MemberData = MemberDataImpl()
     override var bio: String? = null
+    override var totalPlayTime: Long = 0L
 
     override fun punish(options: PunishmentOptions): Punishment {
         val collection = MemberAPI.instance.memberManager.punishmentIndexCollection
@@ -158,6 +159,10 @@ data class MemberImpl @JsonCreator constructor(
         }
 
         return comments.first { it.id == id }
+    }
+
+    override fun increasePlayTime(ms: Long) {
+        totalPlayTime += ms
     }
 
     override fun update() {

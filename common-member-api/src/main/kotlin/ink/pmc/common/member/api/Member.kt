@@ -20,6 +20,7 @@ interface Member {
     val comments: MutableCollection<Comment>
     val data: MemberData
     var bio: String?
+    var totalPlayTime: Long
 
     fun punish(options: PunishmentOptions): Punishment?
 
@@ -42,6 +43,8 @@ interface Member {
     fun updateComment(id: Long, content: String): Boolean
 
     fun getComment(id: Long): Comment?
+
+    fun increasePlayTime(ms: Long)
 
     fun update()
 
