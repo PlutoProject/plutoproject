@@ -11,7 +11,7 @@ plugins {
 
 rootProject.name = "common"
 include("common-member")
-include("common-member-api")
+include("common-library-member-api")
 include("common-dependency-loader")
 include("common-misc")
-include("common-utils")
+include("common-library-utils")

@@ -1,3 +1,3 @@
 dependencies {
-    implementation(project(":common-member-api"))
+    implementation(project(":common-library-member-api"))
 }

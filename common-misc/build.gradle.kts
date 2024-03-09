@@ -1,3 +1,3 @@
 dependencies {
-    implementation(project(":common-utils"))
+    implementation(project(":common-library-utils"))
 }
