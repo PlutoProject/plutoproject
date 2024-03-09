@@ -69,6 +69,10 @@ allprojects {
         val outputsDir = file("$rootDir/build-outputs")
 
         outputsDir.listFiles()!!.forEach {
+            if (it.name.startsWith("common-library")) {
+                return@forEach
+            }
+
             val target = file("$rootDir/run/plugins/${it.name}")
 
             if (target.exists()) {
