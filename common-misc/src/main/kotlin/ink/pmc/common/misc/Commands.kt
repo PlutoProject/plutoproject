@@ -18,3 +18,17 @@ val suicideCommand = commandManager.commandBuilder("suicide")
             sender.sendMessage(SUICIDE)
         }
     }
+
+val sitCommand = commandManager.commandBuilder("sit")
+    .handler {
+        val sender = it.sender()
+
+        if (sender !is Player) {
+            sender.sendMessage(NON_PLAYER)
+            return@handler
+        }
+
+        sender.execute(plugin) {
+            sitManager.sit(sender, sender.location.clone().subtract(0.0, 1.0, 0.0))
+        }
+    }

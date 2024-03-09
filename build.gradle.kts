@@ -48,6 +48,7 @@ allprojects {
         compileOnlyApi("com.github.ben-manes.caffeine:caffeine:3.1.8")
         compileOnlyApi("com.catppuccin:catppuccin-palette:1.0.0")
         compileOnlyApi("org.incendo:cloud-paper:2.0.0-beta.2")
+        compileOnlyApi("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0")
 
         compileOnly("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
     }
