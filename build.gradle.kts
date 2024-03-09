@@ -4,6 +4,7 @@ plugins {
     id("java-library")
     kotlin("plugin.serialization") version "1.9.21"
     kotlin("jvm") version "1.9.21"
+    id("xyz.jpenilla.run-paper") version "2.2.2"
 }
 
 fun kotlinDep(s: String): String {
@@ -18,6 +19,7 @@ allprojects {
         plugin("java-library")
         plugin(kotlinDep("jvm"))
         plugin(kotlinDep("plugin.serialization"))
+        plugin("xyz.jpenilla.run-paper")
     }
 
     val bukkitAPIVersion by extra("1.20")
@@ -45,6 +47,7 @@ allprojects {
         compileOnlyApi("org.mongodb:mongodb-driver-sync:4.11.1")
         compileOnlyApi("com.github.ben-manes.caffeine:caffeine:3.1.8")
         compileOnlyApi("com.catppuccin:catppuccin-palette:1.0.0")
+        compileOnlyApi("org.incendo:cloud-paper:2.0.0-beta.2")
 
         compileOnly("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
     }
@@ -55,8 +58,26 @@ allprojects {
         }
     }
 
-    tasks.jar {
+    tasks.shadowJar {
+        archiveClassifier = ""
         onlyIf { project != rootProject && !project.name.endsWith("-api") }
         destinationDirectory.set(file("$rootDir/build-outputs"))
+    }
+
+    tasks.runServer {
+
+        val outputsDir = file("$rootDir/build-outputs")
+
+        outputsDir.listFiles()!!.forEach {
+            val target = file("$rootDir/run/plugins/${it.name}")
+
+            if (target.exists()) {
+                target.delete()
+            }
+
+            it.copyTo(target)
+        }
+
+        minecraftVersion("1.20.4")
     }
 }
