@@ -44,6 +44,7 @@ allprojects {
         compileOnlyApi("org.mongojack:mongojack:4.8.2")
         compileOnlyApi("org.mongodb:mongodb-driver-sync:4.11.1")
         compileOnlyApi("com.github.ben-manes.caffeine:caffeine:3.1.8")
+        compileOnlyApi("com.catppuccin:catppuccin-palette:1.0.0")
 
         compileOnly("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
     }

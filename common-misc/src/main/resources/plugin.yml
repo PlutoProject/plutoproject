@@ -1,5 +1,5 @@
-main: ink.pmc.common.member.MemberPlugin
-name: common-member
+main: ink.pmc.common.misc.MiscPlugin
+name: common-misc
 version: ${version}
 api-version: ${api}
 depend:
