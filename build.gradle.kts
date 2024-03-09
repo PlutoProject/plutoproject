@@ -1,6 +1,7 @@
 plugins {
     id("java")
     id("com.github.johnrengelman.shadow") version "8.1.1"
+    id("java-library")
     kotlin("plugin.serialization") version "1.9.21"
     kotlin("jvm") version "1.9.21"
 }
@@ -14,12 +15,15 @@ allprojects {
     apply {
         plugin("java")
         plugin("com.github.johnrengelman.shadow")
+        plugin("java-library")
         plugin(kotlinDep("jvm"))
         plugin(kotlinDep("plugin.serialization"))
     }
 
-    this.group = "ink.pmc.starlib"
-    this.version = "1.0.0-SNAPSHOT"
+    val bukkitAPIVersion by extra("1.20")
+
+    this.group = "ink.pmc.common"
+    this.version = "1.0.0"
 
     repositories {
         mavenCentral()
@@ -35,12 +39,23 @@ allprojects {
         // api("org.jetbrains.kotlinx:kotlinx-serialization-json")
         // api("org.jetbrains.kotlinx:kotlinx-serialization-toml")
         // api("org.jetbrains.kotlinx:kotlinx-serialization-hocon")
-        api("com.squareup.okhttp3:okhttp:5.0.0-alpha.12")
-        api("com.google.code.gson:gson:2.10.1")
-        api("org.mongojack:mongojack:4.8.2")
-        api("org.mongodb:mongodb-driver-sync:4.11.1")
-        api("com.github.ben-manes.caffeine:caffeine:3.1.8")
+        compileOnlyApi("com.squareup.okhttp3:okhttp:5.0.0-alpha.12")
+        compileOnlyApi("com.google.code.gson:gson:2.10.1")
+        compileOnlyApi("org.mongojack:mongojack:4.8.2")
+        compileOnlyApi("org.mongodb:mongodb-driver-sync:4.11.1")
+        compileOnlyApi("com.github.ben-manes.caffeine:caffeine:3.1.8")
 
         compileOnly("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
+    }
+
+    tasks.processResources {
+        filesMatching("plugin.yml") {
+            expand("version" to rootProject.version, "api" to bukkitAPIVersion)
+        }
+    }
+
+    tasks.jar {
+        onlyIf { project != rootProject && !project.name.endsWith("-api") }
+        destinationDirectory.set(file("$rootDir/build-outputs"))
     }
 }

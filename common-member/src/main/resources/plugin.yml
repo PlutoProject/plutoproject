@@ -1,0 +1,6 @@
+main: ink.pmc.common.member.MemberPlugin
+name: common-member
+version: ${version}
+api-version: ${api}
+dependencies:
+  - common-dependency-plugin
