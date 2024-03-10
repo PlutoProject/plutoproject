@@ -22,7 +22,6 @@ import org.bukkit.block.data.type.Stairs
 import org.bukkit.block.data.type.Stairs.Shape
 import org.bukkit.entity.ArmorStand
 import org.bukkit.entity.Entity
-import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.event.Cancellable
 import org.bukkit.event.block.BlockBreakEvent
@@ -380,11 +379,7 @@ class SitManagerImpl : SitManager {
             player.stand()
         }
 
-        var sitLoc = location.toBlockLocation().apply {
-            // Location#toBlockLocation 不会抹掉 pitch 与 yaw
-            pitch = 0F
-            yaw = 0F
-        }
+        var sitLoc = location.toBlockLocation()
 
         if (!checkLocation(location)) {
             val tryFind = findLegalLocation(location)
@@ -396,6 +391,10 @@ class SitManagerImpl : SitManager {
 
             sitLoc = tryFind
         }
+
+        // Location#toBlockLocation 不会抹掉 pitch 与 yaw
+        sitLoc.pitch = 0F
+        sitLoc.yaw = 0F
 
         val armorStand = createArmorStand(sitLoc)
         markAsSeat(armorStand, player)
