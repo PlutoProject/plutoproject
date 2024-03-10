@@ -15,6 +15,7 @@ lateinit var plugin: JavaPlugin
 lateinit var sitManager: SitManager
 var disabled = true
 
+@Suppress("UNUSED")
 class MiscPlugin : JavaPlugin() {
 
     override fun onEnable() {

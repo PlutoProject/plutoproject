@@ -143,7 +143,7 @@ fun getSitter(entity: Entity): Player? {
     return plugin.server.getPlayer(uuid)
 }
 
-fun handlePlayerQuit(event: PlayerQuitEvent) {
+fun handlePlayerQuitStand(event: PlayerQuitEvent) {
     val player = event.player
 
     if (player.isSitting) {
