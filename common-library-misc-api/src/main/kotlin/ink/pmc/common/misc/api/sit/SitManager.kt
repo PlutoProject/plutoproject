@@ -17,6 +17,8 @@ interface SitManager {
 
     fun getSeat(player: Player): Entity?
 
+    fun getSitLocation(player: Player): Location?
+
     fun standAll()
 
 }

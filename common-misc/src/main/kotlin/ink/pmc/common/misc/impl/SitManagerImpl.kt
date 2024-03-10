@@ -1,11 +1,8 @@
 package ink.pmc.common.misc.impl
 
 import ink.pmc.common.misc.*
-import ink.pmc.common.misc.api.isSitting
-import ink.pmc.common.misc.api.seat
-import ink.pmc.common.misc.api.sit
+import ink.pmc.common.misc.api.*
 import ink.pmc.common.misc.api.sit.SitManager
-import ink.pmc.common.misc.api.stand
 import ink.pmc.common.utils.execute
 import ink.pmc.common.utils.regionScheduler
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -16,10 +13,13 @@ import net.kyori.adventure.text.Component
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
+import org.bukkit.block.Block
 import org.bukkit.block.BlockFace
 import org.bukkit.block.data.Bisected
+import org.bukkit.block.data.BlockData
 import org.bukkit.block.data.type.Slab
 import org.bukkit.block.data.type.Stairs
+import org.bukkit.block.data.type.Stairs.Shape
 import org.bukkit.entity.ArmorStand
 import org.bukkit.entity.Entity
 import org.bukkit.entity.LivingEntity
@@ -45,26 +45,19 @@ val sitDelay = CopyOnWriteArraySet<UUID>()
 
 val armorStandDataKey = NamespacedKey(plugin, "sit-passenger")
 
-private fun createArmorStand(locationToSit: Location, align: Boolean = true): Entity {
+private fun createArmorStand(locationToSit: Location): Entity {
     /*
     * TODO: 替换为能在 Folia 上使用的 API
     * 由于 Folia 目前似乎暂无完整的世界操作 API，所以先搁置
     * */
-    var armorStandLoc = locationToSit
+    val armorStandLoc = offsetLocation(locationToSit)
 
-    if (align) {
-        armorStandLoc = locationToSit.toBlockLocation()
-        armorStandLoc.x = armorStandLoc.blockX + 0.5
-        armorStandLoc.z = armorStandLoc.blockZ + 0.5
-    }
-
-    armorStandLoc.subtract(0.0, 1.0, 0.0)
-
-    val world = locationToSit.world
+    val world = armorStandLoc.world
     val entity = world.spawn(armorStandLoc, ArmorStand::class.java)
 
     entity.setGravity(false)
     entity.isInvisible = true
+    entity.setAI(false)
 
     return entity
 }
@@ -116,6 +109,11 @@ fun handleSitClick(event: PlayerInteractEvent) {
     }
 
     val block = event.clickedBlock!!
+
+    if (player.sitLocation == block.location) {
+        return
+    }
+
     val blockData = block.blockData
 
     if (blockData !is Slab && blockData !is Stairs) {
@@ -146,7 +144,7 @@ fun getSitter(entity: Entity): Player? {
     return plugin.server.getPlayer(uuid)
 }
 
-fun processPlayerQuit(event: PlayerQuitEvent) {
+fun handlePlayerQuit(event: PlayerQuitEvent) {
     val player = event.player
 
     if (player.isSitting) {
@@ -154,7 +152,7 @@ fun processPlayerQuit(event: PlayerQuitEvent) {
     }
 }
 
-fun processSitDelay(event: EntityDismountEvent) {
+fun handleSitDelay(event: EntityDismountEvent) {
     if (!sitDelay.contains(event.entity.uniqueId)) {
         tryToStand(event)
     } else {
@@ -162,7 +160,7 @@ fun processSitDelay(event: EntityDismountEvent) {
     }
 }
 
-fun processSitLocationBroke(event: BlockBreakEvent) {
+fun handleSitLocationBroke(event: BlockBreakEvent) {
     val location = event.block.location.toBlockLocation()
 
     if (!sitManager.sitters.containsValue(location)) {
@@ -172,7 +170,7 @@ fun processSitLocationBroke(event: BlockBreakEvent) {
     event.player.stand()
 }
 
-fun processArmorStandAction(event: Cancellable, needCancel: Boolean = true) {
+fun handleArmorStandAction(event: Cancellable, needCancel: Boolean = true) {
     if (event !is EntityEvent) {
         return
     }
@@ -190,7 +188,7 @@ fun processArmorStandAction(event: Cancellable, needCancel: Boolean = true) {
     event.isCancelled = needCancel
 }
 
-fun processArmorStandClear(event: ChunkLoadEvent) {
+fun handleArmorStandClear(event: ChunkLoadEvent) {
     val chunk = event.chunk
 
     regionScheduler(plugin, chunk) {
@@ -207,10 +205,116 @@ fun processArmorStandClear(event: ChunkLoadEvent) {
     }
 }
 
-private fun checkLocation(location: Location, checkType: Boolean = true): Boolean {
-    return ((location.block.blockData is Slab || location.block.blockData is Stairs || location.block.isSolid) || checkType)
-            && location.clone().add(0.0, 1.0, 0.0).block.type == Material.AIR
-            && location.clone().add(0.0, 2.0, 0.0).block.type == Material.AIR
+private fun isSlab(blockData: BlockData): Boolean {
+    return blockData is Slab
+}
+
+private fun isStair(blockData: BlockData): Boolean {
+    return blockData is Stairs
+}
+
+private fun treatAsNormal(block: Block): Boolean {
+    val blockData = block.blockData
+
+    if (isSlab(blockData)) {
+        val slab = blockData as Slab
+        return slab.type == Slab.Type.TOP || slab.type == Slab.Type.DOUBLE
+    }
+
+    if (isStair(blockData)) {
+        val stair = blockData as Stairs
+        return stair.half == Bisected.Half.TOP
+    }
+
+    return true
+}
+
+private fun offsetLocation(location: Location): Location {
+    val block = location.block
+    val loc = location.clone()
+
+    loc.add(0.5, 0.0, 0.5)
+    loc.subtract(0.0, 1.0, 0.0)
+
+    if (!treatAsNormal(block)) {
+        loc.subtract(0.0, 0.5, 0.0)
+    }
+
+    val blockData = block.blockData
+
+    if (isStair(blockData)) {
+        return if (treatAsNormal(block)) loc else offsetStair(blockData as Stairs, loc)
+    }
+
+    return loc
+}
+
+private fun offsetStair(blockData: Stairs, location: Location): Location {
+    val loc = location.clone()
+    val facing = blockData.facing
+    val shape = blockData.shape
+
+    when (facing) {
+        BlockFace.NORTH -> loc.add(0.0, 0.0, 0.25)
+        BlockFace.SOUTH -> loc.subtract(0.0, 0.0, 0.25)
+        BlockFace.WEST -> loc.add(0.25, 0.0, 0.0)
+        BlockFace.EAST -> loc.subtract(0.25, 0.0, 0.0)
+        else -> {}
+    }
+
+    return offsetStairShape(facing, shape, loc)
+}
+
+private fun offsetStairShape(facing: BlockFace, shape: Shape, location: Location): Location {
+    val loc = location.clone()
+
+    when(facing) {
+        BlockFace.NORTH -> loc.apply {
+            if (shape.name.endsWith("LEFT")) {
+                add(0.25, 0.0, 0.0)
+            } else if (shape.name.endsWith("RIGHT")) {
+                subtract(0.25, 0.0, 0.0)
+            }
+        }
+        BlockFace.SOUTH -> loc.apply {
+            if (shape.name.endsWith("LEFT")) {
+                subtract(0.25, 0.0, 0.0)
+            } else if (shape.name.endsWith("RIGHT")) {
+                add(0.25, 0.0, 0.0)
+            }
+        }
+        BlockFace.WEST -> loc.apply {
+            if (shape.name.endsWith("LEFT")) {
+                subtract(0.0, 0.0, 0.25)
+            } else if (shape.name.endsWith("RIGHT")) {
+                add(0.0, 0.0, 0.25)
+            }
+        }
+        BlockFace.EAST -> loc.apply {
+            if (shape.name.endsWith("LEFT")) {
+                add(0.0, 0.0, 0.25)
+            } else if (shape.name.endsWith("RIGHT")) {
+                subtract(0.0, 0.0, 0.25)
+            }
+        }
+        else -> {}
+    }
+
+    return loc
+}
+
+private fun checkLocation(location: Location): Boolean {
+    val block = location.block
+    val blockData = block.blockData
+
+    if (!(block.isSolid || isSlab(blockData) || isSlab(blockData))) {
+        return false
+    }
+
+    val offset1 = location.clone().add(0.0, 1.0, 0.0).block.type
+    val offset2 = location.clone().add(0.0, 2.0, 0.0).block.type
+
+    return offset1 == Material.AIR && offset2 == Material.AIR
 }
 
 private fun findLegalLocation(startPoint: Location): Location? {
@@ -276,7 +380,11 @@ class SitManagerImpl : SitManager {
             player.stand()
         }
 
-        var sitLoc = location
+        var sitLoc = location.toBlockLocation().apply {
+            // Location#toBlockLocation 不会抹掉 pitch 与 yaw
+            pitch = 0F
+            yaw = 0F
+        }
 
         if (!checkLocation(location)) {
             val tryFind = findLegalLocation(location)
@@ -289,41 +397,7 @@ class SitManagerImpl : SitManager {
             sitLoc = tryFind
         }
 
-        val blockData = location.block.blockData
-        var align = true
-
-        if (blockData is Stairs) {
-            val half = blockData.half
-
-            if (half == Bisected.Half.BOTTOM) {
-                sitLoc.subtract(0.0, 0.5, 0.0)
-                val facing = blockData.facing
-
-                when (facing) {
-                    BlockFace.NORTH -> location.apply {
-                        add(0.5, 0.0, 0.75)
-                    }
-
-                    BlockFace.SOUTH -> location.apply {
-                        add(0.5, 0.0, 0.25)
-                    }
-
-                    BlockFace.EAST -> sitLoc.apply {
-                        add(0.25, 0.0, 0.5)
-                    }
-
-                    BlockFace.WEST -> sitLoc.apply {
-                        add(0.75, 0.0, 0.5)
-                    }
-
-                    else -> return
-                }
-
-                align = false
-            }
-        }
-
-        val armorStand = createArmorStand(sitLoc, align)
+        val armorStand = createArmorStand(sitLoc)
         markAsSeat(armorStand, player)
         armorStand.addPassenger(player)
 
@@ -362,6 +436,10 @@ class SitManagerImpl : SitManager {
     override fun getSeat(player: Player): Entity? {
         armorStands[player.uniqueId] ?: return null
         return plugin.server.getEntity(armorStands[player.uniqueId]!!)
+    }
+
+    override fun getSitLocation(player: Player): Location? {
+        return sitters[player.uniqueId]
     }
 
     override fun standAll() {

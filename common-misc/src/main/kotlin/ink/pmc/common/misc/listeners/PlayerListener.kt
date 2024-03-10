@@ -18,41 +18,41 @@ object PlayerListener : Listener {
 
     @EventHandler
     fun playerQuitEvent(event: PlayerQuitEvent) {
-        processPlayerQuit(event)
+        handlePlayerQuit(event)
     }
 
     @EventHandler
     fun entityDismountEvent(event: EntityDismountEvent) {
-        processSitDelay(event)
+        handleSitDelay(event)
     }
 
     @EventHandler
     fun entityDeathEvent(event: EntityDeathEvent) {
         tryToStand(event, false)
-        processArmorStandAction(event)
+        handleArmorStandAction(event)
     }
 
     @EventHandler
     fun entityDamageEvent(event: EntityDamageEvent) {
         tryToStand(event, false)
-        processArmorStandAction(event)
+        handleArmorStandAction(event)
     }
 
     @EventHandler
     fun entityTeleportEvent(event: EntityTeleportEvent) {
         tryToStand(event, false)
-        processArmorStandAction(event)
+        handleArmorStandAction(event)
     }
 
     @EventHandler
     fun entityMoveEvent(event: EntityMoveEvent) {
         // tryToStand(event, false) 暂时移除，可能有问题
-        processArmorStandAction(event)
+        handleArmorStandAction(event)
     }
 
     @EventHandler
     fun blockBreakEvent(event: BlockBreakEvent) {
-        processSitLocationBroke(event)
+        handleSitLocationBroke(event)
     }
 
     @EventHandler
@@ -62,7 +62,7 @@ object PlayerListener : Listener {
 
     @EventHandler
     fun chunkLoadEvent(event: ChunkLoadEvent) {
-        processArmorStandClear(event)
+        handleArmorStandClear(event)
     }
 
 }

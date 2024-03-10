@@ -22,3 +22,6 @@ var Player.isSitting: Boolean
 
 val Player.seat: Entity?
     get() = MiscAPI.instance.sitManager.getSeat(this)
+
+val Player.sitLocation: Location?
+    get() = MiscAPI.instance.sitManager.getSitLocation(this)
