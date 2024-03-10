@@ -2,5 +2,6 @@ main: ink.pmc.common.member.MemberPlugin
 name: common-member
 version: ${version}
 api-version: ${api}
+folia-supported: true
 depend:
   - common-dependency-loader

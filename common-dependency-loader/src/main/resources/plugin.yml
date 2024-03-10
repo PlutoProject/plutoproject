@@ -2,6 +2,7 @@ main: ink.pmc.common.deploader.DepLoaderPlugin
 name: common-dependency-loader
 version: ${version}
 api-version: ${api}
+folia-supported: true
 libraries:
   - org.jetbrains.kotlin:kotlin-stdlib:2.0.0-Beta4
   - com.squareup.okhttp3:okhttp:5.0.0-alpha.12

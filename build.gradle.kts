@@ -61,7 +61,7 @@ allprojects {
 
     tasks.shadowJar {
         archiveClassifier = ""
-        onlyIf { project != rootProject && !project.name.endsWith("-api") }
+        onlyIf { project != rootProject && !project.name.startsWith("common-library-") }
         destinationDirectory.set(file("$rootDir/build-outputs"))
     }
 
@@ -72,7 +72,7 @@ allprojects {
         val outputsDir = file("$rootDir/build-outputs")
 
         outputsDir.listFiles()!!.forEach {
-            if (it.name.startsWith("common-library")) {
+            if (it.name.startsWith("common-library-")) {
                 return@forEach
             }
 

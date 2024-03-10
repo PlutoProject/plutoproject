@@ -454,7 +454,7 @@ class SitManagerImpl : SitManager {
             return
         }
 
-        val armorStand = plugin.server.getEntity(uuid)!! as LivingEntity
+        val armorStand = plugin.server.getEntity(uuid) ?: return
         armorStand.remove()
 
         armorStands.remove(uuid)
