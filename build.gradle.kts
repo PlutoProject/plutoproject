@@ -65,6 +65,8 @@ allprojects {
         destinationDirectory.set(file("$rootDir/build-outputs"))
     }
 
+    runPaper.folia.registerTask()
+
     tasks.runServer {
 
         val outputsDir = file("$rootDir/build-outputs")
