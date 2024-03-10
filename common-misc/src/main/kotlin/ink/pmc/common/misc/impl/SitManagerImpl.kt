@@ -359,7 +359,7 @@ class SitManagerImpl : SitManager {
                     regionScheduler(plugin, player.location) {
                         val playerId = player.uniqueId
                         val armorStandId = armorStands[playerId]!!
-                        val armorStand = player.world.getEntity(armorStandId)!!
+                        val armorStand = player.world.getEntity(armorStandId) ?: return@regionScheduler // 有时可能玩家已经站起来了，但是异步任务仍然尝试获取实体
 
                         // 切换到实体调度器执行，因为不允许异步操作实体数据
                         armorStand.execute(plugin) {
