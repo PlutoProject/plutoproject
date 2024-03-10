@@ -267,7 +267,7 @@ private fun offsetStair(blockData: Stairs, location: Location): Location {
 private fun offsetStairShape(facing: BlockFace, shape: Shape, location: Location): Location {
     val loc = location.clone()
 
-    when(facing) {
+    when (facing) {
         BlockFace.NORTH -> loc.apply {
             if (shape.name.endsWith("LEFT")) {
                 add(0.25, 0.0, 0.0)
@@ -275,6 +275,7 @@ private fun offsetStairShape(facing: BlockFace, shape: Shape, location: Location
                 subtract(0.25, 0.0, 0.0)
             }
         }
+
         BlockFace.SOUTH -> loc.apply {
             if (shape.name.endsWith("LEFT")) {
                 subtract(0.25, 0.0, 0.0)
@@ -282,6 +283,7 @@ private fun offsetStairShape(facing: BlockFace, shape: Shape, location: Location
                 add(0.25, 0.0, 0.0)
             }
         }
+
         BlockFace.WEST -> loc.apply {
             if (shape.name.endsWith("LEFT")) {
                 subtract(0.0, 0.0, 0.25)
@@ -289,6 +291,7 @@ private fun offsetStairShape(facing: BlockFace, shape: Shape, location: Location
                 add(0.0, 0.0, 0.25)
             }
         }
+
         BlockFace.EAST -> loc.apply {
             if (shape.name.endsWith("LEFT")) {
                 add(0.0, 0.0, 0.25)
@@ -296,6 +299,7 @@ private fun offsetStairShape(facing: BlockFace, shape: Shape, location: Location
                 subtract(0.0, 0.0, 0.25)
             }
         }
+
         else -> {}
     }
 
@@ -358,7 +362,8 @@ class SitManagerImpl : SitManager {
                     regionScheduler(plugin, player.location) {
                         val playerId = player.uniqueId
                         val armorStandId = armorStands[playerId]!!
-                        val armorStand = player.world.getEntity(armorStandId) ?: return@regionScheduler // 有时可能玩家已经站起来了，但是异步任务仍然尝试获取实体
+                        val armorStand = player.world.getEntity(armorStandId)
+                            ?: return@regionScheduler // 有时可能玩家已经站起来了，但是异步任务仍然尝试获取实体
 
                         // 切换到实体调度器执行，因为不允许异步操作实体数据
                         armorStand.execute(plugin) {
