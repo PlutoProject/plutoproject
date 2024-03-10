@@ -1,13 +1,11 @@
 package ink.pmc.common.misc.impl
 
-import ink.pmc.common.misc.ILLEGAL_LOC
-import ink.pmc.common.misc.STAND_UP
+import ink.pmc.common.misc.*
 import ink.pmc.common.misc.api.isSitting
+import ink.pmc.common.misc.api.seat
 import ink.pmc.common.misc.api.sit
 import ink.pmc.common.misc.api.sit.SitManager
 import ink.pmc.common.misc.api.stand
-import ink.pmc.common.misc.disabled
-import ink.pmc.common.misc.plugin
 import ink.pmc.common.utils.execute
 import ink.pmc.common.utils.regionScheduler
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -17,6 +15,7 @@ import kotlinx.coroutines.launch
 import net.kyori.adventure.text.Component
 import org.bukkit.Location
 import org.bukkit.Material
+import org.bukkit.NamespacedKey
 import org.bukkit.block.BlockFace
 import org.bukkit.block.data.Bisected
 import org.bukkit.block.data.type.Slab
@@ -26,9 +25,14 @@ import org.bukkit.entity.Entity
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.event.Cancellable
+import org.bukkit.event.block.BlockBreakEvent
+import org.bukkit.event.entity.EntityDismountEvent
 import org.bukkit.event.entity.EntityEvent
 import org.bukkit.event.player.PlayerInteractEvent
+import org.bukkit.event.player.PlayerQuitEvent
+import org.bukkit.event.world.ChunkLoadEvent
 import org.bukkit.inventory.EquipmentSlot
+import org.bukkit.persistence.PersistentDataType
 import java.util.*
 import java.util.concurrent.CopyOnWriteArraySet
 import kotlin.time.Duration
@@ -38,6 +42,41 @@ import kotlin.time.Duration
 * 猜测可能是和碰撞有关。设置一个延迟机制，来解决这个问题。
 * */
 val sitDelay = CopyOnWriteArraySet<UUID>()
+
+val armorStandDataKey = NamespacedKey(plugin, "sit-passenger")
+
+private fun createArmorStand(locationToSit: Location, align: Boolean = true): Entity {
+    /*
+    * TODO: 替换为能在 Folia 上使用的 API
+    * 由于 Folia 目前似乎暂无完整的世界操作 API，所以先搁置
+    * */
+    var armorStandLoc = locationToSit
+
+    if (align) {
+        armorStandLoc = locationToSit.toBlockLocation()
+        armorStandLoc.x = armorStandLoc.blockX + 0.5
+        armorStandLoc.z = armorStandLoc.blockZ + 0.5
+    }
+
+    armorStandLoc.subtract(0.0, 1.0, 0.0)
+
+    val world = locationToSit.world
+    val entity = world.spawn(armorStandLoc, ArmorStand::class.java)
+
+    entity.setGravity(false)
+    entity.isInvisible = true
+
+    return entity
+}
+
+@OptIn(DelicateCoroutinesApi::class)
+private fun markDelay(player: Player) {
+    sitDelay.add(player.uniqueId)
+    GlobalScope.launch {
+        delay(100)
+        sitDelay.remove(player.uniqueId)
+    }
+}
 
 fun tryToStand(event: EntityEvent, needCancel: Boolean = true) {
     val entity = event.entity
@@ -92,6 +131,80 @@ fun handleSitClick(event: PlayerInteractEvent) {
     event.isCancelled = true
 
     player.sit(location)
+}
+
+fun markAsSeat(entity: Entity, sitter: Player) {
+    entity.persistentDataContainer.set(armorStandDataKey, PersistentDataType.STRING, sitter.uniqueId.toString())
+}
+
+fun isSeat(entity: Entity): Boolean {
+    return entity.persistentDataContainer.has(armorStandDataKey)
+}
+
+fun getSitter(entity: Entity): Player? {
+    val uuid = UUID.fromString(entity.persistentDataContainer.get(armorStandDataKey, PersistentDataType.STRING))
+    return plugin.server.getPlayer(uuid)
+}
+
+fun processPlayerQuit(event: PlayerQuitEvent) {
+    val player = event.player
+
+    if (player.isSitting) {
+        player.stand()
+    }
+}
+
+fun processSitDelay(event: EntityDismountEvent) {
+    if (!sitDelay.contains(event.entity.uniqueId)) {
+        tryToStand(event)
+    } else {
+        event.isCancelled = true
+    }
+}
+
+fun processSitLocationBroke(event: BlockBreakEvent) {
+    val location = event.block.location.toBlockLocation()
+
+    if (!sitManager.sitters.containsValue(location)) {
+        return
+    }
+
+    event.player.stand()
+}
+
+fun processArmorStandAction(event: Cancellable, needCancel: Boolean = true) {
+    if (event !is EntityEvent) {
+        return
+    }
+
+    val entity = event.entity
+
+    if (entity !is ArmorStand) {
+        return
+    }
+
+    if (!isSeat(entity) || getSitter(entity) == null) {
+        return
+    }
+
+    event.isCancelled = needCancel
+}
+
+fun processArmorStandClear(event: ChunkLoadEvent) {
+    val chunk = event.chunk
+
+    regionScheduler(plugin, chunk) {
+        val entities = chunk.entities
+        val armorStands = entities.filter { it.persistentDataContainer.has(armorStandDataKey) }
+
+        armorStands.forEach {
+            if (getSitter(it) != null && getSitter(it)?.seat != it) {
+                it.remove()
+                val location = it.location
+                plugin.logger.info("Removed useless armor stand at ${location.x}, ${location.y}, ${location.z}, ${location.world.name}.")
+            }
+        }
+    }
 }
 
 private fun checkLocation(location: Location, checkType: Boolean = true): Boolean {
@@ -186,7 +299,7 @@ class SitManagerImpl : SitManager {
                 sitLoc.subtract(0.0, 0.5, 0.0)
                 val facing = blockData.facing
 
-                when (facing) { // 台
+                when (facing) {
                     BlockFace.NORTH -> location.apply {
                         add(0.5, 0.0, 0.75)
                     }
@@ -210,9 +323,8 @@ class SitManagerImpl : SitManager {
             }
         }
 
-        println(sitLoc)
-
         val armorStand = createArmorStand(sitLoc, align)
+        markAsSeat(armorStand, player)
         armorStand.addPassenger(player)
 
         _sitter[player.uniqueId] = sitLoc
@@ -247,35 +359,16 @@ class SitManagerImpl : SitManager {
         cleanArmorStand(armorStandId)
     }
 
+    override fun getSeat(player: Player): Entity? {
+        armorStands[player.uniqueId] ?: return null
+        return plugin.server.getEntity(armorStands[player.uniqueId]!!)
+    }
+
     override fun standAll() {
         _sitter.keys.forEach {
             val player = plugin.server.getPlayer(it)
             player!!.stand()
         }
-    }
-
-    private fun createArmorStand(locationToSit: Location, align: Boolean = true): Entity {
-        /*
-        * TODO: 替换为能在 Folia 上使用的 API
-        * 由于 Folia 目前似乎暂无完整的世界操作 API，所以先搁置
-        * */
-        var armorStandLoc = locationToSit
-
-        if (align) {
-            armorStandLoc = locationToSit.toBlockLocation()
-            armorStandLoc.x = armorStandLoc.blockX + 0.5
-            armorStandLoc.z = armorStandLoc.blockZ + 0.5
-        }
-
-        armorStandLoc.subtract(0.0, 1.0, 0.0)
-
-        val world = locationToSit.world
-        val entity = world.spawn(armorStandLoc, ArmorStand::class.java)
-
-        entity.setGravity(false)
-        entity.isInvisible = true
-
-        return entity
     }
 
     private fun cleanArmorStand(uuid: UUID) {
@@ -287,14 +380,6 @@ class SitManagerImpl : SitManager {
         armorStand.remove()
 
         armorStands.remove(uuid)
-    }
-
-    private fun markDelay(player: Player) {
-        sitDelay.add(player.uniqueId)
-        GlobalScope.launch {
-            delay(100)
-            sitDelay.remove(player.uniqueId)
-        }
     }
 
 }

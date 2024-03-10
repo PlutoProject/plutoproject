@@ -1,6 +1,7 @@
 package ink.pmc.common.misc.api
 
 import org.bukkit.Location
+import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 
 fun Player.sit(location: Location) {
@@ -18,3 +19,6 @@ var Player.isSitting: Boolean
             this.stand()
         }
     }
+
+val Player.seat: Entity?
+    get() = MiscAPI.instance.sitManager.getSeat(this)
