@@ -1,8 +1,9 @@
 package ink.pmc.common.misc.impl
 
 import ink.pmc.common.misc.*
-import ink.pmc.common.misc.api.*
+import ink.pmc.common.misc.api.isSitting
 import ink.pmc.common.misc.api.sit.SitManager
+import ink.pmc.common.misc.api.stand
 import ink.pmc.common.utils.execute
 import ink.pmc.common.utils.regionScheduler
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -96,7 +97,7 @@ class SitManagerImpl : SitManager {
         val playerId = player.uniqueId
         val armorStandId = armorStands[playerId]!!
         val armorStand = player.world.getEntity(armorStandId)!!
-        val standLocation = player.location.clone().add(0.0, 1.0, 0.0)
+        val standLocation = player.location.add(0.0, 1.0, 0.0)
 
         // 使用实体调度器，避免未来在迁移 Folia 时可能造成的问题
         armorStand.execute(plugin) {

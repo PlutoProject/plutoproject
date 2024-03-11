@@ -29,6 +29,6 @@ val sitCommand = commandManager.commandBuilder("sit")
         }
 
         sender.execute(plugin) {
-            sitManager.sit(sender, sender.location.clone().subtract(0.0, 1.0, 0.0))
+            sitManager.sit(sender, sender.location.subtract(0.0, 1.0, 0.0))
         }
     }
