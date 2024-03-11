@@ -1,9 +1,6 @@
 package ink.pmc.common.misc.listeners
 
-import ink.pmc.common.misc.handleChatFormat
-import ink.pmc.common.misc.handleJoinMessage
-import ink.pmc.common.misc.handleQuitMessage
-import ink.pmc.common.misc.impl.*
+import ink.pmc.common.misc.*
 import io.papermc.paper.event.entity.EntityMoveEvent
 import io.papermc.paper.event.player.AsyncChatEvent
 import org.bukkit.event.EventHandler
