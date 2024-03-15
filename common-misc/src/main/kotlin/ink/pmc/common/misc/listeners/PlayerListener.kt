@@ -65,7 +65,7 @@ object PlayerListener : Listener {
 
     @EventHandler
     fun chunkLoadEvent(event: ChunkLoadEvent) {
-        handleArmorStandClear(event)
+
     }
 
     @EventHandler

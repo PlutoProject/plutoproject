@@ -5,7 +5,6 @@ import ink.pmc.common.misc.api.isSitting
 import ink.pmc.common.misc.api.sit.SitManager
 import ink.pmc.common.misc.api.stand
 import ink.pmc.common.utils.execute
-import ink.pmc.common.utils.regionScheduler
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -15,7 +14,6 @@ import org.bukkit.Location
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 import java.util.*
-import kotlin.time.Duration
 
 @OptIn(DelicateCoroutinesApi::class)
 class SitManagerImpl : SitManager {
@@ -24,34 +22,6 @@ class SitManagerImpl : SitManager {
     private val armorStands = mutableMapOf<UUID, UUID>()
 
     override val sitters: Map<UUID, Location> = _sitter
-
-    init {
-        GlobalScope.launch {
-            while (!disabled) {
-                _sitter.keys.forEach {
-                    val player = plugin.server.getPlayer(it)!!
-                    player.sendActionBar(STAND_UP)
-
-                    // 避免异步实体获取问题
-                    regionScheduler(plugin, player.location) {
-                        val playerId = player.uniqueId
-                        val armorStandId = armorStands[playerId]!!
-                        val armorStand = player.world.getEntity(armorStandId)
-                            ?: return@regionScheduler // 有时可能玩家已经站起来了，但是异步任务仍然尝试获取实体
-
-                        // 切换到实体调度器执行，因为不允许异步操作实体数据
-                        armorStand.execute(plugin) {
-                            // 避免一些意外问题
-                            if (!armorStand.passengers.contains(player)) {
-                                armorStand.addPassenger(player)
-                            }
-                        }
-                    }
-                }
-                delay(Duration.parse("2s"))
-            }
-        }
-    }
 
     override fun sit(player: Player, location: Location) {
         if (player.isSitting) {

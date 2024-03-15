@@ -36,6 +36,8 @@ class MiscPlugin : JavaPlugin() {
         commandManager.command(suicideCommand)
         commandManager.command(sitCommand)
 
+        runSitCheckTask()
+
         server.pluginManager.registerEvents(PlayerListener, this)
     }
 

@@ -1,11 +1,16 @@
 package ink.pmc.common.misc
 
-import ink.pmc.common.misc.api.*
+import ink.pmc.common.misc.api.isSitting
+import ink.pmc.common.misc.api.seat
+import ink.pmc.common.misc.api.sit
+import ink.pmc.common.misc.api.stand
+import ink.pmc.common.utils.execute
 import ink.pmc.common.utils.regionScheduler
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.bukkit.Chunk
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
@@ -24,11 +29,11 @@ import org.bukkit.event.entity.EntityDismountEvent
 import org.bukkit.event.entity.EntityEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerQuitEvent
-import org.bukkit.event.world.ChunkLoadEvent
 import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.persistence.PersistentDataType
 import java.util.*
 import java.util.concurrent.CopyOnWriteArraySet
+import kotlin.time.Duration
 
 /*
 * 有时候在尝试坐下的时候会由于未知原因直接触发 EntityDismountEvent，导致无法坐下。
@@ -36,6 +41,54 @@ import java.util.concurrent.CopyOnWriteArraySet
 * */
 val sitDelay = CopyOnWriteArraySet<UUID>()
 val armorStandDataKey = NamespacedKey(plugin, "sit-passenger")
+
+@OptIn(DelicateCoroutinesApi::class)
+fun runSitCheckTask() {
+    GlobalScope.launch {
+        while (!disabled) {
+            sitManager.sitters.keys.forEach {
+                val player = plugin.server.getPlayer(it)!!
+                player.sendActionBar(STAND_UP)
+
+                // 避免异步实体获取问题
+                regionScheduler(plugin, player.location) {
+                    val armorStand = player.seat ?: return@regionScheduler // 有时可能玩家已经站起来了，但是异步任务仍然尝试获取实体
+
+                    // 切换到实体调度器执行，因为不允许异步操作实体数据
+                    armorStand.execute(plugin) {
+                        // 避免一些意外问题
+                        if (!armorStand.passengers.contains(player)) {
+                            armorStand.addPassenger(player)
+                        }
+                    }
+                }
+            }
+
+            plugin.server.onlinePlayers.forEach {
+                val chunk = it.chunk
+
+                regionScheduler(plugin, chunk) {
+                    clearIllegalArmorStands(it.chunk)
+                }
+            }
+
+            delay(Duration.parse("2s"))
+        }
+    }
+}
+
+fun clearIllegalArmorStands(chunk: Chunk) {
+    val entities = chunk.entities
+    val armorStands = entities.filter { it.persistentDataContainer.has(armorStandDataKey) }
+
+    armorStands.forEach {
+        if (getSitter(it) != null && getSitter(it)?.seat != it) {
+            it.remove()
+            val location = it.location
+            plugin.logger.info("Removed illegal armor stand at ${location.x}, ${location.y}, ${location.z}, ${location.world.name}.")
+        }
+    }
+}
 
 fun createArmorStand(locationToSit: Location): Entity {
     /*
@@ -102,7 +155,7 @@ fun handleSitClick(event: PlayerInteractEvent) {
 
     val block = event.clickedBlock!!
 
-    if (player.sitLocation == block.location) {
+    if (player.isSitting) {
         return
     }
 
@@ -115,6 +168,10 @@ fun handleSitClick(event: PlayerInteractEvent) {
     val location = block.location
 
     if (!checkLocation(location)) {
+        return
+    }
+
+    if (player.location.blockY + 1 < location.y) {
         return
     }
 
@@ -177,23 +234,6 @@ fun handleArmorStandAction(event: Cancellable, needCancel: Boolean = true) {
     }
 
     event.isCancelled = needCancel
-}
-
-fun handleArmorStandClear(event: ChunkLoadEvent) {
-    val chunk = event.chunk
-
-    regionScheduler(plugin, chunk) {
-        val entities = chunk.entities
-        val armorStands = entities.filter { it.persistentDataContainer.has(armorStandDataKey) }
-
-        armorStands.forEach {
-            if (getSitter(it) != null && getSitter(it)?.seat != it) {
-                it.remove()
-                val location = it.location
-                plugin.logger.info("Removed useless armor stand at ${location.x}, ${location.y}, ${location.z}, ${location.world.name}.")
-            }
-        }
-    }
 }
 
 private fun isSlab(blockData: BlockData): Boolean {
