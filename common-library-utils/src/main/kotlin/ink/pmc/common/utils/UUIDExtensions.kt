@@ -3,7 +3,7 @@ package ink.pmc.common.utils
 import org.bukkit.Bukkit
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
-import java.util.UUID
+import java.util.*
 
 val UUID.player: Player?
     get() = Bukkit.getPlayer(this)
