@@ -29,8 +29,8 @@ class SitManagerImpl : SitManager {
         GlobalScope.launch {
             while (!disabled) {
                 _sitter.keys.forEach {
-                    val player = plugin.server.getPlayer(it)
-                    player!!.sendActionBar(STAND_UP)
+                    val player = plugin.server.getPlayer(it)!!
+                    player.sendActionBar(STAND_UP)
 
                     // 避免异步实体获取问题
                     regionScheduler(plugin, player.location) {
@@ -82,7 +82,11 @@ class SitManagerImpl : SitManager {
         _sitter[player.uniqueId] = sitLoc
         armorStands[player.uniqueId] = armorStand.uniqueId
         markDelay(player)
-        player.sendActionBar(STAND_UP) // 先直接发一次，尝试覆盖原版的载具提示
+
+        GlobalScope.launch {
+            delay(45) // 原版载具的提示本身就会延迟发送，防止插件的提示在原版提示之前所以被覆盖掉
+            player.sendActionBar(STAND_UP) // 先直接发一次，尝试覆盖原版的载具提示
+        }
     }
 
     override fun isSitting(player: Player): Boolean {

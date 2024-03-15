@@ -3,6 +3,7 @@ package ink.pmc.common.misc
 import com.catppuccin.Palette
 import ink.pmc.common.utils.*
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.title.Title
 
 val SUICIDE = Component.text("你终结了你自己...")
     .color(Palette.MOCHA.flamingo.toTextColor())
@@ -10,6 +11,8 @@ val SUICIDE = Component.text("你终结了你自己...")
 val STAND_UP = Component.text("使用 ").color(mochaText)
     .append(Component.keybind("key.sneak").color(mochaFlamingo))
     .append(Component.text(" 来站起").color(mochaText))
+
+val STAND_UP_TITLE = Title.title(Component.text(" "), STAND_UP)
 
 val ILLEGAL_LOC =
     Component.text("无法在此处坐下，请检查是否有实体方块和足够的空间").color(Palette.MOCHA.red.toTextColor())

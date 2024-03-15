@@ -119,7 +119,6 @@ fun handleSitClick(event: PlayerInteractEvent) {
     }
 
     event.isCancelled = true
-
     player.sit(location)
 }
 
