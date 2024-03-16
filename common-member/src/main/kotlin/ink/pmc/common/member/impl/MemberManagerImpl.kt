@@ -11,6 +11,8 @@ import ink.pmc.common.member.api.MemberAPI
 import ink.pmc.common.member.api.MemberManager
 import ink.pmc.common.member.api.dsl.MemberDSL
 import ink.pmc.common.member.api.punishment.Punishment
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.bson.Document
 import org.mongojack.JacksonMongoCollection
 import java.time.Duration
@@ -29,7 +31,6 @@ class MemberManagerImpl(
     override val cachedMember: LoadingCache<UUID, Member> = Caffeine.newBuilder()
         .maximumSize(10000)
         .expireAfterWrite(Duration.ofMinutes(30))
-        .refreshAfterWrite(Duration.ofMinutes(5))
         .build(cacheLoader)
 
     init {
@@ -44,7 +45,7 @@ class MemberManagerImpl(
         }
     }
 
-    override fun register(member: Member) {
+    override suspend fun register(member: Member) {
         if (exist(member.uuid)) {
             return
         }
@@ -52,66 +53,82 @@ class MemberManagerImpl(
         insertAndUpdateCache(member)
     }
 
-    override fun createAndRegister(block: MemberDSL.() -> Unit): Member {
+    override suspend fun createAndRegister(block: MemberDSL.() -> Unit): Member {
         val member = MemberAPI.instance.createMember(block)
         register(member)
 
         return member
     }
 
-    override fun update(member: Member): Boolean {
-        if (nonExist(member.uuid)) {
-            return false
+    override suspend fun update(member: Member): Boolean {
+         return withContext(Dispatchers.IO) {
+            if (nonExist(member.uuid)) {
+                return@withContext false
+            }
+
+            collection.deleteOne(Filters.eq("uuid", member.uuid))
+            insertAndUpdateCache(member)
+
+            true
         }
-
-        collection.deleteOne(Filters.eq("uuid", member.uuid))
-        insertAndUpdateCache(member)
-
-        return true
     }
 
-    override fun get(uuid: UUID): Member? {
-        return cachedMember.get(uuid)
-    }
-
-    override fun exist(uuid: UUID): Boolean {
-        return cachedMember.getIfPresent(uuid) != null || collection.find(Filters.eq("uuid", uuid)).first() != null
-    }
-
-    override fun nonExist(uuid: UUID): Boolean {
-        return collection.find(Filters.eq("uuid", uuid)).first() == null
-    }
-
-    override fun lookupPunishment(id: Long): Punishment? {
-        val document = punishmentIndexCollection.find(Filters.eq("id", id)).first() ?: return null
-        val ownerUUID = document["owner"] as UUID
-        return get(ownerUUID)!!.getPunishment(id)
-    }
-
-    override fun lookupComment(id: Long): Comment? {
-        val document = commentIndexCollection.find(Filters.eq("id", id)).first() ?: return null
-        val ownerUUID = document["owner"] as UUID
-        return get(ownerUUID)!!.getComment(id)
-    }
-
-    override fun sync(member: Member): Boolean {
-        try {
-            cachedMember.refresh(member.uuid)
-        } catch (e: Exception) {
-            return false
+    override suspend fun get(uuid: UUID): Member? {
+        return withContext(Dispatchers.IO) {
+            cachedMember.get(uuid)
         }
-
-        return true
     }
 
-    override fun syncAll(): Boolean {
-        try {
-            cachedMember.invalidateAll()
-        } catch (e: Exception) {
-            return false
+    override suspend fun exist(uuid: UUID): Boolean {
+        return withContext(Dispatchers.IO) {
+            cachedMember.getIfPresent(uuid) != null || collection.find(Filters.eq("uuid", uuid)).first() != null
         }
+    }
 
-        return true
+    override suspend fun nonExist(uuid: UUID): Boolean {
+        return withContext(Dispatchers.IO) {
+            collection.find(Filters.eq("uuid", uuid)).first() == null
+        }
+    }
+
+    override suspend fun lookupPunishment(id: Long): Punishment? {
+        return withContext(Dispatchers.IO ) {
+            val document = punishmentIndexCollection.find(Filters.eq("id", id)).first() ?: return@withContext null
+            val ownerUUID = document["owner"] as UUID
+            get(ownerUUID)!!.getPunishment(id)
+        }
+    }
+
+    override suspend fun lookupComment(id: Long): Comment? {
+        return withContext(Dispatchers.IO) {
+            val document = commentIndexCollection.find(Filters.eq("id", id)).first() ?: return@withContext null
+            val ownerUUID = document["owner"] as UUID
+            get(ownerUUID)!!.getComment(id)
+        }
+    }
+
+    override suspend fun sync(member: Member): Boolean {
+        return withContext(Dispatchers.IO) {
+            try {
+                cachedMember.refresh(member.uuid)
+            } catch (e: Exception) {
+                return@withContext false
+            }
+
+            true
+        }
+    }
+
+    override suspend fun syncAll(): Boolean {
+        return withContext(Dispatchers.IO) {
+            try {
+                cachedMember.invalidateAll()
+            } catch (e: Exception) {
+                return@withContext false
+            }
+
+            true
+        }
     }
 
     private fun insertAndUpdateCache(member: Member) {

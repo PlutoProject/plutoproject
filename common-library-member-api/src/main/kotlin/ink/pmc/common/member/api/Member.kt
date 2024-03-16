@@ -6,7 +6,7 @@ import ink.pmc.common.member.api.punishment.Punishment
 import ink.pmc.common.member.api.punishment.PunishmentOptions
 import java.util.*
 
-
+@Suppress("UNUSED")
 interface Member {
 
     val uuid: UUID
@@ -22,23 +22,23 @@ interface Member {
     var bio: String?
     var totalPlayTime: Long
 
-    fun punish(options: PunishmentOptions): Punishment?
+    suspend fun punish(options: PunishmentOptions): Punishment?
 
-    fun punish(block: PunishmentOptionsDSL.() -> Unit): Punishment?
+    suspend fun punish(block: PunishmentOptionsDSL.() -> Unit): Punishment?
 
     fun pardon(reason: PardonReason): Boolean
 
     fun getPunishment(id: Long): Punishment?
 
-    fun currentPunishmentInstance(): Punishment? =
+    fun currentPunishment(): Punishment? =
         if (!punishments.any { it.id == currentPunishment }) null else punishments.first { it.id == currentPunishment }
 
-    fun lastPunishmentInstance(): Punishment? =
+    fun lastPunishment(): Punishment? =
         if (!punishments.any { it.id == lastPunishment }) null else punishments.first { it.id == lastPunishment }
 
-    fun createComment(creator: UUID, content: String): Comment
+    suspend fun createComment(creator: UUID, content: String): Comment
 
-    fun removeComment(id: Long): Boolean
+    suspend fun removeComment(id: Long): Boolean
 
     fun updateComment(id: Long, content: String): Boolean
 
@@ -46,6 +46,8 @@ interface Member {
 
     fun increasePlayTime(ms: Long)
 
-    fun update()
+    suspend fun update()
+
+    suspend fun sync()
 
 }

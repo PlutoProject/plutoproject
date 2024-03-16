@@ -15,24 +15,24 @@ interface MemberManager {
     val commentIndexCollection: MongoCollection<Document>
     val cachedMember: LoadingCache<UUID, Member>
 
-    fun register(member: Member)
+    suspend fun register(member: Member)
 
-    fun createAndRegister(block: MemberDSL.() -> Unit): Member
+    suspend fun createAndRegister(block: MemberDSL.() -> Unit): Member
 
-    fun update(member: Member): Boolean
+    suspend fun update(member: Member): Boolean
 
-    fun get(uuid: UUID): Member?
+    suspend fun get(uuid: UUID): Member?
 
-    fun exist(uuid: UUID): Boolean
+    suspend fun exist(uuid: UUID): Boolean
 
-    fun nonExist(uuid: UUID): Boolean
+    suspend fun nonExist(uuid: UUID): Boolean
 
-    fun lookupPunishment(id: Long): Punishment?
+    suspend fun lookupPunishment(id: Long): Punishment?
 
-    fun lookupComment(id: Long): Comment?
+    suspend fun lookupComment(id: Long): Comment?
 
-    fun sync(member: Member): Boolean
+    suspend fun sync(member: Member): Boolean
 
-    fun syncAll(): Boolean
+    suspend fun syncAll(): Boolean
 
 }
