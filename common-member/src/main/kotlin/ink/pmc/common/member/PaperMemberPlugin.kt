@@ -1,15 +1,9 @@
 package ink.pmc.common.member
 
-import ink.pmc.common.member.api.MemberManager
-import org.bukkit.command.CommandSender
 import org.bukkit.plugin.java.JavaPlugin
-import org.incendo.cloud.execution.ExecutionCoordinator
-import org.incendo.cloud.paper.PaperCommandManager
+import java.io.File
 
-lateinit var commandManager: PaperCommandManager<CommandSender>
 lateinit var plugin: JavaPlugin
-lateinit var sitManager: MemberManager
-var disabled = true
 
 @Suppress("UNUSED")
 class MemberPlugin : JavaPlugin() {
@@ -18,14 +12,19 @@ class MemberPlugin : JavaPlugin() {
         plugin = this
         disabled = false
 
-        commandManager = PaperCommandManager.createNative(
-            this,
-            ExecutionCoordinator.asyncCoordinator()
-        )
+        dataDir = dataFolder
+        configFile = File(dataFolder, "config.yml")
+
+        if (!configFile.exists()) {
+            saveDefaultConfig()
+        }
+
+        initMemberManager()
     }
 
     override fun onDisable() {
         disabled = true
+        mongoClient.close()
     }
 
 }

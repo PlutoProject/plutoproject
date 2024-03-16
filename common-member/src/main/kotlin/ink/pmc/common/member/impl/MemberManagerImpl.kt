@@ -61,7 +61,7 @@ class MemberManagerImpl(
     }
 
     override suspend fun update(member: Member): Boolean {
-         return withContext(Dispatchers.IO) {
+        return withContext(Dispatchers.IO) {
             if (nonExist(member.uuid)) {
                 return@withContext false
             }
@@ -92,7 +92,7 @@ class MemberManagerImpl(
     }
 
     override suspend fun lookupPunishment(id: Long): Punishment? {
-        return withContext(Dispatchers.IO ) {
+        return withContext(Dispatchers.IO) {
             val document = punishmentIndexCollection.find(Filters.eq("id", id)).first() ?: return@withContext null
             val ownerUUID = document["owner"] as UUID
             get(ownerUUID)!!.getPunishment(id)

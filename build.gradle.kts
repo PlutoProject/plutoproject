@@ -47,7 +47,7 @@ allprojects {
         "com.github.ben-manes.caffeine:caffeine:3.1.8",
         "com.catppuccin:catppuccin-palette:1.0.0",
         "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0",
-        "space.arim.dazzleconf:dazzleconf-ext-snakeyaml:1.2.0-M2"
+        "com.electronwill.night-config:yaml:3.6.0"
     )
 
     val paper = listOf(
