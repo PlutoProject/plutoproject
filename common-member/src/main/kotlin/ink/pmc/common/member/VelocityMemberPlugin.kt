@@ -1,12 +1,17 @@
 package ink.pmc.common.member
 
 import com.google.inject.Inject
+import com.velocitypowered.api.command.CommandSource
 import com.velocitypowered.api.event.Subscribe
 import com.velocitypowered.api.event.proxy.ProxyShutdownEvent
 import com.velocitypowered.api.plugin.Dependency
 import com.velocitypowered.api.plugin.Plugin
+import com.velocitypowered.api.plugin.PluginContainer
 import com.velocitypowered.api.plugin.annotation.DataDirectory
 import com.velocitypowered.api.proxy.ProxyServer
+import org.incendo.cloud.SenderMapper
+import org.incendo.cloud.execution.ExecutionCoordinator
+import org.incendo.cloud.velocity.VelocityCommandManager
 import java.io.File
 import java.io.InputStream
 import java.nio.file.Files
@@ -16,6 +21,8 @@ import java.util.logging.Logger
 
 lateinit var proxyServer: ProxyServer
 lateinit var proxyLogger: Logger
+lateinit var pluginContainer: PluginContainer
+lateinit var commandManager: VelocityCommandManager<CommandSource>
 
 fun saveDefaultConfig(output: File) {
     val input: InputStream = Thread.currentThread().contextClassLoader.getResourceAsStream("config.yml")
@@ -28,7 +35,7 @@ fun saveDefaultConfig(output: File) {
     id = "common-member",
     name = "common-member",
     version = "1.0.0",
-    dependencies = [Dependency(id = "common-dependency-loader-velocity")]
+    dependencies = [Dependency(id = "common-dependency-loader-velocity"), Dependency(id = "common-utils")]
 )
 @Suppress("UNUSED", "UNUSED_PARAMETER")
 class MemberPluginVelocity {
@@ -37,6 +44,7 @@ class MemberPluginVelocity {
     fun memberPluginVelocity(server: ProxyServer, logger: Logger, @DataDirectory dataDirectory: Path) {
         proxyServer = server
         proxyLogger = logger
+        pluginContainer = server.pluginManager.getPlugin("common-member").get()
 
         dataDir = dataDirectory.toFile()
         configFile = File(dataDir, "config.yml")
@@ -46,6 +54,15 @@ class MemberPluginVelocity {
         }
 
         initMemberManager()
+
+        commandManager = VelocityCommandManager(
+            pluginContainer,
+            proxyServer,
+            ExecutionCoordinator.asyncCoordinator(),
+            SenderMapper.identity()
+        )
+
+        commandManager.command(whitelistAddCommand)
     }
 
     @Subscribe

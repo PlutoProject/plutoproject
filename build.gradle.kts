@@ -47,17 +47,24 @@ allprojects {
         "com.github.ben-manes.caffeine:caffeine:3.1.8",
         "com.catppuccin:catppuccin-palette:1.0.0",
         "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0",
-        "com.electronwill.night-config:yaml:3.6.0"
+        "com.electronwill.night-config:yaml:3.6.0",
+        "org.incendo:cloud-paper:2.0.0-beta.2",
+        "org.incendo:cloud-velocity:2.0.0-beta.2"
     )
 
-    val paper = listOf(
-        "org.incendo:cloud-paper:2.0.0-beta.2"
-    )
+    val paper = listOf<String>()
 
     val velocity = listOf<String>()
+    val project = this
 
     dependencies {
-        common.forEach { compileOnlyApi(it) }
+        common.forEach {
+            if (project.name != "common-dependency-loader-velocity") {
+                compileOnlyApi(it)
+            } else {
+                implementation(it)
+            }
+        }
     }
 
     if (!this.name.contains("velocity")) {
