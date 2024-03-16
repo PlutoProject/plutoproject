@@ -1,6 +1,6 @@
-package ink.pmc.common.member
+package ink.pmc.common.utils
 
 import org.bukkit.plugin.java.JavaPlugin
 
 @Suppress("UNUSED")
-class MemberPlugin : JavaPlugin()
+class UtilsPlugin : JavaPlugin()

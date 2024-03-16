@@ -1,4 +1,4 @@
 dependencies {
-    implementation(project(":common-library-utils"))
+    compileOnly(project(":common-library-utils"))
     implementation(project(":common-library-misc-api"))
 }

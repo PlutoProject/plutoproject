@@ -4,7 +4,7 @@ import ink.pmc.common.misc.api.isSitting
 import ink.pmc.common.misc.api.seat
 import ink.pmc.common.misc.api.sit
 import ink.pmc.common.misc.api.stand
-import ink.pmc.common.utils.execute
+import ink.pmc.common.utils.scheduler
 import ink.pmc.common.utils.regionScheduler
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
@@ -51,11 +51,11 @@ fun runSitCheckTask() {
                 player.sendActionBar(STAND_UP)
 
                 // 避免异步实体获取问题
-                regionScheduler(plugin, player.location) {
+                regionScheduler(player.location) {
                     val armorStand = player.seat ?: return@regionScheduler // 有时可能玩家已经站起来了，但是异步任务仍然尝试获取实体
 
                     // 切换到实体调度器执行，因为不允许异步操作实体数据
-                    armorStand.execute(plugin) {
+                    armorStand.scheduler {
                         // 避免一些意外问题
                         if (!armorStand.passengers.contains(player)) {
                             armorStand.addPassenger(player)
@@ -67,7 +67,7 @@ fun runSitCheckTask() {
             plugin.server.onlinePlayers.forEach {
                 val chunk = it.chunk
 
-                regionScheduler(plugin, chunk) {
+                regionScheduler(chunk) {
                     clearIllegalArmorStands(it.chunk)
                 }
             }
