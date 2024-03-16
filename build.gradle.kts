@@ -82,7 +82,7 @@ allprojects {
     tasks.shadowJar {
         clearOutputsDir()
         archiveClassifier = ""
-        onlyIf { !project.name.startsWith("common-library-") }
+        onlyIf { project != rootProject && !project.name.startsWith("common-library-") }
         destinationDirectory.set(file("$rootDir/build-outputs"))
     }
 }
@@ -107,16 +107,12 @@ val velocityShared = listOf("common-member")
 val String.trimmed: String
     get() = trim(this)
 
-fun copyJars(isVelocity: Boolean) {
+fun copyJars() {
     val outputsDir = file("$rootDir/build-outputs")
 
     outputsDir.listFiles()!!.forEach {
         if (it.name.startsWith("common-library-")) {
             return@forEach
-        }
-
-        if (isVelocity && !it.name.trimmed.endsWith("-velocity") && !velocityShared.contains(it.name.trimmed)) {
-            return
         }
 
         val folder = file("$rootDir/run/plugins/")
@@ -150,12 +146,12 @@ fun clearOutputsDir() {
     }
 }
 
-fun Task.runTest(task: Task, isVelocity: Boolean = false) {
+fun Task.runTest(task: Task) {
     group = "pluto develop testing"
     dependsOn(allprojects.map { it.tasks.named("shadowJar") })
 
     doLast {
-        copyJars(isVelocity)
+        copyJars()
         task.actions.forEach { it.execute(task) }
     }
 }
@@ -168,6 +164,8 @@ tasks.register("Folia") {
     runTest(tasks.named("runFolia").get())
 }
 
+// 不要用这个，会和 Paper 和 Folia 的测试共用文件夹
+// Velocity 还是单独开一个服务端测试吧
 /*tasks.register("Velocity") {
     runTest(tasks.runVelocity.get(), true)
 }*/
@@ -177,8 +175,4 @@ runPaper.disablePluginJarDetection()
 
 tasks.runServer.configure {
     minecraftVersion("1.20.4")
-}
-
-tasks.runVelocity {
-    velocityVersion("3.1.2-SNAPSHOT")
 }
