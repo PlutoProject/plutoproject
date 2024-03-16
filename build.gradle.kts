@@ -81,7 +81,16 @@ fun copyJars() {
             folder.mkdirs()
         }
 
-        val target = File(folder, it.name)
+        val target = File(
+            folder,
+            it.name.replace(
+                it.name.substring(
+                    it.name.lastIndexOf('-'),
+                    it.name.lastIndexOf('.')
+                ),
+                ""
+            )
+        )
 
         if (target.exists()) {
             target.delete()
