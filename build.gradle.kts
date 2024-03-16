@@ -6,6 +6,7 @@ plugins {
     kotlin("jvm") version "1.9.21"
     id("xyz.jpenilla.run-paper") version "2.2.2"
     id("xyz.jpenilla.run-velocity") version "2.2.2"
+    kotlin("kapt") version "1.9.23"
 }
 
 fun kotlinDep(s: String): String {
@@ -20,6 +21,7 @@ allprojects {
         plugin("java-library")
         plugin(kotlinDep("jvm"))
         plugin(kotlinDep("plugin.serialization"))
+        plugin(kotlinDep("kapt"))
     }
 
     val bukkitAPIVersion by extra("1.20")
@@ -37,20 +39,38 @@ allprojects {
         }
     }
 
-    dependencies {
-        // api("org.jetbrains.kotlinx:kotlinx-serialization-json")
-        // api("org.jetbrains.kotlinx:kotlinx-serialization-toml")
-        // api("org.jetbrains.kotlinx:kotlinx-serialization-hocon")
-        compileOnlyApi("com.squareup.okhttp3:okhttp:5.0.0-alpha.12")
-        compileOnlyApi("com.google.code.gson:gson:2.10.1")
-        compileOnlyApi("org.mongojack:mongojack:4.8.2")
-        compileOnlyApi("org.mongodb:mongodb-driver-sync:4.11.1")
-        compileOnlyApi("com.github.ben-manes.caffeine:caffeine:3.1.8")
-        compileOnlyApi("com.catppuccin:catppuccin-palette:1.0.0")
-        compileOnlyApi("org.incendo:cloud-paper:2.0.0-beta.2")
-        compileOnlyApi("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0")
+    val common = listOf(
+        "com.squareup.okhttp3:okhttp:5.0.0-alpha.12",
+        "com.google.code.gson:gson:2.10.1",
+        "org.mongojack:mongojack:4.8.2",
+        "org.mongodb:mongodb-driver-sync:4.11.1",
+        "com.github.ben-manes.caffeine:caffeine:3.1.8",
+        "com.catppuccin:catppuccin-palette:1.0.0",
+        "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0",
+        "space.arim.dazzleconf:dazzleconf-ext-snakeyaml:1.2.0-M2"
+    )
 
-        compileOnly("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
+    val paper = listOf(
+        "org.incendo:cloud-paper:2.0.0-beta.2"
+    )
+
+    val velocity = listOf<String>()
+
+    dependencies {
+        common.forEach { compileOnlyApi(it) }
+    }
+
+    if (!this.name.contains("velocity")) {
+        dependencies {
+            paper.forEach { compileOnlyApi(it) }
+            compileOnly("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
+        }
+    } else if (this.name.contains("velocity")) {
+        dependencies {
+            velocity.forEach { compileOnlyApi(it) }
+            compileOnly("com.velocitypowered:velocity-api:3.3.0-SNAPSHOT")
+            kapt("com.velocitypowered:velocity-api:3.3.0-SNAPSHOT")
+        }
     }
 
     tasks.processResources {
@@ -62,17 +82,41 @@ allprojects {
     tasks.shadowJar {
         clearOutputsDir()
         archiveClassifier = ""
-        onlyIf { project != rootProject && !project.name.startsWith("common-library-") }
+        onlyIf { !project.name.startsWith("common-library-") }
         destinationDirectory.set(file("$rootDir/build-outputs"))
     }
 }
 
-fun copyJars() {
+dependencies {
+    compileOnly("com.velocitypowered:velocity-api:3.3.0-SNAPSHOT")
+    kapt("com.velocitypowered:velocity-api:3.3.0-SNAPSHOT")
+}
+
+fun trim(jarName: String): String {
+    return jarName.replace(
+        jarName.substring(
+            jarName.lastIndexOf('-'),
+            jarName.lastIndexOf('.')
+        ),
+        ""
+    )
+}
+
+val velocityShared = listOf("common-member")
+
+val String.trimmed: String
+    get() = trim(this)
+
+fun copyJars(isVelocity: Boolean) {
     val outputsDir = file("$rootDir/build-outputs")
 
     outputsDir.listFiles()!!.forEach {
         if (it.name.startsWith("common-library-")) {
             return@forEach
+        }
+
+        if (isVelocity && !it.name.trimmed.endsWith("-velocity") && !velocityShared.contains(it.name.trimmed)) {
+            return
         }
 
         val folder = file("$rootDir/run/plugins/")
@@ -83,13 +127,7 @@ fun copyJars() {
 
         val target = File(
             folder,
-            it.name.replace(
-                it.name.substring(
-                    it.name.lastIndexOf('-'),
-                    it.name.lastIndexOf('.')
-                ),
-                ""
-            )
+            it.name.trimmed
         )
 
         if (target.exists()) {
@@ -112,12 +150,12 @@ fun clearOutputsDir() {
     }
 }
 
-fun Task.runTest(task: Task) {
+fun Task.runTest(task: Task, isVelocity: Boolean = false) {
     group = "pluto develop testing"
     dependsOn(allprojects.map { it.tasks.named("shadowJar") })
 
     doLast {
-        copyJars()
+        copyJars(isVelocity)
         task.actions.forEach { it.execute(task) }
     }
 }
@@ -130,9 +168,9 @@ tasks.register("Folia") {
     runTest(tasks.named("runFolia").get())
 }
 
-tasks.register("Velocity") {
-    runTest(tasks.runVelocity.get())
-}
+/*tasks.register("Velocity") {
+    runTest(tasks.runVelocity.get(), true)
+}*/
 
 runPaper.folia.registerTask()
 runPaper.disablePluginJarDetection()
