@@ -47,7 +47,8 @@ allprojects {
         "com.github.ben-manes.caffeine:caffeine:3.1.8",
         "com.catppuccin:catppuccin-palette:1.0.0",
         "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0",
-        "com.electronwill.night-config:yaml:3.6.0",
+        "com.electronwill.night-config:core:3.6.0",
+        "com.electronwill.night-config:toml:3.6.0",
         "org.incendo:cloud-paper:2.0.0-beta.2",
         "org.incendo:cloud-velocity:2.0.0-beta.2"
     )
@@ -156,8 +157,11 @@ fun clearOutputsDir() {
 fun Task.runTest(task: Task) {
     group = "pluto develop testing"
     dependsOn(allprojects.map { it.tasks.named("shadowJar") })
-    copyJars()
-    task.actions.forEach { it.execute(task) }
+
+    doLast {
+        copyJars()
+        task.actions.forEach { it.execute(task) }
+    }
 }
 
 tasks.register("Paper") {

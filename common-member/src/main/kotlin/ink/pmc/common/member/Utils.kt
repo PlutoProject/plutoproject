@@ -22,18 +22,24 @@ fun convertShortUUIDToLong(shortUUID: String): String {
 }
 
 suspend fun getUUIDFromMojang(name: String): UUID? {
-    val request = Request.Builder()
-        .url(mojangAPI + "users/profiles/minecraft/$name")
-        .build()
-    val call = httpClient.newCall(request)
+    try {
+        val request = Request.Builder()
+            .url(mojangAPI + "users/profiles/minecraft/$name")
+            .build()
+        val call = httpClient.newCall(request)
 
-    return withContext(Dispatchers.IO) {
-        val response = call.execute()
-        val body = response.body
-        val jsonObject = JsonParser.parseString(body.string()).asJsonObject
-        val shortUUID = jsonObject.get("id").asString ?: return@withContext null
+        return withContext(Dispatchers.IO) {
+            val response = call.execute()
+            val body = response.body
+            val jsonObject = JsonParser.parseString(body.string()).asJsonObject ?: return@withContext null
+            val element = jsonObject.get("id") ?: return@withContext null
+            val shortUUID = element.asString ?: return@withContext null
 
-        val uuid = convertShortUUIDToLong(shortUUID)
-        UUID.fromString(uuid)
+            val uuid = convertShortUUIDToLong(shortUUID)
+            UUID.fromString(uuid)
+        }
+    } catch (e: Exception) {
+        // 防止其他可能的问题
+        return null
     }
 }

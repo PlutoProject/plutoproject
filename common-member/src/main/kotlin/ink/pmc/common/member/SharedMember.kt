@@ -25,8 +25,15 @@ lateinit var punishmentIndexCollection: MongoCollection<Document>
 lateinit var commentIndexCollection: MongoCollection<Document>
 lateinit var mongoClient: MongoClient
 
+fun createDataDir() {
+    if (!dataDir.exists()) {
+        dataDir.mkdirs()
+    }
+}
+
 fun loadConfig(file: File) {
     config = FileConfig.builder(file).sync().build()
+    config.load()
 }
 
 fun connectDatabase() {

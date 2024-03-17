@@ -3,6 +3,7 @@ package ink.pmc.common.member
 import com.google.inject.Inject
 import com.velocitypowered.api.command.CommandSource
 import com.velocitypowered.api.event.Subscribe
+import com.velocitypowered.api.event.proxy.ProxyInitializeEvent
 import com.velocitypowered.api.event.proxy.ProxyShutdownEvent
 import com.velocitypowered.api.plugin.Dependency
 import com.velocitypowered.api.plugin.Plugin
@@ -25,7 +26,7 @@ lateinit var pluginContainer: PluginContainer
 lateinit var commandManager: VelocityCommandManager<CommandSource>
 
 fun saveDefaultConfig(output: File) {
-    val input: InputStream = Thread.currentThread().contextClassLoader.getResourceAsStream("config.yml")
+    val input: InputStream = VelocityMemberPlugin::class.java.getResourceAsStream("/config.toml")
         ?: throw IllegalArgumentException("Resource not found")
     Files.copy(input, output.toPath(), StandardCopyOption.REPLACE_EXISTING)
     input.close()
@@ -38,16 +39,21 @@ fun saveDefaultConfig(output: File) {
     dependencies = [Dependency(id = "common-dependency-loader-velocity"), Dependency(id = "common-utils")]
 )
 @Suppress("UNUSED", "UNUSED_PARAMETER")
-class MemberPluginVelocity {
+class VelocityMemberPlugin {
 
     @Inject
-    fun memberPluginVelocity(server: ProxyServer, logger: Logger, @DataDirectory dataDirectory: Path) {
+    fun memberPluginVelocity(server: ProxyServer, logger: Logger, @DataDirectory dataDirectoryPath: Path) {
         proxyServer = server
         proxyLogger = logger
-        pluginContainer = server.pluginManager.getPlugin("common-member").get()
+        dataDir = dataDirectoryPath.toFile()
+    }
 
-        dataDir = dataDirectory.toFile()
-        configFile = File(dataDir, "config.yml")
+    @Subscribe
+    fun proxyInitializeEvent(event: ProxyInitializeEvent) {
+        pluginContainer = proxyServer.pluginManager.getPlugin("common-member").get()
+
+        createDataDir()
+        configFile = File(dataDir, "config.toml")
 
         if (!configFile.exists()) {
             saveDefaultConfig(configFile)
@@ -62,7 +68,10 @@ class MemberPluginVelocity {
             SenderMapper.identity()
         )
 
-        commandManager.command(whitelistAddCommand)
+        commandManager.command(memberAddCommand)
+        commandManager.command(memberLookupCommand)
+
+        proxyServer.eventManager.register(this, VelocityPlayerListener)
     }
 
     @Subscribe

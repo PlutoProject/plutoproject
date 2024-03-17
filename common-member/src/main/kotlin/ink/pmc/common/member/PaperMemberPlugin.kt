@@ -6,17 +6,18 @@ import java.io.File
 lateinit var plugin: JavaPlugin
 
 @Suppress("UNUSED")
-class MemberPlugin : JavaPlugin() {
+class PaperMemberPlugin : JavaPlugin() {
 
     override fun onEnable() {
         plugin = this
         disabled = false
-
         dataDir = dataFolder
-        configFile = File(dataFolder, "config.yml")
+
+        createDataDir()
+        configFile = File(dataFolder, "config.toml")
 
         if (!configFile.exists()) {
-            saveDefaultConfig()
+            saveResource("config.toml", false)
         }
 
         initMemberManager()

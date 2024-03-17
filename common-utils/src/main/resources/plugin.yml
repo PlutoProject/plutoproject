@@ -1,4 +1,4 @@
-main: ink.pmc.common.utils.UtilsPlugin
+main: ink.pmc.common.utils.PaperUtilsPlugin
 name: common-utils
 version: ${version}
 api-version: ${api}
