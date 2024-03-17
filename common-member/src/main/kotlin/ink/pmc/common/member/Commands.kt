@@ -6,7 +6,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.incendo.cloud.parser.standard.StringParser
 import java.time.Duration
-import java.util.Date
+import java.util.*
 
 @OptIn(DelicateCoroutinesApi::class)
 val memberAddCommand = commandManager.commandBuilder("member")
@@ -37,6 +37,40 @@ val memberAddCommand = commandManager.commandBuilder("member")
             }
 
             sender.sendMessage(MEMBER_ADD_SUCCEED.replace("<player>", name))
+        }
+    }
+
+@OptIn(DelicateCoroutinesApi::class)
+val memberRemoveCommand = commandManager.commandBuilder("member")
+    .literal("remove")
+    .required("name", StringParser.stringParser())
+    .handler {
+        GlobalScope.launch {
+            val sender = it.sender()
+            val name = it.get<String>("name").lowercase()
+            sender.sendMessage(LOOKUP)
+
+            val uuid = getUUIDFromMojang(name)
+
+            if (uuid == null) {
+                sender.sendMessage(LOOKUP_FAILED)
+                return@launch
+            }
+
+            if (proxyServer.allPlayers.any { it.uniqueId == uuid }) {
+                sender.sendMessage(MEMBER_REMOVE_FAILED_ONLINE)
+                return@launch
+            }
+
+            if (memberManager.nonExist(uuid)) {
+                sender.sendMessage(MEMBER_NOT_EXIST)
+                return@launch
+            }
+
+            memberManager.remove(uuid)
+            memberManager.syncAll()
+
+            sender.sendMessage(MEMBER_REMOVE_SUCCEED.replace("<player>", name))
         }
     }
 

@@ -2,6 +2,7 @@ package ink.pmc.common.member
 
 import ink.pmc.common.utils.visual.*
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.TextDecoration
 
 val NOT_WHITELISTED = Component.text("星社 ").color(mochaMauve)
     .append(Component.text("Project").color(mochaText))
@@ -24,11 +25,20 @@ val LOOKUP = Component.text("正在从 Mojang 服务器查询信息...").color(m
 
 val LOOKUP_FAILED = Component.text("信息获取失败，请检查玩家名是否正确和存在").color(mochaMaroon)
 
-val MEMBER_ALREADY_EXIST = Component.text("该成员已存在").color(mochaMaroon)
+val MEMBER_ALREADY_EXIST = Component.text("数据库中已存在该玩家").color(mochaMaroon)
 
-val MEMBER_ADD_SUCCEED = Component.text("已成功添加名为 <player> 的成员").color(mochaGreen)
+val MEMBER_ADD_SUCCEED = Component.text("已成功添加名为 <player> 的玩家").color(mochaGreen)
 
-val MEMBER_NOT_EXIST = Component.text("该成员不存在").color(mochaMaroon)
+val MEMBER_REMOVE_FAILED_ONLINE = Component.text("该玩家仍然在线，请将其踢出后再试").color(mochaMaroon)
+
+val MEMBER_REMOVE_SUCCEED = Component.text("已成功移除名为 <player> 的玩家").color(mochaGreen)
+    .appendNewline().append(
+        Component.text("该操作可能需要一段时间才可以同步到后端服务器").decorate(TextDecoration.ITALIC).color(
+            mochaSubtext1
+        )
+    )
+
+val MEMBER_NOT_EXIST = Component.text("数据库中不存在该玩家").color(mochaMaroon)
 
 val MEMBER_LOOKUP = Component.text("玩家名：").color(mochaText).append(Component.text("<player>").color(mochaYellow))
     .appendNewline()

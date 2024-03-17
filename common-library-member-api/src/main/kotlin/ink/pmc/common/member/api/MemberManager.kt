@@ -23,6 +23,8 @@ interface MemberManager {
 
     suspend fun get(uuid: UUID): Member?
 
+    suspend fun remove(uuid: UUID): Boolean
+
     suspend fun exist(uuid: UUID): Boolean
 
     suspend fun nonExist(uuid: UUID): Boolean

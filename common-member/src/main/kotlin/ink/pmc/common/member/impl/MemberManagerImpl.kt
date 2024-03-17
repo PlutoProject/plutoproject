@@ -79,6 +79,20 @@ class MemberManagerImpl(
         }
     }
 
+    override suspend fun remove(uuid: UUID): Boolean {
+        return withContext(Dispatchers.IO) {
+            if (nonExist(uuid)) {
+                return@withContext false
+            }
+
+            val member = get(uuid)!!
+
+            removeRelatedComments(member)
+            collection.deleteOne(Filters.eq("uuid", uuid))
+            true
+        }
+    }
+
     override suspend fun exist(uuid: UUID): Boolean {
         return withContext(Dispatchers.IO) {
             cachedMember.getIfPresent(uuid) != null || collection.find(Filters.eq("uuid", uuid)).first() != null
@@ -134,6 +148,11 @@ class MemberManagerImpl(
     private fun insertAndUpdateCache(member: Member) {
         collection.insertOne(member)
         cachedMember.put(member.uuid, member)
+    }
+
+    private fun removeRelatedComments(member: Member) {
+        val uuid = member.uuid
+        commentIndexCollection.deleteMany(Filters.eq("owner", uuid))
     }
 
 }

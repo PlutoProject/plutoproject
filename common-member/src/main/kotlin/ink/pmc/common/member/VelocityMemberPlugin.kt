@@ -69,6 +69,7 @@ class VelocityMemberPlugin {
         )
 
         commandManager.command(memberAddCommand)
+        commandManager.command(memberRemoveCommand)
         commandManager.command(memberLookupCommand)
 
         proxyServer.eventManager.register(this, VelocityPlayerListener)
