@@ -118,7 +118,7 @@ fun copyJars() {
     val outputsDir = file("$rootDir/build-outputs")
 
     outputsDir.listFiles()!!.forEach {
-        if (it.name.startsWith("common-library-")) {
+        if (it.name.startsWith("common-library-") || it.name.contains("velocity")) {
             return@forEach
         }
 
@@ -156,11 +156,8 @@ fun clearOutputsDir() {
 fun Task.runTest(task: Task) {
     group = "pluto develop testing"
     dependsOn(allprojects.map { it.tasks.named("shadowJar") })
-
-    doLast {
-        copyJars()
-        task.actions.forEach { it.execute(task) }
-    }
+    copyJars()
+    task.actions.forEach { it.execute(task) }
 }
 
 tasks.register("Paper") {

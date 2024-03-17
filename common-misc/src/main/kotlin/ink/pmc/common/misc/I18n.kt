@@ -1,6 +1,6 @@
 package ink.pmc.common.misc
 
-import ink.pmc.common.utils.*
+import ink.pmc.common.utils.visual.*
 import net.kyori.adventure.text.Component
 
 val SUICIDE = Component.text("你终结了你自己...")

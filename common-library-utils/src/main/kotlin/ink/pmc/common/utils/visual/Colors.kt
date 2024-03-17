@@ -1,4 +1,4 @@
-package ink.pmc.common.utils
+package ink.pmc.common.utils.visual
 
 import com.catppuccin.Palette
 

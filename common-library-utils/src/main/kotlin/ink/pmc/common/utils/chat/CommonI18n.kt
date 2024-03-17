@@ -1,5 +1,6 @@
-package ink.pmc.common.utils
+package ink.pmc.common.utils.chat
 
+import ink.pmc.common.utils.visual.mochaMaroon
 import net.kyori.adventure.text.Component
 
 @Suppress("UNUSED")

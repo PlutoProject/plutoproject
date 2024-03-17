@@ -1,7 +1,7 @@
 package ink.pmc.common.misc
 
-import ink.pmc.common.utils.NON_PLAYER
-import ink.pmc.common.utils.scheduler
+import ink.pmc.common.utils.chat.NON_PLAYER
+import ink.pmc.common.utils.concurrent.scheduler
 import org.bukkit.entity.Player
 
 val suicideCommand = commandManager.commandBuilder("suicide")

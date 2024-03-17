@@ -1,8 +1,8 @@
 package ink.pmc.common.member.api
 
-import ink.pmc.common.utils.mochaMaroon
-import ink.pmc.common.utils.mochaPeach
-import ink.pmc.common.utils.mochaYellow
+import ink.pmc.common.utils.visual.mochaMaroon
+import ink.pmc.common.utils.visual.mochaPeach
+import ink.pmc.common.utils.visual.mochaYellow
 import net.kyori.adventure.text.Component
 
 @Suppress("UNUSED")

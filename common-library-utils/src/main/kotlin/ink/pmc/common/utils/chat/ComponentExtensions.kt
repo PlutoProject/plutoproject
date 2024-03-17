@@ -1,4 +1,4 @@
-package ink.pmc.common.utils
+package ink.pmc.common.utils.chat
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.TextReplacementConfig

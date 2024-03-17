@@ -4,7 +4,7 @@ import ink.pmc.common.misc.*
 import ink.pmc.common.misc.api.isSitting
 import ink.pmc.common.misc.api.sit.SitManager
 import ink.pmc.common.misc.api.stand
-import ink.pmc.common.utils.scheduler
+import ink.pmc.common.utils.concurrent.scheduler
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay

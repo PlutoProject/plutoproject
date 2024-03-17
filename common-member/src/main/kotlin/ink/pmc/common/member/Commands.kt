@@ -1,10 +1,9 @@
 package ink.pmc.common.member
 
-import ink.pmc.common.utils.replace
+import ink.pmc.common.utils.chat.replace
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import net.kyori.adventure.text.Component
 import org.incendo.cloud.parser.standard.StringParser
 import java.util.Date
 

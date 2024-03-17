@@ -4,8 +4,8 @@ import ink.pmc.common.misc.api.isSitting
 import ink.pmc.common.misc.api.seat
 import ink.pmc.common.misc.api.sit
 import ink.pmc.common.misc.api.stand
-import ink.pmc.common.utils.regionScheduler
-import ink.pmc.common.utils.scheduler
+import ink.pmc.common.utils.concurrent.regionScheduler
+import ink.pmc.common.utils.concurrent.scheduler
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay

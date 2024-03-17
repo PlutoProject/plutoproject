@@ -1,8 +1,8 @@
 package ink.pmc.common.member
 
-import ink.pmc.common.utils.mochaGreen
-import ink.pmc.common.utils.mochaMaroon
-import ink.pmc.common.utils.mochaText
+import ink.pmc.common.utils.visual.mochaGreen
+import ink.pmc.common.utils.visual.mochaMaroon
+import ink.pmc.common.utils.visual.mochaText
 import net.kyori.adventure.text.Component
 
 val LOOKUP = Component.text("正在从 Mojang 服务器查询信息...").color(mochaText)

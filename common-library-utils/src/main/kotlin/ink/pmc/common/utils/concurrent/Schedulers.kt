@@ -1,5 +1,6 @@
-package ink.pmc.common.utils
+package ink.pmc.common.utils.concurrent
 
+import ink.pmc.common.utils.utilsPlugin
 import org.bukkit.Bukkit
 import org.bukkit.Chunk
 import org.bukkit.Location
