@@ -190,6 +190,12 @@ fun handlePlayerQuitStand(event: PlayerQuitEvent) {
     if (player.isSitting) {
         player.stand()
     }
+
+    val quitLocation = findQuitLocation(player.location)
+
+    if (quitLocation != null) {
+        player.teleport(quitLocation)
+    }
 }
 
 fun handleSitDelay(event: EntityDismountEvent) {
@@ -362,6 +368,26 @@ fun findLegalLocation(startPoint: Location): Location? {
         }
 
         return location.toBlockLocation()
+    }
+
+    return null
+}
+
+fun findQuitLocation(startPoint: Location): Location? {
+    for (i in 1..5) {
+        val location = startPoint.clone().add(0.0, i.toDouble(), 0.0)
+
+        if (location.block.type != Material.AIR) {
+            continue
+        }
+
+        val offset = location.clone().add(0.0, 1.0, 0.0)
+
+        if (offset.block.type != Material.AIR) {
+            continue
+        }
+
+        return location
     }
 
     return null
