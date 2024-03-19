@@ -4,8 +4,8 @@ import ink.pmc.common.misc.api.isSitting
 import ink.pmc.common.misc.api.seat
 import ink.pmc.common.misc.api.sit
 import ink.pmc.common.misc.api.stand
-import ink.pmc.common.utils.concurrent.async
-import ink.pmc.common.utils.concurrent.syncContext
+import ink.pmc.common.utils.concurrent.submitAsync
+import ink.pmc.common.utils.concurrent.sync
 import kotlinx.coroutines.delay
 import org.bukkit.Chunk
 import org.bukkit.Location
@@ -40,15 +40,15 @@ val sitDelay = CopyOnWriteArraySet<UUID>()
 val armorStandDataKey = NamespacedKey(plugin, "sit-passenger")
 
 fun runSitCheckTask() {
-    async {
+    submitAsync {
         while (!disabled) {
             sitManager.sitters.keys.forEach {
                 val player = plugin.server.getPlayer(it)!!
                 player.sendActionBar(STAND_UP)
 
                 // 切换到实体调度器执行，因为不允许异步操作实体数据
-                player.syncContext {
-                    val armorStand = player.seat ?: return@syncContext // 有时可能玩家已经站起来了，但是异步任务仍然尝试获取实体
+                player.sync {
+                    val armorStand = player.seat ?: return@sync // 有时可能玩家已经站起来了，但是异步任务仍然尝试获取实体
 
                     // 避免一些意外问题
                     if (!armorStand.passengers.contains(player)) {
@@ -60,7 +60,7 @@ fun runSitCheckTask() {
             plugin.server.onlinePlayers.forEach {
                 val chunk = it.chunk
 
-                chunk.syncContext {
+                chunk.sync {
                     clearIllegalArmorStands(it.chunk)
                 }
             }
@@ -102,7 +102,7 @@ fun createArmorStand(locationToSit: Location): Entity {
 
 fun markDelay(player: Player) {
     sitDelay.add(player.uniqueId)
-    async {
+    submitAsync {
         delay(100)
         sitDelay.remove(player.uniqueId)
     }

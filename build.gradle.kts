@@ -244,9 +244,9 @@ tasks.runServer {
 }
 
 tasks.named("runFolia") {
-   doFirst {
-       debugInitStep(this)
-   }
+    doFirst {
+        debugInitStep(this)
+    }
 
     dependsOn(tasks.named("copyJars"))
 }

@@ -1,7 +1,7 @@
 package ink.pmc.common.member
 
 import ink.pmc.common.utils.chat.replace
-import ink.pmc.common.utils.concurrent.async
+import ink.pmc.common.utils.concurrent.submitAsync
 import org.incendo.cloud.parser.standard.StringParser
 import java.time.Duration
 import java.util.*
@@ -10,7 +10,7 @@ val memberAddCommand = commandManager.commandBuilder("member")
     .literal("add")
     .required("name", StringParser.stringParser())
     .handler {
-        async {
+        submitAsync {
             val sender = it.sender()
             val name = it.get<String>("name").lowercase()
             sender.sendMessage(LOOKUP)
@@ -19,12 +19,12 @@ val memberAddCommand = commandManager.commandBuilder("member")
 
             if (uuid == null) {
                 sender.sendMessage(LOOKUP_FAILED)
-                return@async
+                return@submitAsync
             }
 
             if (memberManager.exist(uuid)) {
                 sender.sendMessage(MEMBER_ALREADY_EXIST)
-                return@async
+                return@submitAsync
             }
 
             memberManager.createAndRegister {
@@ -41,7 +41,7 @@ val memberRemoveCommand = commandManager.commandBuilder("member")
     .literal("remove")
     .required("name", StringParser.stringParser())
     .handler {
-        async {
+        submitAsync {
             val sender = it.sender()
             val name = it.get<String>("name").lowercase()
             sender.sendMessage(LOOKUP)
@@ -50,17 +50,17 @@ val memberRemoveCommand = commandManager.commandBuilder("member")
 
             if (uuid == null) {
                 sender.sendMessage(LOOKUP_FAILED)
-                return@async
+                return@submitAsync
             }
 
             if (proxyServer.allPlayers.any { it.uniqueId == uuid }) {
                 sender.sendMessage(MEMBER_REMOVE_FAILED_ONLINE)
-                return@async
+                return@submitAsync
             }
 
             if (memberManager.nonExist(uuid)) {
                 sender.sendMessage(MEMBER_NOT_EXIST)
-                return@async
+                return@submitAsync
             }
 
             memberManager.remove(uuid)
@@ -74,7 +74,7 @@ val memberLookupCommand = commandManager.commandBuilder("member")
     .literal("lookup")
     .required("name", StringParser.stringParser())
     .handler {
-        async {
+        submitAsync {
             val sender = it.sender()
             val name = it.get<String>("name").lowercase()
             sender.sendMessage(LOOKUP)
@@ -83,14 +83,14 @@ val memberLookupCommand = commandManager.commandBuilder("member")
 
             if (uuid == null) {
                 sender.sendMessage(LOOKUP_FAILED)
-                return@async
+                return@submitAsync
             }
 
             val member = memberManager.get(uuid)
 
             if (member == null) {
                 sender.sendMessage(MEMBER_NOT_EXIST)
-                return@async
+                return@submitAsync
             }
 
             val message = MEMBER_LOOKUP

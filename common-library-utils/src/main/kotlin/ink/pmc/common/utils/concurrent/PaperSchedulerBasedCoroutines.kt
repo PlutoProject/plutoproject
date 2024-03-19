@@ -7,66 +7,67 @@ import org.bukkit.entity.Entity
 
 @Suppress("UNUSED")
 @OptIn(DelicateCoroutinesApi::class)
-fun sync(block: suspend CoroutineScope.() -> Unit): Job = GlobalScope.launch(mainThreadDispatcher) { block() }
+fun submitSync(block: suspend CoroutineScope.() -> Unit): Job = GlobalScope.launch(mainThreadDispatcher) { block() }
 
 @Suppress("UNUSED")
 @OptIn(DelicateCoroutinesApi::class)
 @JvmName("syncEntity")
-fun sync(entity: Entity, block: suspend CoroutineScope.() -> Unit): Job =
+fun submitSync(entity: Entity, block: suspend CoroutineScope.() -> Unit): Job =
     GlobalScope.launch(entity.dispatcher) { block() }
 
 @Suppress("UNUSED")
 @OptIn(DelicateCoroutinesApi::class)
 @JvmName("syncChunk")
-fun sync(chunk: Chunk, block: suspend CoroutineScope.() -> Unit): Job = GlobalScope.launch(chunk.dispatcher) { block() }
+fun submitSync(chunk: Chunk, block: suspend CoroutineScope.() -> Unit): Job =
+    GlobalScope.launch(chunk.dispatcher) { block() }
 
 @Suppress("UNUSED")
 @OptIn(DelicateCoroutinesApi::class)
 @JvmName("syncLocation")
-fun sync(location: Location, block: suspend CoroutineScope.() -> Unit) =
+fun submitSync(location: Location, block: suspend CoroutineScope.() -> Unit) =
     GlobalScope.launch(location.dispatcher) { block() }
 
 @Suppress("UNUSED")
-suspend fun syncContext(block: suspend CoroutineScope.() -> Unit) = withContext(mainThreadDispatcher) { block() }
+suspend fun sync(block: suspend CoroutineScope.() -> Unit) = withContext(mainThreadDispatcher) { block() }
 
 @Suppress("UNUSED")
 @JvmName("syncEntitySuspend")
-suspend fun syncContext(entity: Entity, block: suspend CoroutineScope.() -> Unit) =
+suspend fun sync(entity: Entity, block: suspend CoroutineScope.() -> Unit) =
     withContext(entity.dispatcher) { block() }
 
 @Suppress("UNUSED")
 @JvmName("syncChunkSuspend")
-suspend fun syncContext(chunk: Chunk, block: suspend CoroutineScope.() -> Unit) =
+suspend fun sync(chunk: Chunk, block: suspend CoroutineScope.() -> Unit) =
     withContext(chunk.dispatcher) { block() }
 
 @Suppress("UNUSED")
 @JvmName("syncLocationSuspend")
-suspend fun syncContext(location: Location, block: suspend CoroutineScope.() -> Unit) =
+suspend fun sync(location: Location, block: suspend CoroutineScope.() -> Unit) =
     withContext(location.dispatcher) { block() }
 
 @Suppress("UNUSED")
 @OptIn(DelicateCoroutinesApi::class)
 @JvmName("entitySync")
-fun Entity.sync(block: suspend CoroutineScope.() -> Unit): Job = GlobalScope.launch(this.dispatcher) { block() }
+fun Entity.submitSync(block: suspend CoroutineScope.() -> Unit): Job = GlobalScope.launch(this.dispatcher) { block() }
 
 @Suppress("UNUSED")
 @OptIn(DelicateCoroutinesApi::class)
 @JvmName("chunkSync")
-fun Chunk.sync(block: suspend CoroutineScope.() -> Unit): Job = GlobalScope.launch(this.dispatcher) { block() }
+fun Chunk.submitSync(block: suspend CoroutineScope.() -> Unit): Job = GlobalScope.launch(this.dispatcher) { block() }
 
 @Suppress("UNUSED")
 @OptIn(DelicateCoroutinesApi::class)
 @JvmName("locationSync")
-fun Location.sync(block: suspend CoroutineScope.() -> Unit): Job = GlobalScope.launch(this.dispatcher) { block() }
+fun Location.submitSync(block: suspend CoroutineScope.() -> Unit): Job = GlobalScope.launch(this.dispatcher) { block() }
 
 @Suppress("UNUSED")
 @JvmName("entitySyncSuspend")
-suspend fun Entity.syncContext(block: suspend CoroutineScope.() -> Unit) = withContext(this.dispatcher) { block() }
+suspend fun Entity.sync(block: suspend CoroutineScope.() -> Unit) = withContext(this.dispatcher) { block() }
 
 @Suppress("UNUSED")
 @JvmName("chunkSyncSuspend")
-suspend fun Chunk.syncContext(block: suspend CoroutineScope.() -> Unit) = withContext(this.dispatcher) { block() }
+suspend fun Chunk.sync(block: suspend CoroutineScope.() -> Unit) = withContext(this.dispatcher) { block() }
 
 @Suppress("UNUSED")
 @JvmName("locationSyncSuspend")
-suspend fun Location.syncContext(block: suspend CoroutineScope.() -> Unit) = withContext(this.dispatcher) { block() }
+suspend fun Location.sync(block: suspend CoroutineScope.() -> Unit) = withContext(this.dispatcher) { block() }
