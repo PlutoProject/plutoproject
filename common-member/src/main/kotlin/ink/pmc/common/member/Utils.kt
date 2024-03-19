@@ -5,7 +5,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import java.util.UUID
+import java.util.*
 
 val httpClient = OkHttpClient()
 const val mojangAPI = "https://api.mojang.com/"

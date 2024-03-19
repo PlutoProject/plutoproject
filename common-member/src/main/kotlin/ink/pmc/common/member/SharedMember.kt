@@ -36,6 +36,10 @@ fun loadConfig(file: File) {
     config.load()
 }
 
+fun isEnabled(): Boolean {
+    return config.get("enabled")
+}
+
 fun connectDatabase() {
     MemberAPIImpl.internalMemberManager // 显式调用，来让单例类被加载
 

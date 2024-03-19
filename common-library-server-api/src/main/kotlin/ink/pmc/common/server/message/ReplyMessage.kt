@@ -1,6 +1,6 @@
 package ink.pmc.common.server.message
 
-import java.util.UUID
+import java.util.*
 
 interface ReplyMessage : Message {
 

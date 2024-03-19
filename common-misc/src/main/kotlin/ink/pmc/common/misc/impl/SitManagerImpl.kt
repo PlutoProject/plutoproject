@@ -4,18 +4,15 @@ import ink.pmc.common.misc.*
 import ink.pmc.common.misc.api.isSitting
 import ink.pmc.common.misc.api.sit.SitManager
 import ink.pmc.common.misc.api.stand
-import ink.pmc.common.utils.concurrent.scheduler
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
+import ink.pmc.common.utils.concurrent.async
+import ink.pmc.common.utils.concurrent.sync
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import net.kyori.adventure.text.Component
 import org.bukkit.Location
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 import java.util.*
 
-@OptIn(DelicateCoroutinesApi::class)
 class SitManagerImpl : SitManager {
 
     private val _sitter = mutableMapOf<UUID, Location>()
@@ -53,7 +50,7 @@ class SitManagerImpl : SitManager {
         armorStands[player.uniqueId] = armorStand.uniqueId
         markDelay(player)
 
-        GlobalScope.launch {
+        async {
             delay(45) // 原版载具的提示本身就会延迟发送，防止插件的提示在原版提示之前所以被覆盖掉
             player.sendActionBar(STAND_UP) // 先直接发一次，尝试覆盖原版的载具提示
         }
@@ -74,7 +71,7 @@ class SitManagerImpl : SitManager {
         val standLocation = player.location.add(0.0, 1.0, 0.0)
 
         // 使用实体调度器，避免未来在迁移 Folia 时可能造成的问题
-        armorStand.scheduler {
+        armorStand.sync {
             armorStand.removePassenger(player)
         }
 

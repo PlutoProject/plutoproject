@@ -4,15 +4,6 @@ import kotlinx.coroutines.*
 import org.bukkit.Chunk
 import org.bukkit.Location
 import org.bukkit.entity.Entity
-import kotlin.coroutines.CoroutineContext
-
-@Suppress("UNUSED")
-@OptIn(DelicateCoroutinesApi::class)
-fun async(block: suspend CoroutineScope.() -> Unit): Job = GlobalScope.launch { block() }
-
-@Suppress("UNUSED")
-@OptIn(DelicateCoroutinesApi::class)
-fun async(coroutineContext: CoroutineContext, block: suspend CoroutineScope.() -> Unit): Job = GlobalScope.launch(coroutineContext) { block() }
 
 @Suppress("UNUSED")
 @OptIn(DelicateCoroutinesApi::class)
@@ -20,24 +11,62 @@ fun sync(block: suspend CoroutineScope.() -> Unit): Job = GlobalScope.launch(mai
 
 @Suppress("UNUSED")
 @OptIn(DelicateCoroutinesApi::class)
-fun sync(entity: Entity, block: suspend CoroutineScope.() -> Unit) = GlobalScope.launch(entity.dispatcher) { block() }
+@JvmName("syncEntity")
+fun sync(entity: Entity, block: suspend CoroutineScope.() -> Unit): Job =
+    GlobalScope.launch(entity.dispatcher) { block() }
 
 @Suppress("UNUSED")
 @OptIn(DelicateCoroutinesApi::class)
-fun sync(chunk: Chunk, block: suspend CoroutineScope.() -> Unit) = GlobalScope.launch(chunk.dispatcher) { block() }
+@JvmName("syncChunk")
+fun sync(chunk: Chunk, block: suspend CoroutineScope.() -> Unit): Job = GlobalScope.launch(chunk.dispatcher) { block() }
 
 @Suppress("UNUSED")
 @OptIn(DelicateCoroutinesApi::class)
-fun sync(location: Location, block: suspend CoroutineScope.() -> Unit) = GlobalScope.launch(location.dispatcher) { block() }
+@JvmName("syncLocation")
+fun sync(location: Location, block: suspend CoroutineScope.() -> Unit) =
+    GlobalScope.launch(location.dispatcher) { block() }
+
+@Suppress("UNUSED")
+suspend fun syncContext(block: suspend CoroutineScope.() -> Unit) = withContext(mainThreadDispatcher) { block() }
+
+@Suppress("UNUSED")
+@JvmName("syncEntitySuspend")
+suspend fun syncContext(entity: Entity, block: suspend CoroutineScope.() -> Unit) =
+    withContext(entity.dispatcher) { block() }
+
+@Suppress("UNUSED")
+@JvmName("syncChunkSuspend")
+suspend fun syncContext(chunk: Chunk, block: suspend CoroutineScope.() -> Unit) =
+    withContext(chunk.dispatcher) { block() }
+
+@Suppress("UNUSED")
+@JvmName("syncLocationSuspend")
+suspend fun syncContext(location: Location, block: suspend CoroutineScope.() -> Unit) =
+    withContext(location.dispatcher) { block() }
 
 @Suppress("UNUSED")
 @OptIn(DelicateCoroutinesApi::class)
-fun Entity.sync(block: suspend CoroutineScope.() -> Unit) = GlobalScope.launch(this.dispatcher) { block() }
+@JvmName("entitySync")
+fun Entity.sync(block: suspend CoroutineScope.() -> Unit): Job = GlobalScope.launch(this.dispatcher) { block() }
 
 @Suppress("UNUSED")
 @OptIn(DelicateCoroutinesApi::class)
-fun Chunk.sync(block: suspend CoroutineScope.() -> Unit) = GlobalScope.launch(this.dispatcher) { block() }
+@JvmName("chunkSync")
+fun Chunk.sync(block: suspend CoroutineScope.() -> Unit): Job = GlobalScope.launch(this.dispatcher) { block() }
 
 @Suppress("UNUSED")
 @OptIn(DelicateCoroutinesApi::class)
-fun Location.sync(block: suspend CoroutineScope.() -> Unit) = GlobalScope.launch(this.dispatcher) { block() }
+@JvmName("locationSync")
+fun Location.sync(block: suspend CoroutineScope.() -> Unit): Job = GlobalScope.launch(this.dispatcher) { block() }
+
+@Suppress("UNUSED")
+@JvmName("entitySyncSuspend")
+suspend fun Entity.syncContext(block: suspend CoroutineScope.() -> Unit) = withContext(this.dispatcher) { block() }
+
+@Suppress("UNUSED")
+@JvmName("chunkSyncSuspend")
+suspend fun Chunk.syncContext(block: suspend CoroutineScope.() -> Unit) = withContext(this.dispatcher) { block() }
+
+@Suppress("UNUSED")
+@JvmName("locationSyncSuspend")
+suspend fun Location.syncContext(block: suspend CoroutineScope.() -> Unit) = withContext(this.dispatcher) { block() }

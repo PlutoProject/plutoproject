@@ -1,19 +1,16 @@
 package ink.pmc.common.member
 
 import ink.pmc.common.utils.chat.replace
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import ink.pmc.common.utils.concurrent.async
 import org.incendo.cloud.parser.standard.StringParser
 import java.time.Duration
 import java.util.*
 
-@OptIn(DelicateCoroutinesApi::class)
 val memberAddCommand = commandManager.commandBuilder("member")
     .literal("add")
     .required("name", StringParser.stringParser())
     .handler {
-        GlobalScope.launch {
+        async {
             val sender = it.sender()
             val name = it.get<String>("name").lowercase()
             sender.sendMessage(LOOKUP)
@@ -22,12 +19,12 @@ val memberAddCommand = commandManager.commandBuilder("member")
 
             if (uuid == null) {
                 sender.sendMessage(LOOKUP_FAILED)
-                return@launch
+                return@async
             }
 
             if (memberManager.exist(uuid)) {
                 sender.sendMessage(MEMBER_ALREADY_EXIST)
-                return@launch
+                return@async
             }
 
             memberManager.createAndRegister {
@@ -40,12 +37,11 @@ val memberAddCommand = commandManager.commandBuilder("member")
         }
     }
 
-@OptIn(DelicateCoroutinesApi::class)
 val memberRemoveCommand = commandManager.commandBuilder("member")
     .literal("remove")
     .required("name", StringParser.stringParser())
     .handler {
-        GlobalScope.launch {
+        async {
             val sender = it.sender()
             val name = it.get<String>("name").lowercase()
             sender.sendMessage(LOOKUP)
@@ -54,17 +50,17 @@ val memberRemoveCommand = commandManager.commandBuilder("member")
 
             if (uuid == null) {
                 sender.sendMessage(LOOKUP_FAILED)
-                return@launch
+                return@async
             }
 
             if (proxyServer.allPlayers.any { it.uniqueId == uuid }) {
                 sender.sendMessage(MEMBER_REMOVE_FAILED_ONLINE)
-                return@launch
+                return@async
             }
 
             if (memberManager.nonExist(uuid)) {
                 sender.sendMessage(MEMBER_NOT_EXIST)
-                return@launch
+                return@async
             }
 
             memberManager.remove(uuid)
@@ -74,12 +70,11 @@ val memberRemoveCommand = commandManager.commandBuilder("member")
         }
     }
 
-@OptIn(DelicateCoroutinesApi::class)
 val memberLookupCommand = commandManager.commandBuilder("member")
     .literal("lookup")
     .required("name", StringParser.stringParser())
     .handler {
-        GlobalScope.launch {
+        async {
             val sender = it.sender()
             val name = it.get<String>("name").lowercase()
             sender.sendMessage(LOOKUP)
@@ -88,14 +83,14 @@ val memberLookupCommand = commandManager.commandBuilder("member")
 
             if (uuid == null) {
                 sender.sendMessage(LOOKUP_FAILED)
-                return@launch
+                return@async
             }
 
             val member = memberManager.get(uuid)
 
             if (member == null) {
                 sender.sendMessage(MEMBER_NOT_EXIST)
-                return@launch
+                return@async
             }
 
             val message = MEMBER_LOOKUP

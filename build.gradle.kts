@@ -172,6 +172,13 @@ tasks.register("Folia") {
     runTest(tasks.named("runFolia").get())
 }
 
+tasks.register("copyJars") {
+    group = "pluto develop testing"
+    doLast {
+        copyJars()
+    }
+}
+
 // 不要用这个，会和 Paper 和 Folia 的测试共用文件夹
 // Velocity 还是单独开一个服务端测试吧
 /*tasks.register("Velocity") {
@@ -182,5 +189,6 @@ runPaper.folia.registerTask()
 runPaper.disablePluginJarDetection()
 
 tasks.runServer.configure {
+    dependsOn(tasks.named("copyJars"))
     minecraftVersion("1.20.4")
 }

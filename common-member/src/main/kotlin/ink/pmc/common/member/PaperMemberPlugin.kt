@@ -20,6 +20,10 @@ class PaperMemberPlugin : JavaPlugin() {
             saveResource("config.toml", false)
         }
 
+        if (!ink.pmc.common.member.isEnabled()) {
+            return
+        }
+
         initMemberManager()
     }
 
