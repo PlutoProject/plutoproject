@@ -23,9 +23,9 @@
 > [!NOTE]
 >
 > 此处以 Linux 系统上的步骤举例。
-> 
+>
 > 如果您使用的是 Windows，可能需要修改部分命令。
-> 
+>
 
 1. 将本项目拉取到你的设备：`git clone https://github.com/PlutoProject/common.git`
 2. 进入项目目录：`cd ./common`

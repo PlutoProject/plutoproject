@@ -16,6 +16,7 @@ val mainThreadDispatcher = object : CoroutineDispatcher() {
 val Entity.dispatcher: CoroutineDispatcher
     get() {
         val entity = this
+
         return object : CoroutineDispatcher() {
             override fun dispatch(context: CoroutineContext, block: Runnable) {
                 entity.scheduler { block.run() }

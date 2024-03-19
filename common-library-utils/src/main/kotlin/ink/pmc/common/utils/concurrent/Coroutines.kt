@@ -18,3 +18,18 @@ suspend fun async(block: suspend CoroutineScope.() -> Unit) = withContext(Dispat
 @Suppress("UNUSED")
 suspend fun async(coroutineContext: CoroutineContext, block: suspend CoroutineScope.() -> Unit) =
     withContext(coroutineContext) { block() }
+
+@Suppress("UNUSED")
+@OptIn(DelicateCoroutinesApi::class)
+fun submitAsyncIO(block: suspend CoroutineScope.() -> Unit): Job = GlobalScope.launch(Dispatchers.IO) { block() }
+
+@Suppress("UNUSED")
+@OptIn(DelicateCoroutinesApi::class)
+fun submitAsyncUnconfined(block: suspend CoroutineScope.() -> Unit): Job =
+    GlobalScope.launch(Dispatchers.Unconfined) { block() }
+
+@Suppress("UNUSED")
+suspend fun io(block: suspend CoroutineScope.() -> Unit) = withContext(Dispatchers.IO) { block() }
+
+@Suppress("UNUSED")
+suspend fun unconfined(block: suspend CoroutineScope.() -> Unit) = withContext(Dispatchers.Unconfined) { block() }

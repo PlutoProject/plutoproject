@@ -1,6 +1,6 @@
 package ink.pmc.common.utils.concurrent
 
-import ink.pmc.common.utils.utilsPlugin
+import ink.pmc.common.utils.platform.paperUtilsPlugin
 import org.bukkit.Bukkit
 import org.bukkit.Chunk
 import org.bukkit.Location
@@ -29,22 +29,22 @@ fun regionScheduler(plugin: JavaPlugin, chunk: Chunk, task: () -> Unit) {
 
 @Suppress("UNUSED")
 fun Entity.scheduler(retired: () -> Unit = {}, delay: Long = 0L, task: () -> Unit) {
-    this.scheduler.execute(utilsPlugin, task, retired, delay)
+    this.scheduler.execute(paperUtilsPlugin, task, retired, delay)
 }
 
 @Suppress("UNUSED")
 fun globalRegionScheduler(task: () -> Unit) {
-    Bukkit.getServer().globalRegionScheduler.execute(utilsPlugin, task)
+    Bukkit.getServer().globalRegionScheduler.execute(paperUtilsPlugin, task)
 }
 
 @Suppress("UNUSED")
 fun regionScheduler(location: Location, task: () -> Unit) {
-    Bukkit.getServer().regionScheduler.execute(utilsPlugin, location, task)
+    Bukkit.getServer().regionScheduler.execute(paperUtilsPlugin, location, task)
 }
 
 @Suppress("UNUSED")
 fun regionScheduler(chunk: Chunk, task: () -> Unit) {
-    Bukkit.getServer().regionScheduler.execute(utilsPlugin, chunk.world, chunk.x, chunk.z, task)
+    Bukkit.getServer().regionScheduler.execute(paperUtilsPlugin, chunk.world, chunk.x, chunk.z, task)
 }
 
 fun Chunk.scheduler(task: () -> Unit) {
