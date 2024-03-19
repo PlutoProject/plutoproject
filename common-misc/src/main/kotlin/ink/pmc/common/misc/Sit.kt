@@ -1,9 +1,6 @@
 package ink.pmc.common.misc
 
-import ink.pmc.common.misc.api.isSitting
-import ink.pmc.common.misc.api.seat
-import ink.pmc.common.misc.api.sit
-import ink.pmc.common.misc.api.stand
+import ink.pmc.common.misc.api.sit.*
 import ink.pmc.common.utils.concurrent.submitAsync
 import ink.pmc.common.utils.concurrent.sync
 import kotlinx.coroutines.delay
@@ -19,11 +16,18 @@ import org.bukkit.block.data.type.Slab
 import org.bukkit.block.data.type.Stairs
 import org.bukkit.entity.ArmorStand
 import org.bukkit.entity.Entity
+import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
 import org.bukkit.event.Cancellable
-import org.bukkit.event.block.BlockBreakEvent
+import org.bukkit.event.Event
+import org.bukkit.event.block.BlockEvent
+import org.bukkit.event.block.BlockExplodeEvent
+import org.bukkit.event.block.BlockPistonExtendEvent
+import org.bukkit.event.block.BlockPistonRetractEvent
 import org.bukkit.event.entity.EntityDismountEvent
 import org.bukkit.event.entity.EntityEvent
+import org.bukkit.event.entity.EntityExplodeEvent
+import org.bukkit.event.entity.EntitySpawnEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.inventory.EquipmentSlot
@@ -42,8 +46,8 @@ val armorStandDataKey = NamespacedKey(plugin, "sit-passenger")
 fun runSitCheckTask() {
     submitAsync {
         while (!disabled) {
-            sitManager.sitters.keys.forEach {
-                val player = plugin.server.getPlayer(it)!!
+            sitManager.sitters.forEach {
+                val player = it
                 player.sendActionBar(STAND_UP)
 
                 // 切换到实体调度器执行，因为不允许异步操作实体数据
@@ -206,15 +210,45 @@ fun handleSitDelay(event: EntityDismountEvent) {
     }
 }
 
-fun handleSitLocationBroke(event: BlockBreakEvent) {
-    val location = event.block.location.toBlockLocation()
+fun handleSitLocationBroke(event: Event) {
+    val locations = mutableSetOf<Location>()
 
-    if (!sitManager.sitters.containsValue(location)) {
-        return
+    if (event is BlockEvent) {
+        locations.add(event.block.location.toBlockLocation())
+
+        if (event is BlockPistonExtendEvent) {
+            event.blocks.map { it.location }.toCollection(locations)
+        }
+
+        if (event is BlockPistonRetractEvent) {
+            event.blocks.map { it.location }.toCollection(locations)
+        }
+
+        if (event is BlockExplodeEvent) {
+            event.blockList().map { it.location }.toCollection(locations)
+        }
+    } else if (event is EntityExplodeEvent) {
+        event.blockList().map { it.location }.toCollection(locations)
+    } else if (event is EntitySpawnEvent) {
+        if (event.entity.type == EntityType.FALLING_BLOCK) {
+            val location = event.location
+
+            if (location.rawLocation.isSitLocation) {
+                locations.add(location)
+            }
+        }
     }
 
-    event.player.stand()
+    locations.forEach {
+        if (!it.isSitLocation) {
+            return@forEach
+        }
+
+        val player = it.sitter!!
+        player.stand()
+    }
 }
+
 
 fun handleArmorStandAction(event: Cancellable, needCancel: Boolean = true) {
     if (event !is EntityEvent) {
@@ -392,3 +426,15 @@ fun findQuitLocation(startPoint: Location): Location? {
 
     return null
 }
+
+fun toRawLocation(location: Location): Location {
+    val rawLocation = location.toBlockLocation()
+
+    rawLocation.yaw = 0F
+    rawLocation.pitch = 0F
+
+    return rawLocation
+}
+
+val Location.rawLocation: Location
+    get() = toRawLocation(this)

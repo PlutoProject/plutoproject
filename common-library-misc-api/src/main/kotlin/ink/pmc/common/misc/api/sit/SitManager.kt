@@ -3,11 +3,11 @@ package ink.pmc.common.misc.api.sit
 import org.bukkit.Location
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
-import java.util.*
 
 interface SitManager {
 
-    val sitters: Map<UUID, Location>
+    val sitters: Set<Player>
+    val seats: Set<Entity>
 
     fun sit(player: Player, location: Location)
 
@@ -18,6 +18,14 @@ interface SitManager {
     fun getSeat(player: Player): Entity?
 
     fun getSitLocation(player: Player): Location?
+
+    fun getSitterByLocation(location: Location): Player?
+
+    fun getSitterBySeat(seat: Entity): Player?
+
+    fun isSeat(entity: Entity): Boolean
+
+    fun isSitLocation(location: Location): Boolean
 
     fun standAll()
 

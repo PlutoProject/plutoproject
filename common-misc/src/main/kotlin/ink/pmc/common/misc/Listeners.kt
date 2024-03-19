@@ -1,22 +1,18 @@
-package ink.pmc.common.misc.listeners
+package ink.pmc.common.misc
 
-import ink.pmc.common.misc.*
 import io.papermc.paper.event.entity.EntityMoveEvent
 import io.papermc.paper.event.player.AsyncChatEvent
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
-import org.bukkit.event.block.BlockBreakEvent
-import org.bukkit.event.entity.EntityDamageEvent
-import org.bukkit.event.entity.EntityDeathEvent
-import org.bukkit.event.entity.EntityDismountEvent
-import org.bukkit.event.entity.EntityTeleportEvent
+import org.bukkit.event.block.*
+import org.bukkit.event.entity.*
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.event.world.ChunkLoadEvent
 
 @Suppress("UNUSED", "UNUSED_PARAMETER")
-object PlayerListener : Listener {
+object Listeners : Listener {
 
     @EventHandler
     fun playerQuitEvent(event: PlayerQuitEvent) {
@@ -59,8 +55,53 @@ object PlayerListener : Listener {
     }
 
     @EventHandler
+    fun blockBreakEvent(event: BlockBurnEvent) {
+        handleSitLocationBroke(event)
+    }
+
+    @EventHandler
+    fun blockExplodeEvent(event: BlockExplodeEvent) {
+        handleSitLocationBroke(event)
+    }
+
+    @EventHandler
+    fun blockFadeEvent(event: BlockFadeEvent) {
+        handleSitLocationBroke(event)
+    }
+
+    @EventHandler
+    fun blockIgniteEvent(event: BlockIgniteEvent) {
+        handleSitLocationBroke(event)
+    }
+
+    @EventHandler
+    fun entityExplodeEvent(event: EntityExplodeEvent) {
+        handleSitLocationBroke(event)
+    }
+
+    @EventHandler
     fun playerInteractEvent(event: PlayerInteractEvent) {
         handleSitClick(event)
+    }
+
+    @EventHandler
+    fun blockPistonExtendEvent(event: BlockPistonExtendEvent) {
+        handleSitLocationBroke(event)
+    }
+
+    @EventHandler
+    fun blockPistonRetractEvent(event: BlockPistonRetractEvent) {
+        handleSitLocationBroke(event)
+    }
+
+    @EventHandler
+    fun entitySpawnEvent(event: EntitySpawnEvent) {
+        handleSitLocationBroke(event)
+    }
+
+    @EventHandler
+    fun leavesDecayEvent(event: LeavesDecayEvent) {
+        handleSitLocationBroke(event)
     }
 
     @EventHandler

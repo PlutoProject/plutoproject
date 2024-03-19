@@ -1,11 +1,14 @@
 package ink.pmc.common.misc.impl
 
 import ink.pmc.common.misc.*
-import ink.pmc.common.misc.api.isSitting
 import ink.pmc.common.misc.api.sit.SitManager
-import ink.pmc.common.misc.api.stand
+import ink.pmc.common.misc.api.sit.isSitting
+import ink.pmc.common.misc.api.sit.sitter
+import ink.pmc.common.misc.api.sit.stand
 import ink.pmc.common.utils.concurrent.submitAsync
 import ink.pmc.common.utils.concurrent.submitSync
+import ink.pmc.common.utils.entity
+import ink.pmc.common.utils.player
 import kotlinx.coroutines.delay
 import net.kyori.adventure.text.Component
 import org.bukkit.Location
@@ -15,17 +18,19 @@ import java.util.*
 
 class SitManagerImpl : SitManager {
 
-    private val _sitter = mutableMapOf<UUID, Location>()
-    private val armorStands = mutableMapOf<UUID, UUID>()
-
-    override val sitters: Map<UUID, Location> = _sitter
+    private val playerToSitLocationMap = mutableMapOf<UUID, Location>()
+    private val playerToSeatMap = mutableMapOf<UUID, UUID>()
+    override val sitters: Set<Player>
+        get() = playerToSitLocationMap.keys.map { it.player!! }.toSet()
+    override val seats: Set<Entity>
+        get() = playerToSeatMap.values.map { it.entity!! }.toSet()
 
     override fun sit(player: Player, location: Location) {
         if (player.isSitting) {
             player.stand()
         }
 
-        var sitLoc = location.toBlockLocation()
+        var sitLoc = location.rawLocation
 
         if (!checkLocation(location)) {
             val tryFind = findLegalLocation(location)
@@ -38,16 +43,18 @@ class SitManagerImpl : SitManager {
             sitLoc = tryFind
         }
 
-        // Location#toBlockLocation 不会抹掉 pitch 与 yaw
-        sitLoc.pitch = 0F
-        sitLoc.yaw = 0F
+        if (sitLoc.sitter != null) {
+            player.showTitle(MULTI_SITTERS_TITLE)
+            player.playSound(MULTI_SITTERS_SOUND)
+            return
+        }
 
         val armorStand = createArmorStand(sitLoc)
         markAsSeat(armorStand, player)
         armorStand.addPassenger(player)
 
-        _sitter[player.uniqueId] = sitLoc
-        armorStands[player.uniqueId] = armorStand.uniqueId
+        playerToSitLocationMap[player.uniqueId] = sitLoc
+        playerToSeatMap[player.uniqueId] = armorStand.uniqueId
         markDelay(player)
 
         submitAsync {
@@ -57,7 +64,7 @@ class SitManagerImpl : SitManager {
     }
 
     override fun isSitting(player: Player): Boolean {
-        return _sitter.containsKey(player.uniqueId)
+        return playerToSitLocationMap.containsKey(player.uniqueId)
     }
 
     override fun stand(player: Player) {
@@ -66,7 +73,7 @@ class SitManagerImpl : SitManager {
         }
 
         val playerId = player.uniqueId
-        val armorStandId = armorStands[playerId]!!
+        val armorStandId = playerToSeatMap[playerId]!!
         val armorStand = player.world.getEntity(armorStandId)!!
         val standLocation = player.location.add(0.0, 1.0, 0.0)
 
@@ -78,35 +85,51 @@ class SitManagerImpl : SitManager {
         player.teleportAsync(standLocation) // 显式异步传送，同上
         player.sendActionBar(Component.text(" "))
 
-        _sitter.remove(playerId)
+        playerToSitLocationMap.remove(playerId)
         cleanArmorStand(armorStandId)
     }
 
     override fun getSeat(player: Player): Entity? {
-        armorStands[player.uniqueId] ?: return null
-        return plugin.server.getEntity(armorStands[player.uniqueId]!!)
+        playerToSeatMap[player.uniqueId] ?: return null
+        return plugin.server.getEntity(playerToSeatMap[player.uniqueId]!!)
     }
 
     override fun getSitLocation(player: Player): Location? {
-        return sitters[player.uniqueId]
+        return playerToSitLocationMap[player.uniqueId]
+    }
+
+    override fun getSitterByLocation(location: Location): Player? {
+        return playerToSitLocationMap.entries.firstOrNull { it.value == location.rawLocation }?.key?.player
+    }
+
+    override fun getSitterBySeat(seat: Entity): Player? {
+        return playerToSeatMap.entries.firstOrNull { it.value == seat.uniqueId }?.key?.player
+    }
+
+    override fun isSeat(entity: Entity): Boolean {
+        return playerToSeatMap.containsValue(entity.uniqueId)
+    }
+
+    override fun isSitLocation(location: Location): Boolean {
+        return playerToSitLocationMap.containsValue(location.rawLocation)
     }
 
     override fun standAll() {
-        _sitter.keys.forEach {
+        playerToSitLocationMap.keys.forEach {
             val player = plugin.server.getPlayer(it)
             player!!.stand()
         }
     }
 
     private fun cleanArmorStand(uuid: UUID) {
-        if (!armorStands.containsValue(uuid)) {
+        if (!playerToSeatMap.containsValue(uuid)) {
             return
         }
 
         val armorStand = plugin.server.getEntity(uuid) ?: return
         armorStand.remove()
 
-        armorStands.remove(uuid)
+        playerToSeatMap.entries.removeIf { it.value == uuid }
     }
 
 }

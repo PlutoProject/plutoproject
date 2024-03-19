@@ -1,7 +1,11 @@
 package ink.pmc.common.misc
 
 import ink.pmc.common.utils.visual.*
+import net.kyori.adventure.key.Key
+import net.kyori.adventure.sound.Sound
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.title.Title
+import java.time.Duration
 
 val SUICIDE = Component.text("你终结了你自己...")
     .color(mochaFlamingo)
@@ -12,6 +16,14 @@ val STAND_UP = Component.text("使用 ").color(mochaText)
 
 val ILLEGAL_LOC =
     Component.text("无法在此处坐下，请检查是否有实体方块和足够的空间").color(mochaMaroon)
+
+val MULTI_SITTERS_TITLE = Title.title(
+    Component.text(" "), Component.text("已有其他人坐在这个位置").color(mochaMaroon), Title.Times.times(
+        Duration.ZERO, Duration.ofMillis(1000), Duration.ZERO
+    )
+)
+
+val MULTI_SITTERS_SOUND = Sound.sound(Key.key("block.note_block.hat"), Sound.Source.BLOCK, 1F, 1F)
 
 val CHAT_FORMAT = Component.text("<player>").color(mochaYellow)
     .append(Component.text(": ").color(mochaSubtext0))

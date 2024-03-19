@@ -4,7 +4,6 @@ import ink.pmc.common.misc.api.MiscAPI
 import ink.pmc.common.misc.api.sit.SitManager
 import ink.pmc.common.misc.impl.MiscAPIImpl
 import ink.pmc.common.misc.impl.SitManagerImpl
-import ink.pmc.common.misc.listeners.PlayerListener
 import org.bukkit.command.CommandSender
 import org.bukkit.plugin.java.JavaPlugin
 import org.incendo.cloud.execution.ExecutionCoordinator
@@ -38,7 +37,7 @@ class MiscPlugin : JavaPlugin() {
 
         runSitCheckTask()
 
-        server.pluginManager.registerEvents(PlayerListener, this)
+        server.pluginManager.registerEvents(Listeners, this)
     }
 
     override fun onDisable() {
