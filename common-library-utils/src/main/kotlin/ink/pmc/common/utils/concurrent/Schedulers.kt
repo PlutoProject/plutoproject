@@ -46,3 +46,11 @@ fun regionScheduler(location: Location, task: () -> Unit) {
 fun regionScheduler(chunk: Chunk, task: () -> Unit) {
     Bukkit.getServer().regionScheduler.execute(utilsPlugin, chunk.world, chunk.x, chunk.z, task)
 }
+
+fun Chunk.scheduler(task: () -> Unit) {
+    regionScheduler(this, task)
+}
+
+fun Location.scheduler(task: () -> Unit) {
+    regionScheduler(this, task)
+}
