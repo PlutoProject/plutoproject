@@ -1,3 +1,5 @@
+import xyz.jpenilla.runpaper.task.RunServer
+
 plugins {
     id("java")
     id("com.github.johnrengelman.shadow") version "8.1.1"
@@ -5,7 +7,6 @@ plugins {
     kotlin("plugin.serialization") version "1.9.21"
     kotlin("jvm") version "1.9.21"
     id("xyz.jpenilla.run-paper") version "2.2.2"
-    id("xyz.jpenilla.run-velocity") version "2.2.2"
     kotlin("kapt") version "1.9.23"
 }
 
@@ -164,6 +165,8 @@ fun Task.runTest(task: Task) {
     }
 }
 
+var debugMode = true
+
 tasks.register("Paper") {
     runTest(tasks.runServer.get())
 }
@@ -179,6 +182,21 @@ tasks.register("copyJars") {
     }
 }
 
+tasks.register("markAsNonDebugMode") {
+    group = "DONT RUN THESE TASKS MANUALLY"
+    debugMode = false
+}
+
+tasks.register("runServerWithoutDebugMode") {
+    group = "run paper"
+    dependsOn(tasks.named("markAsNonDebugMode"), tasks.runServer)
+}
+
+tasks.register("runFoliaWithoutDebugMode") {
+    group = "run paper"
+    dependsOn(tasks.named("markAsNonDebugMode"), tasks.named("runFolia"))
+}
+
 // 不要用这个，会和 Paper 和 Folia 的测试共用文件夹
 // Velocity 还是单独开一个服务端测试吧
 /*tasks.register("Velocity") {
@@ -188,7 +206,47 @@ tasks.register("copyJars") {
 runPaper.folia.registerTask()
 runPaper.disablePluginJarDetection()
 
-tasks.runServer.configure {
+fun debugInitStep(task: Task) {
+    task as RunServer
+
+    val logs = mutableListOf<String>()
+
+    logs.add(" ")
+    logs.add("If you modified your code, you should rerun the shadowJar task to make the changes function properly.")
+    logs.add("Maybe there will be a auto run task in the future, but now I haven't figure out how to implement it because the run-task plugin has some weird behaviors.")
+
+    if (debugMode) {
+        logs.add(" ")
+        logs.add("By default, using Gradle plugin to run will be debug mode.")
+        logs.add("In debug mode, some components which has behaviors related to the environment (such as connecting to a database) will be disabled.")
+        logs.add("If you want to disable debug mode, you can run runServerWithoutDebugMode or runFoliaWithoutDebugMode.")
+        logs.add(" ")
+        task.jvmArgs(
+            "-DPLUTO_DEBUG_MODE=TRUE"
+        )
+    } else {
+        logs.add(" ")
+        logs.add("You are not running debug mode, please ensure you need to do some things related to the environment (such as connecting to a database).")
+        logs.add("Or it will make some components run into error.")
+        logs.add(" ")
+    }
+
+    logs.forEach { println(it) }
+}
+
+tasks.runServer {
+    doFirst {
+        debugInitStep(this)
+    }
+
     dependsOn(tasks.named("copyJars"))
     minecraftVersion("1.20.4")
+}
+
+tasks.named("runFolia") {
+   doFirst {
+       debugInitStep(this)
+   }
+
+    dependsOn(tasks.named("copyJars"))
 }

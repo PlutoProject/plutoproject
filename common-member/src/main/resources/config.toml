@@ -1,4 +1,3 @@
-enabled = false
 hostname = "localhost"
 port = "27017"
 username = "user"
