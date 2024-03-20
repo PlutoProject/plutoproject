@@ -234,6 +234,14 @@ fun debugInitStep(task: Task) {
     logs.forEach { println(it) }
 }
 
+val paperPlugins = runPaper.downloadPluginsSpec {
+    url("https://ci.lucko.me/job/spark/401/artifact/spark-bukkit/build/libs/spark-1.10.60-bukkit.jar")
+}
+
+val foliaPlugins = runPaper.downloadPluginsSpec {
+    url("https://ci.lucko.me/job/spark-folia/lastSuccessfulBuild/artifact/spark-bukkit/build/libs/spark-1.10.60-bukkit.jar")
+}
+
 tasks.runServer {
     doFirst {
         debugInitStep(this)
@@ -241,12 +249,16 @@ tasks.runServer {
 
     dependsOn(tasks.named("copyJars"))
     minecraftVersion("1.20.4")
+    downloadPlugins.from(paperPlugins)
 }
 
 tasks.named("runFolia") {
+    this as RunServer
+
     doFirst {
         debugInitStep(this)
     }
 
     dependsOn(tasks.named("copyJars"))
+    downloadPlugins.from(foliaPlugins)
 }

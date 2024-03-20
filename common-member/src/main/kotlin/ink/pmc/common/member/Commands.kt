@@ -7,6 +7,7 @@ import java.time.Duration
 import java.util.*
 
 val memberAddCommand = commandManager.commandBuilder("member")
+    .permission("member.add")
     .literal("add")
     .required("name", StringParser.stringParser())
     .handler {
@@ -38,6 +39,7 @@ val memberAddCommand = commandManager.commandBuilder("member")
     }
 
 val memberRemoveCommand = commandManager.commandBuilder("member")
+    .permission("member.remove")
     .literal("remove")
     .required("name", StringParser.stringParser())
     .handler {
@@ -71,6 +73,7 @@ val memberRemoveCommand = commandManager.commandBuilder("member")
     }
 
 val memberLookupCommand = commandManager.commandBuilder("member")
+    .permission("member.lookup")
     .literal("lookup")
     .required("name", StringParser.stringParser())
     .handler {
