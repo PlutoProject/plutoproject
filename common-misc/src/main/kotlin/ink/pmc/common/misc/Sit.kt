@@ -10,8 +10,8 @@ import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.block.Block
 import org.bukkit.block.BlockFace
-import org.bukkit.block.data.Bisected
-import org.bukkit.block.data.BlockData
+import org.bukkit.block.data.*
+import org.bukkit.block.data.type.Sign
 import org.bukkit.block.data.type.Slab
 import org.bukkit.block.data.type.Stairs
 import org.bukkit.entity.ArmorStand
@@ -100,6 +100,8 @@ fun createArmorStand(locationToSit: Location): Entity {
     entity.setGravity(false)
     entity.isInvisible = true
     entity.setAI(false)
+    entity.isCollidable = false
+    entity.setCanTick(false)
 
     return entity
 }
@@ -198,7 +200,7 @@ fun handlePlayerQuitStand(event: PlayerQuitEvent) {
     val quitLocation = findQuitLocation(player.location)
 
     if (quitLocation != null) {
-        player.teleport(quitLocation)
+        player.teleportAsync(quitLocation)
     }
 }
 
@@ -214,25 +216,24 @@ fun handleSitLocationBroke(event: Event) {
     val locations = mutableSetOf<Location>()
 
     if (event is BlockEvent) {
-        locations.add(event.block.location.toBlockLocation())
+        locations.add(event.block.location.rawLocation)
 
         if (event is BlockPistonExtendEvent) {
-            event.blocks.map { it.location }.toCollection(locations)
+            event.blocks.map { it.location.rawLocation }.toCollection(locations)
         }
 
         if (event is BlockPistonRetractEvent) {
-            event.blocks.map { it.location }.toCollection(locations)
+            event.blocks.map { it.location.rawLocation }.toCollection(locations)
         }
 
         if (event is BlockExplodeEvent) {
-            event.blockList().map { it.location }.toCollection(locations)
+            event.blockList().map { it.location.rawLocation }.toCollection(locations)
         }
     } else if (event is EntityExplodeEvent) {
-        event.blockList().map { it.location }.toCollection(locations)
+        event.blockList().map { it.location.rawLocation }.toCollection(locations)
     } else if (event is EntitySpawnEvent) {
         if (event.entity.type == EntityType.FALLING_BLOCK) {
-            val location = event.location
-
+            val location = event.location.rawLocation
             if (location.rawLocation.isSitLocation) {
                 locations.add(location)
             }
@@ -370,11 +371,28 @@ private fun offsetStairShape(facing: BlockFace, shape: Stairs.Shape, location: L
     return loc
 }
 
-fun checkLocation(location: Location): Boolean {
-    val block = location.block
+fun isLegalType(block: Block): Boolean {
     val blockData = block.blockData
 
-    if (!(block.isSolid || isSlab(blockData) || isSlab(blockData))) {
+    if (!(block.isSolid || isSlab(blockData) || isStair(blockData))) {
+        return false
+    }
+
+    if (blockData is Sign) {
+        return false
+    }
+
+    if (blockData is Openable || blockData is Hangable || blockData is Powerable) {
+        return false
+    }
+
+    return true
+}
+
+fun checkLocation(location: Location): Boolean {
+    val block = location.block
+
+    if (!isLegalType(block)) {
         return false
     }
 

@@ -33,7 +33,7 @@ class SitManagerImpl : SitManager {
         var sitLoc = location.rawLocation
 
         if (!checkLocation(location)) {
-            val tryFind = findLegalLocation(location)
+            val tryFind = findLegalLocation(sitLoc)
 
             if (tryFind == null) {
                 player.sendMessage(ILLEGAL_LOC)
