@@ -15,7 +15,7 @@ lateinit var proxyServer: ProxyServer
 @Plugin(
     id = "common-utils",
     name = "common-utils",
-    version = "1.0.0",
+    version = "1.0.1",
     dependencies = [Dependency(id = "common-dependency-loader-velocity")]
 )
 @Suppress("UNUSED", "UNUSED_PARAMETER")

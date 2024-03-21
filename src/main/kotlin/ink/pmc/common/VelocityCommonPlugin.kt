@@ -12,7 +12,7 @@ import java.util.logging.Logger
 @Plugin(
     id = "common",
     name = "common",
-    version = "1.0.0",
+    version = "1.0.1",
     dependencies = [Dependency(id = "common-dependency-loader-velocity")]
 )
 @Suppress("UNUSED", "UNUSED_PARAMETER")

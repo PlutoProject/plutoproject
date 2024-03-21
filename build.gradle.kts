@@ -28,7 +28,7 @@ allprojects {
     val bukkitAPIVersion by extra("1.20")
 
     this.group = "ink.pmc.common"
-    this.version = "1.0.0"
+    this.version = "1.0.1"
 
     repositories {
         mavenCentral()
@@ -83,8 +83,11 @@ allprojects {
     }
 
     tasks.processResources {
+        inputs.property("version", rootProject.version)
+        inputs.property("api", bukkitAPIVersion)
+
         filesMatching("plugin.yml") {
-            expand("version" to rootProject.version, "api" to bukkitAPIVersion)
+            expand("version" to version, "api" to bukkitAPIVersion)
         }
     }
 

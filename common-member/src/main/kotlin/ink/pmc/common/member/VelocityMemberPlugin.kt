@@ -35,7 +35,7 @@ fun saveDefaultConfig(output: File) {
 @Plugin(
     id = "common-member",
     name = "common-member",
-    version = "1.0.0",
+    version = "1.0.1",
     dependencies = [Dependency(id = "common-dependency-loader-velocity"), Dependency(id = "common-utils")]
 )
 @Suppress("UNUSED", "UNUSED_PARAMETER")
