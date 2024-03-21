@@ -35,14 +35,14 @@ val statusCommand = commandManager.commandBuilder("hypervisor", "hv")
 
 val serverStatusCommand = commandManager.commandBuilder("hypervisor", "hv")
     .permission("hypervisor.status")
-    .literal("serverStatus")
+    .literal("serverstatus")
     .handler {
         serverStatus(it.sender())
     }
 
 val worldStatusCommand = commandManager.commandBuilder("hypervisor", "hv")
     .permission("hypervisor.status")
-    .literal("worldStatus")
+    .literal("worldstatus")
     .handler {
         worldStatus(it.sender())
     }

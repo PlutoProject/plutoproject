@@ -18,6 +18,6 @@ val tpsLast5Minute: Double
 val tpsLast15Minute: Double
     get() = Bukkit.getServer().tps[2]
 
-@Suppress
+@Suppress("UNUSED")
 val currentMSPT: Double
     get() = Bukkit.getServer().averageTickTime
