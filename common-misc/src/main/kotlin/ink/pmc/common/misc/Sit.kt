@@ -5,6 +5,8 @@ import ink.pmc.common.utils.concurrent.submitAsync
 import ink.pmc.common.utils.concurrent.sync
 import ink.pmc.common.utils.world.rawLocation
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import org.bukkit.Chunk
 import org.bukkit.Location
 import org.bukkit.Material
@@ -43,13 +45,13 @@ import kotlin.time.Duration
 * */
 val sitDelay = CopyOnWriteArraySet<UUID>()
 val armorStandDataKey = NamespacedKey(plugin, "sit-passenger")
+val accessLock = Mutex()
 
 fun runSitCheckTask() {
     submitAsync {
         while (!disabled) {
             sitManager.sitters.forEach {
                 val player = it
-                player.sendActionBar(STAND_UP)
 
                 // 切换到实体调度器执行，因为不允许异步操作实体数据
                 player.sync {
@@ -71,6 +73,19 @@ fun runSitCheckTask() {
             }
 
             delay(Duration.parse("2s"))
+        }
+    }
+}
+
+fun runActionBarOverrideTask() {
+    submitAsync {
+        while (!disabled) {
+            accessLock.withLock {
+                sitManager.sitters.forEach {
+                    it.sendActionBar(STAND_UP)
+                }
+            }
+            delay(5)
         }
     }
 }

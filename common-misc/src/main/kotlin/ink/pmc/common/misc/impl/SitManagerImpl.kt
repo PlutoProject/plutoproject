@@ -5,12 +5,10 @@ import ink.pmc.common.misc.api.sit.SitManager
 import ink.pmc.common.misc.api.sit.isSitting
 import ink.pmc.common.misc.api.sit.sitter
 import ink.pmc.common.misc.api.sit.stand
-import ink.pmc.common.utils.concurrent.submitAsync
 import ink.pmc.common.utils.concurrent.submitSync
 import ink.pmc.common.utils.entity
 import ink.pmc.common.utils.player
 import ink.pmc.common.utils.world.rawLocation
-import kotlinx.coroutines.delay
 import net.kyori.adventure.text.Component
 import org.bukkit.Location
 import org.bukkit.entity.Entity
@@ -57,11 +55,6 @@ class SitManagerImpl : SitManager {
         playerToSitLocationMap[player.uniqueId] = sitLoc
         playerToSeatMap[player.uniqueId] = armorStand.uniqueId
         markDelay(player)
-
-        submitAsync {
-            delay(45) // 原版载具的提示本身就会延迟发送，防止插件的提示在原版提示之前所以被覆盖掉
-            player.sendActionBar(STAND_UP) // 先直接发一次，尝试覆盖原版的载具提示
-        }
     }
 
     override fun isSitting(player: Player): Boolean {

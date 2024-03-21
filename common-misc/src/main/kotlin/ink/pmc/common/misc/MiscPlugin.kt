@@ -36,6 +36,7 @@ class MiscPlugin : JavaPlugin() {
         commandManager.command(sitCommand)
 
         runSitCheckTask()
+        runActionBarOverrideTask()
 
         server.pluginManager.registerEvents(Listeners, this)
     }
