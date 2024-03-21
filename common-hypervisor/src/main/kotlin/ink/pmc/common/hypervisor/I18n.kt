@@ -52,8 +52,8 @@ val WORLD_STATUS_ENTRIES: Component
 
         worlds.forEach {
             val name = it.name
-            val players = it.players.size
-            val entities = it.entities.size
+            val players = it.playerCount
+            val entities = it.entityCount
             val chunks = it.chunkCount
 
             val replaced = single

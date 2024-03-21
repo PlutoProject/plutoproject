@@ -2,11 +2,10 @@ package ink.pmc.common.misc
 
 import ink.pmc.common.misc.api.sit.*
 import ink.pmc.common.utils.concurrent.submitAsync
-import ink.pmc.common.utils.concurrent.sync
+import ink.pmc.common.utils.entity.ensureThreadSafe
+import ink.pmc.common.utils.world.ensureThreadSafe
 import ink.pmc.common.utils.world.rawLocation
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 import org.bukkit.Chunk
 import org.bukkit.Location
 import org.bukkit.Material
@@ -45,7 +44,6 @@ import kotlin.time.Duration
 * */
 val sitDelay = CopyOnWriteArraySet<UUID>()
 val armorStandDataKey = NamespacedKey(plugin, "sit-passenger")
-val accessLock = Mutex()
 
 fun runSitCheckTask() {
     submitAsync {
@@ -53,9 +51,8 @@ fun runSitCheckTask() {
             sitManager.sitters.forEach {
                 val player = it
 
-                // 切换到实体调度器执行，因为不允许异步操作实体数据
-                player.sync {
-                    val armorStand = player.seat ?: return@sync // 有时可能玩家已经站起来了，但是异步任务仍然尝试获取实体
+                player.ensureThreadSafe {
+                    val armorStand = player.seat ?: return@ensureThreadSafe // 有时可能玩家已经站起来了，但是异步任务仍然尝试获取实体
 
                     // 避免一些意外问题
                     if (!armorStand.passengers.contains(player)) {
@@ -67,8 +64,8 @@ fun runSitCheckTask() {
             plugin.server.onlinePlayers.forEach {
                 val chunk = it.chunk
 
-                chunk.sync {
-                    clearIllegalArmorStands(it.chunk)
+                chunk.ensureThreadSafe {
+                    clearIllegalArmorStands(this)
                 }
             }
 
@@ -80,10 +77,8 @@ fun runSitCheckTask() {
 fun runActionBarOverrideTask() {
     submitAsync {
         while (!disabled) {
-            accessLock.withLock {
-                sitManager.sitters.forEach {
-                    it.sendActionBar(STAND_UP)
-                }
+            sitManager.sitters.forEach {
+                it.sendActionBar(STAND_UP)
             }
             delay(5)
         }
@@ -193,6 +188,17 @@ fun handleSitClick(event: PlayerInteractEvent) {
     player.sit(location)
 }
 
+fun handlePlayerQuit(event: PlayerQuitEvent) {
+    val player = event.player
+
+    if (!player.isSitting) {
+        return
+    }
+
+    player.stand()
+    sitDelay.remove(player.uniqueId)
+}
+
 fun markAsSeat(entity: Entity, sitter: Player) {
     entity.persistentDataContainer.set(armorStandDataKey, PersistentDataType.STRING, sitter.uniqueId.toString())
 }
@@ -204,20 +210,6 @@ fun isSeat(entity: Entity): Boolean {
 fun getSitter(entity: Entity): Player? {
     val uuid = UUID.fromString(entity.persistentDataContainer.get(armorStandDataKey, PersistentDataType.STRING))
     return plugin.server.getPlayer(uuid)
-}
-
-fun handlePlayerQuitStand(event: PlayerQuitEvent) {
-    val player = event.player
-
-    if (player.isSitting) {
-        player.stand()
-    }
-
-    val quitLocation = findQuitLocation(player.location)
-
-    if (quitLocation != null) {
-        player.teleportAsync(quitLocation)
-    }
 }
 
 fun handleSitDelay(event: EntityDismountEvent) {
@@ -441,7 +433,9 @@ fun findLegalLocation(startPoint: Location): Location? {
     return null
 }
 
-fun findQuitLocation(startPoint: Location): Location? {
+@Deprecated("不需要细致的检测了")
+@Suppress("UNUSED")
+fun findQuitLocation(startPoint: Location): Location {
     for (i in 1..5) {
         val location = startPoint.clone().add(0.0, i.toDouble(), 0.0)
 
@@ -458,5 +452,5 @@ fun findQuitLocation(startPoint: Location): Location? {
         return location
     }
 
-    return null
+    return startPoint
 }

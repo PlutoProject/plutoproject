@@ -16,7 +16,7 @@ object Listeners : Listener {
 
     @EventHandler
     fun playerQuitEvent(event: PlayerQuitEvent) {
-        handlePlayerQuitStand(event)
+        handlePlayerQuit(event)
         handleQuitMessage(event)
     }
 

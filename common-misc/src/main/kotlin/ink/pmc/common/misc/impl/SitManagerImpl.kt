@@ -5,8 +5,9 @@ import ink.pmc.common.misc.api.sit.SitManager
 import ink.pmc.common.misc.api.sit.isSitting
 import ink.pmc.common.misc.api.sit.sitter
 import ink.pmc.common.misc.api.sit.stand
-import ink.pmc.common.utils.concurrent.submitSync
 import ink.pmc.common.utils.entity
+import ink.pmc.common.utils.entity.ensureThreadSafe
+import ink.pmc.common.utils.platform.threadSafeTeleport
 import ink.pmc.common.utils.player
 import ink.pmc.common.utils.world.rawLocation
 import net.kyori.adventure.text.Component
@@ -69,14 +70,19 @@ class SitManagerImpl : SitManager {
         val playerId = player.uniqueId
         val armorStandId = playerToSeatMap[playerId]!!
         val armorStand = player.world.getEntity(armorStandId)!!
-        val standLocation = player.location.add(0.0, 1.0, 0.0)
+        val standLocation = player.location.clone().add(0.0, 1.0, 0.0)
 
-        // 使用实体调度器，避免未来在迁移 Folia 时可能造成的问题
-        armorStand.submitSync {
-            armorStand.removePassenger(player)
+        armorStand.ensureThreadSafe {
+            removePassenger(player)
         }
 
-        player.teleportAsync(standLocation) // 显式异步传送，同上
+        /*
+        * 在 Paper 上通过 PlayerQuitEvent 触发此处时，
+        * 若进行 teleportAsync 会由于异步延迟而无法正常传送。
+        * 同时，Folia 要求必须 teleportAsync，并且在事件中也可以正常工作，
+        * 因此使用自适应安全的传送方法。
+        * */
+        player.threadSafeTeleport(standLocation)
         player.sendActionBar(Component.text(" "))
 
         playerToSitLocationMap.remove(playerId)
