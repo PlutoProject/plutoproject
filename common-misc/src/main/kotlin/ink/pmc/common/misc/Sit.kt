@@ -3,6 +3,7 @@ package ink.pmc.common.misc
 import ink.pmc.common.misc.api.sit.*
 import ink.pmc.common.utils.concurrent.submitAsync
 import ink.pmc.common.utils.concurrent.sync
+import ink.pmc.common.utils.world.rawLocation
 import kotlinx.coroutines.delay
 import org.bukkit.Chunk
 import org.bukkit.Location
@@ -444,15 +445,3 @@ fun findQuitLocation(startPoint: Location): Location? {
 
     return null
 }
-
-fun toRawLocation(location: Location): Location {
-    val rawLocation = location.toBlockLocation()
-
-    rawLocation.yaw = 0F
-    rawLocation.pitch = 0F
-
-    return rawLocation
-}
-
-val Location.rawLocation: Location
-    get() = toRawLocation(this)
