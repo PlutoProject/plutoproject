@@ -1,7 +1,6 @@
 package ink.pmc.common.member.api
 
 import com.github.benmanes.caffeine.cache.AsyncLoadingCache
-import com.github.benmanes.caffeine.cache.LoadingCache
 import com.mongodb.client.MongoCollection
 import ink.pmc.common.member.api.dsl.MemberDSL
 import ink.pmc.common.member.api.punishment.Punishment
