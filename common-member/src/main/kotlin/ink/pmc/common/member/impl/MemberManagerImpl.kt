@@ -126,6 +126,10 @@ class MemberManagerImpl(
 
     override suspend fun sync(member: Member): Boolean {
         return withContext(Dispatchers.IO) {
+            if (nonExist(member.uuid)) {
+                return@withContext false
+            }
+
             try {
                 cachedMember.synchronous().refresh(member.uuid).await()
             } catch (e: Exception) {
@@ -140,6 +144,10 @@ class MemberManagerImpl(
         return withContext(Dispatchers.IO) {
             try {
                 cachedMember.synchronous().asMap().keys.forEach {
+                    if (nonExist(it)) {
+                        return@forEach
+                    }
+
                     cachedMember.synchronous().refresh(it).await()
                 }
             } catch (e: Exception) {
