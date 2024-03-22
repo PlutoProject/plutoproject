@@ -1,8 +1,8 @@
 package ink.pmc.common.member.impl
 
+import com.github.benmanes.caffeine.cache.AsyncLoadingCache
 import com.github.benmanes.caffeine.cache.CacheLoader
 import com.github.benmanes.caffeine.cache.Caffeine
-import com.github.benmanes.caffeine.cache.LoadingCache
 import com.mongodb.client.MongoCollection
 import com.mongodb.client.model.Filters
 import ink.pmc.common.member.api.Comment
@@ -12,11 +12,13 @@ import ink.pmc.common.member.api.MemberManager
 import ink.pmc.common.member.api.dsl.MemberDSL
 import ink.pmc.common.member.api.punishment.Punishment
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.future.await
 import kotlinx.coroutines.withContext
 import org.bson.Document
 import org.mongojack.JacksonMongoCollection
 import java.time.Duration
 import java.util.*
+import java.util.concurrent.CompletableFuture
 
 class MemberManagerImpl(
     override val collection: JacksonMongoCollection<Member>,
@@ -28,10 +30,11 @@ class MemberManagerImpl(
         collection.find(Filters.eq("uuid", it)).first()
     }
 
-    override val cachedMember: LoadingCache<UUID, Member> = Caffeine.newBuilder()
+    override val cachedMember: AsyncLoadingCache<UUID, Member> = Caffeine.newBuilder()
         .maximumSize(10000)
-        .expireAfterWrite(Duration.ofMinutes(30))
-        .build(cacheLoader)
+        .refreshAfterWrite(Duration.ofMinutes(5))
+        .expireAfterWrite(Duration.ofMinutes(10))
+        .buildAsync(cacheLoader)
 
     init {
         if (punishmentIndexCollection.find(Filters.exists("lastId")).first() == null) {
@@ -75,7 +78,7 @@ class MemberManagerImpl(
 
     override suspend fun get(uuid: UUID): Member? {
         return withContext(Dispatchers.IO) {
-            cachedMember.get(uuid)
+            cachedMember.get(uuid).await()
         }
     }
 
@@ -124,7 +127,7 @@ class MemberManagerImpl(
     override suspend fun sync(member: Member): Boolean {
         return withContext(Dispatchers.IO) {
             try {
-                cachedMember.refresh(member.uuid)
+                cachedMember.synchronous().refresh(member.uuid).await()
             } catch (e: Exception) {
                 return@withContext false
             }
@@ -136,7 +139,9 @@ class MemberManagerImpl(
     override suspend fun syncAll(): Boolean {
         return withContext(Dispatchers.IO) {
             try {
-                cachedMember.invalidateAll()
+                cachedMember.synchronous().asMap().keys.forEach {
+                    cachedMember.synchronous().refresh(it).await()
+                }
             } catch (e: Exception) {
                 return@withContext false
             }
@@ -147,7 +152,7 @@ class MemberManagerImpl(
 
     private fun insertAndUpdateCache(member: Member) {
         collection.insertOne(member)
-        cachedMember.put(member.uuid, member)
+        cachedMember.put(member.uuid, CompletableFuture.completedFuture(member))
     }
 
     private fun removeRelatedComments(member: Member) {
