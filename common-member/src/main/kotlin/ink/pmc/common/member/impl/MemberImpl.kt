@@ -33,8 +33,8 @@ data class MemberImpl @JsonCreator constructor(
     override var lastJoinTime: Date? = null
     override var lastQuitTime: Date? = null
     override val punishments: MutableCollection<Punishment> = mutableSetOf()
-    override var currentPunishment: Long? = null
-    override var lastPunishment: Long? = null
+    override var currentPunishmentId: Long? = null
+    override var lastPunishmentId: Long? = null
     override val comments: MutableCollection<Comment> = mutableSetOf()
     override val data: MemberData = MemberDataImpl()
     override var bio: String? = null
@@ -52,10 +52,10 @@ data class MemberImpl @JsonCreator constructor(
             punishments.add(punishment)
 
             if (options.type != PunishmentType.WARN_A && options.type != PunishmentType.WARN_B) {
-                currentPunishment = newId
+                currentPunishmentId = newId
             }
 
-            lastPunishment = newId
+            lastPunishmentId = newId
 
             collection.insertOne(Document(mapOf<String, Any>("id" to newId, "owner" to uuid)))
             collection.updateOne(Filters.exists("lastId"), Updates.inc("lastId", 1))
@@ -83,8 +83,8 @@ data class MemberImpl @JsonCreator constructor(
             return false
         }
 
-        currentPunishment()!!.isPardoned = true
-        currentPunishment()!!.pardonReason = reason
+        currentPunishment!!.isPardoned = true
+        currentPunishment!!.pardonReason = reason
 
         return true
     }
@@ -117,7 +117,7 @@ data class MemberImpl @JsonCreator constructor(
                 collection.updateOne(Filters.exists("emptyIds"), Updates.set("emptyIds", emptyIds))
             }
 
-            val comment = CommentImpl(newId, uuid, creator, content)
+            val comment = CommentImpl(newId!!, uuid, creator, content)
             comments.add(comment)
 
             collection.insertOne(Document(mapOf<String, Any>("id" to newId, "owner" to uuid)))

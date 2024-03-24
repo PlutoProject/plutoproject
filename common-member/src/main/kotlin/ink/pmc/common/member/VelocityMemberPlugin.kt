@@ -10,27 +10,18 @@ import com.velocitypowered.api.plugin.Plugin
 import com.velocitypowered.api.plugin.PluginContainer
 import com.velocitypowered.api.plugin.annotation.DataDirectory
 import com.velocitypowered.api.proxy.ProxyServer
+import ink.pmc.common.utils.platform.saveDefaultConfig
 import org.incendo.cloud.SenderMapper
 import org.incendo.cloud.execution.ExecutionCoordinator
 import org.incendo.cloud.velocity.VelocityCommandManager
 import java.io.File
-import java.io.InputStream
-import java.nio.file.Files
 import java.nio.file.Path
-import java.nio.file.StandardCopyOption
 import java.util.logging.Logger
 
 lateinit var proxyServer: ProxyServer
 lateinit var proxyLogger: Logger
 lateinit var pluginContainer: PluginContainer
 lateinit var commandManager: VelocityCommandManager<CommandSource>
-
-fun saveDefaultConfig(output: File) {
-    val input: InputStream = VelocityMemberPlugin::class.java.getResourceAsStream("/config.toml")
-        ?: throw IllegalArgumentException("Resource not found")
-    Files.copy(input, output.toPath(), StandardCopyOption.REPLACE_EXISTING)
-    input.close()
-}
 
 @Plugin(
     id = "common-member",
@@ -56,7 +47,7 @@ class VelocityMemberPlugin {
         configFile = File(dataDir, "config.toml")
 
         if (!configFile.exists()) {
-            saveDefaultConfig(configFile)
+            saveDefaultConfig(VelocityMemberPlugin::class.java, configFile)
         }
 
         initMemberManager()

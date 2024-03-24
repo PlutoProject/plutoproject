@@ -16,6 +16,7 @@
 - `common-library-utils`：工具类集合。
 - `common-member*`：成员系统逻辑实现。
 - `common-misc*`：杂项功能逻辑实现。
+- `common-server*`：跨端操作框架逻辑实现。
 - `common-utils*`：用于初始化工具类中部分涉及到服务端平台的内容。
 
 ## 🔧 构建

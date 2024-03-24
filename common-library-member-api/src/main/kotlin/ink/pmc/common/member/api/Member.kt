@@ -15,12 +15,16 @@ interface Member {
     var lastJoinTime: Date?
     var lastQuitTime: Date?
     val punishments: MutableCollection<Punishment>
-    var currentPunishment: Long?
-    var lastPunishment: Long?
+    var currentPunishmentId: Long?
+    var lastPunishmentId: Long?
     val comments: MutableCollection<Comment>
     val data: MemberData
     var bio: String?
     var totalPlayTime: Long
+    val currentPunishment
+        get() = if (!punishments.any { it.id == currentPunishmentId }) null else punishments.first { it.id == currentPunishmentId }
+    val lastPunishment
+        get() = if (!punishments.any { it.id == lastPunishmentId }) null else punishments.first { it.id == lastPunishmentId }
 
     suspend fun punish(options: PunishmentOptions): Punishment?
 
@@ -29,12 +33,6 @@ interface Member {
     fun pardon(reason: PardonReason): Boolean
 
     fun getPunishment(id: Long): Punishment?
-
-    fun currentPunishment(): Punishment? =
-        if (!punishments.any { it.id == currentPunishment }) null else punishments.first { it.id == currentPunishment }
-
-    fun lastPunishment(): Punishment? =
-        if (!punishments.any { it.id == lastPunishment }) null else punishments.first { it.id == lastPunishment }
 
     suspend fun createComment(creator: UUID, content: String): Comment
 

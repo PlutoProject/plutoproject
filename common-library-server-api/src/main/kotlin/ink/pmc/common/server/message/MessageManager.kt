@@ -4,6 +4,7 @@ import ink.pmc.common.server.request.Request
 import ink.pmc.common.server.request.Response
 import java.util.*
 
+@Suppress("UNUSED")
 interface MessageManager {
 
     val inboundQueue: Queue<Message>
