@@ -4,7 +4,7 @@ plugins {
     id("java")
     id("com.github.johnrengelman.shadow") version "8.1.1"
     id("java-library")
-    kotlin("plugin.serialization") version "1.9.21"
+    kotlin("plugin.serialization") version "1.9.23"
     kotlin("jvm") version "1.9.21"
     id("xyz.jpenilla.run-paper") version "2.2.3"
     kotlin("kapt") version "1.9.23"
