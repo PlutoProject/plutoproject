@@ -3,7 +3,6 @@ package ink.pmc.common.utils.concurrent
 import ink.pmc.common.utils.platform.isFolia
 import ink.pmc.common.utils.platform.serverExecutor
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Runnable
 import kotlinx.coroutines.asCoroutineDispatcher
 import org.bukkit.Chunk
 import org.bukkit.Location

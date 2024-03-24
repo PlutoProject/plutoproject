@@ -1,4 +1,9 @@
 package ink.pmc.common.server.request
 
-interface Response {
+import ink.pmc.common.server.message.Reply
+
+interface Response : Reply {
+
+    val values: Map<String, Any>
+
 }

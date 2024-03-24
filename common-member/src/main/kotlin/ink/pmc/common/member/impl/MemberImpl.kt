@@ -117,7 +117,7 @@ data class MemberImpl @JsonCreator constructor(
                 collection.updateOne(Filters.exists("emptyIds"), Updates.set("emptyIds", emptyIds))
             }
 
-            val comment = CommentImpl(newId!!, uuid, creator, content)
+            val comment = CommentImpl(newId, uuid, creator, content)
             comments.add(comment)
 
             collection.insertOne(Document(mapOf<String, Any>("id" to newId, "owner" to uuid)))

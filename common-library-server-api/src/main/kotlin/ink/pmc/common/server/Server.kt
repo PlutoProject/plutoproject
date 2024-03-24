@@ -1,7 +1,6 @@
 package ink.pmc.common.server
 
 import ink.pmc.common.server.message.Message
-import ink.pmc.common.server.message.MessageManager
 import ink.pmc.common.server.network.Network
 import ink.pmc.common.server.player.ServerPlayer
 import java.util.*
@@ -13,25 +12,35 @@ interface Server {
     val name: String
     val platform: PlatformType
     val status: ServerStatus
-    val network: Network?
+    val network: Network
+    val players: Set<ServerPlayer>
     val playerCount: Int
-    val messageManager: MessageManager
+        get() = players.size
 
-    val isInNetwork: Boolean
-        get() = network != null
+    fun sendMessage(content: String): Message {
+        return ServerService.instance.internalChannel.sendMessage(content, this)
+    }
 
-    fun sendMessage(content: String): Message
+    fun replyMessage(message: UUID, content: String): Message {
+        return ServerService.instance.internalChannel.replyMessage(message, content)
+    }
 
-    fun replyMessage(content: String, messageToReply: UUID): Message
+    fun replyMessage(message: Message, content: String): Message {
+        return ServerService.instance.internalChannel.replyMessage(message, content)
+    }
 
-    fun replyMessage(content: String, messageToReply: Message): Message
+    fun getPlayer(uuid: UUID): ServerPlayer? {
+        val filtered = players.filter { it.uniqueID == uuid }
 
-    fun getPlayer(uuid: UUID): ServerPlayer?
+        if (filtered.isEmpty()) {
+            return null
+        }
 
-    fun isOnline(uuid: UUID): Boolean
+        return filtered.first()
+    }
 
-    fun sendPlayer(player: ServerPlayer)
-
-    fun sendHeartbeat()
+    fun isOnline(uuid: UUID): Boolean {
+        return players.any { it.uniqueID == uuid }
+    }
 
 }

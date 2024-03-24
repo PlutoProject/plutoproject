@@ -1,4 +1,3 @@
 package ink.pmc.common.server.world
 
-interface ServerLoc2D {
-}
+interface ServerLoc2D
