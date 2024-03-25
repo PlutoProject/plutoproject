@@ -20,7 +20,7 @@ fun decrypt(encryptedText: String): String? {
         val secretKey = SecretKeySpec(token.toByteArray(), "AES")
         cipher.init(Cipher.DECRYPT_MODE, secretKey)
         val decryptedBytes = cipher.doFinal(Base64.getDecoder().decode(encryptedText))
-        return decryptedBytes.toString()
+        return String(decryptedBytes)
     } catch (e: Exception) {
         return null
     }

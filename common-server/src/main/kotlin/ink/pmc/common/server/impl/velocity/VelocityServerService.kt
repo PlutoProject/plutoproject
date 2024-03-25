@@ -3,6 +3,7 @@ package ink.pmc.common.server.impl.velocity
 import ink.pmc.common.server.Server
 import ink.pmc.common.server.address
 import ink.pmc.common.server.impl.ProxyServerService
+import ink.pmc.common.server.impl.message.MessageManagerImpl
 import ink.pmc.common.server.message.Channel
 import ink.pmc.common.server.message.MessageManager
 import ink.pmc.common.server.network.Network
@@ -72,8 +73,7 @@ class VelocityServerService(
 
     override val server: Server = VelocityProxy(id, name)
     override val network: Network = VelocityNetwork(server as Proxy)
-    override val messageManager: MessageManager
-        get() = TODO("Not yet implemented")
+    override val messageManager: MessageManager = MessageManagerImpl()
     override var channel: Channel
         get() = TODO("Not yet implemented")
         set(value) {}
