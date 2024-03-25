@@ -78,8 +78,8 @@ allprojects {
     } else if (this.name.contains("velocity")) {
         dependencies {
             velocity.forEach { compileOnlyApi(it) }
-            compileOnly("com.velocitypowered:velocity-api:3.3.0-SNAPSHOT")
-            kapt("com.velocitypowered:velocity-api:3.3.0-SNAPSHOT")
+            compileOnly("com.velocitypowered:velocity-api:4.0.0-SNAPSHOT")
+            kapt("com.velocitypowered:velocity-api:4.0.0-SNAPSHOT")
         }
     }
 
@@ -101,8 +101,8 @@ allprojects {
 }
 
 dependencies {
-    compileOnly("com.velocitypowered:velocity-api:3.3.0-SNAPSHOT")
-    kapt("com.velocitypowered:velocity-api:3.3.0-SNAPSHOT")
+    compileOnly("com.velocitypowered:velocity-api:4.0.0-SNAPSHOT")
+    kapt("com.velocitypowered:velocity-api:4.0.0-SNAPSHOT")
 }
 
 fun trim(jarName: String): String {
