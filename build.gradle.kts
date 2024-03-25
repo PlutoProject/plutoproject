@@ -53,7 +53,6 @@ allprojects {
         "org.incendo:cloud-paper:2.0.0-beta.2",
         "org.incendo:cloud-velocity:2.0.0-beta.2",
         "io.netty:netty-all:4.1.108.Final",
-        "org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.6.3"
     )
 
     val paper = listOf<String>()
