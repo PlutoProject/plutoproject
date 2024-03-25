@@ -27,7 +27,7 @@ lateinit var proxyCommandManager: VelocityCommandManager<CommandSource>
     id = "common-server",
     name = "common-server",
     version = "1.0.1",
-    dependencies = [Dependency(id = "common-dependency-loader-velocity")]
+    dependencies = [Dependency(id = "common-dependency-loader-velocity"), Dependency(id = "common-dependency-loader-velocity")]
 )
 @Suppress("UNUSED", "UNUSED_PARAMETER")
 class VelocityServerPlugin {

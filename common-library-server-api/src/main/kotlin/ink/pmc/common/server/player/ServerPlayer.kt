@@ -10,8 +10,16 @@ import net.kyori.adventure.title.Title
 @Suppress("UNUSED")
 interface ServerPlayer : ServerEntity {
 
-    val displayName: Component
-    override val operator: PlayerOperator<*>
+    var displayName: Component?
+        get() = operator.getDisplayName(this)
+        set(value) {
+            if (value == null) {
+                return
+            }
+
+            operator.setDisplayName(this, value)
+        }
+    override val operator: PlayerOperator
     val isOnline: Boolean
         get() = status != EntityStatus.NON_EXIST
 

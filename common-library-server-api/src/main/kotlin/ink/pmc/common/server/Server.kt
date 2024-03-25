@@ -1,7 +1,6 @@
 package ink.pmc.common.server
 
 import ink.pmc.common.server.message.Message
-import ink.pmc.common.server.network.Network
 import ink.pmc.common.server.player.ServerPlayer
 import java.util.*
 
@@ -13,7 +12,6 @@ interface Server {
     val name: String
     val platform: PlatformType
     var status: ServerStatus
-    val network: Network
     val players: Set<ServerPlayer>
     val playerCount: Int
         get() = players.size

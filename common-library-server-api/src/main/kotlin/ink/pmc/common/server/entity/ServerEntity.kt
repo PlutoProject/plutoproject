@@ -12,8 +12,16 @@ interface ServerEntity {
     val server: Server
     val status: EntityStatus
     val name: String
-    val customName: Component
-    val operator: EntityOperator<*>
+    var customName: Component?
+        get() = operator.getCustomName(this)
+        set(value) {
+            if (value == null) {
+                return
+            }
+
+            operator.setCustomName(this, value)
+        }
+    val operator: EntityOperator
 
     fun teleport(location: ServerLocation) {
         operator.teleport(this, location)

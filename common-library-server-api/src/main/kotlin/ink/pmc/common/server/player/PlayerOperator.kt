@@ -6,16 +6,20 @@ import net.kyori.adventure.sound.Sound
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.title.Title
 
-interface PlayerOperator<T> : EntityOperator<T> {
+interface PlayerOperator : EntityOperator {
 
-    fun sendMessage(serverPlayer: ServerPlayer, component: Component)
+    fun sendMessage(player: ServerPlayer, component: Component)
 
-    fun sendActionbar(serverPlayer: ServerPlayer, component: Component)
+    fun sendActionbar(player: ServerPlayer, component: Component)
 
-    fun sendTitle(serverPlayer: ServerPlayer, title: Title)
+    fun sendTitle(player: ServerPlayer, title: Title)
 
-    fun playSound(serverPlayer: ServerPlayer, sound: Sound)
+    fun playSound(player: ServerPlayer, sound: Sound)
 
-    fun switchServer(serverPlayer: ServerPlayer, target: Server)
+    fun switchServer(player: ServerPlayer, target: Server)
+
+    fun getDisplayName(player: ServerPlayer): Component?
+
+    fun setDisplayName(player: ServerPlayer, component: Component)
 
 }

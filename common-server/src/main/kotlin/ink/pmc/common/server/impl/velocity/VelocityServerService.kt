@@ -6,6 +6,7 @@ import ink.pmc.common.server.impl.ProxyServerService
 import ink.pmc.common.server.message.Channel
 import ink.pmc.common.server.message.MessageManager
 import ink.pmc.common.server.network.Network
+import ink.pmc.common.server.network.Proxy
 import ink.pmc.common.server.pluginLogger
 import ink.pmc.common.utils.concurrent.submitAsync
 import io.netty.channel.ChannelInitializer
@@ -18,7 +19,7 @@ import kotlin.time.Duration
 class VelocityServerService(
     private val host: String,
     private val port: Int,
-    private val id: Int,
+    private val id: Long,
     private val name: String
 ) : ProxyServerService() {
 
@@ -69,10 +70,8 @@ class VelocityServerService(
         init()
     }
 
-    override val network: Network
-        get() = TODO("Not yet implemented")
-    override val server: Server
-        get() = TODO("Not yet implemented")
+    override val server: Server = VelocityProxy(id, name)
+    override val network: Network = VelocityNetwork(server as Proxy)
     override val messageManager: MessageManager
         get() = TODO("Not yet implemented")
     override var channel: Channel
