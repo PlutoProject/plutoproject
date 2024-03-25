@@ -1,6 +1,6 @@
 token = "123456"
 address = "localhost:5677"
 
-[client-configuration]
+[configuration]
 id = 0
-name = "name"
+name = "proxy"

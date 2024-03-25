@@ -17,7 +17,7 @@ val token: String
 val address: String
     get() = config.get("address")
 val id: Long
-    get() = config.getLong("client-configuration.id")
+    get() = config.getLong("configuration.id")
 val name: String
     get() = config.get("client-configuration.name")
 
