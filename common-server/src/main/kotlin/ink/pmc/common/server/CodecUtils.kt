@@ -95,7 +95,7 @@ fun isMessage(str: String): Boolean {
         return false
     }
 
-    val jsonObj = str.toJsonObject()
+    val jsonObj = JsonParser.parseString(str).toJsonObject()
 
     return jsonObj.has("content") && jsonObj["content"].asString != ""
 }
@@ -105,7 +105,7 @@ fun isReply(str: String): Boolean {
         return false
     }
 
-    val jsonObj = str.toJsonObject()
+    val jsonObj = JsonParser.parseString(str).toJsonObject()
 
     return jsonObj.has("target") && !jsonObj.has("values")
 }
@@ -115,7 +115,7 @@ fun isRequest(str: String): Boolean {
         return false
     }
 
-    val jsonObj = str.toJsonObject()
+    val jsonObj = JsonParser.parseString(str).toJsonObject()
 
     return jsonObj.has("parameters")
 }
@@ -125,7 +125,7 @@ fun isResponse(str: String): Boolean {
         return false
     }
 
-    val jsonObj = str.toJsonObject()
+    val jsonObj = JsonParser.parseString(str).toJsonObject()
 
     return jsonObj.has("values")
 }
