@@ -14,6 +14,6 @@ interface ServerService {
     val network: Network
     val server: Server
     val messageManager: MessageManager
-    val channel: Channel
+    var channel: Channel?
 
 }

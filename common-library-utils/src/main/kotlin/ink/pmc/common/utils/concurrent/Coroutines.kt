@@ -43,7 +43,8 @@ fun submitAsyncUnconfined(block: suspend CoroutineScope.() -> Unit) =
 
 @Suppress("UNUSED")
 @OptIn(DelicateCoroutinesApi::class)
-fun <T> submitAsyncUnconfined(block: suspend CoroutineScope.() -> T) = GlobalScope.async(Dispatchers.Unconfined) { block() }
+fun <T> submitAsyncUnconfined(block: suspend CoroutineScope.() -> T) =
+    GlobalScope.async(Dispatchers.Unconfined) { block() }
 
 @Suppress("UNUSED")
 suspend fun io(block: suspend CoroutineScope.() -> Unit) = withContext(Dispatchers.IO) { block() }

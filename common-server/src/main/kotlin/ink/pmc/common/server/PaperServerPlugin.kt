@@ -17,6 +17,7 @@ class PaperServerPlugin : JavaPlugin() {
         plugin = this
         disabled = false
         dataDir = dataFolder
+        pluginLogger = logger
 
         createDataDir()
         configFile = File(dataFolder, "config.toml")
@@ -33,6 +34,7 @@ class PaperServerPlugin : JavaPlugin() {
             return
         }
 
+        serverService.close()
         disabled = true
     }
 
