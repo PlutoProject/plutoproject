@@ -64,6 +64,7 @@ class VelocityServerPlugin {
         pluginLogger = proxyLogger
 
         serverService = VelocityServerService(host, port, id, name)
+        ServerService.instance = serverService
     }
 
     @Subscribe

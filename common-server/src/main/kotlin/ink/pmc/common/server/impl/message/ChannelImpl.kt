@@ -13,6 +13,7 @@ class ChannelImpl(
 ) : Channel {
 
     override val uniqueID: UUID = UUID.randomUUID()
+    override val channelListeners: MutableSet<(message: Message, channel: Channel) -> Unit> = mutableSetOf()
 
     override fun sendMessage(content: String, target: Server): Message {
         TODO("Not yet implemented")
