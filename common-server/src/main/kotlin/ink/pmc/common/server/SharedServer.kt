@@ -11,6 +11,7 @@ lateinit var pluginLogger: Logger
 lateinit var dataDir: File
 lateinit var configFile: File
 lateinit var config: FileConfig
+
 val token: String
     get() = config.get("token")
 val address: String

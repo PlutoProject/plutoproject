@@ -22,13 +22,15 @@ class VelocityServerService(
     private val name: String
 ) : ProxyServerService() {
 
-    private val connectedChannelIdsToChannelMap = mutableMapOf<Long, SocketChannel>()
-    private val verifiedClientIdsToChannelMap = mutableMapOf<Long, SocketChannel>()
+    val connectedChannelIdsToChannelMap = mutableMapOf<Long, SocketChannel>()
+    val verifiedClientIdsToChannelMap = mutableMapOf<Long, SocketChannel>()
+    val serverService = this
     private val channelInitializer = object : ChannelInitializer<SocketChannel>() {
         override fun initChannel(p0: SocketChannel) {
             val address = p0.remoteAddress()
             val id = p0.id().asLongText().toLong()
             connectedChannelIdsToChannelMap[id] = p0
+            p0.pipeline().addLast(VelocityInboundHandler(serverService))
 
             pluginLogger.info("Channel ${p0.id()} connected.")
             pluginLogger.info("Address: ${address.address}:${address.port}")
@@ -73,7 +75,7 @@ class VelocityServerService(
         get() = TODO("Not yet implemented")
     override val messageManager: MessageManager
         get() = TODO("Not yet implemented")
-    override var channel: Channel?
+    override var channel: Channel
         get() = TODO("Not yet implemented")
         set(value) {}
 

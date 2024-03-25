@@ -1,9 +1,10 @@
 package ink.pmc.common.server.request
 
-import org.apache.logging.log4j.message.Message
+import ink.pmc.common.server.message.Message
 
 interface Request : Message {
 
-    val parameters: Map<String, Any>
+    val name: String
+    val parameters: Map<String, String>
 
 }

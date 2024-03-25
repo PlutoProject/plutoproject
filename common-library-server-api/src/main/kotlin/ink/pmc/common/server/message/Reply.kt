@@ -4,6 +4,6 @@ import java.util.*
 
 interface Reply : Message {
 
-    val replying: UUID
+    val target: UUID
 
 }
