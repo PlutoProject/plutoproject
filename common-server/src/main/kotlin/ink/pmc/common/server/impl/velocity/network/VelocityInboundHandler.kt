@@ -1,4 +1,4 @@
-package ink.pmc.common.server.impl.velocity
+package ink.pmc.common.server.impl.velocity.network
 
 import ink.pmc.common.server.decodeMsg
 import ink.pmc.common.server.impl.ProxyServerService

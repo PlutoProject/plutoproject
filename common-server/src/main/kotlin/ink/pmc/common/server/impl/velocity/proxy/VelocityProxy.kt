@@ -1,4 +1,4 @@
-package ink.pmc.common.server.impl.velocity
+package ink.pmc.common.server.impl.velocity.proxy
 
 import ink.pmc.common.server.PlatformType
 import ink.pmc.common.server.Server

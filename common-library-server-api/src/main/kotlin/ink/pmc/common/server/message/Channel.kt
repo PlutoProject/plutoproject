@@ -9,6 +9,13 @@ interface Channel {
     val uniqueID: UUID
     val name: String
     val messageManager: MessageManager
+    val channelListeners: MutableSet<(message: Message, channel: Channel) -> Unit>
+
+    fun onMessage(message: Message) {
+        channelListeners.forEach {
+            it.invoke(message, this)
+        }
+    }
 
     fun sendMessage(content: String, target: Server): Message
 

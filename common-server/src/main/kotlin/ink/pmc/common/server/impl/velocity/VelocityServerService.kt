@@ -1,9 +1,12 @@
 package ink.pmc.common.server.impl.velocity
 
 import ink.pmc.common.server.Server
-import ink.pmc.common.server.address
 import ink.pmc.common.server.impl.ProxyServerService
-import ink.pmc.common.server.impl.message.MessageManagerImpl
+import ink.pmc.common.server.impl.message.ChannelImpl
+import ink.pmc.common.server.impl.velocity.message.VelocityMessageManager
+import ink.pmc.common.server.impl.velocity.network.VelocityInboundHandler
+import ink.pmc.common.server.impl.velocity.proxy.VelocityNetwork
+import ink.pmc.common.server.impl.velocity.proxy.VelocityProxy
 import ink.pmc.common.server.message.Channel
 import ink.pmc.common.server.message.MessageManager
 import ink.pmc.common.server.network.Network
@@ -26,13 +29,13 @@ class VelocityServerService(
 
     val connectedChannelIdsToChannelMap = mutableMapOf<Long, SocketChannel>()
     val verifiedClientIdsToChannelMap = mutableMapOf<Long, SocketChannel>()
-    val serverService = this
+    val channelHandler = VelocityInboundHandler(this)
     private val channelInitializer = object : ChannelInitializer<SocketChannel>() {
         override fun initChannel(p0: SocketChannel) {
             val address = p0.remoteAddress()
             val id = p0.id().asLongText().toLong()
             connectedChannelIdsToChannelMap[id] = p0
-            p0.pipeline().addLast(VelocityInboundHandler(serverService))
+            p0.pipeline().addLast(channelHandler)
 
             pluginLogger.info("Channel ${p0.id()} connected.")
             pluginLogger.info("Address: ${address.address}:${address.port}")
@@ -74,9 +77,7 @@ class VelocityServerService(
 
     override val server: Server = VelocityProxy(id, name)
     override val network: Network = VelocityNetwork(server as Proxy)
-    override val messageManager: MessageManager = MessageManagerImpl()
-    override var channel: Channel
-        get() = TODO("Not yet implemented")
-        set(value) {}
+    override val messageManager: MessageManager = VelocityMessageManager()
+    override var channel: Channel = ChannelImpl(messageManager, "_internalChannel")
 
 }
