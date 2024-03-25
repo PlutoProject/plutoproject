@@ -57,13 +57,14 @@ class VelocityServerService(
                 .channel(NioServerSocketChannel::class.java)
                 .childHandler(channelInitializer)
 
-            val future = bootstrap.bind(address, port).sync()
+            val future = bootstrap.bind(host, port).sync()
             future.sync().await()
 
             pluginLogger.info("Server started at $host:$port.")
         } catch (e: Exception) {
             pluginLogger.severe("Failed to start server!")
             close()
+            throw RuntimeException(e)
         }
     }
 

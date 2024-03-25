@@ -16,10 +16,30 @@ val token: String
     get() = config.get("token")
 val address: String
     get() = config.get("address")
+val host: String
+    get() {
+        val index = address.indexOf(':')
+
+        if (address.indexOf(':') == -1) {
+            return address
+        }
+
+        return address.substring(0, index)
+    }
+val port: Int
+    get() {
+        val index = address.indexOf(':')
+
+        if (address.indexOf(':') == -1) {
+            return 5677
+        }
+
+        return address.substring(index + 1, address.length).toInt()
+    }
 val id: Long
     get() = config.getLong("configuration.id")
 val name: String
-    get() = config.get("client-configuration.name")
+    get() = config.get("configuration.name")
 
 fun createDataDir() {
     if (!dataDir.exists()) {
