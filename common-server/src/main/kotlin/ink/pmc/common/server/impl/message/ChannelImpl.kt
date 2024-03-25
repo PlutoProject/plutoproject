@@ -5,6 +5,7 @@ import ink.pmc.common.server.message.Channel
 import ink.pmc.common.server.message.Message
 import ink.pmc.common.server.message.MessageManager
 import ink.pmc.common.server.message.Reply
+import ink.pmc.common.server.request.Request
 import java.util.*
 
 class ChannelImpl(
@@ -13,7 +14,8 @@ class ChannelImpl(
 ) : Channel {
 
     override val uniqueID: UUID = UUID.randomUUID()
-    override val channelListeners: MutableSet<(message: Message, channel: Channel) -> Unit> = mutableSetOf()
+    override val messageListeners: MutableSet<(message: Message, channel: Channel) -> Unit> = mutableSetOf()
+    override val requestListener: MutableSet<(request: Request, channel: Channel) -> Unit> = mutableSetOf()
 
     override fun sendMessage(content: String, target: Server): Message {
         TODO("Not yet implemented")

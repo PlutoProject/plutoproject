@@ -17,6 +17,7 @@ import io.netty.channel.ChannelInitializer
 import io.netty.channel.socket.SocketChannel
 import io.netty.channel.socket.nio.NioServerSocketChannel
 import kotlinx.coroutines.delay
+import java.util.UUID
 import kotlin.time.Duration
 
 @Suppress("UNUSED")
@@ -28,7 +29,7 @@ class VelocityServerService(
 ) : ProxyServerService() {
 
     val connectedChannelIdsToChannelMap = mutableMapOf<Long, SocketChannel>()
-    val verifiedClientIdsToChannelMap = mutableMapOf<Long, SocketChannel>()
+    val verifiedClientIdsToChannelMap = mutableMapOf<UUID, SocketChannel>()
     val channelHandler = VelocityInboundHandler(this)
     private val channelInitializer = object : ChannelInitializer<SocketChannel>() {
         override fun initChannel(p0: SocketChannel) {
@@ -77,7 +78,7 @@ class VelocityServerService(
 
     override val server: Server = VelocityProxy(id, name)
     override val network: Network = VelocityNetwork(server as Proxy)
-    override val messageManager: MessageManager = VelocityMessageManager()
+    override val messageManager: MessageManager = VelocityMessageManager(this)
     override var channel: Channel = ChannelImpl(messageManager, "_internalChannel")
 
 }

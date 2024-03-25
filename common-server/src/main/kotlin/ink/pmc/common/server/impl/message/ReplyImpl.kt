@@ -6,6 +6,7 @@ import java.util.*
 
 open class ReplyImpl(
     override val sender: UUID,
+    override val channel: UUID,
     override val receivers: Set<UUID>,
     override val type: MessageType,
     override val content: String,

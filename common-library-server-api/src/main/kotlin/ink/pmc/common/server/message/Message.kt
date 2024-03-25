@@ -7,6 +7,7 @@ interface Message {
 
     val uniqueId: UUID
     val sender: UUID
+    val channel: UUID
     val receivers: Set<UUID>
     val type: MessageType
     val content: String

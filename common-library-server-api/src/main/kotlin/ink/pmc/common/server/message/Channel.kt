@@ -1,6 +1,7 @@
 package ink.pmc.common.server.message
 
 import ink.pmc.common.server.Server
+import ink.pmc.common.server.request.Request
 import java.util.*
 
 @Suppress("UNUSED")
@@ -9,11 +10,18 @@ interface Channel {
     val uniqueID: UUID
     val name: String
     val messageManager: MessageManager
-    val channelListeners: MutableSet<(message: Message, channel: Channel) -> Unit>
+    val messageListeners: MutableSet<(message: Message, channel: Channel) -> Unit>
+    val requestListener: MutableSet<(request: Request, channel: Channel) -> Unit>
 
     fun onMessage(message: Message) {
-        channelListeners.forEach {
+        messageListeners.forEach {
             it.invoke(message, this)
+        }
+    }
+
+    fun onRequest(request: Request) {
+        requestListener.forEach {
+            it.invoke(request, this)
         }
     }
 

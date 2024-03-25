@@ -8,6 +8,7 @@ import java.util.*
 open class MessageImpl(
     override val sender: UUID,
     override val receivers: Set<UUID>,
+    override val channel: UUID,
     override val type: MessageType,
     override val content: String
 ) : Message {

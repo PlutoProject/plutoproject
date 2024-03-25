@@ -7,6 +7,7 @@ import java.util.*
 @Suppress("UNUSED")
 class ResponseImpl(
     override val sender: UUID,
+    override val channel: UUID,
     override val receivers: Set<UUID>,
     override val type: MessageType,
     override val target: UUID,

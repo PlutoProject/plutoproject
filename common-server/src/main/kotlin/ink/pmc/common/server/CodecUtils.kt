@@ -31,7 +31,7 @@ fun decodeMsg(message: String): Message? {
 }
 
 @Suppress("UNUSED")
-fun encodeReply(reply: ReplyImpl): String {
+fun encodeReply(reply: Reply): String {
     return encrypt(gson.toJson(reply))
 }
 
@@ -48,7 +48,7 @@ fun decodeReply(reply: String): Reply? {
 }
 
 @Suppress("UNUSED")
-fun encodeReq(req: RequestImpl): String {
+fun encodeReq(req: Request): String {
     return encrypt(gson.toJson(req))
 }
 

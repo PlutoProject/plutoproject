@@ -14,7 +14,7 @@ abstract class AbstractMessageManager : MessageManager {
     override val inboundQueue: Queue<Message> = ConcurrentLinkedQueue()
     override val outboundQueue: Queue<Message> = ConcurrentLinkedQueue()
     override val channels: MutableMap<String, Channel> = ConcurrentHashMap()
-    override val replies: MutableMap<UUID, Reply> = ConcurrentHashMap()
-    override val responses: MutableMap<UUID, Response> = ConcurrentHashMap()
+    override val replies: MutableMap<UUID, MutableSet<Reply>> = ConcurrentHashMap()
+    override val responses: MutableMap<UUID, MutableSet<Response>> = ConcurrentHashMap()
 
 }

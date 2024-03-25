@@ -11,32 +11,36 @@ interface MessageManager : Closeable {
     val inboundQueue: Queue<Message>
     val outboundQueue: Queue<Message>
     val channels: MutableMap<String, Channel>
-    val replies: MutableMap<UUID, Reply>
-    val responses: MutableMap<UUID, Response>
+    val replies: MutableMap<UUID, MutableSet<Reply>>
+    val responses: MutableMap<UUID, MutableSet<Response>>
 
     fun getReplies(message: Message): Set<Reply> {
-        return replies.keys.filter { it == message.uniqueId }.map { replies[it]!! }.toSet()
+        val set = replies[message.uniqueId] ?: return mutableSetOf()
+        return set.toSet()
     }
 
     fun getReplies(message: UUID): Set<Reply> {
-        return replies.keys.filter { it == message }.map { replies[it]!! }.toSet()
+        val set = replies[message] ?: return mutableSetOf()
+        return set.toSet()
     }
 
     fun getResponse(request: Request): Set<Response> {
-        return responses.keys.filter { it == request.uniqueId }.map { responses[it]!! }.toSet()
+        val set = responses[request.uniqueId] ?: return mutableSetOf()
+        return set.toSet()
     }
 
     fun getResponse(request: UUID): Set<Response> {
-        return responses.keys.filter { it == request }.map { responses[it]!! }.toSet()
+        val set = responses[request] ?: return mutableSetOf()
+        return set.toSet()
     }
 
     fun sendOutbound(message: Message) {
         outboundQueue.add(message)
     }
 
-    fun createChannel(name: String)
+    fun createChannel(name: String): Channel
 
-    fun registerChannel(name: String, uuid: String)
+    fun registerChannel(name: String, uuid: String): Channel
 
     fun clearReplies(uuid: UUID) {
         replies.entries.removeIf { it.key == uuid }
