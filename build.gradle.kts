@@ -41,7 +41,7 @@ allprojects {
     }
 
     val common = listOf(
-        "com.squareup.okhttp3:okhttp:5.0.0-alpha.12",
+        "com.squareup.okhttp3:okhttp:5.0.0-SNAPSHOT",
         "com.google.code.gson:gson:2.10.1",
         "org.mongojack:mongojack:4.8.2",
         "org.mongodb:mongodb-driver-sync:4.11.1",
