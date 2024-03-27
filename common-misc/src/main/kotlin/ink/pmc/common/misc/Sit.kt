@@ -423,6 +423,11 @@ fun isBlossom(block: Block): Boolean {
     return false
 }
 
+private fun isAzalea(block: Block): Boolean {
+    val type = block.type
+    return type == Material.AZALEA || type == Material.FLOWERING_AZALEA
+}
+
 private fun isLegalType(block: Block): Boolean {
     val blockData = block.blockData
 
@@ -431,6 +436,10 @@ private fun isLegalType(block: Block): Boolean {
     }
 
     if (isBlossom(block)) {
+        return true
+    }
+
+    if (isAzalea(block)) {
         return true
     }
 
@@ -460,9 +469,9 @@ fun checkLocation(location: Location): Boolean {
     val offset2 = location.clone().add(0.0, 2.0, 0.0).block
 
     return (offset1.type == Material.AIR && offset2.type == Material.AIR)
-            || (isBlossom(block) && isBlossom(offset1)
-            || offset1.type == Material.AIR && isBlossom(offset2)
-            || offset2.type == Material.AIR)
+            || (isBlossom(block) && (isBlossom(offset1)
+            || offset1.type == Material.AIR) && (isBlossom(offset2)
+            || offset2.type == Material.AIR))
 }
 
 fun findLegalLocation(startPoint: Location): Location? {
