@@ -17,7 +17,7 @@ import io.netty.channel.ChannelInitializer
 import io.netty.channel.socket.SocketChannel
 import io.netty.channel.socket.nio.NioServerSocketChannel
 import kotlinx.coroutines.delay
-import java.util.UUID
+import java.util.*
 import kotlin.time.Duration
 
 @Suppress("UNUSED")

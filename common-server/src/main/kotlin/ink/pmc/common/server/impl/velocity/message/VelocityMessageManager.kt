@@ -45,7 +45,8 @@ class VelocityMessageManager(private val serverService: VelocityServerService) :
     }
 
     private fun p2sForward(message: Message) {
-        val channels = serverService.verifiedClientIdsToChannelMap.entries.filter { message.receivers.contains(it.key) }.map { it.value }.toSet()
+        val channels = serverService.verifiedClientIdsToChannelMap.entries.filter { message.receivers.contains(it.key) }
+            .map { it.value }.toSet()
 
         if (message is Request) {
             p2sRequestForward(message, channels)

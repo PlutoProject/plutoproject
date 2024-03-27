@@ -12,10 +12,11 @@ import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.block.Block
 import org.bukkit.block.BlockFace
-import org.bukkit.block.data.*
-import org.bukkit.block.data.type.Sign
-import org.bukkit.block.data.type.Slab
-import org.bukkit.block.data.type.Stairs
+import org.bukkit.block.data.Bisected
+import org.bukkit.block.data.Hangable
+import org.bukkit.block.data.Openable
+import org.bukkit.block.data.Powerable
+import org.bukkit.block.data.type.*
 import org.bukkit.entity.ArmorStand
 import org.bukkit.entity.Entity
 import org.bukkit.entity.EntityType
@@ -56,7 +57,7 @@ fun runSitCheckTask() {
 
                     // 避免一些意外问题
                     if (!armorStand.passengers.contains(player)) {
-                        armorStand.addPassenger(player)
+                        player.stand()
                     }
                 }
             }
@@ -110,9 +111,9 @@ fun createArmorStand(locationToSit: Location): Entity {
 
     entity.setGravity(false)
     entity.isInvisible = true
-    entity.setAI(false)
-    entity.isCollidable = false
-    entity.setCanTick(false)
+    // entity.setAI(false)
+    // entity.isCollidable = false
+    // entity.setCanTick(false)
 
     return entity
 }
@@ -170,7 +171,7 @@ fun handleSitClick(event: PlayerInteractEvent) {
 
     val blockData = block.blockData
 
-    if (blockData !is Slab && blockData !is Stairs) {
+    if (blockData !is Slab && blockData !is Stairs && !isExtinctCampfire(block)) {
         return
     }
 
@@ -214,7 +215,7 @@ fun getSitter(entity: Entity): Player? {
 
 fun handleSitDelay(event: EntityDismountEvent) {
     if (!sitDelay.contains(event.entity.uniqueId)) {
-        tryToStand(event)
+        tryToStand(event, false)
     } else {
         event.isCancelled = true
     }
@@ -277,25 +278,29 @@ fun handleArmorStandAction(event: Cancellable, needCancel: Boolean = true) {
     event.isCancelled = needCancel
 }
 
-private fun isSlab(blockData: BlockData): Boolean {
-    return blockData is Slab
+private fun isSlab(block: Block): Boolean {
+    return block.blockData is Slab
 }
 
-private fun isStair(blockData: BlockData): Boolean {
-    return blockData is Stairs
+private fun isStair(block: Block): Boolean {
+    return block.blockData is Stairs
 }
 
 private fun treatAsNormal(block: Block): Boolean {
     val blockData = block.blockData
 
-    if (isSlab(blockData)) {
+    if (isSlab(block)) {
         val slab = blockData as Slab
         return slab.type == Slab.Type.TOP || slab.type == Slab.Type.DOUBLE
     }
 
-    if (isStair(blockData)) {
+    if (isStair(block)) {
         val stair = blockData as Stairs
         return stair.half == Bisected.Half.TOP
+    }
+
+    if (isExtinctCampfire(block)) {
+        return false
     }
 
     return true
@@ -312,17 +317,29 @@ private fun offsetLocation(location: Location): Location {
         loc.subtract(0.0, 0.5, 0.0)
     }
 
-    val blockData = block.blockData
+    if (isStair(block)) {
+        return if (treatAsNormal(block)) loc else offsetStair(block, loc)
+    }
 
-    if (isStair(blockData)) {
-        return if (treatAsNormal(block)) loc else offsetStair(blockData as Stairs, loc)
+    if (isExtinctCampfire(block)) {
+        return offsetCampfire(loc)
+    }
+
+    if (isBlossom(block)) {
+        loc.subtract(0.0, 1.0, 0.0)
     }
 
     return loc
 }
 
-private fun offsetStair(blockData: Stairs, location: Location): Location {
+private fun offsetCampfire(loc: Location): Location {
+    return loc.clone().subtract(0.0, 0.05, 0.0)
+}
+
+private fun offsetStair(block: Block, location: Location): Location {
     val loc = location.clone()
+    val blockData = block.blockData as Stairs
+
     val facing = blockData.facing
     val shape = blockData.shape
 
@@ -379,10 +396,45 @@ private fun offsetStairShape(facing: BlockFace, shape: Stairs.Shape, location: L
     return loc
 }
 
-fun isLegalType(block: Block): Boolean {
+fun isExtinctCampfire(block: Block): Boolean {
+    val data = block.blockData
+
+    if (data is Campfire) {
+        if (!data.isLit) {
+            return true
+        }
+    }
+
+    return false
+}
+
+fun isBlossom(block: Block): Boolean {
+    val data = block.blockData
+    val type = block.type
+
+    if (data is PinkPetals) {
+        return true
+    }
+
+    if (type == Material.SHORT_GRASS || type == Material.TALL_GRASS || type == Material.SEAGRASS || type == Material.VINE) {
+        return true
+    }
+
+    return false
+}
+
+private fun isLegalType(block: Block): Boolean {
     val blockData = block.blockData
 
-    if (!(block.isSolid || isSlab(blockData) || isStair(blockData))) {
+    if (isExtinctCampfire(block)) {
+        return true
+    }
+
+    if (isBlossom(block)) {
+        return true
+    }
+
+    if (!(block.isSolid || isSlab(block) || isStair(block))) {
         return false
     }
 
@@ -404,10 +456,13 @@ fun checkLocation(location: Location): Boolean {
         return false
     }
 
-    val offset1 = location.clone().add(0.0, 1.0, 0.0).block.type
-    val offset2 = location.clone().add(0.0, 2.0, 0.0).block.type
+    val offset1 = location.clone().add(0.0, 1.0, 0.0).block
+    val offset2 = location.clone().add(0.0, 2.0, 0.0).block
 
-    return offset1 == Material.AIR && offset2 == Material.AIR
+    return (offset1.type == Material.AIR && offset2.type == Material.AIR)
+            || (isBlossom(block) && isBlossom(offset1)
+            || offset1.type == Material.AIR && isBlossom(offset2)
+            || offset2.type == Material.AIR)
 }
 
 fun findLegalLocation(startPoint: Location): Location? {
@@ -431,26 +486,4 @@ fun findLegalLocation(startPoint: Location): Location? {
     }
 
     return null
-}
-
-@Deprecated("不需要细致的检测了")
-@Suppress("UNUSED")
-fun findQuitLocation(startPoint: Location): Location {
-    for (i in 1..5) {
-        val location = startPoint.clone().add(0.0, i.toDouble(), 0.0)
-
-        if (location.block.type != Material.AIR) {
-            continue
-        }
-
-        val offset = location.clone().add(0.0, 1.0, 0.0)
-
-        if (offset.block.type != Material.AIR) {
-            continue
-        }
-
-        return location
-    }
-
-    return startPoint
 }

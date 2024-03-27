@@ -6,12 +6,12 @@ import ink.pmc.common.misc.api.sit.isSitting
 import ink.pmc.common.misc.api.sit.sitter
 import ink.pmc.common.misc.api.sit.stand
 import ink.pmc.common.utils.entity
-import ink.pmc.common.utils.entity.ensureThreadSafe
 import ink.pmc.common.utils.platform.threadSafeTeleport
 import ink.pmc.common.utils.player
 import ink.pmc.common.utils.world.rawLocation
 import net.kyori.adventure.text.Component
 import org.bukkit.Location
+import org.bukkit.block.data.type.Campfire
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 import java.util.*
@@ -49,6 +49,11 @@ class SitManagerImpl : SitManager {
             return
         }
 
+        if (sitLoc.block.blockData is Campfire && !isExtinctCampfire(sitLoc.block)) {
+            player.sendMessage(ILLEGAL_LOC)
+            return
+        }
+
         val armorStand = createArmorStand(sitLoc)
         markAsSeat(armorStand, player)
         armorStand.addPassenger(player)
@@ -69,12 +74,7 @@ class SitManagerImpl : SitManager {
 
         val playerId = player.uniqueId
         val armorStandId = playerToSeatMap[playerId]!!
-        val armorStand = player.world.getEntity(armorStandId)!!
         val standLocation = player.location.clone().add(0.0, 1.0, 0.0)
-
-        armorStand.ensureThreadSafe {
-            removePassenger(player)
-        }
 
         /*
         * 在 Paper 上通过 PlayerQuitEvent 触发此处时，
