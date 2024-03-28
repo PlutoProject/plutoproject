@@ -3,7 +3,7 @@ package ink.pmc.common.misc
 import ink.pmc.common.misc.api.MiscAPI
 import ink.pmc.common.misc.api.sit.SitManager
 import ink.pmc.common.misc.impl.MiscAPIImpl
-import ink.pmc.common.misc.impl.SitManagerImpl
+import ink.pmc.common.misc.impl.sit.SitManagerImpl
 import org.bukkit.command.CommandSender
 import org.bukkit.plugin.java.JavaPlugin
 import org.incendo.cloud.execution.ExecutionCoordinator

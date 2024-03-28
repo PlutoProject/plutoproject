@@ -1,4 +1,4 @@
-package ink.pmc.common.misc.impl
+package ink.pmc.common.misc.impl.sit
 
 import ink.pmc.common.misc.*
 import ink.pmc.common.misc.api.sit.SitManager
@@ -15,6 +15,7 @@ import org.bukkit.block.data.type.Campfire
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 import java.util.*
+
 
 class SitManagerImpl : SitManager {
 

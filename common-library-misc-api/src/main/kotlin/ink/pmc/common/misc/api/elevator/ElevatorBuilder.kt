@@ -6,9 +6,12 @@ import org.bukkit.Material
 @Suppress("UNUSED")
 interface ElevatorBuilder {
 
+    val startPoint: Location
     val type: Material
     val permission: String?
 
-    fun findLocations(start: Location): List<Location>
+    suspend fun findLocations(): List<Location>
+
+    suspend fun teleportLocations(): List<Location>
 
 }
