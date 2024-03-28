@@ -60,7 +60,7 @@ fun elevatorGoUpTitle(curr: Int, total: Int): Title {
 
     return Title.title(
         Component.text(" "),
-        ELEVATOR_GO_UP,
+        msg,
         Title.Times.times(Duration.ZERO, Duration.ofSeconds(1), Duration.ZERO)
     )
 }
@@ -71,7 +71,7 @@ fun elevatorGoDownTitle(curr: Int, total: Int): Title {
 
     return Title.title(
         Component.text(" "),
-        ELEVATOR_GO_UP,
+        msg,
         Title.Times.times(Duration.ZERO, Duration.ofSeconds(1), Duration.ZERO)
     )
 }

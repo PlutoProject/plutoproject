@@ -5,6 +5,7 @@ import ink.pmc.common.misc.api.elevator.ElevatorManager
 import ink.pmc.common.misc.api.sit.SitManager
 import ink.pmc.common.misc.impl.MiscAPIImpl
 import ink.pmc.common.misc.impl.elevator.ElevatorManagerImpl
+import ink.pmc.common.misc.impl.elevator.builders.IronElevatorBuilder
 import ink.pmc.common.misc.impl.sit.SitManagerImpl
 import org.bukkit.command.CommandSender
 import org.bukkit.plugin.java.JavaPlugin
@@ -35,6 +36,8 @@ class MiscPlugin : JavaPlugin() {
         MiscAPI.instance = MiscAPIImpl
         MiscAPIImpl.internalSitManager = sitManager
         MiscAPIImpl.internalElevatorManager = elevatorManager
+
+        elevatorManager.registerBuilder(IronElevatorBuilder)
 
         commandManager.registerBrigadier()
         commandManager.command(suicideCommand)

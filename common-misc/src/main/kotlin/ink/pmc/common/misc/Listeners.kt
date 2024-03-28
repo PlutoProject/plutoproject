@@ -1,5 +1,6 @@
 package ink.pmc.common.misc
 
+import com.destroystokyo.paper.event.player.PlayerJumpEvent
 import io.papermc.paper.event.entity.EntityMoveEvent
 import io.papermc.paper.event.player.AsyncChatEvent
 import org.bukkit.event.EventHandler
@@ -9,6 +10,7 @@ import org.bukkit.event.entity.*
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
+import org.bukkit.event.player.PlayerToggleSneakEvent
 import org.bukkit.event.world.ChunkLoadEvent
 
 @Suppress("UNUSED", "UNUSED_PARAMETER")
@@ -117,6 +119,16 @@ object Listeners : Listener {
     @EventHandler
     fun playerJoinEvent(event: PlayerJoinEvent) {
         handleJoinMessage(event)
+    }
+
+    @EventHandler
+    fun playerJumpEvent(event: PlayerJumpEvent) {
+        handlePlayerJumpFloorUp(event)
+    }
+
+    @EventHandler
+    fun playerSneakEvent(event: PlayerToggleSneakEvent) {
+        handlePlayerSneakFloorDown(event)
     }
 
 }

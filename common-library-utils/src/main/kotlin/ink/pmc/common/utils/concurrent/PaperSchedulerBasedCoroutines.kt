@@ -108,3 +108,15 @@ suspend fun Chunk.sync(block: suspend CoroutineScope.() -> Unit) = withContext(t
 @Suppress("UNUSED")
 @JvmName("locationSyncSuspend")
 suspend fun Location.sync(block: suspend CoroutineScope.() -> Unit) = withContext(this.dispatcher) { block() }
+
+@Suppress("UNUSED")
+@JvmName("entitySyncSuspendValue")
+suspend fun <T> Entity.sync(block: suspend CoroutineScope.() -> T) = withContext(this.dispatcher) { block() }
+
+@Suppress("UNUSED")
+@JvmName("chunkSyncSuspendValue")
+suspend fun <T> Chunk.sync(block: suspend CoroutineScope.() -> T) = withContext(this.dispatcher) { block() }
+
+@Suppress("UNUSED")
+@JvmName("locationSyncSuspendValue")
+suspend fun <T> Location.sync(block: suspend CoroutineScope.() -> T) = withContext(this.dispatcher) { block() }

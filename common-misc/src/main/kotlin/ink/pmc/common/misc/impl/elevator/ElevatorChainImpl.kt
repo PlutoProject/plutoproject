@@ -13,18 +13,6 @@ import org.bukkit.entity.Player
 class ElevatorChainImpl(override val floors: List<Location>, private val tpLocs: List<Location>) : ElevatorChain {
 
     override fun up(player: Player) {
-        val next = getPreviousFloor(player)
-
-        if (next == -1) {
-            return
-        }
-
-        go(player, next)
-        player.playSound(ELEVATOR_WORK_SOUND)
-        player.showTitle(elevatorGoDownTitle(next, totalFloorCount()))
-    }
-
-    override fun down(player: Player) {
         val next = getNextFloor(player)
 
         if (next == -1) {
@@ -36,12 +24,24 @@ class ElevatorChainImpl(override val floors: List<Location>, private val tpLocs:
         player.showTitle(elevatorGoUpTitle(next, totalFloorCount()))
     }
 
+    override fun down(player: Player) {
+        val next = getPreviousFloor(player)
+
+        if (next == -1) {
+            return
+        }
+
+        go(player, next)
+        player.playSound(ELEVATOR_WORK_SOUND)
+        player.showTitle(elevatorGoDownTitle(next, totalFloorCount()))
+    }
+
     override fun go(player: Player, floor: Int) {
         if (totalFloorCount() < floor) {
             return
         }
 
-        val loc = tpLocs[floor]
+        val loc = tpLocs[floor - 1]
         val tpLoc = player.location.clone()
         tpLoc.y = loc.blockY.toDouble()
 
