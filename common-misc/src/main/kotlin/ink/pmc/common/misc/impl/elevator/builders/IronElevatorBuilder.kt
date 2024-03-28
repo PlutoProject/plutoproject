@@ -7,12 +7,12 @@ import org.bukkit.Location
 import org.bukkit.Material
 
 @Suppress("UNUSED")
-class IronElevatorBuilder(override val startPoint: Location) : ElevatorBuilder {
+object IronElevatorBuilder : ElevatorBuilder {
 
     override val type: Material = Material.IRON_BLOCK
     override val permission: String? = null
 
-    override suspend fun findLocations(): List<Location> {
+    override suspend fun findLocations(startPoint: Location): List<Location> {
         val loc = startPoint.rawLocation
         val offsetUp = mutableListOf<Location>()
         val offsetDown = mutableListOf<Location>()
@@ -65,8 +65,8 @@ class IronElevatorBuilder(override val startPoint: Location) : ElevatorBuilder {
         return result
     }
 
-    override suspend fun teleportLocations(): List<Location> {
-        return findLocations().map {
+    override suspend fun teleportLocations(startPoint: Location): List<Location> {
+        return findLocations(startPoint).map {
             it.clone().add(0.0, 1.0, 0.0)
         }
     }

@@ -1,6 +1,6 @@
 package ink.pmc.common.misc.api.elevator
 
-import ink.pmc.common.utils.world.Loc2D
+import org.bukkit.Location
 import org.bukkit.Material
 
 @Suppress("UNUSED")
@@ -10,6 +10,6 @@ interface ElevatorManager {
 
     fun registerBuilder(builder: ElevatorBuilder)
 
-    fun getChainAt(loc: Loc2D): ElevatorChain?
+    suspend fun getChainAt(loc: Location): ElevatorChain?
 
 }
