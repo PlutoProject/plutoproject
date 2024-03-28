@@ -14,4 +14,12 @@ interface ElevatorChain {
 
     fun go(player: Player, floor: Int)
 
+    fun getNextFloor(player: Player): Int
+
+    fun getPreviousFloor(player: Player): Int
+
+    fun getCurrentFloor(player: Player): Int
+
+    fun totalFloorCount(): Int
+
 }

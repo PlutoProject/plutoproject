@@ -1,5 +1,6 @@
 package ink.pmc.common.misc
 
+import ink.pmc.common.utils.chat.replace
 import ink.pmc.common.utils.visual.*
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.sound.Sound
@@ -44,3 +45,36 @@ val QUIT_FORMAT
     get() = Component.text("[-] ").color(mochaRed)
         .append(Component.text("<player> ").color(mochaYellow))
         .append(Component.text("退出了游戏").color(mochaText))
+
+val ELEVATOR_GO_UP
+    get() = Component.text("电梯上行 ").color(mochaYellow)
+        .append(Component.text("(<curr>/<total>)").color(mochaSubtext0))
+
+val ELEVATOR_GO_DOWN
+    get() = Component.text("电梯下行 ").color(mochaYellow)
+        .append(Component.text("(<curr>/<total>)").color(mochaSubtext0))
+
+fun elevatorGoUpTitle(curr: Int, total: Int): Title {
+    val msg = ELEVATOR_GO_UP.replace("<curr>", curr.toString())
+        .replace("<total>", total.toString())
+
+    return Title.title(
+        Component.text(" "),
+        ELEVATOR_GO_UP,
+        Title.Times.times(Duration.ZERO, Duration.ofSeconds(1), Duration.ZERO)
+    )
+}
+
+fun elevatorGoDownTitle(curr: Int, total: Int): Title {
+    val msg = ELEVATOR_GO_DOWN.replace("<curr>", curr.toString())
+        .replace("<total>", total.toString())
+
+    return Title.title(
+        Component.text(" "),
+        ELEVATOR_GO_UP,
+        Title.Times.times(Duration.ZERO, Duration.ofSeconds(1), Duration.ZERO)
+    )
+}
+
+val ELEVATOR_WORK_SOUND
+    get() = Sound.sound(Key.key("entity.iron_golem.attack"), Sound.Source.BLOCK, 1F, 1F)
