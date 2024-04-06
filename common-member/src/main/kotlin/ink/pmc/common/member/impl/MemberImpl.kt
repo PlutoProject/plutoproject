@@ -29,9 +29,9 @@ data class MemberImpl @JsonCreator constructor(
     @JsonProperty("_id")
     var id: String? = null
 
-    override var joinTime: Date = Date()
-    override var lastJoinTime: Date? = null
-    override var lastQuitTime: Date? = null
+    override var joinTime: Long = Date().time / 1000
+    override var lastJoinTime: Long? = null
+    override var lastQuitTime: Long? = null
     override val punishments: MutableCollection<Punishment> = mutableSetOf()
     override var currentPunishmentId: Long? = null
     override var lastPunishmentId: Long? = null

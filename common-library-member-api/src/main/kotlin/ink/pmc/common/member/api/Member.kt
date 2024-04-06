@@ -11,9 +11,9 @@ interface Member {
 
     val uuid: UUID
     var name: String
-    var joinTime: Date
-    var lastJoinTime: Date?
-    var lastQuitTime: Date?
+    var joinTime: Long
+    var lastJoinTime: Long?
+    var lastQuitTime: Long?
     val punishments: MutableCollection<Punishment>
     var currentPunishmentId: Long?
     var lastPunishmentId: Long?

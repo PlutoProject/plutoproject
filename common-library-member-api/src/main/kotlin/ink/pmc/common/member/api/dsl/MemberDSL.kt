@@ -6,6 +6,6 @@ class MemberDSL {
 
     var uuid: UUID? = null
     var name: String? = null
-    var joinTime: Date? = null
+    var joinTime: Long? = null
 
 }

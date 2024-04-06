@@ -2,6 +2,8 @@ package ink.pmc.common.member
 
 import ink.pmc.common.utils.chat.replace
 import ink.pmc.common.utils.concurrent.submitAsync
+import ink.pmc.common.utils.localeDate
+import ink.pmc.common.utils.unixTimestamp
 import org.incendo.cloud.parser.standard.StringParser
 import java.time.Duration
 import java.util.*
@@ -31,7 +33,7 @@ val memberAddCommand = commandManager.commandBuilder("member")
             memberManager.createAndRegister {
                 this.name = name
                 this.uuid = uuid
-                this.joinTime = Date()
+                this.joinTime = Date().unixTimestamp
             }
 
             sender.sendMessage(MEMBER_ADD_SUCCEED.replace("<player>", name))
@@ -101,8 +103,8 @@ val memberLookupCommand = commandManager.commandBuilder("member")
                 .replace("<uuid>", uuid.toString())
                 .replace("<bio>", member.bio.toString())
                 .replace("<joinTime>", member.joinTime.toString())
-                .replace("<lastJoinTime>", member.lastJoinTime.toString())
-                .replace("<lastQuitTime>", member.lastQuitTime.toString())
+                .replace("<lastJoinTime>", Date(member.lastJoinTime!! * 1000).localeDate)
+                .replace("<lastQuitTime>", Date(member.lastQuitTime!! * 1000).localeDate)
                 .replace("<data>", member.data.data.toString())
                 .replace("<totalPlayTime>", Duration.ofMillis(member.totalPlayTime).toString())
 
