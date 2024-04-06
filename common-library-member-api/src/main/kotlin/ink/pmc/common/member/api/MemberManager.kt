@@ -1,6 +1,6 @@
 package ink.pmc.common.member.api
 
-import com.github.benmanes.caffeine.cache.AsyncLoadingCache
+import com.github.benmanes.caffeine.cache.LoadingCache
 import com.mongodb.client.MongoCollection
 import ink.pmc.common.member.api.dsl.MemberDSL
 import ink.pmc.common.member.api.punishment.Punishment
@@ -13,7 +13,7 @@ interface MemberManager {
     val collection: JacksonMongoCollection<Member>
     val punishmentIndexCollection: MongoCollection<Document>
     val commentIndexCollection: MongoCollection<Document>
-    val cachedMember: AsyncLoadingCache<UUID, Member>
+    val cachedMember: LoadingCache<UUID, Member>
 
     suspend fun register(member: Member)
 
