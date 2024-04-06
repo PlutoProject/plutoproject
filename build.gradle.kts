@@ -34,6 +34,7 @@ allprojects {
         mavenCentral()
         maven(uri("https://oss.sonatype.org/content/repositories/snapshots/"))
         maven(uri("https://repo.papermc.io/repository/maven-public/"))
+        maven(uri("https://maven.playpro.com/"))
     }
 
     val common = listOf(
