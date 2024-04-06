@@ -4,8 +4,7 @@ import com.velocitypowered.api.event.Subscribe
 import com.velocitypowered.api.event.connection.DisconnectEvent
 import com.velocitypowered.api.event.connection.PostLoginEvent
 import ink.pmc.common.utils.concurrent.submitAsync
-import ink.pmc.common.utils.unixTimestamp
-import java.util.*
+import ink.pmc.common.utils.currentUnixTimestamp
 
 @Suppress("UNUSED")
 object VelocityPlayerListener {
@@ -24,7 +23,7 @@ object VelocityPlayerListener {
             val member = memberManager.get(uuid)!!
 
             member.sync()
-            member.lastJoinTime = Date().unixTimestamp
+            member.lastJoinTime = currentUnixTimestamp
             player.startPlay()
             member.update()
         }
@@ -43,7 +42,7 @@ object VelocityPlayerListener {
             val member = memberManager.get(uuid)!!
 
             member.sync()
-            member.lastQuitTime = Date().unixTimestamp
+            member.lastQuitTime = currentUnixTimestamp
             member.increasePlayTime(player.stopPlay())
             member.update()
         }

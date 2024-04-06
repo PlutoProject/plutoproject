@@ -6,7 +6,7 @@ var disabled = false
 lateinit var plugin: JavaPlugin
 
 @Suppress("UNUSED")
-class InteractivePlugin: JavaPlugin() {
+class InteractivePlugin : JavaPlugin() {
 
     override fun onEnable() {
         plugin = this

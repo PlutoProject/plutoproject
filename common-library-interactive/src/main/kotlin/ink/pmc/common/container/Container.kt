@@ -1,8 +1,8 @@
 package ink.pmc.common.container
 
 import ink.pmc.common.InteractiveAPI
-import ink.pmc.common.renderer.PageRenderer
 import ink.pmc.common.page.Page
+import ink.pmc.common.renderer.PageRenderer
 import org.bukkit.entity.Player
 
 @Suppress("UNUSED")
