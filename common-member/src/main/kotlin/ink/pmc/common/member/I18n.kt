@@ -68,3 +68,21 @@ val MEMBER_LOOKUP
         )
         .appendNewline()
         .append(Component.text("数据组件：").color(mochaText).append(Component.text("<data>").color(mochaYellow)))
+
+val ID_NOT_EXIST
+    get() = Component.text("ID 为 <player> 的玩家未找到").color(mochaMaroon)
+
+val ID_ADDED
+    get() = Component.text("ID 为 <player> 的玩家添加成功").color(mochaGreen)
+
+val TIME_UPDATED
+    get() = Component.text("ID 为 <player> 的玩家时间更新成功").color(mochaGreen)
+
+val TIME_UPDATED_FAILED
+    get() = Component.text("ID 为 <player> 的玩家时间更新失败").color(mochaMaroon)
+
+val WAITING_API
+    get() = Component.text("等待 60s 再继续操作以防 API 限制").color(mochaGreen)
+
+val OPERATION_FINISHED
+    get() = Component.text("操作已全部完成").color(mochaGreen)
