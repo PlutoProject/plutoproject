@@ -4,6 +4,7 @@ import ink.pmc.common.utils.chat.replace
 import ink.pmc.common.utils.concurrent.submitAsync
 import ink.pmc.common.utils.currentUnixTimestamp
 import ink.pmc.common.utils.localeDate
+import net.kyori.adventure.text.Component
 import org.incendo.cloud.parser.standard.StringParser
 import java.time.Duration
 import java.util.*
@@ -103,11 +104,20 @@ val memberLookupCommand = commandManager.commandBuilder("member")
                 .replace("<uuid>", uuid.toString())
                 .replace("<bio>", member.bio.toString())
                 .replace("<joinTime>", Date(member.joinTime).localeDate)
-                .replace("<lastJoinTime>", Date(member.lastJoinTime!!).localeDate)
-                .replace("<lastQuitTime>", Date(member.lastQuitTime!!).localeDate)
+                .replace("<lastJoinTime>", nullableTimestampToComponent(member.lastJoinTime))
+                .replace("<lastQuitTime>", nullableTimestampToComponent(member.lastQuitTime))
                 .replace("<data>", member.data.data.toString())
                 .replace("<totalPlayTime>", Duration.ofMillis(member.totalPlayTime).toString())
 
             sender.sendMessage(message)
         }
     }
+
+private fun nullableTimestampToComponent(timestamp: Long?): Component {
+    if (timestamp == null) {
+        return Component.text("暂无")
+    }
+
+    val localeDate = Date(timestamp).localeDate
+    return Component.text(localeDate)
+}

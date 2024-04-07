@@ -3,21 +3,21 @@ package ink.pmc.common.member
 import com.velocitypowered.api.event.Subscribe
 import com.velocitypowered.api.event.connection.DisconnectEvent
 import com.velocitypowered.api.event.connection.PostLoginEvent
-import ink.pmc.common.utils.concurrent.submitAsync
 import ink.pmc.common.utils.currentUnixTimestamp
+import kotlinx.coroutines.runBlocking
 
 @Suppress("UNUSED")
 object VelocityPlayerListener {
 
     @Subscribe
     fun postLoginEvent(event: PostLoginEvent) {
-        submitAsync {
+        runBlocking {
             val player = event.player
             val uuid = player.uniqueId
 
             if (!memberManager.exist(uuid)) {
                 player.disconnect(NOT_WHITELISTED)
-                return@submitAsync
+                return@runBlocking
             }
 
             val member = memberManager.get(uuid)!!
@@ -31,12 +31,12 @@ object VelocityPlayerListener {
 
     @Subscribe
     fun disconnectEvent(event: DisconnectEvent) {
-        submitAsync {
+        runBlocking {
             val player = event.player
             val uuid = player.uniqueId
 
             if (!memberManager.exist(uuid)) {
-                return@submitAsync
+                return@runBlocking
             }
 
             val member = memberManager.get(uuid)!!

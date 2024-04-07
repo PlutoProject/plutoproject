@@ -64,11 +64,14 @@ class VelocityMemberPlugin {
         commandManager.command(memberLookupCommand)
 
         proxyServer.eventManager.register(this, VelocityPlayerListener)
+
+        disabled = false
     }
 
     @Subscribe
     fun proxyShutdownEvent(event: ProxyShutdownEvent) {
-        mongoClient.close()
+        safeDisable()
+        disabled = true
     }
 
 }

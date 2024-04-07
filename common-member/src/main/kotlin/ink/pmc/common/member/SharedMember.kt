@@ -70,3 +70,9 @@ fun initMemberManager() {
 fun initAPI() {
     MemberAPIImpl.internalMemberManager = memberManager
 }
+
+fun safeDisable() {
+    memberManager.cachedMember.invalidateAll()
+    memberManager.cachedMember.cleanUp()
+    mongoClient.close()
+}

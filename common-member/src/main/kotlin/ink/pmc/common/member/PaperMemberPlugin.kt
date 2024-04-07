@@ -15,7 +15,6 @@ class PaperMemberPlugin : JavaPlugin() {
         }
 
         plugin = this
-        disabled = false
         dataDir = dataFolder
 
         createDataDir()
@@ -26,6 +25,7 @@ class PaperMemberPlugin : JavaPlugin() {
         }
 
         initMemberManager()
+        disabled = false
     }
 
     override fun onDisable() {
@@ -33,6 +33,7 @@ class PaperMemberPlugin : JavaPlugin() {
             return
         }
 
+        safeDisable()
         disabled = true
     }
 
