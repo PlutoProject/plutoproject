@@ -78,3 +78,22 @@ fun elevatorGoDownTitle(curr: Int, total: Int): Title {
 
 val ELEVATOR_WORK_SOUND
     get() = Sound.sound(Key.key("entity.iron_golem.attack"), Sound.Source.BLOCK, 1F, 1F)
+
+val HEAD_GET_LOAD_DATA
+    get() = Component.text("请稍等，正在获取数据").color(mochaFlamingo)
+
+val HEAD_GET_SUCCEED
+    get() = Component.text("已成功获取正版玩家 <player> 的头颅").color(mochaGreen)
+        .appendNewline()
+        .append(Component.text("此功能目前正处于测试阶段，请不要滥用").color(mochaSubtext0))
+
+val HEAD_GET_FAILED
+    get() = Component.text("查询失败，请检查你输入的玩家名是否正确").color(mochaMaroon)
+        .appendNewline()
+        .append(
+            Component.text("若输入的玩家名无误，则可能是因为查询接口限额或无法访问，请等一会儿再试")
+                .color(mochaSubtext0)
+        )
+
+val HEAD_GET_FAILED_INV_FULL
+    get() = Component.text("你的背包已满，请腾出一些空间后再试").color(mochaMaroon)
