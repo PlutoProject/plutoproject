@@ -1,4 +1,4 @@
-main: ink.pmc.common.member.PaperMemberPlugin
+main: ink.pmc.common.member.paper.PaperMemberPlugin
 name: common-member
 version: ${version}
 api-version: ${api}
