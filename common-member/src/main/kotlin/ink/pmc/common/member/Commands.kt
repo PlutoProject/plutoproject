@@ -1,5 +1,7 @@
 package ink.pmc.common.member
 
+import ink.pmc.common.member.velocity.commandManager
+import ink.pmc.common.member.velocity.proxyServer
 import ink.pmc.common.utils.chat.replace
 import ink.pmc.common.utils.concurrent.submitAsync
 import ink.pmc.common.utils.currentUnixTimestamp

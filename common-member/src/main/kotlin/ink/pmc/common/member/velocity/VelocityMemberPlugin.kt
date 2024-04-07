@@ -1,4 +1,4 @@
-package ink.pmc.common.member
+package ink.pmc.common.member.velocity
 
 import com.google.inject.Inject
 import com.velocitypowered.api.command.CommandSource
@@ -10,6 +10,7 @@ import com.velocitypowered.api.plugin.Plugin
 import com.velocitypowered.api.plugin.PluginContainer
 import com.velocitypowered.api.plugin.annotation.DataDirectory
 import com.velocitypowered.api.proxy.ProxyServer
+import ink.pmc.common.member.*
 import ink.pmc.common.utils.platform.saveDefaultConfig
 import org.incendo.cloud.SenderMapper
 import org.incendo.cloud.execution.ExecutionCoordinator

@@ -1,8 +1,10 @@
-package ink.pmc.common.member
+package ink.pmc.common.member.velocity
 
 import com.velocitypowered.api.event.Subscribe
 import com.velocitypowered.api.event.connection.DisconnectEvent
 import com.velocitypowered.api.event.connection.PostLoginEvent
+import ink.pmc.common.member.NOT_WHITELISTED
+import ink.pmc.common.member.memberManager
 import ink.pmc.common.utils.currentUnixTimestamp
 import kotlinx.coroutines.runBlocking
 

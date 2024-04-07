@@ -1,5 +1,6 @@
-package ink.pmc.common.member
+package ink.pmc.common.member.paper
 
+import ink.pmc.common.member.*
 import ink.pmc.common.utils.isInDebugMode
 import org.bukkit.plugin.java.JavaPlugin
 import java.io.File
