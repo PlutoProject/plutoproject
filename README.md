@@ -42,6 +42,6 @@
 
 ## 📄️ 许可
 
-PlutoProject/common 在 [GNU Lesser General Public License v3.0](https://www.gnu.org/licenses/lgpl-3.0.html) 下许可。
+[PlutoProject/common](https://github.com/PlutoProject/common) 在 [GNU Lesser General Public License v3.0](https://www.gnu.org/licenses/lgpl-3.0.html) 下许可。
 
 ![license](lgpl-v3.png)
