@@ -6,6 +6,7 @@ import ink.pmc.common.utils.chat.replace
 import ink.pmc.common.utils.concurrent.submitAsync
 import ink.pmc.common.utils.currentUnixTimestamp
 import ink.pmc.common.utils.localeDate
+import ink.pmc.common.utils.player.getPlayerUUID
 import net.kyori.adventure.text.Component
 import org.incendo.cloud.parser.standard.StringParser
 import java.time.Duration
@@ -21,7 +22,7 @@ val memberAddCommand = commandManager.commandBuilder("member")
             val name = it.get<String>("name").lowercase()
             sender.sendMessage(LOOKUP)
 
-            val uuid = getUUIDFromMojang(name)
+            val uuid = name.getPlayerUUID()
 
             if (uuid == null) {
                 sender.sendMessage(LOOKUP_FAILED)
@@ -53,7 +54,7 @@ val memberRemoveCommand = commandManager.commandBuilder("member")
             val name = it.get<String>("name").lowercase()
             sender.sendMessage(LOOKUP)
 
-            val uuid = getUUIDFromMojang(name)
+            val uuid = name.getPlayerUUID()
 
             if (uuid == null) {
                 sender.sendMessage(LOOKUP_FAILED)
@@ -87,7 +88,7 @@ val memberLookupCommand = commandManager.commandBuilder("member")
             val name = it.get<String>("name").lowercase()
             sender.sendMessage(LOOKUP)
 
-            val uuid = getUUIDFromMojang(name)
+            val uuid = name.getPlayerUUID()
 
             if (uuid == null) {
                 sender.sendMessage(LOOKUP_FAILED)
