@@ -1,7 +1,7 @@
 package ink.pmc.common.misc.api.head
 
 import org.bukkit.inventory.ItemStack
-import java.util.UUID
+import java.util.*
 
 @Suppress("UNUSED")
 interface HeadManager {

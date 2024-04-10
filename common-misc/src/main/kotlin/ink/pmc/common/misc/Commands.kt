@@ -1,7 +1,5 @@
 package ink.pmc.common.misc
 
-import ink.pmc.common.misc.api.MiscAPI
-import ink.pmc.common.misc.impl.MiscAPIImpl
 import ink.pmc.common.utils.chat.NON_PLAYER
 import ink.pmc.common.utils.chat.replace
 import ink.pmc.common.utils.concurrent.submitAsync
@@ -9,7 +7,6 @@ import ink.pmc.common.utils.concurrent.submitSync
 import ink.pmc.common.utils.visual.mochaYellow
 import net.kyori.adventure.text.Component
 import org.bukkit.entity.Player
-import org.incendo.cloud.bukkit.parser.OfflinePlayerParser
 import org.incendo.cloud.parser.standard.StringParser
 
 val suicideCommand = commandManager.commandBuilder("suicide")
@@ -66,7 +63,7 @@ val headCommand = commandManager.commandBuilder("head")
 
             val inv = sender.inventory
 
-            if (!inv.storageContents.any { it == null || it.amount == 0  }) {
+            if (!inv.storageContents.any { it == null || it.amount == 0 }) {
                 sender.sendMessage(HEAD_GET_FAILED_INV_FULL)
                 return@submitAsync
             }

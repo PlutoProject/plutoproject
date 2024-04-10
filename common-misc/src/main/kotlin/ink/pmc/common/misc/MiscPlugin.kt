@@ -9,12 +9,10 @@ import ink.pmc.common.misc.impl.elevator.ElevatorManagerImpl
 import ink.pmc.common.misc.impl.elevator.builders.IronElevatorBuilder
 import ink.pmc.common.misc.impl.head.HeadManagerImpl
 import ink.pmc.common.misc.impl.sit.SitManagerImpl
-import io.leangen.geantyref.TypeToken
 import org.bukkit.command.CommandSender
 import org.bukkit.plugin.java.JavaPlugin
 import org.incendo.cloud.execution.ExecutionCoordinator
 import org.incendo.cloud.paper.PaperCommandManager
-import org.incendo.cloud.parser.standard.StringParser
 
 lateinit var commandManager: PaperCommandManager<CommandSender>
 lateinit var plugin: JavaPlugin
