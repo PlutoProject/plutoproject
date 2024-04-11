@@ -6,6 +6,7 @@ import java.time.LocalDateTime
 interface PunishmentLog {
 
     val id: Long
+    val sinner: Long
     val time: LocalDateTime
     val type: Punishments
     val approvers: Collection<Long>

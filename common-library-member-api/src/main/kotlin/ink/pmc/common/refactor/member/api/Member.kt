@@ -19,6 +19,7 @@ interface Member {
     val lastJoinedAt: LocalDateTime?
     val dataContainer: DataContainer
     val bedrockAccount: BedrockAccount?
+    val bioHistory: BioHistory
 
     fun exemptWhitelist()
 
