@@ -8,8 +8,11 @@ import java.util.*
 interface Member {
 
     val id: UUID
+    val name: String
+    val authType: AuthType
     val createdAt: LocalDateTime
     var lastJoinedAt: LocalDateTime?
     var customData: DataEntry
+    val bedrockAccount: BedrockAccount?
 
 }

@@ -1,4 +1,4 @@
-package ink.pmc.common.refactor.member.api
+package ink.pmc.common.refactor.member.api.punishment
 
 import ink.pmc.common.member.api.BAN_PUNISHMENT
 import ink.pmc.common.member.api.REMOVE_WHITELIST_PUNISHMENT

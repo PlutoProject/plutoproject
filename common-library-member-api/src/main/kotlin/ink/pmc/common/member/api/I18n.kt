@@ -23,6 +23,12 @@ val OFFICIAL_AUTH
 val LITTLESKIN_AUTH
     get() = Component.text("LittleSkin 皮肤站")
 
+val BEDROCK_ONLY_AUTH
+    get() = Component.text("仅基岩版")
+
+val NONE_AUTH
+    get() = Component.text("无")
+
 val BAN_PUNISHMENT
     get() = Component.text("封禁")
 

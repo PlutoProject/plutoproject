@@ -7,4 +7,6 @@ interface IMemberService {
         lateinit var instance: IMemberService
     }
 
+    fun createMember(name: String): Member?
+
 }
