@@ -4,7 +4,7 @@ import java.time.LocalDateTime
 import java.util.*
 
 @Suppress("UNUSED", "INAPPLICABLE_JVM_NAME")
-interface DataEntry {
+interface DataContainer {
 
     val id: UUID
     val ownedBy: UUID

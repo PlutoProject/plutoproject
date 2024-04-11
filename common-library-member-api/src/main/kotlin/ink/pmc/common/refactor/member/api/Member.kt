@@ -1,6 +1,6 @@
 package ink.pmc.common.refactor.member.api
 
-import ink.pmc.common.refactor.member.api.data.DataEntry
+import ink.pmc.common.refactor.member.api.data.DataContainer
 import java.time.LocalDateTime
 import java.util.*
 
@@ -17,7 +17,7 @@ interface Member {
     val authType: AuthType
     val createdAt: LocalDateTime
     val lastJoinedAt: LocalDateTime?
-    val customData: DataEntry
+    val dataContainer: DataContainer
     val bedrockAccount: BedrockAccount?
 
     fun exemptWhitelist()
