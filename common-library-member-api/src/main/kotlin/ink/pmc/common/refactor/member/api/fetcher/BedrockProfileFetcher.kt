@@ -29,7 +29,6 @@ object BedrockProfileFetcher : AbstractProfileFetcher() {
 
                 return@withContext uuid
             } catch (e: Exception) {
-                // 防止其他可能的问题
                 null
             }
         }
