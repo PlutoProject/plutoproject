@@ -1,6 +1,6 @@
 package ink.pmc.common.refactor.member.api.data
 
-import java.util.UUID
+import java.util.*
 
 @Suppress("UNUSED")
 interface DataRepository {

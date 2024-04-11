@@ -9,7 +9,7 @@ import okhttp3.Request
 import java.util.*
 
 @Suppress("UNUSED")
-abstract class AbstractProfileFetcher() : ProfileFetcher {
+abstract class AbstractProfileFetcher : ProfileFetcher {
 
     internal val httpClient = OkHttpClient()
 

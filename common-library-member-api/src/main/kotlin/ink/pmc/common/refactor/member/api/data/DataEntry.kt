@@ -1,7 +1,7 @@
 package ink.pmc.common.refactor.member.api.data
 
 import java.time.LocalDateTime
-import java.util.UUID
+import java.util.*
 
 @Suppress("UNUSED", "INAPPLICABLE_JVM_NAME")
 interface DataEntry {

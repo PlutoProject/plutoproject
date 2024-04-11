@@ -1,6 +1,6 @@
 package ink.pmc.common.refactor.member.api.fetcher
 
-import java.util.UUID
+import java.util.*
 
 @Suppress("UNUSED")
 interface ProfileFetcher {

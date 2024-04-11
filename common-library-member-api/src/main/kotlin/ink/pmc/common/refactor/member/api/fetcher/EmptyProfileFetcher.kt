@@ -9,5 +9,4 @@ object EmptyProfileFetcher : AbstractProfileFetcher() {
         return UUID.nameUUIDFromBytes(("OfflinePlayer:${name.lowercase()}").toByteArray(Charsets.UTF_8))
     }
 
-
 }
