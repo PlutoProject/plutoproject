@@ -3,7 +3,7 @@ package ink.pmc.common.refactor.member.api.data
 import java.time.LocalDateTime
 import java.util.UUID
 
-@Suppress("UNUSED")
+@Suppress("UNUSED", "INAPPLICABLE_JVM_NAME")
 interface DataEntry {
 
     val id: UUID
@@ -16,6 +16,7 @@ interface DataEntry {
 
     operator fun get(key: String): Any?
 
+    @JvmName("getWithType")
     operator fun <T> get(key: String): T?
 
     fun getString(key: String): String?
