@@ -25,7 +25,7 @@ class MemberManagerImpl(
 ) : MemberManager {
 
     private val cacheLoader: CacheLoader<UUID, Member> = CacheLoader<UUID, Member> {
-        collection.find(Filters.eq("uuid", it)).first()
+        collection.find(Filters.eq("id", it)).first()
     }
 
     override val cachedMember: LoadingCache<UUID, Member> = Caffeine.newBuilder()
@@ -66,7 +66,7 @@ class MemberManagerImpl(
                 return@withContext false
             }
 
-            collection.deleteOne(Filters.eq("uuid", member.uuid))
+            collection.deleteOne(Filters.eq("id", member.uuid))
             insertAndUpdateCache(member)
 
             true
@@ -88,20 +88,20 @@ class MemberManagerImpl(
             val member = get(uuid)!!
 
             removeRelatedComments(member)
-            collection.deleteOne(Filters.eq("uuid", uuid))
+            collection.deleteOne(Filters.eq("id", uuid))
             true
         }
     }
 
     override suspend fun exist(uuid: UUID): Boolean {
         return withContext(Dispatchers.IO) {
-            cachedMember.getIfPresent(uuid) != null || collection.find(Filters.eq("uuid", uuid)).first() != null
+            cachedMember.getIfPresent(uuid) != null || collection.find(Filters.eq("id", uuid)).first() != null
         }
     }
 
     override suspend fun nonExist(uuid: UUID): Boolean {
         return withContext(Dispatchers.IO) {
-            collection.find(Filters.eq("uuid", uuid)).first() == null
+            collection.find(Filters.eq("id", uuid)).first() == null
         }
     }
 

@@ -16,3 +16,18 @@ val WARN_A_DISPLAY
 @Suppress("UNUSED")
 val WARN_B_DISPLAY
     get() = Component.text("B 类警告").color(mochaYellow)
+
+val OFFICIAL_AUTH
+    get() = Component.text("正版账号")
+
+val LITTLESKIN_AUTH
+    get() = Component.text("LittleSkin 皮肤站")
+
+val BAN_PUNISHMENT
+    get() = Component.text("封禁")
+
+val WARN_PUNISHMENT
+    get() = Component.text("警告")
+
+val REMOVE_WHITELIST_PUNISHMENT
+    get() = Component.text("撤销白名单")

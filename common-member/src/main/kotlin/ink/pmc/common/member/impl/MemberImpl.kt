@@ -21,7 +21,7 @@ import java.util.*
 
 @Suppress("UNUSED", "UNCHECKED_CAST")
 data class MemberImpl @JsonCreator constructor(
-    @JsonProperty("uuid") override val uuid: UUID,
+    @JsonProperty("id") override val uuid: UUID,
     @JsonProperty("name") override var name: String
 ) : Member {
 

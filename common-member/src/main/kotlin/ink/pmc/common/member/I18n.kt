@@ -51,7 +51,7 @@ val MEMBER_NOT_EXIST
 val MEMBER_LOOKUP
     get() = Component.text("玩家名：").color(mochaText).append(Component.text("<player>").color(mochaYellow))
         .appendNewline()
-        .append(Component.text("UUID: ").color(mochaText).append(Component.text("<uuid>").color(mochaYellow)))
+        .append(Component.text("UUID: ").color(mochaText).append(Component.text("<id>").color(mochaYellow)))
         .appendNewline()
         .append(Component.text("个性签名：").color(mochaText).append(Component.text("<bio>").color(mochaYellow)))
         .appendNewline()

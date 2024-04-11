@@ -104,7 +104,7 @@ val memberLookupCommand = commandManager.commandBuilder("member")
 
             val message = MEMBER_LOOKUP
                 .replace("<player>", name)
-                .replace("<uuid>", uuid.toString())
+                .replace("<id>", uuid.toString())
                 .replace("<bio>", member.bio.toString())
                 .replace("<joinTime>", Date(member.joinTime).localeDate)
                 .replace("<lastJoinTime>", nullableTimestampToComponent(member.lastJoinTime))
