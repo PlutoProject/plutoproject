@@ -3,12 +3,11 @@ package ink.pmc.common.refactor.member.api.fetcher
 import java.util.*
 
 @Suppress("UNUSED")
-object EmptyProfileFetcher : ProfileFetcher {
+object EmptyProfileFetcher : AbstractProfileFetcher() {
 
-    override suspend fun fetch(name: String): UUID? = null
+    override suspend fun fetch(name: String): UUID? {
+        return UUID.nameUUIDFromBytes(("OfflinePlayer:${name.lowercase()}").toByteArray(Charsets.UTF_8))
+    }
 
-    override suspend fun validate(name: String, uuid: UUID): Boolean = false
-
-    override suspend fun validate(name: String, uuid: String): Boolean = false
 
 }
