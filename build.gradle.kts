@@ -214,6 +214,8 @@ fun debugInitStep(task: Task) {
     val logs = mutableListOf<String>()
 
     logs.add(" ")
+    logs.add("Some component's feature will be disabled due to the debug plugin can't support Leaves-PMC.")
+    logs.add(" ")
     logs.add("If you modified your code, you should rerun the shadowJar task to make the changes function properly.")
     logs.add("Maybe there will be a auto run task in the future, but now I haven't figure out how to implement it because the run-task plugin has some weird behaviors.")
 
