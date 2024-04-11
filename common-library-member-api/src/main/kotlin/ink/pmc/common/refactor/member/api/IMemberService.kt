@@ -1,7 +1,10 @@
 package ink.pmc.common.refactor.member.api
 
+import ink.pmc.common.refactor.member.api.comment.Comment
+import ink.pmc.common.refactor.member.api.dsl.CommentDsl
 import ink.pmc.common.refactor.member.api.dsl.PardonDsl
 import ink.pmc.common.refactor.member.api.dsl.PunishmentDsl
+import ink.pmc.common.refactor.member.api.punishment.PunishmentLog
 import java.time.LocalDateTime
 import java.util.*
 
@@ -38,11 +41,13 @@ interface IMemberService {
 
     fun nonExist(uuid: UUID, authType: AuthType = AuthType.OFFICIAL)
 
-    fun punish(block: PunishmentDsl.() -> Unit)
+    fun punish(block: PunishmentDsl.() -> Unit): PunishmentLog
 
     fun hasPunishment(id: Long): Boolean
 
-    fun pardon(block: PardonDsl.() -> Unit)
+    fun pardon(block: PardonDsl.() -> Unit): PunishmentLog
+
+    fun comment(block: CommentDsl.() -> Unit): Comment
 
     fun update(member: Member)
 
