@@ -17,6 +17,15 @@ val WARN_A_DISPLAY
 val WARN_B_DISPLAY
     get() = Component.text("B 类警告").color(mochaYellow)
 
+val STATUS_WHITELISTED
+    get() = Component.text("已发放")
+
+val STATUS_NON_WHITELISTED
+    get() = Component.text("未发放")
+
+val STATUS_WHITELISTED_BEFORE
+    get() = Component.text("曾发放过，但被移除了")
+
 val OFFICIAL_AUTH
     get() = Component.text("正版账号")
 

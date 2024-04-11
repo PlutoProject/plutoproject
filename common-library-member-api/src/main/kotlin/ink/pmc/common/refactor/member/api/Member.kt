@@ -9,6 +9,7 @@ interface Member {
 
     val id: UUID
     val name: String
+    val whitelistStatus: WhitelistStatus
     val authType: AuthType
     val createdAt: LocalDateTime
     var lastJoinedAt: LocalDateTime?
