@@ -32,8 +32,10 @@ allprojects {
 
     repositories {
         mavenCentral()
+        mavenLocal()
         maven(uri("https://oss.sonatype.org/content/repositories/snapshots/"))
         maven(uri("https://repo.papermc.io/repository/maven-public/"))
+        maven(uri("https://maven.nostal.ink/repository/maven-public"))
     }
 
     val common = listOf(
@@ -69,7 +71,7 @@ allprojects {
     if (!this.name.contains("velocity")) {
         dependencies {
             paper.forEach { compileOnlyApi(it) }
-            compileOnly("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
+            compileOnly("ink.pmc.leaves:leaves-pmc-api:1.20.4-R0.1-SNAPSHOT")
         }
     } else if (this.name.contains("velocity")) {
         dependencies {
