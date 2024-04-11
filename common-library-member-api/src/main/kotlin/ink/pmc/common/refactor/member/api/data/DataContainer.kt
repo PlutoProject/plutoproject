@@ -9,7 +9,7 @@ interface DataContainer {
     val id: UUID
     val ownedBy: UUID
     val createdAt: LocalDateTime
-    var lastModifiedAt: LocalDateTime?
+    val lastModifiedAt: LocalDateTime?
     val contents: Map<String, Any>
 
     operator fun set(key: String, value: Any)
