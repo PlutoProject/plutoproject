@@ -2,6 +2,7 @@ package ink.pmc.common.refactor.member.api
 
 import ink.pmc.common.refactor.member.api.comment.CommentRepository
 import ink.pmc.common.refactor.member.api.data.DataContainer
+import ink.pmc.common.refactor.member.api.data.MemberModifier
 import java.time.LocalDateTime
 import java.util.*
 
@@ -21,13 +22,16 @@ interface Member {
     val dataContainer: DataContainer
     val bedrockAccount: BedrockAccount?
     val comments: CommentRepository
+    val modifier: MemberModifier
 
     fun exemptWhitelist()
 
     fun grantWhitelist()
 
-    fun update()
+    suspend fun linkBedrock(xuid: String, gamertag: String): BedrockAccount?
 
-    fun refresh()
+    suspend fun update()
+
+    suspend fun refresh()
 
 }

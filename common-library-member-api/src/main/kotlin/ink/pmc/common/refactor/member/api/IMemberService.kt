@@ -14,30 +14,20 @@ interface IMemberService {
     val lastMember: Member?
     val lastMemberCreatedAt: LocalDateTime?
 
-    fun create(name: String, authType: AuthType = AuthType.OFFICIAL): Member?
+    suspend fun create(name: String, authType: AuthType = AuthType.OFFICIAL): Member?
 
-    fun create(name: String, uuid: UUID, authType: AuthType = AuthType.OFFICIAL): Member?
+    suspend fun create(name: String, uuid: UUID, authType: AuthType = AuthType.OFFICIAL): Member?
+
+    suspend fun lookup(uid: Long): Member?
 
     operator fun get(uid: Long): Member?
 
-    operator fun get(name: String, authType: AuthType = AuthType.OFFICIAL): Member?
+    suspend fun exist(uid: Long)
 
-    operator fun get(uuid: UUID, authType: AuthType = AuthType.OFFICIAL): Member?
+    suspend fun nonExist(uid: Long)
 
-    fun exist(uid: Long)
+    suspend fun update(uid: Long)
 
-    fun exist(name: String, authType: AuthType = AuthType.OFFICIAL)
-
-    fun exist(uuid: UUID, authType: AuthType = AuthType.OFFICIAL)
-
-    fun nonExist(uid: Long)
-
-    fun nonExist(name: String, authType: AuthType = AuthType.OFFICIAL)
-
-    fun nonExist(uuid: UUID, authType: AuthType = AuthType.OFFICIAL)
-
-    fun update(uid: Long)
-
-    fun refresh(uid: Long)
+    suspend fun refresh(uid: Long)
 
 }
