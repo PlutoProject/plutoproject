@@ -6,9 +6,9 @@ import org.bson.types.ObjectId
 data class PunishmentStorage(
     @BsonId val objectId: ObjectId,
     val id: Long,
-    val type: Int,
+    val type: String,
     val time: Long,
     val belongs: Long,
-    val isRevoked: Boolean,
+    var isRevoked: Boolean,
     val executor: Long
 )

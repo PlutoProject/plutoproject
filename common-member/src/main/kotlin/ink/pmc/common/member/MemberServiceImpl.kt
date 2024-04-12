@@ -33,23 +33,18 @@ class MemberServiceImpl(
         database.getCollection("member_bedrock_accounts")
 
     private val memberCache = Caffeine.newBuilder()
-        .maximumSize(20)
         .expireAfterWrite(Duration.ofMinutes(10))
         .build<Long, MemberStorage> { runBlocking { members.find(eq("uid", it)).firstOrNull() } }
     private val punishmentCache = Caffeine.newBuilder()
-        .maximumSize(20)
         .expireAfterWrite(Duration.ofMinutes(10))
         .build<Long, PunishmentStorage> { runBlocking { punishments.find(eq("id", it)).firstOrNull() } }
     private val commentCache = Caffeine.newBuilder()
-        .maximumSize(20)
         .expireAfterWrite(Duration.ofMinutes(10))
         .build<Long, CommentStorage> { runBlocking { comments.find(eq("id", it)).firstOrNull() } }
     private val dataContainerCache = Caffeine.newBuilder()
-        .maximumSize(20)
         .expireAfterWrite(Duration.ofMinutes(10))
         .build<Long, DataContainerStorage> { runBlocking { dataContainers.find(eq("id", it)).firstOrNull() } }
     private val bedrockAccountCache = Caffeine.newBuilder()
-        .maximumSize(20)
         .expireAfterWrite(Duration.ofMinutes(10))
         .build<Long, BedrockAccountStorage> { runBlocking { bedrockAccounts.find(eq("id", it)).firstOrNull() } }
 
@@ -64,13 +59,31 @@ class MemberServiceImpl(
 
     override fun lookupMember(uid: Long): MemberStorage = memberCache.get(uid)
 
-    override fun lookupPunishment(id: Long): PunishmentStorage? = punishmentCache.get(id)
+    override fun lookupPunishment(id: Long): PunishmentStorage {
+        if (dirtyPunishments.any { it.id == id }) {
+            return dirtyPunishments.first { it.id == id }
+        }
 
-    override fun lookupComment(id: Long): CommentStorage? = commentCache.get(id)
+        return punishmentCache.get(id)
+    }
 
-    override fun lookupDataContainer(id: Long): DataContainerStorage? = dataContainerCache.get(id)
+    override fun lookupComment(id: Long): CommentStorage {
+        if (dirtyComments.any { it.id == id }) {
+            return dirtyComments.first { it.id == id }
+        }
 
-    override fun lookupBedrockAccount(id: Long): BedrockAccountStorage? = bedrockAccountCache.get(id)
+        return commentCache.get(id)
+    }
+
+    override fun lookupDataContainer(id: Long): DataContainerStorage = dataContainerCache.get(id)
+
+    override fun lookupBedrockAccount(id: Long): BedrockAccountStorage {
+        if (dirtyBedrockAccounts.any { it.id == id }) {
+            return dirtyBedrockAccounts.first { it.id == id }
+        }
+
+        return bedrockAccountCache.get(id)
+    }
 
     override fun clearMember(uid: Long) = memberCache.invalidate(uid)
 
@@ -114,7 +127,7 @@ class MemberServiceImpl(
         ).firstOrNull()
 
         if (memberStorage != null) {
-            return MemberImpl(this, memberStorage.uid)
+            return MemberImpl(this, memberStorage)
         }
 
         val id = authType.fetcher.fetch(name) ?: return null
@@ -132,7 +145,9 @@ class MemberServiceImpl(
             null,
             nextDataContainer,
             null,
-            null
+            null,
+            mutableListOf(),
+            mutableListOf()
         )
         val dataContainerStorage = DataContainerStorage(
             ObjectId(),
@@ -148,28 +163,28 @@ class MemberServiceImpl(
 
         members.insertOne(memberStorage)
         dataContainers.insertOne(dataContainerStorage)
-        return MemberImpl(this, nextMember)
+        return MemberImpl(this, memberStorage)
     }
 
     override suspend fun lookup(uid: Long): Member? {
-        if (nonExist(uid)) {
+        if (!exist(uid)) {
             return null
         }
 
-        return MemberImpl(this, uid)
+        return MemberImpl(this, lookupMember(uid))
     }
 
-    override fun get(uid: Long): Member? {
-        return runBlocking { lookup(uid) }
-    }
+    override fun get(uid: Long): Member? = runBlocking { lookup(uid) }
 
-    override suspend fun exist(uid: Long): Boolean {
-        return members.find(eq("uid", uid)).firstOrNull() != null
-    }
+    override suspend fun exist(uid: Long): Boolean = members.find(eq("uid", uid)).firstOrNull() != null
 
-    override suspend fun nonExist(uid: Long): Boolean {
-        return !exist(uid)
-    }
+    override suspend fun existPunishment(id: Long): Boolean = punishments.find(eq("id", id)).firstOrNull() != null
+
+    override suspend fun existComment(id: Long): Boolean = comments.find(eq("id", id)).firstOrNull() != null
+
+    override suspend fun existDataContainer(id: Long): Boolean = comments.find(eq("id", id)).firstOrNull() != null
+
+    override suspend fun existBedrockAccount(id: Long): Boolean = comments.find(eq("id", id)).firstOrNull() != null
 
     override suspend fun update(member: Member) {
         TODO("Not yet implemented")

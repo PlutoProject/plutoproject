@@ -6,9 +6,13 @@ import ink.pmc.common.member.api.Member
 interface PunishmentLogger {
 
     val historyPunishments: Collection<Punishment>
-    val lastPunishment: Punishment
+    val lastPunishment: Punishment?
 
     fun create(type: PunishmentType, executor: Member): Punishment
+
+    operator fun get(id: Long): Punishment?
+
+    fun exist(id: Long): Boolean
 
     fun revoke(punishment: Punishment)
 

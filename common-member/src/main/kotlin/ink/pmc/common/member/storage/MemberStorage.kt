@@ -14,5 +14,7 @@ data class MemberStorage(
     var lastJoinedAt: Long?,
     val dataContainer: Long,
     var bedrockAccount: Long?,
-    var bio: String?
+    var bio: String?,
+    val punishments: MutableList<Long>,
+    val comments: MutableList<Long>,
 )

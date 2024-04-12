@@ -23,7 +23,13 @@ interface IMemberService {
 
     suspend fun exist(uid: Long): Boolean
 
-    suspend fun nonExist(uid: Long): Boolean
+    suspend fun existPunishment(id: Long): Boolean
+
+    suspend fun existComment(id: Long): Boolean
+
+    suspend fun existDataContainer(id: Long): Boolean
+
+    suspend fun existBedrockAccount(id: Long): Boolean
 
     suspend fun update(member: Member)
 

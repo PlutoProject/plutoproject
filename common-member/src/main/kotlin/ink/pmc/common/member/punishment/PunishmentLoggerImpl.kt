@@ -1,27 +1,82 @@
 package ink.pmc.common.member.punishment
 
+import ink.pmc.common.member.AbstractMember
+import ink.pmc.common.member.AbstractMemberService
 import ink.pmc.common.member.api.Member
 import ink.pmc.common.member.api.punishment.Punishment
 import ink.pmc.common.member.api.punishment.PunishmentLogger
 import ink.pmc.common.member.api.punishment.PunishmentType
+import ink.pmc.common.member.storage.PunishmentStorage
+import kotlinx.coroutines.runBlocking
+import org.bson.types.ObjectId
 
-class PunishmentLoggerImpl : PunishmentLogger {
+class PunishmentLoggerImpl(private val service: AbstractMemberService, private val member: AbstractMember) :
+    PunishmentLogger {
 
     override val historyPunishments: Collection<Punishment>
-        get() = TODO("Not yet implemented")
-    override val lastPunishment: Punishment
-        get() = TODO("Not yet implemented")
+        get() {
+            val list = mutableListOf<Punishment>()
+
+            member.storage.punishments.forEach {
+                list.add(PunishmentImpl(service, service.lookupPunishment(it)!!))
+            }
+
+            return list
+        }
+    override val lastPunishment: Punishment?
+        get() {
+            if (member.storage.punishments.isEmpty()) {
+                return null
+            }
+
+            return PunishmentImpl(service, service.lookupPunishment(member.storage.punishments.last())!!)
+        }
 
     override fun create(type: PunishmentType, executor: Member): Punishment {
-        TODO("Not yet implemented")
+        val storage = PunishmentStorage(
+            ObjectId(),
+            runBlocking { service.currentStatus().nextPunishment() },
+            type.toString(),
+            System.currentTimeMillis(),
+            member.uid,
+            false,
+            executor.uid
+        )
+
+        service.dirtyPunishments.add(storage)
+        member.storage.punishments.add(runBlocking { service.currentStatus().nextPunishment() })
+
+        return PunishmentImpl(service, storage)
+    }
+
+    override fun get(id: Long): Punishment? {
+        if (!historyPunishments.any { it.id == id }) {
+            return null
+        }
+
+        return PunishmentImpl(service, service.lookupPunishment(id)!!)
+    }
+
+    override fun exist(id: Long): Boolean {
+        return service.lookupPunishment(id) != null
     }
 
     override fun revoke(punishment: Punishment) {
-        TODO("Not yet implemented")
+        if (punishment.isRevoked) {
+            return
+        }
+
+        val impl = punishment as PunishmentImpl
+        impl.storage.isRevoked = true
+        service.dirtyPunishments.add(impl.storage)
     }
 
     override fun revoke(punishmentId: Long) {
-        TODO("Not yet implemented")
+        if (!exist(punishmentId)) {
+            return
+        }
+
+        revoke(get(punishmentId)!!)
     }
 
 }

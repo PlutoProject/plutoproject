@@ -8,17 +8,17 @@ import ink.pmc.common.member.api.data.DataContainer
 import ink.pmc.common.member.api.data.MemberModifier
 import ink.pmc.common.member.api.punishment.PunishmentLogger
 import ink.pmc.common.member.data.MemberModifierImpl
+import ink.pmc.common.member.punishment.PunishmentLoggerImpl
 import ink.pmc.common.member.storage.MemberStorage
 import java.time.Instant
 import java.util.*
 
 class MemberImpl(
     private val service: AbstractMemberService,
-    override val uid: Long
-) : AbstractMember() {
-
     override val storage: MemberStorage
-        get() = service.lookupMember(uid)
+) : AbstractMember() {
+    override val uid: Long
+        get() = storage.uid
     override val id: UUID
         get() = UUID.fromString(storage.id)
     override val name: String
@@ -40,7 +40,7 @@ class MemberImpl(
     override val commentRepository: CommentRepository
         get() = TODO("Not yet implemented")
     override val punishmentLogger: PunishmentLogger
-        get() = TODO("Not yet implemented")
+        get() = PunishmentLoggerImpl(service, this)
     override val modifier: MemberModifier
         get() = MemberModifierImpl(this)
 

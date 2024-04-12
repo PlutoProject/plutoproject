@@ -1,23 +1,26 @@
 package ink.pmc.common.member.punishment
 
+import ink.pmc.common.member.AbstractMemberService
 import ink.pmc.common.member.api.Member
 import ink.pmc.common.member.api.punishment.Punishment
 import ink.pmc.common.member.api.punishment.PunishmentType
+import ink.pmc.common.member.storage.PunishmentStorage
+import kotlinx.coroutines.runBlocking
 import java.time.Instant
 
-class PunishmentImpl : Punishment {
+class PunishmentImpl(private val service: AbstractMemberService, val storage: PunishmentStorage) : Punishment {
 
     override val id: Long
-        get() = TODO("Not yet implemented")
+        get() = storage.id
     override val type: PunishmentType
-        get() = TODO("Not yet implemented")
+        get() = PunishmentType.valueOf(storage.type)
     override val time: Instant
-        get() = TODO("Not yet implemented")
+        get() = Instant.ofEpochMilli(storage.time)
     override val belongs: Member
-        get() = TODO("Not yet implemented")
+        get() = runBlocking { service.lookup(storage.belongs)!! }
     override val isRevoked: Boolean
-        get() = TODO("Not yet implemented")
+        get() = storage.isRevoked
     override val executor: Member
-        get() = TODO("Not yet implemented")
+        get() = runBlocking { service.lookup(storage.executor)!! }
 
 }

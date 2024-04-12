@@ -12,12 +12,15 @@ abstract class AbstractMemberService : IMemberService {
     abstract val comments: MongoCollection<CommentStorage>
     abstract val dataContainers: MongoCollection<DataContainerStorage>
     abstract val bedrockAccounts: MongoCollection<BedrockAccountStorage>
+    val dirtyPunishments = mutableListOf<PunishmentStorage>()
+    val dirtyComments = mutableListOf<CommentStorage>()
+    val dirtyBedrockAccounts = mutableListOf<BedrockAccountStorage>()
 
     abstract suspend fun currentStatus(): StatusStorage
 
     abstract suspend fun updateStatus(new: StatusStorage)
 
-    abstract fun lookupMember(uid: Long): MemberStorage
+    abstract fun lookupMember(uid: Long): MemberStorage?
 
     abstract fun lookupPunishment(id: Long): PunishmentStorage?
 
