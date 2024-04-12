@@ -1,0 +1,40 @@
+package ink.pmc.common.member.api.data
+
+import java.time.LocalDateTime
+import java.util.*
+
+@Suppress("UNUSED", "INAPPLICABLE_JVM_NAME")
+interface DataContainer {
+
+    val id: Long
+    val owner: UUID
+    val createdAt: LocalDateTime
+    val lastModifiedAt: LocalDateTime?
+    val contents: Map<String, Any>
+
+    operator fun set(key: String, value: Any)
+
+    operator fun get(key: String): Any?
+
+    @JvmName("getWithType")
+    operator fun <T> get(key: String): T?
+
+    fun getString(key: String): String?
+
+    fun getByte(key: String): Byte?
+
+    fun getShort(key: String): Short?
+
+    fun getInt(key: String): Int?
+
+    fun getLong(key: String): Long?
+
+    fun getFloat(key: String): Float?
+
+    fun getDouble(key: String): Double?
+
+    fun getChar(key: String): Char?
+
+    fun getBoolean(key: String): Boolean
+
+}

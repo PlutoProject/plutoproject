@@ -1,15 +1,16 @@
 package ink.pmc.common.member.api.punishment
 
-import java.util.*
+import ink.pmc.common.member.api.Member
+import java.time.LocalDateTime
 
+@Suppress("UNUSED")
 interface Punishment {
 
     val id: Long
-    val owner: UUID
     val type: PunishmentType
-    val reason: PunishmentReason
-    val executeDate: Date
-    var isPardoned: Boolean
-    var pardonReason: PardonReason?
+    val time: LocalDateTime
+    val belongs: Member
+    val isRevoked: Boolean
+    val executor: Member
 
 }
