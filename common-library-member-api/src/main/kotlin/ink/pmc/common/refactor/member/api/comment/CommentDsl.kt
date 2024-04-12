@@ -1,4 +1,4 @@
-package ink.pmc.common.refactor.member.api.dsl
+package ink.pmc.common.refactor.member.api.comment
 
 @Suppress("UNUSED")
 class CommentDsl {

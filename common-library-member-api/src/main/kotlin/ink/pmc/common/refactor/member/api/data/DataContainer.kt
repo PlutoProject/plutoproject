@@ -37,8 +37,4 @@ interface DataContainer {
 
     fun getBoolean(key: String): Boolean
 
-    suspend fun update()
-
-    suspend fun refresh()
-
 }
