@@ -9,25 +9,24 @@ interface IMemberService {
     companion object {
         lateinit var instance: IMemberService
     }
+    suspend fun lastUid(): Long
 
-    val lastUid: Long?
-    val lastMember: Member?
-    val lastMemberCreatedAt: LocalDateTime?
+    suspend fun lastMember(): Member?
+
+    suspend fun lastMemberCreatedAt(): LocalDateTime?
 
     suspend fun create(name: String, authType: AuthType = AuthType.OFFICIAL): Member?
-
-    suspend fun create(name: String, uuid: UUID, authType: AuthType = AuthType.OFFICIAL): Member?
 
     suspend fun lookup(uid: Long): Member?
 
     operator fun get(uid: Long): Member?
 
-    suspend fun exist(uid: Long)
+    suspend fun exist(uid: Long): Boolean
 
-    suspend fun nonExist(uid: Long)
+    suspend fun nonExist(uid: Long): Boolean
 
-    suspend fun update(uid: Long)
+    suspend fun update(member: Member)
 
-    suspend fun refresh(uid: Long)
+    suspend fun refresh(member: Member)
 
 }

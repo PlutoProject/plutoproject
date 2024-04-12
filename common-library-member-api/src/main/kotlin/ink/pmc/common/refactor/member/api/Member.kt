@@ -3,11 +3,9 @@ package ink.pmc.common.refactor.member.api
 import ink.pmc.common.refactor.member.api.comment.CommentRepository
 import ink.pmc.common.refactor.member.api.data.DataContainer
 import ink.pmc.common.refactor.member.api.data.MemberModifier
+import ink.pmc.common.refactor.member.api.punishment.PunishmentLogger
 import java.time.LocalDateTime
 import java.util.*
-
-@Suppress("UNUSED")
-const val UID_START = 10000
 
 @Suppress("UNUSED")
 interface Member {
@@ -21,7 +19,9 @@ interface Member {
     val lastJoinedAt: LocalDateTime?
     val dataContainer: DataContainer
     val bedrockAccount: BedrockAccount?
-    val comments: CommentRepository
+    val bio: String?
+    val commentRepository: CommentRepository
+    val punishmentLogger: PunishmentLogger
     val modifier: MemberModifier
 
     fun exemptWhitelist()
@@ -29,6 +29,8 @@ interface Member {
     fun grantWhitelist()
 
     suspend fun linkBedrock(xuid: String, gamertag: String): BedrockAccount?
+
+    suspend fun unlinkBedrock()
 
     suspend fun update()
 

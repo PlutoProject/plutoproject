@@ -11,4 +11,6 @@ interface MemberModifier {
 
     fun lastJoinedAt(new: LocalDateTime)
 
+    fun bio(new: String)
+
 }

@@ -6,8 +6,8 @@ import java.util.*
 @Suppress("UNUSED", "INAPPLICABLE_JVM_NAME")
 interface DataContainer {
 
-    val id: UUID
-    val ownedBy: UUID
+    val id: Long
+    val owner: UUID
     val createdAt: LocalDateTime
     val lastModifiedAt: LocalDateTime?
     val contents: Map<String, Any>
