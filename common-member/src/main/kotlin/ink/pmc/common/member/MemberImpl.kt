@@ -1,5 +1,6 @@
 package ink.pmc.common.member
 
+import com.mongodb.client.model.Filters.eq
 import ink.pmc.common.member.api.AuthType
 import ink.pmc.common.member.api.BedrockAccount
 import ink.pmc.common.member.api.WhitelistStatus
@@ -8,9 +9,14 @@ import ink.pmc.common.member.api.data.DataContainer
 import ink.pmc.common.member.api.data.MemberModifier
 import ink.pmc.common.member.api.punishment.PunishmentLogger
 import ink.pmc.common.member.comment.CommentRepositoryImpl
+import ink.pmc.common.member.data.BedrockAccountImpl
+import ink.pmc.common.member.data.DataContainerImpl
 import ink.pmc.common.member.data.MemberModifierImpl
 import ink.pmc.common.member.punishment.PunishmentLoggerImpl
+import ink.pmc.common.member.storage.BedrockAccountStorage
 import ink.pmc.common.member.storage.MemberStorage
+import kotlinx.coroutines.flow.firstOrNull
+import org.bson.types.ObjectId
 import java.time.Instant
 import java.util.*
 
@@ -33,10 +39,16 @@ class MemberImpl(
         get() = Instant.ofEpochMilli(storage.createdAt)
     override val lastJoinedAt: Instant?
         get() = if (storage.lastJoinedAt != null) Instant.ofEpochMilli(storage.lastJoinedAt!!) else null
-    override val dataContainer: DataContainer
-        get() = TODO("Not yet implemented")
+    override val dataContainer: DataContainer =
+        DataContainerImpl(service, service.cachedDataContainer(storage.dataContainer)!!)
     override val bedrockAccount: BedrockAccount?
-        get() = TODO("Not yet implemented")
+        get() {
+            if (storage.bedrockAccount == null) {
+                return null
+            }
+
+            return BedrockAccountImpl(service, service.cachedBedrockAccount(storage.bedrockAccount!!)!!)
+        }
     override val bio: String?
         get() = storage.bio
     override val commentRepository: CommentRepository
@@ -59,11 +71,38 @@ class MemberImpl(
     }
 
     override suspend fun linkBedrock(xuid: String, gamertag: String): BedrockAccount? {
-        TODO("Not yet implemented")
+        if (bedrockAccount != null) {
+            unlinkBedrock()
+        }
+
+        if (service.bedrockAccounts.find(eq("", xuid)).firstOrNull() != null) {
+            return null
+        }
+
+        val id = service.currentStatus.get().nextBedrockAccount()
+
+        val storage = BedrockAccountStorage(
+            ObjectId(),
+            id,
+            uid,
+            xuid,
+            gamertag
+        )
+
+        service.cachedStatus().increaseBedrockAccount()
+        service.cacheBedrockAccount(id, storage)
+        this.storage.bedrockAccount = id
+
+        return BedrockAccountImpl(service, storage)
     }
 
     override suspend fun unlinkBedrock() {
-        TODO("Not yet implemented")
+        if (bedrockAccount == null) {
+            return
+        }
+
+        service.cachedBedrockAccount(storage.bedrockAccount!!)!!.removal = true
+        storage.bedrockAccount = null
     }
 
     override suspend fun update() {

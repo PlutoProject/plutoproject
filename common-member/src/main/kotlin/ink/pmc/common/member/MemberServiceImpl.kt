@@ -168,7 +168,7 @@ class MemberServiceImpl(
         cache.put("dataContainer_$id", Optional.of(dataContainer))
     }
 
-    override fun cacheBedrockAccount(id: Long, bedrockAccount: BedrockAccount) {
+    override fun cacheBedrockAccount(id: Long, bedrockAccount: BedrockAccountStorage) {
         cache.put("bedrockAccount_$id", Optional.of(bedrockAccount))
     }
 
@@ -281,10 +281,13 @@ class MemberServiceImpl(
 
         cacheMember(nextMember, memberStorage)
         cacheDataContainer(nextDataContainer, dataContainerStorage)
+        currentStatus.get().increaseDataContainer()
+        currentStatus.get().increaseMember()
 
-        members.insertOne(memberStorage)
-        dataContainers.insertOne(dataContainerStorage)
-        return MemberImpl(this, memberStorage)
+        val member = MemberImpl(this, memberStorage)
+        update(member)
+
+        return member
     }
 
     override suspend fun lookup(uid: Long): Member? {

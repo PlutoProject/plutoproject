@@ -22,6 +22,11 @@ data class StatusStorage(
     }
 
     fun increaseMember() {
+        if (lastMember == -1L) {
+            lastMember = UID_START
+            return
+        }
+
         lastMember += 1
     }
 

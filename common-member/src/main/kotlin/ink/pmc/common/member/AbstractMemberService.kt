@@ -2,10 +2,9 @@ package ink.pmc.common.member
 
 import com.github.benmanes.caffeine.cache.LoadingCache
 import com.mongodb.kotlin.client.coroutine.MongoCollection
-import ink.pmc.common.member.api.BedrockAccount
 import ink.pmc.common.member.api.IMemberService
 import ink.pmc.common.member.storage.*
-import java.util.Optional
+import java.util.*
 import java.util.concurrent.atomic.AtomicReference
 
 abstract class AbstractMemberService : IMemberService {
@@ -41,7 +40,7 @@ abstract class AbstractMemberService : IMemberService {
 
     abstract fun cacheDataContainer(id: Long, dataContainer: DataContainerStorage)
 
-    abstract fun cacheBedrockAccount(id: Long, bedrockAccount: BedrockAccount)
+    abstract fun cacheBedrockAccount(id: Long, bedrockAccount: BedrockAccountStorage)
 
     abstract fun clearMemberCache(uid: Long)
 

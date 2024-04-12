@@ -1,65 +1,80 @@
 package ink.pmc.common.member.data
 
 import ink.pmc.common.member.AbstractMemberService
+import ink.pmc.common.member.api.Member
 import ink.pmc.common.member.storage.DataContainerStorage
+import kotlinx.coroutines.runBlocking
 import java.time.Instant
-import java.util.*
 
-class DataContainerImpl(private val service: AbstractMemberService, override val storage: DataContainerStorage) : AbstractDataContainer() {
+class DataContainerImpl(private val service: AbstractMemberService, override val storage: DataContainerStorage) :
+    AbstractDataContainer() {
 
     override val id: Long
-        get() = TODO("Not yet implemented")
-    override val owner: UUID
-        get() = TODO("Not yet implemented")
+        get() = storage.id
+    override val owner: Member
+        get() = runBlocking { service.lookup(storage.owner)!! }
     override val createdAt: Instant
-        get() = TODO("Not yet implemented")
+        get() = Instant.ofEpochMilli(storage.createdAt)
     override val lastModifiedAt: Instant?
-        get() = TODO("Not yet implemented")
+        get() = Instant.ofEpochMilli(storage.lastModifiedAt)
     override val contents: Map<String, Any>
-        get() = TODO("Not yet implemented")
+        get() = storage.contents
 
     override fun set(key: String, value: Any) {
-        TODO("Not yet implemented")
+        storage.contents[key] = value
     }
 
+    @Suppress("UNCHECKED_CAST")
     override fun <T> get(key: String): T? {
-        TODO("Not yet implemented")
+        if (!contains(key)) {
+            return null
+        }
+
+        return storage.contents[key] as T
     }
 
     override fun getString(key: String): String? {
-        TODO("Not yet implemented")
+        return get(key)
     }
 
     override fun getByte(key: String): Byte? {
-        TODO("Not yet implemented")
+        return get(key)
     }
 
     override fun getShort(key: String): Short? {
-        TODO("Not yet implemented")
+        return get(key)
     }
 
     override fun getInt(key: String): Int? {
-        TODO("Not yet implemented")
+        return get(key)
     }
 
     override fun getLong(key: String): Long? {
-        TODO("Not yet implemented")
+        return get(key)
     }
 
     override fun getFloat(key: String): Float? {
-        TODO("Not yet implemented")
+        return get(key)
     }
 
     override fun getDouble(key: String): Double? {
-        TODO("Not yet implemented")
+        return get(key)
     }
 
     override fun getChar(key: String): Char? {
-        TODO("Not yet implemented")
+        return get(key)
     }
 
     override fun getBoolean(key: String): Boolean {
-        TODO("Not yet implemented")
+        if (get<Boolean>(key) == null) {
+            return false
+        }
+
+        return get(key)!!
+    }
+
+    override fun contains(key: String): Boolean {
+        return storage.contents.containsKey(key)
     }
 
 }

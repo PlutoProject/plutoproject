@@ -1,13 +1,13 @@
 package ink.pmc.common.member.api.data
 
+import ink.pmc.common.member.api.Member
 import java.time.Instant
-import java.util.*
 
 @Suppress("UNUSED")
 interface DataContainer {
 
     val id: Long
-    val owner: UUID
+    val owner: Member
     val createdAt: Instant
     val lastModifiedAt: Instant?
     val contents: Map<String, Any>
@@ -33,5 +33,7 @@ interface DataContainer {
     fun getChar(key: String): Char?
 
     fun getBoolean(key: String): Boolean
+
+    fun contains(key: String): Boolean
 
 }
