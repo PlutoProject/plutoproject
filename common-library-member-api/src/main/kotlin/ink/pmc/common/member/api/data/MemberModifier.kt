@@ -1,15 +1,15 @@
 package ink.pmc.common.member.api.data
 
-import java.time.LocalDateTime
+import java.time.Instant
 
 @Suppress("UNUSED")
 interface MemberModifier {
 
     fun name(new: String)
 
-    fun createdAt(new: LocalDateTime)
+    fun createdAt(new: Instant)
 
-    fun lastJoinedAt(new: LocalDateTime)
+    fun lastJoinedAt(new: Instant)
 
     fun bio(new: String)
 

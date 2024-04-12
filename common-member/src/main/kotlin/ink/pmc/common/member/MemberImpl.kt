@@ -7,45 +7,53 @@ import ink.pmc.common.member.api.comment.CommentRepository
 import ink.pmc.common.member.api.data.DataContainer
 import ink.pmc.common.member.api.data.MemberModifier
 import ink.pmc.common.member.api.punishment.PunishmentLogger
+import ink.pmc.common.member.data.MemberModifierImpl
 import ink.pmc.common.member.storage.MemberStorage
-import java.time.LocalDateTime
+import java.time.Instant
 import java.util.*
 
-class MemberImpl(override val storage: MemberStorage) : AbstractMember() {
-
+class MemberImpl(
+    private val service: AbstractMemberService,
     override val uid: Long
-        get() = TODO("Not yet implemented")
+) : AbstractMember() {
+
+    override val storage: MemberStorage
+        get() = service.lookupMember(uid)
     override val id: UUID
-        get() = TODO("Not yet implemented")
+        get() = UUID.fromString(storage.id)
     override val name: String
-        get() = TODO("Not yet implemented")
+        get() = storage.name
     override val whitelistStatus: WhitelistStatus
-        get() = TODO("Not yet implemented")
+        get() = WhitelistStatus.valueOf(storage.whitelistStatus)
     override val authType: AuthType
-        get() = TODO("Not yet implemented")
-    override val createdAt: LocalDateTime
-        get() = TODO("Not yet implemented")
-    override val lastJoinedAt: LocalDateTime?
-        get() = TODO("Not yet implemented")
+        get() = AuthType.valueOf(storage.authType)
+    override val createdAt: Instant
+        get() = Instant.ofEpochMilli(storage.createdAt)
+    override val lastJoinedAt: Instant?
+        get() = if (storage.lastJoinedAt != null) Instant.ofEpochMilli(storage.lastJoinedAt!!) else null
     override val dataContainer: DataContainer
         get() = TODO("Not yet implemented")
     override val bedrockAccount: BedrockAccount?
         get() = TODO("Not yet implemented")
     override val bio: String?
-        get() = TODO("Not yet implemented")
+        get() = storage.bio
     override val commentRepository: CommentRepository
         get() = TODO("Not yet implemented")
     override val punishmentLogger: PunishmentLogger
         get() = TODO("Not yet implemented")
     override val modifier: MemberModifier
-        get() = TODO("Not yet implemented")
+        get() = MemberModifierImpl(this)
 
     override fun exemptWhitelist() {
-        TODO("Not yet implemented")
+        if (whitelistStatus == WhitelistStatus.NON_WHITELISTED || whitelistStatus == WhitelistStatus.WHITELISTED_BEFORE) {
+            return
+        }
+
+        storage.whitelistStatus = WhitelistStatus.WHITELISTED_BEFORE.toString()
     }
 
     override fun grantWhitelist() {
-        TODO("Not yet implemented")
+        storage.whitelistStatus = WhitelistStatus.WHITELISTED.toString()
     }
 
     override suspend fun linkBedrock(xuid: String, gamertag: String): BedrockAccount? {

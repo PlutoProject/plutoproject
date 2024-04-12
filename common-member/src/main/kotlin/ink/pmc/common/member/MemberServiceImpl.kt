@@ -1,5 +1,6 @@
 package ink.pmc.common.member
 
+import com.github.benmanes.caffeine.cache.Caffeine
 import com.mongodb.client.model.Filters.*
 import com.mongodb.kotlin.client.coroutine.MongoCollection
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
@@ -11,6 +12,8 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.runBlocking
 import org.bson.types.ObjectId
+import java.time.Duration
+import java.time.Instant
 import java.time.LocalDateTime
 
 @Suppress("UNUSED")
@@ -30,6 +33,27 @@ class MemberServiceImpl(
     override val bedrockAccounts: MongoCollection<BedrockAccountStorage> =
         database.getCollection("member_bedrock_accounts")
 
+    private val memberCache = Caffeine.newBuilder()
+        .maximumSize(20)
+        .expireAfterWrite(Duration.ofMinutes(10))
+        .build<Long, MemberStorage> { runBlocking { members.find(eq("uid", it)).firstOrNull() } }
+    private val punishmentCache = Caffeine.newBuilder()
+        .maximumSize(20)
+        .expireAfterWrite(Duration.ofMinutes(10))
+        .build<Long, PunishmentStorage> { runBlocking { punishments.find(eq("id", it)).firstOrNull() } }
+    private val commentCache = Caffeine.newBuilder()
+        .maximumSize(20)
+        .expireAfterWrite(Duration.ofMinutes(10))
+        .build<Long, CommentStorage> { runBlocking { comments.find(eq("id", it)).firstOrNull() } }
+    private val dataContainerCache = Caffeine.newBuilder()
+        .maximumSize(20)
+        .expireAfterWrite(Duration.ofMinutes(10))
+        .build<Long, DataContainerStorage> { runBlocking { dataContainers.find(eq("id", it)).firstOrNull() } }
+    private val bedrockAccountCache = Caffeine.newBuilder()
+        .maximumSize(20)
+        .expireAfterWrite(Duration.ofMinutes(10))
+        .build<Long, BedrockAccountStorage> { runBlocking { bedrockAccounts.find(eq("id", it)).firstOrNull() } }
+
     override suspend fun currentStatus(): StatusStorage {
         return status.find(exists("lastMemberUid")).first()
     }
@@ -39,6 +63,26 @@ class MemberServiceImpl(
         status.insertOne(new)
     }
 
+    override fun lookupMember(uid: Long): MemberStorage = memberCache.get(uid)
+
+    override fun lookupPunishment(id: Long): PunishmentStorage? = punishmentCache.get(id)
+
+    override fun lookupComment(id: Long): CommentStorage? = commentCache.get(id)
+
+    override fun lookupDataContainer(id: Long): DataContainerStorage? = dataContainerCache.get(id)
+
+    override fun lookupBedrockAccount(id: Long): BedrockAccountStorage? = bedrockAccountCache.get(id)
+
+    override fun clearMember(uid: Long) = memberCache.invalidate(uid)
+
+    override fun clearPunishment(id: Long) = punishmentCache.invalidate(id)
+
+    override fun clearComment(id: Long) = commentCache.invalidate(id)
+
+    override fun clearDataContainer(id: Long) = dataContainerCache.invalidate(id)
+
+    override fun clearBedrockAccount(id: Long) = bedrockAccountCache.invalidate(id)
+
     override suspend fun lastUid(): Long {
         return currentStatus().lastMember
     }
@@ -47,7 +91,7 @@ class MemberServiceImpl(
         return lookup(currentStatus().lastMember)
     }
 
-    override suspend fun lastMemberCreatedAt(): LocalDateTime? {
+    override suspend fun lastMemberCreatedAt(): Instant? {
         return lastMember()?.createdAt
     }
 
@@ -71,7 +115,7 @@ class MemberServiceImpl(
         ).firstOrNull()
 
         if (memberStorage != null) {
-            return MemberImpl(memberStorage)
+            return MemberImpl(this, memberStorage.uid)
         }
 
         val id = authType.fetcher.fetch(name) ?: return null
@@ -100,9 +144,12 @@ class MemberServiceImpl(
             mutableMapOf()
         )
 
+        memberCache.put(nextMember, memberStorage)
+        dataContainerCache.put(nextDataContainer, dataContainerStorage)
+
         members.insertOne(memberStorage)
         dataContainers.insertOne(dataContainerStorage)
-        return MemberImpl(memberStorage)
+        return MemberImpl(this, nextMember)
     }
 
     override suspend fun lookup(uid: Long): Member? {
@@ -110,8 +157,7 @@ class MemberServiceImpl(
             return null
         }
 
-        val memberStorage = members.find(eq("uid", uid)).firstOrNull()!!
-        return MemberImpl(memberStorage)
+        return MemberImpl(this, uid)
     }
 
     override fun get(uid: Long): Member? {

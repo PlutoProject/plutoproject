@@ -1,5 +1,6 @@
 package ink.pmc.common.member.api
 
+import java.time.Instant
 import java.time.LocalDateTime
 
 @Suppress("UNUSED", "INAPPLICABLE_JVM_NAME")
@@ -13,7 +14,7 @@ interface IMemberService {
 
     suspend fun lastMember(): Member?
 
-    suspend fun lastMemberCreatedAt(): LocalDateTime?
+    suspend fun lastMemberCreatedAt(): Instant?
 
     suspend fun create(name: String, authType: AuthType = AuthType.OFFICIAL): Member?
 

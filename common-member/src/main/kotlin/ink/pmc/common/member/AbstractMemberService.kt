@@ -17,4 +17,24 @@ abstract class AbstractMemberService : IMemberService {
 
     abstract suspend fun updateStatus(new: StatusStorage)
 
+    abstract fun lookupMember(uid: Long): MemberStorage
+
+    abstract fun lookupPunishment(id: Long): PunishmentStorage?
+
+    abstract fun lookupComment(id: Long): CommentStorage?
+
+    abstract fun lookupDataContainer(id: Long): DataContainerStorage?
+
+    abstract fun lookupBedrockAccount(id: Long): BedrockAccountStorage?
+
+    abstract fun clearMember(uid: Long)
+
+    abstract fun clearPunishment(id: Long)
+
+    abstract fun clearComment(id: Long)
+    
+    abstract fun clearDataContainer(id: Long)
+
+    abstract fun clearBedrockAccount(id: Long)
+
 }

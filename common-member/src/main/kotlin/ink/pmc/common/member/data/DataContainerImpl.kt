@@ -1,6 +1,7 @@
 package ink.pmc.common.member.data
 
 import ink.pmc.common.member.api.data.DataContainer
+import java.time.Instant
 import java.time.LocalDateTime
 import java.util.*
 
@@ -10,9 +11,9 @@ class DataContainerImpl : DataContainer {
         get() = TODO("Not yet implemented")
     override val owner: UUID
         get() = TODO("Not yet implemented")
-    override val createdAt: LocalDateTime
+    override val createdAt: Instant
         get() = TODO("Not yet implemented")
-    override val lastModifiedAt: LocalDateTime?
+    override val lastModifiedAt: Instant?
         get() = TODO("Not yet implemented")
     override val contents: Map<String, Any>
         get() = TODO("Not yet implemented")

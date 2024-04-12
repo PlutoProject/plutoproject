@@ -1,5 +1,6 @@
 package ink.pmc.common.member.api.data
 
+import java.time.Instant
 import java.time.LocalDateTime
 import java.util.*
 
@@ -8,8 +9,8 @@ interface DataContainer {
 
     val id: Long
     val owner: UUID
-    val createdAt: LocalDateTime
-    val lastModifiedAt: LocalDateTime?
+    val createdAt: Instant
+    val lastModifiedAt: Instant?
     val contents: Map<String, Any>
 
     operator fun set(key: String, value: Any)
