@@ -3,7 +3,7 @@ package ink.pmc.common.member.api.data
 import java.time.LocalDateTime
 import java.util.*
 
-@Suppress("UNUSED", "INAPPLICABLE_JVM_NAME")
+@Suppress("UNUSED")
 interface DataContainer {
 
     val id: Long
@@ -14,9 +14,6 @@ interface DataContainer {
 
     operator fun set(key: String, value: Any)
 
-    operator fun get(key: String): Any?
-
-    @JvmName("getWithType")
     operator fun <T> get(key: String): T?
 
     fun getString(key: String): String?
