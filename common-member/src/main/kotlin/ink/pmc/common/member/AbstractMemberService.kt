@@ -19,17 +19,17 @@ abstract class AbstractMemberService : IMemberService {
     abstract val cache: LoadingCache<String, Optional<Any>>
     val currentStatus: AtomicReference<StatusStorage> = AtomicReference()
 
-    abstract fun lookupStatus(): StatusStorage
+    abstract fun cachedStatus(): StatusStorage
 
-    abstract fun lookupMember(uid: Long): MemberStorage?
+    abstract fun cachedMember(uid: Long): MemberStorage?
 
-    abstract fun lookupPunishment(id: Long): PunishmentStorage?
+    abstract fun cachedPunishment(id: Long): PunishmentStorage?
 
-    abstract fun lookupComment(id: Long): CommentStorage?
+    abstract fun cachedComment(id: Long): CommentStorage?
 
-    abstract fun lookupDataContainer(id: Long): DataContainerStorage?
+    abstract fun cachedDataContainer(id: Long): DataContainerStorage?
 
-    abstract fun lookupBedrockAccount(id: Long): BedrockAccountStorage?
+    abstract fun cachedBedrockAccount(id: Long): BedrockAccountStorage?
 
     abstract fun cacheStatus(status: StatusStorage)
 
@@ -43,14 +43,24 @@ abstract class AbstractMemberService : IMemberService {
 
     abstract fun cacheBedrockAccount(id: Long, bedrockAccount: BedrockAccount)
 
-    abstract fun clearMember(uid: Long)
+    abstract fun clearMemberCache(uid: Long)
 
-    abstract fun clearPunishment(id: Long)
+    abstract fun clearPunishmentCache(id: Long)
 
-    abstract fun clearComment(id: Long)
+    abstract fun clearCommentCache(id: Long)
 
-    abstract fun clearDataContainer(id: Long)
+    abstract fun clearDataContainerCache(id: Long)
 
-    abstract fun clearBedrockAccount(id: Long)
+    abstract fun clearBedrockAccountCache(id: Long)
+
+    abstract fun isMemberCached(uid: Long): Boolean
+
+    abstract fun isPunishmentCached(id: Long): Boolean
+
+    abstract fun isCommentCached(id: Long): Boolean
+
+    abstract fun isDataContainerCached(id: Long): Boolean
+
+    abstract fun isBedrockAccountCached(id: Long): Boolean
 
 }

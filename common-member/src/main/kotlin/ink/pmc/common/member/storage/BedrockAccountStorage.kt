@@ -8,5 +8,6 @@ data class BedrockAccountStorage(
     val id: Long,
     val linkedWith: Long,
     val xuid: String,
-    val gamertag: String
+    val gamertag: String,
+    @BsonId var removal: Boolean
 )

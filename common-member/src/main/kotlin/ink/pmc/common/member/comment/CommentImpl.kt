@@ -1,20 +1,23 @@
 package ink.pmc.common.member.comment
 
+import ink.pmc.common.member.AbstractMemberService
+import ink.pmc.common.member.api.Member
 import ink.pmc.common.member.api.comment.Comment
-import java.lang.reflect.Member
+import ink.pmc.common.member.storage.CommentStorage
+import kotlinx.coroutines.runBlocking
 import java.time.Instant
 
-class CommentImpl : Comment {
+class CommentImpl(private val service: AbstractMemberService, override val storage: CommentStorage) : AbstractComment() {
 
     override val id: Long
-        get() = TODO("Not yet implemented")
+        get() = storage.id
     override val createdAt: Instant
-        get() = TODO("Not yet implemented")
+        get() = Instant.ofEpochMilli(storage.createdAt)
     override val creator: Member
-        get() = TODO("Not yet implemented")
+        get() = runBlocking { service.lookup(storage.creator)!! }
     override val content: String
-        get() = TODO("Not yet implemented")
+        get() = storage.content
     override val isModified: Boolean
-        get() = TODO("Not yet implemented")
+        get() = storage.isModified
 
 }

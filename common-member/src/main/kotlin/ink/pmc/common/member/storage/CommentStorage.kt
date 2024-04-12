@@ -1,6 +1,7 @@
 package ink.pmc.common.member.storage
 
 import org.bson.codecs.pojo.annotations.BsonId
+import org.bson.codecs.pojo.annotations.BsonIgnore
 import org.bson.types.ObjectId
 
 data class CommentStorage(
@@ -8,6 +9,7 @@ data class CommentStorage(
     val id: Long,
     val createdAt: Long,
     val creator: Long,
-    val content: String,
-    val isModified: Boolean
+    var content: String,
+    var isModified: Boolean,
+    @BsonIgnore var removal: Boolean = false
 )

@@ -17,7 +17,7 @@ class PunishmentLoggerImpl(private val service: AbstractMemberService, private v
             val list = mutableListOf<Punishment>()
 
             member.storage.punishments.forEach {
-                list.add(PunishmentImpl(service, service.lookupPunishment(it)!!))
+                list.add(PunishmentImpl(service, service.cachedPunishment(it)!!))
             }
 
             return list
@@ -28,7 +28,7 @@ class PunishmentLoggerImpl(private val service: AbstractMemberService, private v
                 return null
             }
 
-            return PunishmentImpl(service, service.lookupPunishment(member.storage.punishments.last())!!)
+            return PunishmentImpl(service, service.cachedPunishment(member.storage.punishments.last())!!)
         }
 
     override fun create(type: PunishmentType, executor: Member): Punishment {
@@ -44,6 +44,7 @@ class PunishmentLoggerImpl(private val service: AbstractMemberService, private v
             executor.uid
         )
 
+        service.cachedStatus().increasePunishment()
         service.cachePunishment(id, storage)
         member.storage.punishments.add(id)
 
@@ -55,11 +56,11 @@ class PunishmentLoggerImpl(private val service: AbstractMemberService, private v
             return null
         }
 
-        return PunishmentImpl(service, service.lookupPunishment(id)!!)
+        return PunishmentImpl(service, service.cachedPunishment(id)!!)
     }
 
     override fun exist(id: Long): Boolean {
-        return service.lookupPunishment(id) != null
+        return service.cachedPunishment(id) != null
     }
 
     override fun revoke(punishment: Punishment) {

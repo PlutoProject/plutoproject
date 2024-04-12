@@ -8,7 +8,7 @@ import ink.pmc.common.member.storage.PunishmentStorage
 import kotlinx.coroutines.runBlocking
 import java.time.Instant
 
-class PunishmentImpl(private val service: AbstractMemberService, val storage: PunishmentStorage) : Punishment {
+class PunishmentImpl(private val service: AbstractMemberService, override val storage: PunishmentStorage) : AbstractPunishment() {
 
     override val id: Long
         get() = storage.id

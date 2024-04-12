@@ -10,8 +10,10 @@ import ink.pmc.common.member.api.BedrockAccount
 import ink.pmc.common.member.api.Member
 import ink.pmc.common.member.api.WhitelistStatus
 import ink.pmc.common.member.storage.*
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import org.bson.types.ObjectId
 import java.time.Duration
 import java.time.Instant
@@ -37,8 +39,9 @@ class MemberServiceImpl(
         .refreshAfterWrite(Duration.ofMinutes(5))
         .expireAfterWrite(Duration.ofMinutes(5))
         .build { loadCache(it) }
+    private val self = this
 
-    override fun lookupStatus(): StatusStorage {
+    override fun cachedStatus(): StatusStorage {
         return cache.get("status").get() as StatusStorage
     }
 
@@ -95,7 +98,7 @@ class MemberServiceImpl(
         }
     }
 
-    override fun lookupMember(uid: Long): MemberStorage? {
+    override fun cachedMember(uid: Long): MemberStorage? {
         val optional = cache.get("member_$uid")
 
         if (optional.isEmpty) {
@@ -105,7 +108,7 @@ class MemberServiceImpl(
         return optional.get() as MemberStorage
     }
 
-    override fun lookupPunishment(id: Long): PunishmentStorage? {
+    override fun cachedPunishment(id: Long): PunishmentStorage? {
         val optional = cache.get("punishment_$id")
 
         if (optional.isEmpty) {
@@ -115,7 +118,7 @@ class MemberServiceImpl(
         return optional.get() as PunishmentStorage
     }
 
-    override fun lookupComment(id: Long): CommentStorage? {
+    override fun cachedComment(id: Long): CommentStorage? {
         val optional = cache.get("comment_$id")
 
         if (optional.isEmpty) {
@@ -125,7 +128,7 @@ class MemberServiceImpl(
         return optional.get() as CommentStorage
     }
 
-    override fun lookupDataContainer(id: Long): DataContainerStorage? {
+    override fun cachedDataContainer(id: Long): DataContainerStorage? {
         val optional = cache.get("dataContainer_$id")
 
         if (optional.isEmpty) {
@@ -135,7 +138,7 @@ class MemberServiceImpl(
         return optional.get() as DataContainerStorage
     }
 
-    override fun lookupBedrockAccount(id: Long): BedrockAccountStorage? {
+    override fun cachedBedrockAccount(id: Long): BedrockAccountStorage? {
         val optional = cache.get("bedrockAccount_$id")
 
         if (optional.isEmpty) {
@@ -169,24 +172,44 @@ class MemberServiceImpl(
         cache.put("bedrockAccount_$id", Optional.of(bedrockAccount))
     }
 
-    override fun clearMember(uid: Long) {
+    override fun clearMemberCache(uid: Long) {
         cache.invalidate("member_$uid")
     }
 
-    override fun clearPunishment(id: Long) {
+    override fun clearPunishmentCache(id: Long) {
         cache.invalidate("punishment_$id")
     }
 
-    override fun clearComment(id: Long) {
+    override fun clearCommentCache(id: Long) {
         cache.invalidate("comment_$id")
     }
 
-    override fun clearDataContainer(id: Long) {
+    override fun clearDataContainerCache(id: Long) {
         cache.invalidate("dataContainer_$id")
     }
 
-    override fun clearBedrockAccount(id: Long) {
+    override fun clearBedrockAccountCache(id: Long) {
         cache.invalidate("bedrockAccount_$id")
+    }
+
+    override fun isMemberCached(uid: Long): Boolean {
+        return cache.getIfPresent("member_$uid") != null
+    }
+
+    override fun isPunishmentCached(id: Long): Boolean {
+        return cache.getIfPresent("punishment_$id") != null
+    }
+
+    override fun isCommentCached(id: Long): Boolean {
+        return cache.getIfPresent("comment_$id") != null
+    }
+
+    override fun isDataContainerCached(id: Long): Boolean {
+        return cache.getIfPresent("dataContainer_$id") != null
+    }
+
+    override fun isBedrockAccountCached(id: Long): Boolean {
+        return cache.getIfPresent("bedrockAccount_$id") != null
     }
 
     override suspend fun lastUid(): Long {
@@ -265,31 +288,140 @@ class MemberServiceImpl(
     }
 
     override suspend fun lookup(uid: Long): Member? {
-        if (!exist(uid)) {
-            return null
-        }
+        return withContext(Dispatchers.IO) {
+            if (!exist(uid)) {
+                return@withContext null
+            }
 
-        return MemberImpl(this, lookupMember(uid)!!)
+            MemberImpl(self, cachedMember(uid)!!)
+        }
     }
 
-    override fun get(uid: Long): Member? = runBlocking { lookup(uid) }
+    override fun get(uid: Long): Member? {
+        return runBlocking { lookup(uid) }
+    }
 
-    override suspend fun exist(uid: Long): Boolean = lookupMember(uid) != null
+    override suspend fun exist(uid: Long): Boolean {
+        return withContext(Dispatchers.IO) { cachedMember(uid) != null }
+    }
 
-    override suspend fun existPunishment(id: Long): Boolean = lookupPunishment(id) != null
+    override suspend fun existPunishment(id: Long): Boolean {
+        return withContext(Dispatchers.IO) { cachedPunishment(id) != null }
+    }
 
-    override suspend fun existComment(id: Long): Boolean = lookupComment(id) != null
+    override suspend fun existComment(id: Long): Boolean {
+        return withContext(Dispatchers.IO) { cachedComment(id) != null }
+    }
 
-    override suspend fun existDataContainer(id: Long): Boolean = lookupDataContainer(id) != null
+    override suspend fun existDataContainer(id: Long): Boolean {
+        return withContext(Dispatchers.IO) { cachedDataContainer(id) != null }
+    }
 
-    override suspend fun existBedrockAccount(id: Long): Boolean = lookupBedrockAccount(id) != null
+    override suspend fun existBedrockAccount(id: Long): Boolean {
+        return withContext(Dispatchers.IO) { cachedBedrockAccount(id) != null }
+    }
+
+    private suspend fun updateMember(member: MemberStorage) {
+        members.deleteOne(eq("uid", member.uid))
+        members.insertOne(member)
+    }
+
+    private suspend fun updatePunishment(punishment: PunishmentStorage) {
+        punishments.deleteOne(eq("id", punishment.id))
+        punishments.insertOne(punishment)
+    }
+
+    private suspend fun updateComment(comment: CommentStorage) {
+        comments.deleteOne(eq("id", comment.id))
+
+        if (!comment.removal) {
+            comments.insertOne(comment)
+        }
+    }
+
+    private suspend fun updateDataContainer(dataContainer: DataContainerStorage) {
+        dataContainers.deleteOne(eq("id", dataContainer.id))
+        dataContainers.insertOne(dataContainer)
+    }
+
+    private suspend fun updateBedrockAccount(bedrockAccountStorage: BedrockAccountStorage) {
+        bedrockAccounts.deleteOne(eq("id", bedrockAccountStorage.id))
+
+        if (!bedrockAccountStorage.removal) {
+            bedrockAccounts.insertOne(bedrockAccountStorage)
+        }
+    }
 
     override suspend fun update(member: Member) {
-        TODO("Not yet implemented")
+        withContext(Dispatchers.IO) {
+            if (!isMemberCached(member.uid)) {
+                return@withContext
+            }
+
+            val storage = (member as AbstractMember).storage
+            updateMember(storage)
+
+            storage.punishments.forEach {
+                if (isPunishmentCached(it)) {
+                    updatePunishment(cachedPunishment(it)!!)
+                }
+            }
+
+            storage.comments.forEach {
+                if (isCommentCached(it)) {
+                    updateComment(cachedComment(it)!!)
+                }
+            }
+
+
+            if (isDataContainerCached(storage.dataContainer)) {
+                updateDataContainer(cachedDataContainer(storage.dataContainer)!!)
+            }
+
+            if (member.bedrockAccount == null) {
+                return@withContext
+            }
+
+            if (isBedrockAccountCached(storage.bedrockAccount!!)) {
+                updateBedrockAccount(cachedBedrockAccount(storage.bedrockAccount!!)!!)
+            }
+        }
     }
 
     override suspend fun refresh(member: Member) {
-        TODO("Not yet implemented")
+        withContext(Dispatchers.IO) {
+            if (!isMemberCached(member.uid)) {
+                return@withContext
+            }
+
+            val storage = (member as AbstractMember).storage
+            clearMemberCache(storage.uid)
+
+            storage.punishments.forEach {
+                if (isPunishmentCached(it)) {
+                    clearPunishmentCache(it)
+                }
+            }
+
+            storage.comments.forEach {
+                if (isCommentCached(it)) {
+                    clearCommentCache(it)
+                }
+            }
+
+
+            if (isDataContainerCached(storage.dataContainer)) {
+                clearDataContainerCache(storage.dataContainer)
+            }
+
+            if (member.bedrockAccount == null) {
+                return@withContext
+            }
+
+            if (isBedrockAccountCached(storage.bedrockAccount!!)) {
+                clearBedrockAccountCache(storage.bedrockAccount!!)
+            }
+        }
     }
 
 }

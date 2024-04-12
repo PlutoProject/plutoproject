@@ -7,6 +7,7 @@ import ink.pmc.common.member.api.comment.CommentRepository
 import ink.pmc.common.member.api.data.DataContainer
 import ink.pmc.common.member.api.data.MemberModifier
 import ink.pmc.common.member.api.punishment.PunishmentLogger
+import ink.pmc.common.member.comment.CommentRepositoryImpl
 import ink.pmc.common.member.data.MemberModifierImpl
 import ink.pmc.common.member.punishment.PunishmentLoggerImpl
 import ink.pmc.common.member.storage.MemberStorage
@@ -39,7 +40,7 @@ class MemberImpl(
     override val bio: String?
         get() = storage.bio
     override val commentRepository: CommentRepository
-        get() = TODO("Not yet implemented")
+        get() = CommentRepositoryImpl(service, this)
     override val punishmentLogger: PunishmentLogger
         get() = PunishmentLoggerImpl(service, this)
     override val modifier: MemberModifier
@@ -66,11 +67,11 @@ class MemberImpl(
     }
 
     override suspend fun update() {
-        TODO("Not yet implemented")
+        service.update(this)
     }
 
     override suspend fun refresh() {
-        TODO("Not yet implemented")
+        service.refresh(this)
     }
 
 }

@@ -1,6 +1,6 @@
 package ink.pmc.common.member.api.comment
 
-import java.lang.reflect.Member
+import ink.pmc.common.member.api.Member
 import java.time.Instant
 
 @Suppress("UNUSED")

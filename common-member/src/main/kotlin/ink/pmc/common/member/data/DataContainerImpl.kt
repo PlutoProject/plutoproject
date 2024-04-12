@@ -1,10 +1,11 @@
 package ink.pmc.common.member.data
 
-import ink.pmc.common.member.api.data.DataContainer
+import ink.pmc.common.member.AbstractMemberService
+import ink.pmc.common.member.storage.DataContainerStorage
 import java.time.Instant
 import java.util.*
 
-class DataContainerImpl : DataContainer {
+class DataContainerImpl(private val service: AbstractMemberService, override val storage: DataContainerStorage) : AbstractDataContainer() {
 
     override val id: Long
         get() = TODO("Not yet implemented")
