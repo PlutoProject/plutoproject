@@ -3,7 +3,7 @@ package ink.pmc.common.member.punishment
 import ink.pmc.common.member.api.Member
 import ink.pmc.common.member.api.punishment.Punishment
 import ink.pmc.common.member.api.punishment.PunishmentType
-import java.time.LocalDateTime
+import java.time.Instant
 
 class PunishmentImpl : Punishment {
 
@@ -11,7 +11,7 @@ class PunishmentImpl : Punishment {
         get() = TODO("Not yet implemented")
     override val type: PunishmentType
         get() = TODO("Not yet implemented")
-    override val time: LocalDateTime
+    override val time: Instant
         get() = TODO("Not yet implemented")
     override val belongs: Member
         get() = TODO("Not yet implemented")

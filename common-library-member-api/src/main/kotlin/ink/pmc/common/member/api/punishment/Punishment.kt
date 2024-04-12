@@ -2,7 +2,6 @@ package ink.pmc.common.member.api.punishment
 
 import ink.pmc.common.member.api.Member
 import java.time.Instant
-import java.time.LocalDateTime
 
 @Suppress("UNUSED")
 interface Punishment {

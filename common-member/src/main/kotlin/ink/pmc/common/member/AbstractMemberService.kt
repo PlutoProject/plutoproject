@@ -32,7 +32,7 @@ abstract class AbstractMemberService : IMemberService {
     abstract fun clearPunishment(id: Long)
 
     abstract fun clearComment(id: Long)
-    
+
     abstract fun clearDataContainer(id: Long)
 
     abstract fun clearBedrockAccount(id: Long)
