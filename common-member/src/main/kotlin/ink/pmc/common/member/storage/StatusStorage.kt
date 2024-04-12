@@ -21,12 +21,20 @@ data class StatusStorage(
         return lastMember + 1
     }
 
+    fun increaseMember() {
+        lastMember += 1
+    }
+
     fun nextPunishment(): Long {
         if (lastPunishment == -1L) {
             return 0
         }
 
         return lastPunishment + 1
+    }
+
+    fun increasePunishment() {
+        lastPunishment += 1
     }
 
     fun nextComment(): Long {
@@ -37,6 +45,10 @@ data class StatusStorage(
         return lastComment + 1
     }
 
+    fun increaseComment() {
+        lastComment += 1
+    }
+
     fun nextDataContainer(): Long {
         if (lastDataContainer == -1L) {
             return 0
@@ -45,12 +57,20 @@ data class StatusStorage(
         return lastDataContainer + 1
     }
 
+    fun increaseDataContainer() {
+        lastDataContainer += 1
+    }
+
     fun nextBedrockAccount(): Long {
         if (lastBedrockAccount == -1L) {
             return 0
         }
 
         return lastBedrockAccount + 1
+    }
+
+    fun increaseBedrockAccount() {
+        lastBedrockAccount += 1
     }
 
 }

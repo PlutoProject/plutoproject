@@ -1,8 +1,12 @@
 package ink.pmc.common.member
 
+import com.github.benmanes.caffeine.cache.LoadingCache
 import com.mongodb.kotlin.client.coroutine.MongoCollection
+import ink.pmc.common.member.api.BedrockAccount
 import ink.pmc.common.member.api.IMemberService
 import ink.pmc.common.member.storage.*
+import java.util.Optional
+import java.util.concurrent.atomic.AtomicReference
 
 abstract class AbstractMemberService : IMemberService {
 
@@ -12,13 +16,10 @@ abstract class AbstractMemberService : IMemberService {
     abstract val comments: MongoCollection<CommentStorage>
     abstract val dataContainers: MongoCollection<DataContainerStorage>
     abstract val bedrockAccounts: MongoCollection<BedrockAccountStorage>
-    val dirtyPunishments = mutableListOf<PunishmentStorage>()
-    val dirtyComments = mutableListOf<CommentStorage>()
-    val dirtyBedrockAccounts = mutableListOf<BedrockAccountStorage>()
+    abstract val cache: LoadingCache<String, Optional<Any>>
+    val currentStatus: AtomicReference<StatusStorage> = AtomicReference()
 
-    abstract suspend fun currentStatus(): StatusStorage
-
-    abstract suspend fun updateStatus(new: StatusStorage)
+    abstract fun lookupStatus(): StatusStorage
 
     abstract fun lookupMember(uid: Long): MemberStorage?
 
@@ -29,6 +30,18 @@ abstract class AbstractMemberService : IMemberService {
     abstract fun lookupDataContainer(id: Long): DataContainerStorage?
 
     abstract fun lookupBedrockAccount(id: Long): BedrockAccountStorage?
+
+    abstract fun cacheStatus(status: StatusStorage)
+
+    abstract fun cacheMember(uid: Long, member: MemberStorage)
+
+    abstract fun cachePunishment(id: Long, punishment: PunishmentStorage)
+
+    abstract fun cacheComment(id: Long, comment: CommentStorage)
+
+    abstract fun cacheDataContainer(id: Long, dataContainer: DataContainerStorage)
+
+    abstract fun cacheBedrockAccount(id: Long, bedrockAccount: BedrockAccount)
 
     abstract fun clearMember(uid: Long)
 

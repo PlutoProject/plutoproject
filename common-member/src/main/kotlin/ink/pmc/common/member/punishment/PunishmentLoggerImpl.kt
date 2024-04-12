@@ -7,7 +7,6 @@ import ink.pmc.common.member.api.punishment.Punishment
 import ink.pmc.common.member.api.punishment.PunishmentLogger
 import ink.pmc.common.member.api.punishment.PunishmentType
 import ink.pmc.common.member.storage.PunishmentStorage
-import kotlinx.coroutines.runBlocking
 import org.bson.types.ObjectId
 
 class PunishmentLoggerImpl(private val service: AbstractMemberService, private val member: AbstractMember) :
@@ -33,9 +32,11 @@ class PunishmentLoggerImpl(private val service: AbstractMemberService, private v
         }
 
     override fun create(type: PunishmentType, executor: Member): Punishment {
+        val id = service.currentStatus.get().nextPunishment()
+
         val storage = PunishmentStorage(
             ObjectId(),
-            runBlocking { service.currentStatus().nextPunishment() },
+            id,
             type.toString(),
             System.currentTimeMillis(),
             member.uid,
@@ -43,8 +44,8 @@ class PunishmentLoggerImpl(private val service: AbstractMemberService, private v
             executor.uid
         )
 
-        service.dirtyPunishments.add(storage)
-        member.storage.punishments.add(runBlocking { service.currentStatus().nextPunishment() })
+        service.cachePunishment(id, storage)
+        member.storage.punishments.add(id)
 
         return PunishmentImpl(service, storage)
     }
@@ -68,7 +69,7 @@ class PunishmentLoggerImpl(private val service: AbstractMemberService, private v
 
         val impl = punishment as PunishmentImpl
         impl.storage.isRevoked = true
-        service.dirtyPunishments.add(impl.storage)
+        service.cachePunishment(punishment.id, impl.storage)
     }
 
     override fun revoke(punishmentId: Long) {

@@ -17,6 +17,7 @@ class MemberImpl(
     private val service: AbstractMemberService,
     override val storage: MemberStorage
 ) : AbstractMember() {
+
     override val uid: Long
         get() = storage.uid
     override val id: UUID
