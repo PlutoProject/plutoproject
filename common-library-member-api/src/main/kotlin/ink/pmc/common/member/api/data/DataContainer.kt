@@ -9,7 +9,7 @@ interface DataContainer {
     val id: Long
     val owner: Member
     val createdAt: Instant
-    val lastModifiedAt: Instant?
+    val lastModifiedAt: Instant
     val contents: Map<String, Any>
 
     operator fun set(key: String, value: Any)

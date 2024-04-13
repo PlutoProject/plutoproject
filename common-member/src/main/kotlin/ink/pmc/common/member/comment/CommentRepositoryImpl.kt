@@ -4,24 +4,26 @@ import ink.pmc.common.member.AbstractMember
 import ink.pmc.common.member.AbstractMemberService
 import ink.pmc.common.member.api.comment.Comment
 import ink.pmc.common.member.storage.CommentStorage
+import kotlinx.coroutines.runBlocking
 import org.bson.types.ObjectId
 
 class CommentRepositoryImpl(private val service: AbstractMemberService, private val member: AbstractMember) :
     AbstractCommentRepository() {
 
-    override val comments: Collection<Comment>
-        get() {
+    override val comments: MutableCollection<Comment> by lazy {
+        runBlocking {
             val list = mutableListOf<Comment>()
 
             member.storage.comments.forEach {
-                list.add(CommentImpl(service, service.cachedComment(it)!!))
+                list.add(CommentImpl(service, service.lookupCommentStorage(it)!!))
             }
 
-            return list
+            list
         }
+    }
 
     override fun comment(creator: Long, content: String): Comment {
-        val id = service.cachedStatus().nextComment()
+        val id = service.currentStatus.get().nextComment()
 
         val storage = CommentStorage(
             ObjectId(),
@@ -32,8 +34,7 @@ class CommentRepositoryImpl(private val service: AbstractMemberService, private 
             false
         )
 
-        service.cachedStatus().increaseComment()
-        service.cacheComment(id, storage)
+        service.currentStatus.get().increaseComment()
         member.storage.comments.add(id)
 
         return CommentImpl(service, storage)
@@ -48,13 +49,12 @@ class CommentRepositoryImpl(private val service: AbstractMemberService, private 
             return null
         }
 
-        val storage = service.cachedComment(id)!!
+        val comment = comments.first { it.id == id } as CommentImpl
 
-        storage.content = new
-        storage.isModified = true
-        service.cacheComment(storage.id, storage)
+        comment.content = new
+        comment.isModified = true
 
-        return CommentImpl(service, storage)
+        return comment
     }
 
     override fun lookup(id: Long): Comment? {
@@ -62,7 +62,9 @@ class CommentRepositoryImpl(private val service: AbstractMemberService, private 
             return null
         }
 
-        return CommentImpl(service, service.cachedComment(id)!!)
+        val comment = comments.first { it.id == id } as AbstractComment
+
+        return comment
     }
 
     override fun get(id: Long): Comment? {
@@ -70,7 +72,7 @@ class CommentRepositoryImpl(private val service: AbstractMemberService, private 
     }
 
     override fun exist(id: Long): Boolean {
-        return service.cachedComment(id) != null
+        return comments.firstOrNull { it.id == id } != null
     }
 
     override fun uncomment(id: Long) {
@@ -78,7 +80,9 @@ class CommentRepositoryImpl(private val service: AbstractMemberService, private 
             return
         }
 
-        service.cachedComment(id)!!.removal = true
+        val comment = comments.first { it.id == id } as CommentImpl
+        dirtyComments.add(comment.storage)
+        comments.removeIf { it.id == id }
     }
 
 }

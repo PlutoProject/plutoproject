@@ -1,24 +1,27 @@
 package ink.pmc.common.member.data
 
 import ink.pmc.common.member.AbstractMember
+import ink.pmc.common.member.MemberImpl
 import java.time.Instant
 
 class MemberModifierImpl(override val member: AbstractMember) : AbstractMemberModifier() {
 
+    private val impl = member as MemberImpl
+
     override fun name(new: String) {
-        member.storage.name = new
+        impl.name = new
     }
 
     override fun createdAt(new: Instant) {
-        member.storage.createdAt = new.toEpochMilli()
+        impl.createdAt = new
     }
 
     override fun lastJoinedAt(new: Instant) {
-        member.storage.lastJoinedAt = new.toEpochMilli()
+        impl.lastJoinedAt = new
     }
 
     override fun bio(new: String) {
-        member.storage.bio = new
+        impl.bio = new
     }
 
 }

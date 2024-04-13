@@ -7,29 +7,25 @@ import ink.pmc.common.member.api.punishment.Punishment
 import ink.pmc.common.member.api.punishment.PunishmentLogger
 import ink.pmc.common.member.api.punishment.PunishmentType
 import ink.pmc.common.member.storage.PunishmentStorage
+import kotlinx.coroutines.runBlocking
 import org.bson.types.ObjectId
 
 class PunishmentLoggerImpl(private val service: AbstractMemberService, private val member: AbstractMember) :
     PunishmentLogger {
 
-    override val historyPunishments: Collection<Punishment>
-        get() {
-            val list = mutableListOf<Punishment>()
-
-            member.storage.punishments.forEach {
-                list.add(PunishmentImpl(service, service.cachedPunishment(it)!!))
-            }
-
-            return list
+    override val historyPunishments: Collection<Punishment> = runBlocking {
+        val list = mutableListOf<Punishment>()
+        member.storage.punishments.forEach {
+            list.add(PunishmentImpl(service, service.lookupPunishmentStorage(it)!!))
         }
-    override val lastPunishment: Punishment?
-        get() {
-            if (member.storage.punishments.isEmpty()) {
-                return null
-            }
-
-            return PunishmentImpl(service, service.cachedPunishment(member.storage.punishments.last())!!)
+        list
+    }
+    override var lastPunishment: Punishment? = runBlocking {
+        if (member.storage.punishments.isEmpty()) {
+            return@runBlocking null
         }
+        PunishmentImpl(service, service.lookupPunishmentStorage(member.storage.punishments.last())!!)
+    }
 
     override fun create(type: PunishmentType, executor: Member): Punishment {
         val id = service.currentStatus.get().nextPunishment()
@@ -44,8 +40,7 @@ class PunishmentLoggerImpl(private val service: AbstractMemberService, private v
             executor.uid
         )
 
-        service.cachedStatus().increasePunishment()
-        service.cachePunishment(id, storage)
+        service.currentStatus.get().increasePunishment()
         member.storage.punishments.add(id)
 
         return PunishmentImpl(service, storage)
@@ -56,11 +51,12 @@ class PunishmentLoggerImpl(private val service: AbstractMemberService, private v
             return null
         }
 
-        return PunishmentImpl(service, service.cachedPunishment(id)!!)
+        val punishment = historyPunishments.first { it.id == id }
+        return punishment
     }
 
     override fun exist(id: Long): Boolean {
-        return service.cachedPunishment(id) != null
+        return historyPunishments.firstOrNull() { it.id == id } != null
     }
 
     override fun revoke(punishment: Punishment) {
@@ -70,7 +66,6 @@ class PunishmentLoggerImpl(private val service: AbstractMemberService, private v
 
         val impl = punishment as PunishmentImpl
         impl.storage.isRevoked = true
-        service.cachePunishment(punishment.id, impl.storage)
     }
 
     override fun revoke(punishmentId: Long) {

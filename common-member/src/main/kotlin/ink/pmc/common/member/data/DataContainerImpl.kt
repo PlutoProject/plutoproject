@@ -9,16 +9,11 @@ import java.time.Instant
 class DataContainerImpl(private val service: AbstractMemberService, override val storage: DataContainerStorage) :
     AbstractDataContainer() {
 
-    override val id: Long
-        get() = storage.id
-    override val owner: Member
-        get() = runBlocking { service.lookup(storage.owner)!! }
-    override val createdAt: Instant
-        get() = Instant.ofEpochMilli(storage.createdAt)
-    override val lastModifiedAt: Instant?
-        get() = Instant.ofEpochMilli(storage.lastModifiedAt)
-    override val contents: Map<String, Any>
-        get() = storage.contents
+    override val id: Long = storage.id
+    override val owner: Member = runBlocking { service.lookup(storage.owner)!! }
+    override val createdAt: Instant = Instant.ofEpochMilli(storage.createdAt)
+    override var lastModifiedAt: Instant = Instant.ofEpochMilli(storage.lastModifiedAt)
+    override val contents: Map<String, Any> = storage.contents
 
     override fun set(key: String, value: Any) {
         storage.contents[key] = value

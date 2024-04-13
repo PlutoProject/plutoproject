@@ -8,12 +8,9 @@ import kotlinx.coroutines.runBlocking
 class BedrockAccountImpl(private val service: AbstractMemberService, override val storage: BedrockAccountStorage) :
     AbstractBedrockAccount() {
 
-    override val id: Long
-        get() = storage.id
+    override val id: Long = storage.id
     override val linkedWith: Member = runBlocking { service.lookup(storage.linkedWith)!! }
-    override val xuid: String
-        get() = storage.xuid
-    override val gamertag: String
-        get() = storage.gamertag
+    override val xuid: String = storage.xuid
+    override var gamertag: String = storage.gamertag
 
 }

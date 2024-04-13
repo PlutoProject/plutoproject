@@ -9,15 +9,10 @@ import java.time.Instant
 class CommentImpl(private val service: AbstractMemberService, override val storage: CommentStorage) :
     AbstractComment() {
 
-    override val id: Long
-        get() = storage.id
-    override val createdAt: Instant
-        get() = Instant.ofEpochMilli(storage.createdAt)
-    override val creator: Member
-        get() = runBlocking { service.lookup(storage.creator)!! }
-    override val content: String
-        get() = storage.content
-    override val isModified: Boolean
-        get() = storage.isModified
+    override val id: Long = storage.id
+    override val createdAt: Instant = Instant.ofEpochMilli(storage.createdAt)
+    override val creator: Member = runBlocking { service.lookup(storage.creator)!! }
+    override var content: String = storage.content
+    override var isModified: Boolean = storage.isModified
 
 }

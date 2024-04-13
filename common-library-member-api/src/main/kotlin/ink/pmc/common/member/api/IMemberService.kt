@@ -33,6 +33,6 @@ interface IMemberService {
 
     suspend fun update(member: Member)
 
-    suspend fun refresh(member: Member)
+    suspend fun refresh(member: Member): Member?
 
 }

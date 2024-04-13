@@ -28,12 +28,14 @@ interface Member {
 
     fun grantWhitelist()
 
-    suspend fun linkBedrock(xuid: String, gamertag: String): BedrockAccount?
+    fun linkBedrock(xuid: String, gamertag: String): BedrockAccount?
 
-    suspend fun unlinkBedrock()
+    fun unlinkBedrock()
+
+    suspend fun isValid(): Boolean
 
     suspend fun update()
 
-    suspend fun refresh()
+    suspend fun refresh(): Member?
 
 }
