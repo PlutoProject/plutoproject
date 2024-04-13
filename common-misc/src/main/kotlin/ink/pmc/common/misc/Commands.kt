@@ -22,7 +22,7 @@ val suicideCommand = commandManager.commandBuilder("suicide")
             sender.health = 0.0
             sender.sendMessage(SUICIDE)
         }
-    }
+    }!!
 
 val sitCommand = commandManager.commandBuilder("sit")
     .handler {
@@ -36,7 +36,7 @@ val sitCommand = commandManager.commandBuilder("sit")
         sender.submitSync {
             sitManager.sit(sender, sender.location)
         }
-    }
+    }!!
 
 val headCommand = commandManager.commandBuilder("head")
     .required("name", StringParser.stringParser())
@@ -71,4 +71,4 @@ val headCommand = commandManager.commandBuilder("head")
             inv.addItem(head)
             sender.sendMessage(HEAD_GET_SUCCEED.replace("<player>", Component.text(name).color(mochaYellow)))
         }
-    }
+    }!!

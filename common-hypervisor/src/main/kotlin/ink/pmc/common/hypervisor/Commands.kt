@@ -31,24 +31,24 @@ val statusCommand = commandManager.commandBuilder("hypervisor", "hv")
     .literal("status")
     .handler {
         status(it.sender())
-    }
+    }!!
 
 val serverStatusCommand = commandManager.commandBuilder("hypervisor", "hv")
     .permission("hypervisor.status")
     .literal("serverstatus")
     .handler {
         serverStatus(it.sender())
-    }
+    }!!
 
 val worldStatusCommand = commandManager.commandBuilder("hypervisor", "hv")
     .permission("hypervisor.status")
     .literal("worldstatus")
     .handler {
         worldStatus(it.sender())
-    }
+    }!!
 
 val standaloneStatusCommand = commandManager.commandBuilder("status", "hvstatus")
     .permission("hypervisor.status")
     .handler {
         status(it.sender())
-    }
+    }!!
