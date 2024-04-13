@@ -6,7 +6,6 @@ import com.mongodb.client.model.Filters.*
 import com.mongodb.kotlin.client.coroutine.MongoCollection
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
 import ink.pmc.common.member.api.AuthType
-import ink.pmc.common.member.api.BedrockAccount
 import ink.pmc.common.member.api.Member
 import ink.pmc.common.member.api.WhitelistStatus
 import ink.pmc.common.member.storage.*
