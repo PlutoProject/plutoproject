@@ -8,6 +8,7 @@ import com.mongodb.kotlin.client.coroutine.MongoDatabase
 import ink.pmc.common.member.api.AuthType
 import ink.pmc.common.member.api.Member
 import ink.pmc.common.member.api.WhitelistStatus
+import ink.pmc.common.member.api.data.DataContainer
 import ink.pmc.common.member.comment.AbstractComment
 import ink.pmc.common.member.comment.AbstractCommentRepository
 import ink.pmc.common.member.data.AbstractBedrockAccount
@@ -23,6 +24,7 @@ import kotlinx.coroutines.withContext
 import org.bson.types.ObjectId
 import java.time.Duration
 import java.time.Instant
+import java.util.*
 import java.util.concurrent.atomic.AtomicReference
 
 @Suppress("UNUSED")
@@ -69,14 +71,21 @@ class MemberServiceImpl(
 
     private suspend fun loadMember(uid: Long): Member {
         val memberStorage = members.find(eq("uid", uid)).firstOrNull()!!
-        val dataContainer = DataContainerImpl(this, lookupDataContainerStorage(memberStorage.dataContainer)!!)
+        return createMemberInstance(memberStorage)
+    }
 
-        if (memberStorage.bedrockAccount != null) {
-            val bedrockAccount = BedrockAccountImpl(this, lookupBedrockAccount(memberStorage.bedrockAccount!!)!!)
-            return MemberImpl(service, memberStorage, dataContainer, bedrockAccount)
+    private suspend fun createDataContainerInstance(storage: MemberStorage): DataContainer {
+        return DataContainerImpl(this, lookupDataContainerStorage(storage.dataContainer)!!)
+    }
+
+    private suspend fun createMemberInstance(storage: MemberStorage): Member {
+        val dataContainer = createDataContainerInstance(storage)
+        if (storage.bedrockAccount != null) {
+            val bedrockAccount = BedrockAccountImpl(this, lookupBedrockAccount(storage.bedrockAccount!!)!!)
+            return MemberImpl(service, storage, dataContainer, bedrockAccount)
         }
 
-        return MemberImpl(service, memberStorage, dataContainer, null)
+        return MemberImpl(service, storage, dataContainer, null)
     }
 
     override suspend fun lastUid(): Long {
@@ -163,6 +172,15 @@ class MemberServiceImpl(
         loadedMembers.get(uid)
     }
 
+    override suspend fun lookup(uuid: UUID): Member? {
+        if (!exist(uuid)) {
+            return null
+        }
+
+        val storage = members.find(eq("id", uuid.toString())).firstOrNull() ?: return null
+        return createMemberInstance(storage)
+    }
+
     override fun get(uid: Long): Member? = runBlocking {
         lookup(uid)
     }
@@ -170,6 +188,10 @@ class MemberServiceImpl(
     override suspend fun exist(uid: Long): Boolean {
         val memberStorage = members.find(eq("uid", uid)).firstOrNull()
         return memberStorage != null
+    }
+
+    override suspend fun exist(uuid: UUID): Boolean {
+        return members.find(eq("id", uuid.toString())).firstOrNull() != null
     }
 
     override suspend fun existPunishment(id: Long): Boolean {

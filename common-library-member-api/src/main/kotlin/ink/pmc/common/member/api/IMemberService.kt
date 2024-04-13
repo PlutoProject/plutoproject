@@ -1,6 +1,7 @@
 package ink.pmc.common.member.api
 
 import java.time.Instant
+import java.util.*
 
 @Suppress("UNUSED", "INAPPLICABLE_JVM_NAME")
 interface IMemberService {
@@ -19,9 +20,13 @@ interface IMemberService {
 
     suspend fun lookup(uid: Long): Member?
 
+    suspend fun lookup(uuid: UUID): Member?
+
     operator fun get(uid: Long): Member?
 
     suspend fun exist(uid: Long): Boolean
+
+    suspend fun exist(uuid: UUID): Boolean
 
     suspend fun existPunishment(id: Long): Boolean
 
