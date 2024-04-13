@@ -14,9 +14,11 @@ interface Member {
     val id: UUID
     val name: String
     val whitelistStatus: WhitelistStatus
+    val isWhitelisted: Boolean
     val authType: AuthType
     val createdAt: Instant
     val lastJoinedAt: Instant?
+    val lastQuitedAt: Instant?
     val dataContainer: DataContainer
     val bedrockAccount: BedrockAccount?
     val bio: String?

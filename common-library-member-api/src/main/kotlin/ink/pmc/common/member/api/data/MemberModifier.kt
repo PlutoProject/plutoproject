@@ -11,6 +11,8 @@ interface MemberModifier {
 
     fun lastJoinedAt(new: Instant)
 
+    fun lastQuitedAt(new: Instant)
+
     fun bio(new: String)
 
 }

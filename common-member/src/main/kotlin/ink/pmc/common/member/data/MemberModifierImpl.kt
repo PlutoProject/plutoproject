@@ -20,6 +20,10 @@ class MemberModifierImpl(override val member: AbstractMember) : AbstractMemberMo
         impl.lastJoinedAt = new
     }
 
+    override fun lastQuitedAt(new: Instant) {
+        impl.lastQuitedAt = new
+    }
+
     override fun bio(new: String) {
         impl.bio = new
     }

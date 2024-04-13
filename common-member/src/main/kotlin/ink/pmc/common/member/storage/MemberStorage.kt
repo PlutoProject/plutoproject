@@ -12,6 +12,7 @@ data class MemberStorage(
     val authType: String,
     var createdAt: Long,
     var lastJoinedAt: Long?,
+    var lastQuitedAt: Long?,
     val dataContainer: Long,
     var bedrockAccount: Long?,
     var bio: String?,

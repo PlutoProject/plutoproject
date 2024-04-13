@@ -1,5 +1,7 @@
 package ink.pmc.common.member.api.data
 
+import com.google.gson.JsonObject
+import com.google.gson.reflect.TypeToken
 import ink.pmc.common.member.api.Member
 import java.time.Instant
 
@@ -10,11 +12,13 @@ interface DataContainer {
     val owner: Member
     val createdAt: Instant
     val lastModifiedAt: Instant
-    val contents: Map<String, Any>
+    val contents: Map<String, String>
 
     operator fun set(key: String, value: Any)
 
-    operator fun <T> get(key: String): T?
+    operator fun <T> get(key: String, type: TypeToken<T>): T?
+
+    operator fun get(key: String): JsonObject
 
     fun getString(key: String): String?
 

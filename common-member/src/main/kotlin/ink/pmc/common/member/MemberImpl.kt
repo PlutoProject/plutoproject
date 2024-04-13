@@ -33,10 +33,14 @@ class MemberImpl(
     override val id: UUID = UUID.fromString(storage.id)
     override var name: String = storage.name
     override var whitelistStatus: WhitelistStatus = WhitelistStatus.valueOf(storage.whitelistStatus)
+    override val isWhitelisted: Boolean
+        get() = whitelistStatus == WhitelistStatus.WHITELISTED
     override val authType: AuthType = AuthType.valueOf(storage.authType)
     override var createdAt: Instant = Instant.ofEpochMilli(storage.createdAt)
     override var lastJoinedAt: Instant? =
         if (storage.lastJoinedAt != null) Instant.ofEpochMilli(storage.lastJoinedAt!!) else null
+    override var lastQuitedAt: Instant? =
+        if (storage.lastQuitedAt != null) Instant.ofEpochMilli(storage.lastQuitedAt!!) else null
     override var bio: String? = storage.bio
     override val commentRepository: CommentRepository = CommentRepositoryImpl(service, this)
     override val punishmentLogger: PunishmentLogger = PunishmentLoggerImpl(service, this)
@@ -47,11 +51,11 @@ class MemberImpl(
             return
         }
 
-        storage.whitelistStatus = WhitelistStatus.WHITELISTED_BEFORE.toString()
+        whitelistStatus = WhitelistStatus.WHITELISTED_BEFORE
     }
 
     override fun grantWhitelist() {
-        storage.whitelistStatus = WhitelistStatus.WHITELISTED.toString()
+        whitelistStatus = WhitelistStatus.WHITELISTED
     }
 
     override suspend fun isValid(): Boolean {

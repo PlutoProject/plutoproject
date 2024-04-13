@@ -9,5 +9,5 @@ data class DataContainerStorage(
     val owner: Long,
     val createdAt: Long,
     val lastModifiedAt: Long,
-    val contents: MutableMap<String, Any>
+    val contents: MutableMap<String, String>
 )

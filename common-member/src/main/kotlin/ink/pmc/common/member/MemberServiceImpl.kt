@@ -9,6 +9,7 @@ import ink.pmc.common.member.api.AuthType
 import ink.pmc.common.member.api.Member
 import ink.pmc.common.member.api.WhitelistStatus
 import ink.pmc.common.member.api.data.DataContainer
+import ink.pmc.common.member.api.data.MemberModifier
 import ink.pmc.common.member.comment.AbstractComment
 import ink.pmc.common.member.comment.AbstractCommentRepository
 import ink.pmc.common.member.data.AbstractBedrockAccount
@@ -138,6 +139,7 @@ class MemberServiceImpl(
             authType.toString(),
             System.currentTimeMillis(),
             null,
+            null,
             nextDataContainer,
             null,
             null,
@@ -159,6 +161,7 @@ class MemberServiceImpl(
         currentStatus.get().increaseMember()
 
         val member = MemberImpl(this, memberStorage, dataContainer, null)
+        loadedMembers.put(nextMember, member)
         update(member)
 
         return member
@@ -214,6 +217,42 @@ class MemberServiceImpl(
         return bedrockAccountStorage != null
     }
 
+    override suspend fun isWhitelisted(uid: Long): Boolean {
+        return exist(uid) && lookup(uid)!!.isWhitelisted
+    }
+
+    override suspend fun isWhitelisted(uuid: UUID): Boolean {
+        return exist(uuid) && lookup(uuid)!!.isWhitelisted
+    }
+
+    override suspend fun modifier(uid: Long, refresh: Boolean): MemberModifier? {
+        if (!exist(uid)) {
+            return null
+        }
+
+        val member = lookup(uid)
+
+        if (refresh) {
+            member!!.refresh()
+        }
+
+        return member!!.modifier
+    }
+
+    override suspend fun modifier(uuid: UUID, refresh: Boolean): MemberModifier? {
+        if (!exist(uuid)) {
+            return null
+        }
+
+        val member = lookup(uuid)
+
+        if (refresh) {
+            member!!.refresh()
+        }
+
+        return member!!.modifier
+    }
+
     private suspend fun updateMember(member: MemberStorage) {
         members.deleteOne(eq("uid", member.uid))
         members.insertOne(member)
@@ -245,6 +284,11 @@ class MemberServiceImpl(
         }
     }
 
+    private suspend fun updateStatus(statusStorage: StatusStorage) {
+        status.deleteOne(exists("lastMember"))
+        status.insertOne(statusStorage)
+    }
+
     override suspend fun update(member: Member) {
         withContext(Dispatchers.IO) {
             if (loadedMembers.getIfPresent(member.uid) == null) {
@@ -265,6 +309,7 @@ class MemberServiceImpl(
                     member.authType.toString(),
                     member.createdAt.toEpochMilli(),
                     member.lastJoinedAt?.toEpochMilli(),
+                    member.lastQuitedAt?.toEpochMilli(),
                     member.dataContainer.id,
                     member.bedrockAccount?.id,
                     member.bio,
@@ -344,7 +389,27 @@ class MemberServiceImpl(
                 abs.dirtyBedrockAccounts.forEach { dirty -> updateBedrockAccount(dirty, true) }
                 abs.dirtyBedrockAccounts.clear()
             }
+
+            updateStatus(currentStatus.get())
         }
+    }
+
+    override suspend fun update(uid: Long) {
+        val member = loadedMembers.asMap().values.firstOrNull { it.uid == uid }
+        if (member == null) {
+            return
+        }
+
+        update(loadedMembers.get(uid))
+    }
+
+    override suspend fun update(uuid: UUID) {
+        val member = loadedMembers.asMap().values.firstOrNull { it.id == uuid }
+        if (member == null) {
+            return
+        }
+
+        update(member)
     }
 
     override suspend fun refresh(member: Member): Member? {
@@ -355,6 +420,27 @@ class MemberServiceImpl(
         currentStatus.set(status.find(exists("lastMember")).firstOrNull())
         loadedMembers.invalidate(member.uid)
         return lookup(member.uid)
+    }
+
+    override suspend fun refresh(uid: Long): Member? {
+        if (!exist(uid)) {
+            return null
+        }
+
+        currentStatus.set(status.find(exists("lastMember")).firstOrNull())
+        loadedMembers.invalidate(uid)
+        return lookup(uid)
+    }
+
+    override suspend fun refresh(uuid: UUID): Member? {
+        if (!exist(uuid)) {
+            return null
+        }
+
+        val member = lookup(uuid)
+        currentStatus.set(status.find(exists("lastMember")).firstOrNull())
+        loadedMembers.invalidate(member!!.uid)
+        return lookup(uuid)
     }
 
 }
