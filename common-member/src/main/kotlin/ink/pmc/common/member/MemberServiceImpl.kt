@@ -333,14 +333,14 @@ class MemberServiceImpl(
                 val abs = member as AbstractMember
                 val account = member.bedrockAccount as AbstractBedrockAccount
                 val obj = account.storage.objectId
-                val newBedrockAccountStorage = BedrockAccountStorage(
+                val storage = BedrockAccountStorage(
                     obj,
                     account.id,
                     account.linkedWith.uid,
                     account.xuid,
                     account.gamertag
                 )
-                updateBedrockAccount(newBedrockAccountStorage)
+                updateBedrockAccount(storage)
                 abs.dirtyBedrockAccounts.forEach { dirty -> updateBedrockAccount(dirty, true) }
                 abs.dirtyBedrockAccounts.clear()
             }
