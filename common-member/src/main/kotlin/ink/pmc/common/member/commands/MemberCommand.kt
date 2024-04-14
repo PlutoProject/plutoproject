@@ -32,7 +32,7 @@ object MemberCommand : VelocityCommand() {
                 listOf(
                     Suggestion.simple("OFFICIAL"),
                     Suggestion.simple("LITTLESKIN"),
-                    Suggestion.simple("BEDROCK_ONLY"),
+                    Suggestion.simple("BEDROCK_ONLY")
                 )
             )
         }
@@ -44,9 +44,7 @@ object MemberCommand : VelocityCommand() {
     private val onlinePlayersArg
         get() = CommandComponent.builder<CommandSource, String>()
             .suggestionProvider { _, _ ->
-                CompletableFuture.completedFuture(
-                    proxy.allPlayers.map { Suggestion.simple(it.username) }
-                )
+                CompletableFuture.completedFuture(proxy.allPlayers.map { Suggestion.simple(it.username) })
             }
             .parser(StringParser.stringParser())
             .name("name")
@@ -60,29 +58,46 @@ object MemberCommand : VelocityCommand() {
         .handler {
             submitAsync {
                 val sender = it.sender()
-                val name = it.get<String>("name").lowercase()
+                val name = it.get<String>("name")
                 val authType = parseAuthType(it.flags())
 
                 if (authType == null) {
-                    sender.sendMessage(MEMBER_LOOKUP_FAILED_UNKNOWN_AUTH_TYPE)
+                    sender.sendMessage(MEMBER_FETCH_FAILED_UNKNOWN_AUTH_TYPE)
                     return@submitAsync
                 }
 
-                sender.sendMessage(LOOKUP)
+                sender.sendMessage(MEMBER_FETCH)
                 val uuid = authType.fetcher.fetch(name)
 
                 if (uuid == null) {
-                    sender.sendMessage(LOOKUP_FAILED)
+                    sender.sendMessage(MEMBER_FETCH_FAILED)
                     return@submitAsync
                 }
 
+                if (authType.isBedrock) {
+                    val xuid = uuid.xuid
+                    val beStorage = memberService.bedrockAccounts.find(eq("xuid", xuid)).firstOrNull()
+
+                    if (beStorage != null) {
+                        val linkedMember = memberService.lookup(beStorage.linkedWith)!!
+                        sender.sendMessage(
+                            MEMBER_CREATE_BE_ALREADY_EXISTED
+                                .replace("<player>", name)
+                                .replace("<gamertag>", Component.text(beStorage.gamertag).color(mochaYellow))
+                                .replace("<xuid>", Component.text(beStorage.xuid).color(mochaYellow))
+                                .replace("<other>", Component.text(linkedMember.rawName).color(mochaYellow))
+                        )
+                        return@submitAsync
+                    }
+                }
+
                 if (memberService.exist(uuid)) {
-                    sender.sendMessage(MEMBER_ALREADY_EXIST)
+                    sender.sendMessage(MEMBER_CREATE_ALREADY_EXIST)
                     return@submitAsync
                 }
 
                 memberService.create(name, authType)
-                sender.sendMessage(MEMBER_ADD_SUCCEED.replace("<player>", Component.text(name).color(mochaYellow)))
+                sender.sendMessage(MEMBER_CREATE_SUCCEED.replace("<player>", Component.text(name).color(mochaYellow)))
             }
         }
 
@@ -95,11 +110,11 @@ object MemberCommand : VelocityCommand() {
         .handler {
             submitAsync {
                 val sender = it.sender()
-                val name = it.get<String>("name").lowercase()
+                val name = it.get<String>("name")
                 val authType = parseAuthType(it.flags())
 
                 if (authType == null) {
-                    sender.sendMessage(MEMBER_LOOKUP_FAILED_UNKNOWN_AUTH_TYPE)
+                    sender.sendMessage(MEMBER_FETCH_FAILED_UNKNOWN_AUTH_TYPE)
                     return@submitAsync
                 }
 
@@ -112,11 +127,8 @@ object MemberCommand : VelocityCommand() {
 
                 if (!member.isWhitelisted) {
                     sender.sendMessage(
-                        MEMBER_EXEMPT_WHITELIST_FAILED_NOT_WHITELISTED.replace(
-                            "<player>", Component.text(name).color(
-                                mochaYellow
-                            )
-                        )
+                        MEMBER_MODIFY_EXEMPT_WHITELIST_FAILED_NOT_WHITELISTED
+                            .replace("<player>", Component.text(name).color(mochaYellow))
                     )
                     return@submitAsync
                 }
@@ -127,14 +139,14 @@ object MemberCommand : VelocityCommand() {
                 val player = proxy.getPlayer(member.id)
 
                 if (player.isPresent) {
-                    player.get().disconnect(NOT_WHITELISTED)
+                    player.get().disconnect(MEMBER_NOT_WHITELISTED)
                 }
 
                 sender.sendMessage(
-                    MEMBER_EXEMPT_WHITELIST_SUCCEED.replace(
-                        "<player>",
-                        Component.text(name).color(mochaYellow)
-                    )
+                    MEMBER_MODIFY_EXEMPT_WHITELIST_SUCCEED
+                        .replace(
+                            "<player>", Component.text(name).color(mochaYellow)
+                        )
                 )
             }
         }
@@ -148,11 +160,11 @@ object MemberCommand : VelocityCommand() {
         .handler {
             submitAsync {
                 val sender = it.sender()
-                val name = it.get<String>("name").lowercase()
+                val name = it.get<String>("name")
                 val authType = parseAuthType(it.flags())
 
                 if (authType == null) {
-                    sender.sendMessage(MEMBER_LOOKUP_FAILED_UNKNOWN_AUTH_TYPE)
+                    sender.sendMessage(MEMBER_FETCH_FAILED_UNKNOWN_AUTH_TYPE)
                     return@submitAsync
                 }
 
@@ -165,11 +177,10 @@ object MemberCommand : VelocityCommand() {
 
                 if (member.isWhitelisted) {
                     sender.sendMessage(
-                        MEMBER_GRANT_WHITELIST_FAILED_ALREADY_WHITELISTED.replace(
-                            "<player>", Component.text(name).color(
-                                mochaYellow
+                        MEMBER_MODIFY_GRANT_WHITELIST_FAILED_ALREADY_WHITELISTED
+                            .replace(
+                                "<player>", Component.text(name).color(mochaYellow)
                             )
-                        )
                     )
                     return@submitAsync
                 }
@@ -178,10 +189,10 @@ object MemberCommand : VelocityCommand() {
                 member.update()
 
                 sender.sendMessage(
-                    MEMBER_GRAND_WHITELIST_SUCCEED.replace(
-                        "<player>",
-                        Component.text(name).color(mochaYellow)
-                    )
+                    MEMBER_MODIFY_GRAND_WHITELIST_SUCCEED
+                        .replace(
+                            "<player>", Component.text(name).color(mochaYellow)
+                        )
                 )
             }
         }
@@ -193,15 +204,17 @@ object MemberCommand : VelocityCommand() {
         .argument(onlinePlayersArg)
         .required("gamertag", StringParser.stringParser())
         .flag(commandManager.flagBuilder("auth").withAliases("a").withComponent(authTypeArg))
+        .flag(commandManager.flagBuilder("force").withAliases("f"))
         .handler {
             submitAsync {
                 val sender = it.sender()
-                val name = it.get<String>("name").lowercase()
+                val name = it.get<String>("name")
                 val authType = parseAuthType(it.flags())
-                val gamertag = it.get<String>("gamertag").lowercase()
+                val gamertag = it.get<String>("gamertag")
+                val force = it.flags().isPresent("force")
 
                 if (authType == null) {
-                    sender.sendMessage(MEMBER_LOOKUP_FAILED_UNKNOWN_AUTH_TYPE)
+                    sender.sendMessage(MEMBER_FETCH_FAILED_UNKNOWN_AUTH_TYPE)
                     return@submitAsync
                 }
 
@@ -210,22 +223,23 @@ object MemberCommand : VelocityCommand() {
                     return@submitAsync
                 }
 
-                if (authType.isBedrock) {
-                    sender.sendMessage(MEMBER_LINK_BE_FAILED_BE_ONLY)
+                if (authType.isBedrock && !force) {
+                    sender.sendMessage(MEMBER_MODIFY_LINK_BE_FAILED_BE_ONLY)
                     return@submitAsync
                 }
 
                 val member = memberService.lookup(name, authType)!!.refresh()!!
 
                 if (member.bedrockAccount != null) {
-                    sender.sendMessage(MEMBER_LINK_BE_FAILED_ALREADY_LINKED)
+                    sender.sendMessage(MEMBER_MODIFY_LINK_BE_FAILED_ALREADY_LINKED)
                     return@submitAsync
                 }
 
+                sender.sendMessage(MEMBER_FETCH)
                 val xuid = AuthType.BEDROCK_ONLY.fetcher.fetch(gamertag)?.xuid
 
                 if (xuid == null) {
-                    sender.sendMessage(MEMBER_LINK_BE_FAILED_NOT_EXISTED)
+                    sender.sendMessage(MEMBER_MODIFY_LINK_BE_FAILED_NOT_EXISTED)
                     return@submitAsync
                 }
 
@@ -234,7 +248,7 @@ object MemberCommand : VelocityCommand() {
                 if (beStorage != null) {
                     val linkedMember = memberService.lookup(beStorage.linkedWith)!!
                     sender.sendMessage(
-                        MEMBER_LINK_BE_FAILED_ACCOUNT_ALREADY_EXISTED
+                        MEMBER_MODIFY_LINK_BE_FAILED_ACCOUNT_ALREADY_EXISTED
                             .replace("<gamertag>", Component.text(beStorage.gamertag).color(mochaYellow))
                             .replace("<xuid>", Component.text(beStorage.xuid).color(mochaYellow))
                             .replace("<other>", Component.text(linkedMember.rawName).color(mochaYellow))
@@ -245,7 +259,7 @@ object MemberCommand : VelocityCommand() {
                 member.linkBedrock(xuid, gamertag)
                 member.update()
 
-                sender.sendMessage(MEMBER_LINK_BE_SUCCEED.replace("<player>", member.rawName))
+                sender.sendMessage(MEMBER_MODIFY_LINK_BE_SUCCEED.replace("<player>", member.rawName))
             }
         }
 
@@ -259,12 +273,12 @@ object MemberCommand : VelocityCommand() {
         .handler {
             submitAsync {
                 val sender = it.sender()
-                val name = it.get<String>("name").lowercase()
+                val name = it.get<String>("name")
                 val authType = parseAuthType(it.flags())
                 val force = it.flags().isPresent("force")
 
                 if (authType == null) {
-                    sender.sendMessage(MEMBER_LOOKUP_FAILED_UNKNOWN_AUTH_TYPE)
+                    sender.sendMessage(MEMBER_FETCH_FAILED_UNKNOWN_AUTH_TYPE)
                     return@submitAsync
                 }
 
@@ -274,21 +288,21 @@ object MemberCommand : VelocityCommand() {
                 }
 
                 if (authType.isBedrock && !force) {
-                    sender.sendMessage(MEMBER_UNLINK_BE_FAILED_ALREADY_BE_ONLY)
+                    sender.sendMessage(MEMBER_MODIFY_UNLINK_BE_FAILED_ALREADY_BE_ONLY)
                     return@submitAsync
                 }
 
                 val member = memberService.lookup(name, authType)!!.refresh()!!
 
                 if (member.bedrockAccount == null) {
-                    sender.sendMessage(MEMBER_UNLINK_BE_FAILED_NOT_LINKED)
+                    sender.sendMessage(MEMBER_MODIFY_UNLINK_BE_FAILED_NOT_LINKED)
                     return@submitAsync
                 }
 
                 member.unlinkBedrock()
                 member.update()
 
-                sender.sendMessage(MEMBER_UNLINK_BE_SUCCEED.replace("<player>", member.rawName))
+                sender.sendMessage(MEMBER_MODIFY_UNLINK_BE_SUCCEED.replace("<player>", member.rawName))
             }
         }
 
@@ -300,11 +314,11 @@ object MemberCommand : VelocityCommand() {
         .handler {
             submitAsync {
                 val sender = it.sender()
-                val name = it.get<String>("name").lowercase()
+                val name = it.get<String>("name")
                 val authType = parseAuthType(it.flags())
 
                 if (authType == null) {
-                    sender.sendMessage(MEMBER_LOOKUP_FAILED_UNKNOWN_AUTH_TYPE)
+                    sender.sendMessage(MEMBER_FETCH_FAILED_UNKNOWN_AUTH_TYPE)
                     return@submitAsync
                 }
 
@@ -358,6 +372,7 @@ object MemberCommand : VelocityCommand() {
         val formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd a hh:mm")
             .withLocale(Locale.forLanguageTag("zh-CN"))
             .withZone(ZoneId.of("Asia/Shanghai"))
+
         return formatter.format(zonedDateTime)
     }
 

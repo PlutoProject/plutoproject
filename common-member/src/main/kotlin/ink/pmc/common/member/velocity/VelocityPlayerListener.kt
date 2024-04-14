@@ -3,7 +3,7 @@ package ink.pmc.common.member.velocity
 import com.velocitypowered.api.event.Subscribe
 import com.velocitypowered.api.event.connection.DisconnectEvent
 import com.velocitypowered.api.event.connection.PostLoginEvent
-import ink.pmc.common.member.NOT_WHITELISTED
+import ink.pmc.common.member.MEMBER_NOT_WHITELISTED
 import ink.pmc.common.member.memberService
 import kotlinx.coroutines.runBlocking
 import java.time.Instant
@@ -18,7 +18,7 @@ object VelocityPlayerListener {
             val uuid = player.uniqueId
 
             if (!memberService.isWhitelisted(uuid)) {
-                player.disconnect(NOT_WHITELISTED)
+                player.disconnect(MEMBER_NOT_WHITELISTED)
                 return@runBlocking
             }
 
