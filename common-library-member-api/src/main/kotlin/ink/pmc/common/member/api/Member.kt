@@ -13,6 +13,7 @@ interface Member {
     val uid: Long
     val id: UUID
     val name: String
+    val rawName: String
     val whitelistStatus: WhitelistStatus
     val isWhitelisted: Boolean
     val authType: AuthType

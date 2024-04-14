@@ -1,8 +1,10 @@
 package ink.pmc.common.member.storage
 
 import ink.pmc.common.member.UID_START
+import ink.pmc.common.utils.concurrent.withLock
 import org.bson.codecs.pojo.annotations.BsonId
 import org.bson.types.ObjectId
+import java.util.concurrent.locks.ReentrantLock
 
 data class StatusStorage(
     @BsonId val objectId: ObjectId,
@@ -13,6 +15,8 @@ data class StatusStorage(
     var lastBedrockAccount: Long
 ) {
 
+    private val accessLock = ReentrantLock()
+
     fun nextMember(): Long {
         if (lastMember == -1L) {
             return UID_START
@@ -22,12 +26,14 @@ data class StatusStorage(
     }
 
     fun increaseMember() {
-        if (lastMember == -1L) {
-            lastMember = UID_START
-            return
-        }
+        accessLock.withLock {
+            if (lastMember == -1L) {
+                lastMember = UID_START
+                return@withLock
+            }
 
-        lastMember += 1
+            lastMember += 1
+        }
     }
 
     fun nextPunishment(): Long {
@@ -39,7 +45,9 @@ data class StatusStorage(
     }
 
     fun increasePunishment() {
-        lastPunishment += 1
+        accessLock.withLock {
+            lastPunishment += 1
+        }
     }
 
     fun nextComment(): Long {
@@ -51,7 +59,9 @@ data class StatusStorage(
     }
 
     fun increaseComment() {
-        lastComment += 1
+        accessLock.withLock {
+            lastComment += 1
+        }
     }
 
     fun nextDataContainer(): Long {
@@ -63,7 +73,9 @@ data class StatusStorage(
     }
 
     fun increaseDataContainer() {
-        lastDataContainer += 1
+        accessLock.withLock {
+            lastDataContainer += 1
+        }
     }
 
     fun nextBedrockAccount(): Long {
@@ -75,7 +87,9 @@ data class StatusStorage(
     }
 
     fun increaseBedrockAccount() {
-        lastBedrockAccount += 1
+        accessLock.withLock {
+            lastBedrockAccount += 1
+        }
     }
 
 }

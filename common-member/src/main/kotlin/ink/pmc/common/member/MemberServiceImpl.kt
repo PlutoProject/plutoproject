@@ -8,16 +8,14 @@ import com.mongodb.kotlin.client.coroutine.MongoDatabase
 import ink.pmc.common.member.api.AuthType
 import ink.pmc.common.member.api.Member
 import ink.pmc.common.member.api.WhitelistStatus
-import ink.pmc.common.member.api.data.DataContainer
 import ink.pmc.common.member.api.data.MemberModifier
 import ink.pmc.common.member.comment.AbstractComment
 import ink.pmc.common.member.comment.AbstractCommentRepository
 import ink.pmc.common.member.data.AbstractBedrockAccount
 import ink.pmc.common.member.data.AbstractDataContainer
-import ink.pmc.common.member.data.BedrockAccountImpl
-import ink.pmc.common.member.data.DataContainerImpl
 import ink.pmc.common.member.punishment.AbstractPunishment
 import ink.pmc.common.member.storage.*
+import ink.pmc.common.utils.bedrock.xuid
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.runBlocking
@@ -26,7 +24,6 @@ import org.bson.types.ObjectId
 import java.time.Duration
 import java.time.Instant
 import java.util.*
-import java.util.concurrent.atomic.AtomicReference
 
 @Suppress("UNUSED")
 const val UID_START = 10000L
@@ -47,7 +44,8 @@ class MemberServiceImpl(
     override val loadedMembers: LoadingCache<Long, Member> = Caffeine.newBuilder()
         .refreshAfterWrite(Duration.ofMinutes(10))
         .build { runBlocking { loadMember(it) } }
-    override val currentStatus: AtomicReference<StatusStorage> = AtomicReference()
+    override var currentStatus: StatusStorage
+
     override suspend fun lookupMemberStorage(uid: Long): MemberStorage? {
         return members.find(eq("uid", uid)).firstOrNull()
     }
@@ -75,26 +73,16 @@ class MemberServiceImpl(
         return createMemberInstance(memberStorage)
     }
 
-    private suspend fun createDataContainerInstance(storage: MemberStorage): DataContainer {
-        return DataContainerImpl(this, lookupDataContainerStorage(storage.dataContainer)!!)
-    }
-
-    private suspend fun createMemberInstance(storage: MemberStorage): Member {
-        val dataContainer = createDataContainerInstance(storage)
-        if (storage.bedrockAccount != null) {
-            val bedrockAccount = BedrockAccountImpl(this, lookupBedrockAccount(storage.bedrockAccount!!)!!)
-            return MemberImpl(service, storage, dataContainer, bedrockAccount)
-        }
-
-        return MemberImpl(service, storage, dataContainer, null)
+    private suspend fun createMemberInstance(storage: MemberStorage): Member = withContext(Dispatchers.IO) {
+        MemberImpl(service, storage)
     }
 
     override suspend fun lastUid(): Long {
-        return currentStatus.get().lastMember
+        return currentStatus.lastMember
     }
 
     override suspend fun lastMember(): Member? {
-        return lookup(currentStatus.get().lastMember)
+        return lookup(currentStatus.lastMember)
     }
 
     override suspend fun lastMemberCreatedAt(): Instant? {
@@ -102,16 +90,15 @@ class MemberServiceImpl(
     }
 
     init {
+        var lookupStatus: StatusStorage?
         runBlocking {
-            var lookupStatus = status.find(exists("lastMember")).firstOrNull()
-
+            lookupStatus = status.find(exists("lastMember")).firstOrNull()
             if (lookupStatus == null) {
                 lookupStatus = StatusStorage(ObjectId(), -1, -1, -1, -1, -1)
-                status.insertOne(lookupStatus)
+                status.insertOne(lookupStatus!!)
             }
-
-            currentStatus.set(lookupStatus)
         }
+        currentStatus = lookupStatus!!
     }
 
     override suspend fun create(name: String, authType: AuthType): Member? {
@@ -127,25 +114,10 @@ class MemberServiceImpl(
         }
 
         val id = authType.fetcher.fetch(name) ?: return null
-        val nextMember = currentStatus.get().nextMember()
-        val nextDataContainer = currentStatus.get().nextDataContainer()
+        val nextMember = currentStatus.nextMember()
+        val nextDataContainer = currentStatus.nextDataContainer()
+        val nextBedrockAccountId = currentStatus.nextBedrockAccount()
 
-        memberStorage = MemberStorage(
-            ObjectId(),
-            nextMember,
-            id.toString(),
-            name,
-            WhitelistStatus.WHITELISTED.toString(),
-            authType.toString(),
-            System.currentTimeMillis(),
-            null,
-            null,
-            nextDataContainer,
-            null,
-            null,
-            mutableListOf(),
-            mutableListOf()
-        )
         val dataContainerStorage = DataContainerStorage(
             ObjectId(),
             nextDataContainer,
@@ -154,13 +126,46 @@ class MemberServiceImpl(
             System.currentTimeMillis(),
             mutableMapOf()
         )
-        val dataContainer = DataContainerImpl(service, dataContainerStorage)
+        memberStorage = MemberStorage(
+            ObjectId(),
+            nextMember,
+            id.toString(),
+            name.lowercase(),
+            name,
+            WhitelistStatus.WHITELISTED.toString(),
+            authType.toString(),
+            System.currentTimeMillis(),
+            null,
+            null,
+            nextDataContainer,
+            if (authType.isBedrock) nextBedrockAccountId else null,
+            null,
+            mutableListOf(),
+            mutableListOf()
+        )
 
+        if (authType.isBedrock) {
+            if (bedrockAccounts.find(eq("xuid", id.xuid)).firstOrNull() != null) {
+                return null
+            }
 
-        currentStatus.get().increaseDataContainer()
-        currentStatus.get().increaseMember()
+            val bedrockStorage = BedrockAccountStorage(
+                ObjectId(),
+                nextBedrockAccountId,
+                nextMember,
+                id.xuid,
+                name
+            )
 
-        val member = MemberImpl(this, memberStorage, dataContainer, null)
+            updateBedrockAccount(bedrockStorage)
+            currentStatus.increaseBedrockAccount()
+        }
+
+        updateDataContainer(dataContainerStorage)
+        currentStatus.increaseDataContainer()
+        currentStatus.increaseMember()
+
+        val member = MemberImpl(this, memberStorage)
         loadedMembers.put(nextMember, member)
         update(member)
 
@@ -181,7 +186,17 @@ class MemberServiceImpl(
         }
 
         val storage = members.find(eq("id", uuid.toString())).firstOrNull() ?: return null
-        return createMemberInstance(storage)
+        return loadedMembers.get(storage.uid)
+    }
+
+    override suspend fun lookup(name: String, authType: AuthType): Member? {
+        val member = members.find(
+            and(
+                eq("name", name.lowercase()),
+                eq("authType", authType.toString())
+            )
+        ).firstOrNull() ?: return null
+        return loadedMembers.get(member.uid)
     }
 
     override fun get(uid: Long): Member? = runBlocking {
@@ -195,6 +210,16 @@ class MemberServiceImpl(
 
     override suspend fun exist(uuid: UUID): Boolean {
         return members.find(eq("id", uuid.toString())).firstOrNull() != null
+    }
+
+    override suspend fun exist(name: String, authType: AuthType): Boolean {
+        val member = members.find(
+            and(
+                eq("name", name.lowercase()),
+                eq("authType", authType.toString())
+            )
+        ).firstOrNull()
+        return member != null
     }
 
     override suspend fun existPunishment(id: Long): Boolean {
@@ -233,7 +258,7 @@ class MemberServiceImpl(
         val member = lookup(uid)
 
         if (refresh) {
-            member!!.refresh()
+            return member!!.refresh()!!.modifier
         }
 
         return member!!.modifier
@@ -247,7 +272,7 @@ class MemberServiceImpl(
         val member = lookup(uuid)
 
         if (refresh) {
-            member!!.refresh()
+            return member!!.refresh()!!.modifier
         }
 
         return member!!.modifier
@@ -305,6 +330,7 @@ class MemberServiceImpl(
                     member.uid,
                     member.id.toString(),
                     member.name,
+                    member.rawName,
                     member.whitelistStatus.toString(),
                     member.authType.toString(),
                     member.createdAt.toEpochMilli(),
@@ -370,27 +396,27 @@ class MemberServiceImpl(
                 updateDataContainer(storage)
             }
 
-            if (member.bedrockAccount == null) {
-                return@withContext
-            }
-
             run {
                 val abs = member as AbstractMember
-                val account = member.bedrockAccount as AbstractBedrockAccount
-                val obj = account.storage.objectId
-                val storage = BedrockAccountStorage(
-                    obj,
-                    account.id,
-                    account.linkedWith.uid,
-                    account.xuid,
-                    account.gamertag
-                )
-                updateBedrockAccount(storage)
+
                 abs.dirtyBedrockAccounts.forEach { dirty -> updateBedrockAccount(dirty, true) }
                 abs.dirtyBedrockAccounts.clear()
+
+                if (abs.bedrockAccount != null) {
+                    val account = member.bedrockAccount as AbstractBedrockAccount
+                    val obj = account.storage.objectId
+                    val storage = BedrockAccountStorage(
+                        obj,
+                        account.id,
+                        account.linkedWith.uid,
+                        account.xuid,
+                        account.gamertag
+                    )
+                    updateBedrockAccount(storage)
+                }
             }
 
-            updateStatus(currentStatus.get())
+            updateStatus(currentStatus)
         }
     }
 
@@ -417,7 +443,7 @@ class MemberServiceImpl(
             return null
         }
 
-        currentStatus.set(status.find(exists("lastMember")).firstOrNull())
+        currentStatus = status.find(exists("lastMember")).firstOrNull()!!
         loadedMembers.invalidate(member.uid)
         return lookup(member.uid)
     }
@@ -427,7 +453,7 @@ class MemberServiceImpl(
             return null
         }
 
-        currentStatus.set(status.find(exists("lastMember")).firstOrNull())
+        currentStatus = status.find(exists("lastMember")).firstOrNull()!!
         loadedMembers.invalidate(uid)
         return lookup(uid)
     }
@@ -438,7 +464,7 @@ class MemberServiceImpl(
         }
 
         val member = lookup(uuid)
-        currentStatus.set(status.find(exists("lastMember")).firstOrNull())
+        currentStatus = status.find(exists("lastMember")).firstOrNull()!!
         loadedMembers.invalidate(member!!.uid)
         return lookup(uuid)
     }

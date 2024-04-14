@@ -28,7 +28,7 @@ class PunishmentLoggerImpl(private val service: AbstractMemberService, private v
     }
 
     override fun create(type: PunishmentType, executor: Member): Punishment {
-        val id = service.currentStatus.get().nextPunishment()
+        val id = service.currentStatus.nextPunishment()
 
         val storage = PunishmentStorage(
             ObjectId(),
@@ -40,7 +40,7 @@ class PunishmentLoggerImpl(private val service: AbstractMemberService, private v
             executor.uid
         )
 
-        service.currentStatus.get().increasePunishment()
+        service.currentStatus.increasePunishment()
         member.storage.punishments.add(id)
 
         return PunishmentImpl(service, storage)

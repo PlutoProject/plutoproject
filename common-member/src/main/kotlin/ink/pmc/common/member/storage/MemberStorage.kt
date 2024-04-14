@@ -8,6 +8,7 @@ data class MemberStorage(
     val uid: Long,
     val id: String,
     var name: String,
+    var rawName: String,
     var whitelistStatus: String,
     val authType: String,
     var createdAt: Long,

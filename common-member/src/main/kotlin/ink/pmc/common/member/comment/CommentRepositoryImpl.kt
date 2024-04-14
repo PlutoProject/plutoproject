@@ -23,7 +23,7 @@ class CommentRepositoryImpl(private val service: AbstractMemberService, private 
     }
 
     override fun comment(creator: Long, content: String): Comment {
-        val id = service.currentStatus.get().nextComment()
+        val id = service.currentStatus.nextComment()
 
         val storage = CommentStorage(
             ObjectId(),
@@ -34,7 +34,7 @@ class CommentRepositoryImpl(private val service: AbstractMemberService, private 
             false
         )
 
-        service.currentStatus.get().increaseComment()
+        service.currentStatus.increaseComment()
         member.storage.comments.add(id)
 
         return CommentImpl(service, storage)

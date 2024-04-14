@@ -9,7 +9,7 @@ class BedrockAccountImpl(private val service: AbstractMemberService, override va
     AbstractBedrockAccount() {
 
     override val id: Long = storage.id
-    override val linkedWith: Member = runBlocking { service.lookup(storage.linkedWith)!! }
+    override val linkedWith: Member by lazy { runBlocking { service.lookup(storage.linkedWith)!! } }
     override val xuid: String = storage.xuid
     override var gamertag: String = storage.gamertag
 

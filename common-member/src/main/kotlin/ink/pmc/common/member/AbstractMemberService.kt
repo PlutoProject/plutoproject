@@ -16,7 +16,7 @@ abstract class AbstractMemberService : IMemberService {
     abstract val dataContainers: MongoCollection<DataContainerStorage>
     abstract val bedrockAccounts: MongoCollection<BedrockAccountStorage>
     abstract val loadedMembers: LoadingCache<Long, Member>
-    abstract val currentStatus: AtomicReference<StatusStorage>
+    abstract val currentStatus: StatusStorage
 
     abstract suspend fun lookupMemberStorage(uid: Long): MemberStorage?
 

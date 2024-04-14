@@ -10,6 +10,5 @@ data class CommentStorage(
     val createdAt: Long,
     val creator: Long,
     var content: String,
-    var isModified: Boolean,
-    @BsonIgnore var removal: Boolean = false
+    var isModified: Boolean
 )

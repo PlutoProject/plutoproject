@@ -12,6 +12,7 @@ import ink.pmc.common.member.api.punishment.PunishmentLogger
 import ink.pmc.common.member.comment.CommentRepositoryImpl
 import ink.pmc.common.member.data.AbstractBedrockAccount
 import ink.pmc.common.member.data.BedrockAccountImpl
+import ink.pmc.common.member.data.DataContainerImpl
 import ink.pmc.common.member.data.MemberModifierImpl
 import ink.pmc.common.member.punishment.PunishmentLoggerImpl
 import ink.pmc.common.member.storage.BedrockAccountStorage
@@ -24,14 +25,13 @@ import java.util.*
 
 class MemberImpl(
     private val service: AbstractMemberService,
-    override val storage: MemberStorage,
-    override val dataContainer: DataContainer,
-    override var bedrockAccount: BedrockAccount?
+    override val storage: MemberStorage
 ) : AbstractMember() {
 
     override val uid: Long = storage.uid
     override val id: UUID = UUID.fromString(storage.id)
     override var name: String = storage.name
+    override val rawName: String = storage.rawName
     override var whitelistStatus: WhitelistStatus = WhitelistStatus.valueOf(storage.whitelistStatus)
     override val isWhitelisted: Boolean
         get() = whitelistStatus == WhitelistStatus.WHITELISTED
@@ -41,6 +41,13 @@ class MemberImpl(
         if (storage.lastJoinedAt != null) Instant.ofEpochMilli(storage.lastJoinedAt!!) else null
     override var lastQuitedAt: Instant? =
         if (storage.lastQuitedAt != null) Instant.ofEpochMilli(storage.lastQuitedAt!!) else null
+    override val dataContainer: DataContainer =
+        DataContainerImpl(service, runBlocking { service.lookupDataContainerStorage(storage.dataContainer)!! })
+    override var bedrockAccount: BedrockAccount? = if (storage.bedrockAccount == null) {
+        null
+    } else {
+        BedrockAccountImpl(service, runBlocking { service.lookupBedrockAccount(storage.bedrockAccount!!)!! })
+    }
     override var bio: String? = storage.bio
     override val commentRepository: CommentRepository = CommentRepositoryImpl(service, this)
     override val punishmentLogger: PunishmentLogger = PunishmentLoggerImpl(service, this)
@@ -71,7 +78,7 @@ class MemberImpl(
             return null
         }
 
-        val id = service.currentStatus.get().nextBedrockAccount()
+        val id = service.currentStatus.nextBedrockAccount()
         val storage = BedrockAccountStorage(
             ObjectId(),
             id,
@@ -80,7 +87,7 @@ class MemberImpl(
             gamertag
         )
 
-        service.currentStatus.get().increaseBedrockAccount()
+        service.currentStatus.increaseBedrockAccount()
         val account = BedrockAccountImpl(service, storage)
         bedrockAccount = account
 
