@@ -1,0 +1,15 @@
+package ink.pmc.common.utils.command
+
+import com.velocitypowered.api.command.CommandSource
+import org.bukkit.command.CommandSender
+import org.incendo.cloud.CommandManager
+
+@Suppress("UNUSED")
+fun CommandManager<CommandSource>.init(command: Command<CommandSource>) {
+    command.commands.forEach {
+        this.command(it)
+    }
+}
+
+@Suppress("UNUSED")
+abstract class VelocityCommand : Command<CommandSource>()
