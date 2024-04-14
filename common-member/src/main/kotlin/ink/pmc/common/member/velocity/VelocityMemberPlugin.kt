@@ -11,6 +11,8 @@ import com.velocitypowered.api.plugin.PluginContainer
 import com.velocitypowered.api.plugin.annotation.DataDirectory
 import com.velocitypowered.api.proxy.ProxyServer
 import ink.pmc.common.member.*
+import ink.pmc.common.member.commands.MemberCommand
+import ink.pmc.common.utils.command.init
 import ink.pmc.common.utils.platform.saveDefaultConfig
 import org.incendo.cloud.SenderMapper
 import org.incendo.cloud.execution.ExecutionCoordinator
@@ -19,8 +21,7 @@ import java.io.File
 import java.nio.file.Path
 import java.util.logging.Logger
 
-lateinit var proxyServer: ProxyServer
-lateinit var proxyLogger: Logger
+lateinit var proxy: ProxyServer
 lateinit var pluginContainer: PluginContainer
 lateinit var commandManager: VelocityCommandManager<CommandSource>
 
@@ -35,14 +36,14 @@ class VelocityMemberPlugin {
 
     @Inject
     fun memberPluginVelocity(server: ProxyServer, logger: Logger, @DataDirectory dataDirectoryPath: Path) {
-        proxyServer = server
-        proxyLogger = logger
+        proxy = server
+        serverLogger = logger
         dataDir = dataDirectoryPath.toFile()
     }
 
     @Subscribe
     fun proxyInitializeEvent(event: ProxyInitializeEvent) {
-        pluginContainer = proxyServer.pluginManager.getPlugin("common-member").get()
+        pluginContainer = proxy.pluginManager.getPlugin("common-member").get()
 
         createDataDir()
         configFile = File(dataDir, "config.toml")
@@ -51,21 +52,17 @@ class VelocityMemberPlugin {
             saveDefaultConfig(VelocityMemberPlugin::class.java, configFile)
         }
 
-        initMemberManager()
+        initMemberService()
 
         commandManager = VelocityCommandManager(
             pluginContainer,
-            proxyServer,
+            proxy,
             ExecutionCoordinator.asyncCoordinator(),
             SenderMapper.identity()
         )
 
-        commandManager.command(memberAddCommand)
-        commandManager.command(memberRemoveCommand)
-        commandManager.command(memberLookupCommand)
-
-        proxyServer.eventManager.register(this, VelocityPlayerListener)
-
+        commandManager.init(MemberCommand)
+        proxy.eventManager.register(this, VelocityPlayerListener)
         disabled = false
     }
 

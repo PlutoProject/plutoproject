@@ -16,6 +16,7 @@ class PaperMemberPlugin : JavaPlugin() {
         }
 
         plugin = this
+        serverLogger = logger
         dataDir = dataFolder
 
         createDataDir()
@@ -25,7 +26,7 @@ class PaperMemberPlugin : JavaPlugin() {
             saveResource("config.toml", false)
         }
 
-        initMemberManager()
+        initMemberService()
         disabled = false
     }
 

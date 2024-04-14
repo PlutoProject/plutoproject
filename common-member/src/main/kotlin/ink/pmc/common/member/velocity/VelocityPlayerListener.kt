@@ -3,10 +3,10 @@ package ink.pmc.common.member.velocity
 import com.velocitypowered.api.event.Subscribe
 import com.velocitypowered.api.event.connection.DisconnectEvent
 import com.velocitypowered.api.event.connection.PostLoginEvent
-import ink.pmc.common.member.NOT_WHITELISTED
-import ink.pmc.common.member.memberManager
-import ink.pmc.common.utils.currentUnixTimestamp
+import ink.pmc.common.member.MEMBER_NOT_WHITELISTED
+import ink.pmc.common.member.memberService
 import kotlinx.coroutines.runBlocking
+import java.time.Instant
 
 @Suppress("UNUSED")
 object VelocityPlayerListener {
@@ -17,17 +17,13 @@ object VelocityPlayerListener {
             val player = event.player
             val uuid = player.uniqueId
 
-            if (!memberManager.exist(uuid)) {
-                player.disconnect(NOT_WHITELISTED)
+            if (!memberService.isWhitelisted(uuid)) {
+                player.disconnect(MEMBER_NOT_WHITELISTED)
                 return@runBlocking
             }
 
-            val member = memberManager.get(uuid)!!
-
-            member.sync()
-            member.lastJoinTime = currentUnixTimestamp
-            player.startPlay()
-            member.update()
+            memberService.modifier(uuid, true)!!.lastJoinedAt(Instant.now())
+            memberService.update(uuid)
         }
     }
 
@@ -37,16 +33,12 @@ object VelocityPlayerListener {
             val player = event.player
             val uuid = player.uniqueId
 
-            if (!memberManager.exist(uuid)) {
+            if (!memberService.exist(uuid)) {
                 return@runBlocking
             }
 
-            val member = memberManager.get(uuid)!!
-
-            member.sync()
-            member.lastQuitTime = currentUnixTimestamp
-            member.increasePlayTime(player.stopPlay())
-            member.update()
+            memberService.modifier(uuid, true)!!.lastQuitedAt(Instant.now())
+            memberService.update(uuid)
         }
     }
 

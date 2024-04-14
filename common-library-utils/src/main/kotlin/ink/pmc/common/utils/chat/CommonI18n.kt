@@ -2,6 +2,7 @@ package ink.pmc.common.utils.chat
 
 import ink.pmc.common.utils.visual.mochaMaroon
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.minimessage.MiniMessage
 
 @Suppress("UNUSED")
 val NON_PLAYER
@@ -9,3 +10,5 @@ val NON_PLAYER
 
 val EMPTY_LINE
     get() = Component.text(" ")
+
+val PLUTO_PROJECT = MiniMessage.miniMessage().deserialize("<gradient:#c6a0f6:#f5bde6:#f0c6c6:#f4dbd6>星社 ᴘʀᴏᴊᴇᴄᴛ</gradient>")

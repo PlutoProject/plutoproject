@@ -1,51 +1,44 @@
 package ink.pmc.common.member.api
 
-import ink.pmc.common.member.api.dsl.PunishmentOptionsDSL
-import ink.pmc.common.member.api.punishment.PardonReason
-import ink.pmc.common.member.api.punishment.Punishment
-import ink.pmc.common.member.api.punishment.PunishmentOptions
+import ink.pmc.common.member.api.comment.CommentRepository
+import ink.pmc.common.member.api.data.DataContainer
+import ink.pmc.common.member.api.data.MemberModifier
+import ink.pmc.common.member.api.punishment.PunishmentLogger
+import java.time.Instant
 import java.util.*
 
 @Suppress("UNUSED")
 interface Member {
 
-    val uuid: UUID
-    var name: String
-    var joinTime: Long
-    var lastJoinTime: Long?
-    var lastQuitTime: Long?
-    val punishments: MutableCollection<Punishment>
-    var currentPunishmentId: Long?
-    var lastPunishmentId: Long?
-    val comments: MutableCollection<Comment>
-    val data: MemberData
-    var bio: String?
-    var totalPlayTime: Long
-    val currentPunishment
-        get() = if (!punishments.any { it.id == currentPunishmentId }) null else punishments.first { it.id == currentPunishmentId }
-    val lastPunishment
-        get() = if (!punishments.any { it.id == lastPunishmentId }) null else punishments.first { it.id == lastPunishmentId }
+    val uid: Long
+    val id: UUID
+    val name: String
+    val rawName: String
+    val whitelistStatus: WhitelistStatus
+    val isWhitelisted: Boolean
+    val authType: AuthType
+    val createdAt: Instant
+    val lastJoinedAt: Instant?
+    val lastQuitedAt: Instant?
+    val dataContainer: DataContainer
+    val bedrockAccount: BedrockAccount?
+    val bio: String?
+    val commentRepository: CommentRepository
+    val punishmentLogger: PunishmentLogger
+    val modifier: MemberModifier
 
-    suspend fun punish(options: PunishmentOptions): Punishment?
+    fun exemptWhitelist()
 
-    suspend fun punish(block: PunishmentOptionsDSL.() -> Unit): Punishment?
+    fun grantWhitelist()
 
-    fun pardon(reason: PardonReason): Boolean
+    fun linkBedrock(xuid: String, gamertag: String): BedrockAccount?
 
-    fun getPunishment(id: Long): Punishment?
+    fun unlinkBedrock()
 
-    suspend fun createComment(creator: UUID, content: String): Comment
-
-    suspend fun removeComment(id: Long): Boolean
-
-    fun updateComment(id: Long, content: String): Boolean
-
-    fun getComment(id: Long): Comment?
-
-    fun increasePlayTime(ms: Long)
+    suspend fun isValid(): Boolean
 
     suspend fun update()
 
-    suspend fun sync()
+    suspend fun refresh(): Member?
 
 }
