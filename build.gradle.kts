@@ -28,7 +28,7 @@ allprojects {
     val bukkitAPIVersion by extra("1.20")
 
     this.group = "ink.pmc.common"
-    this.version = "1.0.1"
+    this.version = "1.0.2"
 
     repositories {
         mavenCentral()

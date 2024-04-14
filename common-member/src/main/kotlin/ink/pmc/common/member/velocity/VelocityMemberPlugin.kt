@@ -28,7 +28,7 @@ lateinit var commandManager: VelocityCommandManager<CommandSource>
 @Plugin(
     id = "common-member",
     name = "common-member",
-    version = "1.0.1",
+    version = "1.0.2",
     dependencies = [Dependency(id = "common-dependency-loader-velocity"), Dependency(id = "common-utils")]
 )
 @Suppress("UNUSED", "UNUSED_PARAMETER")
