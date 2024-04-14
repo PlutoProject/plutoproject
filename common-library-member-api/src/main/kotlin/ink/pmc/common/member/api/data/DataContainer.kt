@@ -16,7 +16,7 @@ interface DataContainer {
 
     operator fun set(key: String, value: Any)
 
-    operator fun <T> get(key: String, type: TypeToken<T>): T?
+    operator fun <T> get(key: String, type: Class<T>): T?
 
     operator fun get(key: String): JsonObject
 

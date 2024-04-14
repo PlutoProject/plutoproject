@@ -24,8 +24,7 @@ class DataContainerImpl(private val service: AbstractMemberService, override val
         storage.contents[key] = value.toJsonString()
     }
 
-    @Suppress("UNCHECKED_CAST")
-    override fun <T> get(key: String, type: TypeToken<T>): T? {
+    override fun <T> get(key: String, type: Class<T>): T? {
         if (!contains(key)) {
             return null
         }
@@ -41,36 +40,64 @@ class DataContainerImpl(private val service: AbstractMemberService, override val
         return get(key).asJsonPrimitive.asString
     }
 
-    override fun getByte(key: String): Byte {
-        return get(key).asJsonPrimitive.asByte
+    override fun getByte(key: String): Byte? {
+        return try {
+            get(key).asJsonPrimitive.asByte
+        } catch (e: Exception) {
+            null
+        }
     }
 
-    override fun getShort(key: String): Short {
-        return get(key).asJsonPrimitive.asShort
+    override fun getShort(key: String): Short? {
+        return try {
+            get(key).asJsonPrimitive.asShort
+        } catch (e: Exception) {
+            null
+        }
     }
 
-    override fun getInt(key: String): Int {
-        return get(key).asJsonPrimitive.asInt
+    override fun getInt(key: String): Int? {
+        return try {
+            get(key).asJsonPrimitive.asInt
+        } catch (e: Exception) {
+            null
+        }
     }
 
-    override fun getLong(key: String): Long {
-        return get(key).asJsonPrimitive.asLong
+    override fun getLong(key: String): Long? {
+        return try {
+            get(key).asJsonPrimitive.asLong
+        } catch (e: Exception) {
+            null
+        }
     }
 
-    override fun getFloat(key: String): Float {
-        return get(key).asJsonPrimitive.asFloat
+    override fun getFloat(key: String): Float? {
+        return try {
+            get(key).asJsonPrimitive.asFloat
+        } catch (e: Exception) {
+            null
+        }
     }
 
-    override fun getDouble(key: String): Double {
-        return get(key).asJsonPrimitive.asDouble
+    override fun getDouble(key: String): Double? {
+        return try {
+            get(key).asJsonPrimitive.asDouble
+        } catch (e: Exception) {
+            null
+        }
     }
 
-    override fun getChar(key: String): Char {
-        return get(key).asJsonPrimitive.asCharacter
+    override fun getChar(key: String): Char? {
+        return getString(key)?.get(0)
     }
 
     override fun getBoolean(key: String): Boolean {
-        return get(key).asJsonPrimitive.asBoolean
+        return try {
+            get(key).asJsonPrimitive.asBoolean
+        } catch (e: Exception) {
+            false
+        }
     }
 
     override fun contains(key: String): Boolean {
