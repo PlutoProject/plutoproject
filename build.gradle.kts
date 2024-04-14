@@ -50,6 +50,7 @@ allprojects {
         "com.electronwill.night-config:toml:3.6.0",
         "org.incendo:cloud-paper:2.0.0-beta.2",
         "org.incendo:cloud-velocity:2.0.0-beta.2",
+        "org.incendo:cloud-kotlin-coroutines:2.0.0-beta.2",
         "io.netty:netty-all:4.1.108.Final",
     )
 
