@@ -5,7 +5,6 @@ import com.mongodb.kotlin.client.coroutine.MongoCollection
 import ink.pmc.common.member.api.IMemberService
 import ink.pmc.common.member.api.Member
 import ink.pmc.common.member.storage.*
-import java.util.concurrent.atomic.AtomicReference
 
 abstract class AbstractMemberService : IMemberService {
 

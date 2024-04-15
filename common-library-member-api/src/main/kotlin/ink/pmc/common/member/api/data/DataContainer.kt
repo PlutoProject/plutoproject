@@ -1,7 +1,6 @@
 package ink.pmc.common.member.api.data
 
 import com.google.gson.JsonObject
-import com.google.gson.reflect.TypeToken
 import ink.pmc.common.member.api.Member
 import java.time.Instant
 

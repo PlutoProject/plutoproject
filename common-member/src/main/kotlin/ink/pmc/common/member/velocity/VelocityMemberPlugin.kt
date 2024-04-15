@@ -29,7 +29,11 @@ lateinit var commandManager: VelocityCommandManager<CommandSource>
     id = "common-member",
     name = "common-member",
     version = "1.0.2",
-    dependencies = [Dependency(id = "common-dependency-loader-velocity"), Dependency(id = "common-utils")]
+    dependencies = [
+        Dependency(id = "common-dependency-loader-velocity"),
+        Dependency(id = "common-utils"),
+        Dependency(id = "floodgate")
+    ]
 )
 @Suppress("UNUSED", "UNUSED_PARAMETER")
 class VelocityMemberPlugin {

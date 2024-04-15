@@ -43,6 +43,7 @@ class MemberServiceImpl(
         database.getCollection("member_bedrock_accounts")
     override val loadedMembers: LoadingCache<Long, Member> = Caffeine.newBuilder()
         .refreshAfterWrite(Duration.ofMinutes(10))
+        .expireAfterWrite(Duration.ofMinutes(10))
         .build { runBlocking { loadMember(it) } }
     override var currentStatus: StatusStorage
 
@@ -168,6 +169,12 @@ class MemberServiceImpl(
         val member = MemberImpl(this, memberStorage)
         loadedMembers.put(nextMember, member)
         update(member)
+
+        // 初始化需要从数据库获取的值
+        member.dataContainer.owner
+        if (member.bedrockAccount != null) {
+            member.bedrockAccount!!.linkedWith
+        }
 
         return member
     }
@@ -357,7 +364,6 @@ class MemberServiceImpl(
                         it.isRevoked,
                         it.executor.uid
                     )
-
                     updatePunishment(storage)
                 }
             }
@@ -375,7 +381,6 @@ class MemberServiceImpl(
                         it.content,
                         it.isModified
                     )
-
                     updateComment(storage)
                     repo.dirtyComments.forEach { dirty -> updateComment(dirty, true) }
                     repo.dirtyComments.clear()

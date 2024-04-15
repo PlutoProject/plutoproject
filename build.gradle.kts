@@ -36,6 +36,7 @@ allprojects {
         maven(uri("https://oss.sonatype.org/content/repositories/snapshots/"))
         maven(uri("https://repo.papermc.io/repository/maven-public/"))
         maven(uri("https://maven.nostal.ink/repository/maven-public"))
+        maven(uri("https://repo.opencollab.dev/main/"))
     }
 
     val common = listOf(
@@ -50,7 +51,9 @@ allprojects {
         "org.incendo:cloud-paper:2.0.0-beta.2",
         "org.incendo:cloud-velocity:2.0.0-beta.2",
         "org.incendo:cloud-kotlin-coroutines:2.0.0-beta.2",
-        "io.netty:netty-all:4.1.108.Final",
+        "io.netty:netty-all:4.1.108.Final"
+        // Floodgate 依赖问题，见 https://github.com/GeyserMC/Floodgate/issues/495
+        //"org.geysermc.geyser:api:2.2.0-SNAPSHOT"
     )
 
     val paper = listOf<String>()

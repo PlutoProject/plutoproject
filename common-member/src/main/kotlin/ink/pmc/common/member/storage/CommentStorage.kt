@@ -1,7 +1,6 @@
 package ink.pmc.common.member.storage
 
 import org.bson.codecs.pojo.annotations.BsonId
-import org.bson.codecs.pojo.annotations.BsonIgnore
 import org.bson.types.ObjectId
 
 data class CommentStorage(

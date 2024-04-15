@@ -19,6 +19,18 @@ val MEMBER_NOT_WHITELISTED
         .append(Component.text("如果您已通过申请，则可能是因为我们忘记为您添加白名单了。").color(mochaText))
         .appendNewline().append(Component.text("请联系当日的审核员来为您添加。").color(mochaText))
 
+val MEMBER_BE_LOGIN
+    get() = Component.empty()
+        .append(PLUTO_PROJECT)
+        .appendNewline()
+        .append(Component.text(" "))
+        .appendNewline()
+        .append(Component.text("您绑定的基岩版账号在其他地方登录了。").color(mochaText))
+        .appendNewline()
+        .append(Component.text("绑定后，您的基岩版账号和 Java 版账号将会互通数据，因此无法同时登录。").color(mochaText))
+        .appendNewline()
+        .append(Component.text("若您想让基岩版账号作为一个单独的账号，请向服务器管理组申请解绑。"))
+
 val MEMBER_FETCH
     get() = Component.text("正在从验证服务器查询数据...").color(mochaText)
 

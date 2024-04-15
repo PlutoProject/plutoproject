@@ -2,7 +2,6 @@ package ink.pmc.common.member.data
 
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
-import com.google.gson.reflect.TypeToken
 import ink.pmc.common.member.AbstractMemberService
 import ink.pmc.common.member.api.Member
 import ink.pmc.common.member.storage.DataContainerStorage

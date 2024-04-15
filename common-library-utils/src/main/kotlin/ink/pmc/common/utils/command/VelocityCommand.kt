@@ -1,7 +1,6 @@
 package ink.pmc.common.utils.command
 
 import com.velocitypowered.api.command.CommandSource
-import org.bukkit.command.CommandSender
 import org.incendo.cloud.CommandManager
 
 @Suppress("UNUSED")
