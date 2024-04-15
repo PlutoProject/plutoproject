@@ -25,7 +25,8 @@ object BedrockProfileFetcher : AbstractProfileFetcher() {
                 val body = response.body
                 val jsonObject = JsonParser.parseString(body.string()).asJsonObject ?: return@withContext null
                 val element = jsonObject.get("xuid") ?: return@withContext null
-                val xuid = element.asLong.toHexString(HexFormat.Default)
+                // 显式指定包名，否则 IDEA 清理代码的 bug 会删掉 HexFormat 的 import
+                val xuid = element.asLong.toHexString(kotlin.text.HexFormat.Default)
                 val uuid = xuid.uuid ?: return@withContext null
 
                 return@withContext uuid
