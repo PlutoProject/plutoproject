@@ -29,7 +29,7 @@ val MEMBER_BE_LOGIN
         .appendNewline()
         .append(Component.text("绑定后，您的基岩版账号和 Java 版账号将会互通数据，因此无法同时登录。").color(mochaText))
         .appendNewline()
-        .append(Component.text("若您想让基岩版账号作为一个单独的账号，请向服务器管理组申请解绑。"))
+        .append(Component.text("若您想让基岩版账号作为一个单独的账号，请向服务器管理组申请解绑。").color(mochaText))
 
 val MEMBER_FETCH
     get() = Component.text("正在从验证服务器查询数据...").color(mochaText)
