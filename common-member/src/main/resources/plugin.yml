@@ -6,3 +6,4 @@ folia-supported: true
 depend:
   - common-dependency-loader
   - common-utils
+  - floodgate
