@@ -323,7 +323,7 @@ object MemberCommand : VelocityCommand() {
                     .replace("<authType>", member.authType.toString())
                     .replace("<createdAt>", formattedTime(member.createdAt))
                     .replace("<lastJoinedAt>", formattedTime(member.lastJoinedAt))
-                    .replace("<lastQuitedAt>", formattedTime(member.lastJoinedAt))
+                    .replace("<lastQuitedAt>", formattedTime(member.lastQuitedAt))
                     .replace("<dataContainer>", member.dataContainer.contents.toString())
                     .replace("<bedrockAccount>", nullableString(member.bedrockAccount?.gamertag))
                     .replace("<bio>", nullableString(member.bio))

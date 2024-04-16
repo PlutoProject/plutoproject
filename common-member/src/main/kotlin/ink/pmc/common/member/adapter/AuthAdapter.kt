@@ -4,6 +4,6 @@ import com.velocitypowered.api.event.player.GameProfileRequestEvent
 
 interface AuthAdapter {
 
-    fun adapt(event: GameProfileRequestEvent)
+    suspend fun adapt(event: GameProfileRequestEvent)
 
 }

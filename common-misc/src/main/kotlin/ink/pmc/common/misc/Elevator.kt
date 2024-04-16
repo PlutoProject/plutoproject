@@ -1,11 +1,11 @@
 package ink.pmc.common.misc
 
 import com.destroystokyo.paper.event.player.PlayerJumpEvent
-import ink.pmc.common.utils.concurrent.submitAsync
+import ink.pmc.common.utils.concurrent.async
 import ink.pmc.common.utils.platform.isFolia
 import org.bukkit.event.player.PlayerToggleSneakEvent
 
-fun handlePlayerJumpFloorUp(event: PlayerJumpEvent) {
+suspend fun handlePlayerJumpFloorUp(event: PlayerJumpEvent) {
     val player = event.player
 
     /*
@@ -18,13 +18,13 @@ fun handlePlayerJumpFloorUp(event: PlayerJumpEvent) {
         return
     }
 
-    submitAsync {
-        val chain = elevatorManager.getChainAt(event.from) ?: return@submitAsync
+    async {
+        val chain = elevatorManager.getChainAt(event.from) ?: return@async
         chain.up(player)
     }
 }
 
-fun handlePlayerSneakFloorDown(event: PlayerToggleSneakEvent) {
+suspend fun handlePlayerSneakFloorDown(event: PlayerToggleSneakEvent) {
     if (!event.isSneaking) {
         return
     }
@@ -35,8 +35,8 @@ fun handlePlayerSneakFloorDown(event: PlayerToggleSneakEvent) {
 
     val player = event.player
 
-    submitAsync {
-        val chain = elevatorManager.getChainAt(player.location) ?: return@submitAsync
+    async {
+        val chain = elevatorManager.getChainAt(player.location) ?: return@async
         chain.down(player)
     }
 }

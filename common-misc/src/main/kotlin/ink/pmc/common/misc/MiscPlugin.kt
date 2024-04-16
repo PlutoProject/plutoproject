@@ -1,5 +1,6 @@
 package ink.pmc.common.misc
 
+import com.github.shynixn.mccoroutine.bukkit.registerSuspendingEvents
 import ink.pmc.common.misc.api.MiscAPI
 import ink.pmc.common.misc.api.elevator.ElevatorManager
 import ink.pmc.common.misc.api.head.HeadManager
@@ -56,7 +57,7 @@ class MiscPlugin : JavaPlugin() {
         runSitCheckTask()
         runActionBarOverrideTask()
 
-        server.pluginManager.registerEvents(Listeners, this)
+        server.pluginManager.registerSuspendingEvents(Listeners, this)
     }
 
     override fun onDisable() {

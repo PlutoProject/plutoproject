@@ -11,9 +11,8 @@ import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.event.player.PlayerToggleSneakEvent
-import org.bukkit.event.world.ChunkLoadEvent
 
-@Suppress("UNUSED", "UNUSED_PARAMETER")
+@Suppress("UNUSED")
 object Listeners : Listener {
 
     @EventHandler
@@ -107,11 +106,6 @@ object Listeners : Listener {
     }
 
     @EventHandler
-    fun chunkLoadEvent(event: ChunkLoadEvent) {
-
-    }
-
-    @EventHandler
     fun asyncChatEvent(event: AsyncChatEvent) {
         handleChatFormat(event)
     }
@@ -122,12 +116,12 @@ object Listeners : Listener {
     }
 
     @EventHandler
-    fun playerJumpEvent(event: PlayerJumpEvent) {
+    suspend fun playerJumpEvent(event: PlayerJumpEvent) {
         handlePlayerJumpFloorUp(event)
     }
 
     @EventHandler
-    fun playerSneakEvent(event: PlayerToggleSneakEvent) {
+    suspend fun playerSneakEvent(event: PlayerToggleSneakEvent) {
         handlePlayerSneakFloorDown(event)
     }
 

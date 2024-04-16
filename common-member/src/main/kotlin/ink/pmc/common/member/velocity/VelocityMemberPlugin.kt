@@ -1,5 +1,7 @@
 package ink.pmc.common.member.velocity
 
+import com.github.shynixn.mccoroutine.velocity.SuspendingPluginContainer
+import com.github.shynixn.mccoroutine.velocity.registerSuspend
 import com.google.inject.Inject
 import com.velocitypowered.api.command.CommandSource
 import com.velocitypowered.api.event.Subscribe
@@ -36,7 +38,11 @@ lateinit var commandManager: VelocityCommandManager<CommandSource>
     ]
 )
 @Suppress("UNUSED", "UNUSED_PARAMETER")
-class VelocityMemberPlugin {
+class VelocityMemberPlugin @Inject constructor(suspendingPluginContainer: SuspendingPluginContainer) {
+
+    init {
+        suspendingPluginContainer.initialize(this)
+    }
 
     @Inject
     fun memberPluginVelocity(server: ProxyServer, logger: Logger, @DataDirectory dataDirectoryPath: Path) {
@@ -66,7 +72,7 @@ class VelocityMemberPlugin {
         )
 
         commandManager.init(MemberCommand)
-        proxy.eventManager.register(this, VelocityPlayerListener)
+        proxy.eventManager.registerSuspend(this, VelocityPlayerListener)
         disabled = false
     }
 
