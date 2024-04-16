@@ -5,11 +5,11 @@ import com.velocitypowered.api.command.CommandSource
 import ink.pmc.common.member.*
 import ink.pmc.common.member.api.AuthType
 import ink.pmc.common.member.velocity.commandManager
-import ink.pmc.common.member.velocity.proxy
 import ink.pmc.common.utils.bedrock.xuid
 import ink.pmc.common.utils.chat.replace
 import ink.pmc.common.utils.command.VelocityCommand
 import ink.pmc.common.utils.command.velocityRequiredOnlinePlayersArgument
+import ink.pmc.common.utils.platform.proxy
 import ink.pmc.common.utils.visual.mochaYellow
 import kotlinx.coroutines.flow.firstOrNull
 import net.kyori.adventure.text.Component

@@ -1,7 +1,7 @@
 package ink.pmc.common.utils.command
 
 import com.velocitypowered.api.command.CommandSource
-import ink.pmc.common.utils.platform.velocityProxyServer
+import ink.pmc.common.utils.platform.proxy
 import org.incendo.cloud.component.CommandComponent
 import org.incendo.cloud.parser.standard.StringParser
 import org.incendo.cloud.suggestion.Suggestion
@@ -11,7 +11,7 @@ private fun onlinePlayers(argName: String, excludes: Array<out String>) =
     CommandComponent.builder<CommandSource, String>()
         .suggestionProvider { _, _ ->
             CompletableFuture.completedFuture(
-                velocityProxyServer.allPlayers
+                proxy.allPlayers
                     .map { it.username }
                     .filter { !excludes.map { exc -> exc.lowercase() }.contains(it.lowercase()) }
                     .map { Suggestion.simple(it) })
