@@ -31,9 +31,9 @@ object MemberCommand : VelocityCommand() {
         .suggestionProvider { _, _ ->
             CompletableFuture.completedFuture(
                 listOf(
-                    Suggestion.simple("OFFICIAL"),
-                    Suggestion.simple("LITTLESKIN"),
-                    Suggestion.simple("BEDROCK_ONLY")
+                    Suggestion.suggestion("OFFICIAL"),
+                    Suggestion.suggestion("LITTLESKIN"),
+                    Suggestion.suggestion("BEDROCK_ONLY")
                 )
             )
         }

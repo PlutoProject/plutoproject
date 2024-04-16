@@ -14,7 +14,7 @@ private fun onlinePlayers(argName: String, excludes: Array<out String>) =
                 proxy.allPlayers
                     .map { it.username }
                     .filter { !excludes.map { exc -> exc.lowercase() }.contains(it.lowercase()) }
-                    .map { Suggestion.simple(it) })
+                    .map { Suggestion.suggestion(it) })
         }
         .parser(StringParser.stringParser())
         .name(argName)

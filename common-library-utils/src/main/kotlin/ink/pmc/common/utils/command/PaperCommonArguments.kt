@@ -14,7 +14,8 @@ private fun onlinePlayers(argName: String, excludes: Array<out String>) =
                 Bukkit.getOnlinePlayers()
                     .map { it.name }
                     .filter { !excludes.map { exc -> exc.lowercase() }.contains(it.lowercase()) }
-                    .map { Suggestion.simple(it) })
+                    .map { Suggestion.suggestion(it) }
+            )
         }
         .parser(StringParser.stringParser())
         .name(argName)
