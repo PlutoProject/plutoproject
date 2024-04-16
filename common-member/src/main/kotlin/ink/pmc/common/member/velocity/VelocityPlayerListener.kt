@@ -70,7 +70,7 @@ object VelocityPlayerListener {
             }
 
             if (member.authType == AuthType.LITTLESKIN) {
-                LittleSkinAdapter.adapt(event)
+                // LittleSkinAdapter.adapt(event)
                 return@runBlocking
             }
         }
