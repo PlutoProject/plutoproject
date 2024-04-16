@@ -1,11 +1,7 @@
 package ink.pmc.common.utils.platform
 
 import org.bukkit.Bukkit
-import org.bukkit.plugin.java.JavaPlugin
 import java.util.concurrent.Executor
-
-@Suppress("UNUSED")
-val paperUtilsPlugin = Bukkit.getServer().pluginManager.getPlugin("common-utils")!! as JavaPlugin
 
 @Suppress("UNUSED")
 val tpsLast1Minute: Double

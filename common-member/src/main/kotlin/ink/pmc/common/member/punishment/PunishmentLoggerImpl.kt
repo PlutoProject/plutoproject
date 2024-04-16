@@ -56,7 +56,7 @@ class PunishmentLoggerImpl(private val service: AbstractMemberService, private v
     }
 
     override fun exist(id: Long): Boolean {
-        return historyPunishments.firstOrNull() { it.id == id } != null
+        return historyPunishments.firstOrNull { it.id == id } != null
     }
 
     override fun revoke(punishment: Punishment) {

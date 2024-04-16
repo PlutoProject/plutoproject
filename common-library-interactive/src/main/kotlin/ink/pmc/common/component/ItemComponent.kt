@@ -1,4 +1,3 @@
 package ink.pmc.common.component
 
-interface ItemComponent {
-}
+interface ItemComponent

@@ -1,8 +1,6 @@
 package ink.pmc.common.utils
 
-import ink.pmc.common.utils.platform.isFolia
-import ink.pmc.common.utils.platform.serverExecutor
-import ink.pmc.common.utils.platform.serverThread
+import ink.pmc.common.utils.platform.*
 import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
 import java.util.concurrent.Executor
@@ -21,7 +19,9 @@ class PaperUtilsPlugin : JavaPlugin() {
 
     override fun onEnable() {
         isFolia = checkFolia()
-        serverThread = Thread.currentThread()
+        paperThread = Thread.currentThread()
+        paper = server
+        paperUtilsPlugin = this
 
         // Folia 上复写了 EventLoop 的 tell 方法，尝试直接提交任务会丢出 UnsupportedOperationException。
         if (!isFolia) {

@@ -6,7 +6,8 @@ import com.velocitypowered.api.event.proxy.ProxyInitializeEvent
 import com.velocitypowered.api.plugin.Dependency
 import com.velocitypowered.api.plugin.Plugin
 import com.velocitypowered.api.proxy.ProxyServer
-import ink.pmc.common.utils.platform.velocityProxyServer
+import ink.pmc.common.utils.platform.proxy
+import ink.pmc.common.utils.platform.proxyThread
 import ink.pmc.common.utils.platform.velocityUtilsPlugin
 import java.util.logging.Logger
 
@@ -28,8 +29,9 @@ class VelocityUtilsPlugin {
 
     @Subscribe
     fun proxyInitializeEvent(event: ProxyInitializeEvent) {
+        proxyThread = Thread.currentThread()
+        proxy = proxyServer
         velocityUtilsPlugin = proxyServer.pluginManager.getPlugin("common-utils").get()
-        velocityProxyServer = proxyServer
     }
 
 }

@@ -15,6 +15,7 @@ import com.velocitypowered.api.proxy.ProxyServer
 import ink.pmc.common.member.*
 import ink.pmc.common.member.commands.MemberCommand
 import ink.pmc.common.utils.command.init
+import ink.pmc.common.utils.platform.proxy
 import ink.pmc.common.utils.platform.saveDefaultConfig
 import org.incendo.cloud.SenderMapper
 import org.incendo.cloud.execution.ExecutionCoordinator
@@ -23,7 +24,6 @@ import java.io.File
 import java.nio.file.Path
 import java.util.logging.Logger
 
-lateinit var proxy: ProxyServer
 lateinit var pluginContainer: PluginContainer
 lateinit var commandManager: VelocityCommandManager<CommandSource>
 
@@ -46,7 +46,6 @@ class VelocityMemberPlugin @Inject constructor(suspendingPluginContainer: Suspen
 
     @Inject
     fun memberPluginVelocity(server: ProxyServer, logger: Logger, @DataDirectory dataDirectoryPath: Path) {
-        proxy = server
         serverLogger = logger
         dataDir = dataDirectoryPath.toFile()
     }
