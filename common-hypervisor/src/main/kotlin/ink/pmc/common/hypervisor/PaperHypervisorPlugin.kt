@@ -1,5 +1,8 @@
 package ink.pmc.common.hypervisor
 
+import ink.pmc.common.hypervisor.commands.HypervisorCommand
+import ink.pmc.common.hypervisor.commands.StatusCommand
+import ink.pmc.common.utils.command.init
 import me.lucko.spark.api.Spark
 import me.lucko.spark.api.SparkProvider
 import org.bukkit.command.CommandSender
@@ -26,10 +29,8 @@ class PaperHypervisorPlugin : JavaPlugin() {
 
         spark = SparkProvider.get()
         commandManager.registerBrigadier()
-        commandManager.command(statusCommand)
-        commandManager.command(serverStatusCommand)
-        commandManager.command(worldStatusCommand)
-        commandManager.command(standaloneStatusCommand)
+        commandManager.init(HypervisorCommand)
+        commandManager.init(StatusCommand)
     }
 
     override fun onDisable() {

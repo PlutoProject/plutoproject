@@ -19,6 +19,7 @@ val MEMBER_NOT_WHITELISTED
         .append(Component.text("如果您已通过申请，则可能是因为我们忘记为您添加白名单了。").color(mochaText))
         .appendNewline().append(Component.text("请联系当日的审核员来为您添加。").color(mochaText))
 
+@Suppress("UNUSED")
 val MEMBER_BE_LOGIN
     get() = Component.empty()
         .append(PLUTO_PROJECT)

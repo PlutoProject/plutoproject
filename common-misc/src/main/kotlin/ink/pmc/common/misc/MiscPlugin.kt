@@ -4,11 +4,15 @@ import ink.pmc.common.misc.api.MiscAPI
 import ink.pmc.common.misc.api.elevator.ElevatorManager
 import ink.pmc.common.misc.api.head.HeadManager
 import ink.pmc.common.misc.api.sit.SitManager
+import ink.pmc.common.misc.commands.HeadCommand
+import ink.pmc.common.misc.commands.SitCommand
+import ink.pmc.common.misc.commands.SuicideCommand
 import ink.pmc.common.misc.impl.MiscAPIImpl
 import ink.pmc.common.misc.impl.elevator.ElevatorManagerImpl
 import ink.pmc.common.misc.impl.elevator.builders.IronElevatorBuilder
 import ink.pmc.common.misc.impl.head.HeadManagerImpl
 import ink.pmc.common.misc.impl.sit.SitManagerImpl
+import ink.pmc.common.utils.command.init
 import org.bukkit.command.CommandSender
 import org.bukkit.plugin.java.JavaPlugin
 import org.incendo.cloud.execution.ExecutionCoordinator
@@ -45,9 +49,9 @@ class MiscPlugin : JavaPlugin() {
         elevatorManager.registerBuilder(IronElevatorBuilder)
 
         commandManager.registerBrigadier()
-        commandManager.command(suicideCommand)
-        commandManager.command(sitCommand)
-        commandManager.command(headCommand)
+        commandManager.init(SuicideCommand)
+        commandManager.init(SitCommand)
+        commandManager.init(HeadCommand)
 
         runSitCheckTask()
         runActionBarOverrideTask()

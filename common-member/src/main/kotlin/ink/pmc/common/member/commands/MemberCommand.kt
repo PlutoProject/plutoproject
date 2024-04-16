@@ -9,6 +9,7 @@ import ink.pmc.common.member.velocity.proxy
 import ink.pmc.common.utils.bedrock.xuid
 import ink.pmc.common.utils.chat.replace
 import ink.pmc.common.utils.command.VelocityCommand
+import ink.pmc.common.utils.command.velocityRequiredOnlinePlayersArgument
 import ink.pmc.common.utils.visual.mochaYellow
 import kotlinx.coroutines.flow.firstOrNull
 import net.kyori.adventure.text.Component
@@ -40,15 +41,6 @@ object MemberCommand : VelocityCommand() {
         .defaultValue(DefaultValue.constant("OFFICIAL"))
         .name("authType")
         .optional()
-
-    private val onlinePlayersArg
-        get() = CommandComponent.builder<CommandSource, String>()
-            .suggestionProvider { _, _ ->
-                CompletableFuture.completedFuture(proxy.allPlayers.map { Suggestion.simple(it.username) })
-            }
-            .parser(StringParser.stringParser())
-            .name("name")
-            .required()
 
     private val memberCreate = commandManager.commandBuilder("member")
         .permission("member.create")
@@ -102,8 +94,8 @@ object MemberCommand : VelocityCommand() {
     private val memberModifyExemptWhitelist = commandManager.commandBuilder("member")
         .permission("member.modify.exemptwhitelist")
         .literal("modify")
+        .argument(velocityRequiredOnlinePlayersArgument())
         .literal("exemptwhitelist")
-        .argument(onlinePlayersArg)
         .flag(commandManager.flagBuilder("auth").withAliases("a").withComponent(authTypeArg))
         .suspendingHandler {
             val sender = it.sender()
@@ -150,8 +142,8 @@ object MemberCommand : VelocityCommand() {
     private val memberModifyGrantWhitelist = commandManager.commandBuilder("member")
         .permission("member.modify.grantwhitelist")
         .literal("modify")
+        .argument(velocityRequiredOnlinePlayersArgument())
         .literal("grantwhitelist")
-        .argument(onlinePlayersArg)
         .flag(commandManager.flagBuilder("auth").withAliases("a").withComponent(authTypeArg))
         .suspendingHandler {
             val sender = it.sender()
@@ -194,8 +186,8 @@ object MemberCommand : VelocityCommand() {
     private val memberModifyLinkBeAccount = commandManager.commandBuilder("member")
         .permission("member.modify.linkbedrock")
         .literal("modify")
+        .argument(velocityRequiredOnlinePlayersArgument())
         .literal("linkbedrock")
-        .argument(onlinePlayersArg)
         .required("gamertag", StringParser.stringParser())
         .flag(commandManager.flagBuilder("auth").withAliases("a").withComponent(authTypeArg))
         .flag(commandManager.flagBuilder("force").withAliases("f"))
@@ -252,14 +244,17 @@ object MemberCommand : VelocityCommand() {
             member.linkBedrock(xuid, gamertag)
             member.update()
 
-            sender.sendMessage(MEMBER_MODIFY_LINK_BE_SUCCEED.replace("<player>", member.rawName))
+            sender.sendMessage(
+                MEMBER_MODIFY_LINK_BE_SUCCEED
+                    .replace("<player>", Component.text(member.rawName).color(mochaYellow))
+            )
         }
 
     private val memberModifyUnlinkBeAccount = commandManager.commandBuilder("member")
         .permission("member.modify.unlinkbedrock")
         .literal("modify")
+        .argument(velocityRequiredOnlinePlayersArgument())
         .literal("unlinkbedrock")
-        .argument(onlinePlayersArg)
         .flag(commandManager.flagBuilder("auth").withAliases("a").withComponent(authTypeArg))
         .flag(commandManager.flagBuilder("force").withAliases("f"))
         .suspendingHandler {
@@ -299,9 +294,9 @@ object MemberCommand : VelocityCommand() {
     private val memberLookup = commandManager.commandBuilder("member")
         .permission("member.lookup")
         .literal("lookup")
-        .argument(onlinePlayersArg)
+        .argument(velocityRequiredOnlinePlayersArgument())
         .flag(commandManager.flagBuilder("auth").withAliases("a").withComponent(authTypeArg))
-        .suspendingHandler() {
+        .suspendingHandler {
             val sender = it.sender()
             val name = it.get<String>("name")
             val authType = parseAuthType(it.flags())
