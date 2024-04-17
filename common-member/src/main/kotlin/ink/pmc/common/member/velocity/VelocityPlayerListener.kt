@@ -70,11 +70,12 @@ object VelocityPlayerListener {
     }
 
     private suspend fun fallbackId(uuid: UUID): UUID {
-        var fallbackId = uuid
         val beAccount = memberService.bedrockAccounts.find(eq("xuid", uuid.xuid)).firstOrNull()
 
-        if (isFloodgateSession(fallbackId) && beAccount != null) {
-            fallbackId = memberService.lookup(beAccount.linkedWith)!!.id
+        val fallbackId = if (isFloodgateSession(uuid) && beAccount != null) {
+            memberService.lookup(beAccount.linkedWith)!!.id
+        } else {
+            uuid
         }
 
         return fallbackId

@@ -335,12 +335,10 @@ object MemberCommand : VelocityCommand() {
             return AuthType.OFFICIAL
         }
 
-        val type: AuthType
-
-        try {
-            type = AuthType.valueOf(flagContext.get<String>("auth")!!.uppercase())
+        val type: AuthType? = try {
+            AuthType.valueOf(flagContext.get<String>("auth")!!.uppercase())
         } catch (e: Exception) {
-            return null
+            null
         }
 
         return type
