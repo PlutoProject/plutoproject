@@ -17,7 +17,10 @@ lateinit var proxyServer: ProxyServer
     id = "common-utils",
     name = "common-utils",
     version = "1.0.2",
-    dependencies = [Dependency(id = "common-dependency-loader-velocity")]
+    dependencies = [
+        Dependency(id = "common-dependency-loader-velocity"),
+        Dependency(id = "floodgate")
+    ]
 )
 @Suppress("UNUSED", "UNUSED_PARAMETER")
 class VelocityUtilsPlugin {

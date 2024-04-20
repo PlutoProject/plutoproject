@@ -33,8 +33,7 @@ lateinit var commandManager: VelocityCommandManager<CommandSource>
     version = "1.0.2",
     dependencies = [
         Dependency(id = "common-dependency-loader-velocity"),
-        Dependency(id = "common-utils"),
-        Dependency(id = "floodgate")
+        Dependency(id = "common-utils")
     ]
 )
 @Suppress("UNUSED", "UNUSED_PARAMETER")
