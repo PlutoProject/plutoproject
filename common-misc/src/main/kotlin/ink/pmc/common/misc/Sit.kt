@@ -1,6 +1,7 @@
 package ink.pmc.common.misc
 
 import ink.pmc.common.misc.api.sit.*
+import ink.pmc.common.utils.bedrock.sendActionBar
 import ink.pmc.common.utils.concurrent.submitAsync
 import ink.pmc.common.utils.entity.ensureThreadSafe
 import ink.pmc.common.utils.world.ensureThreadSafe
@@ -79,7 +80,7 @@ fun runActionBarOverrideTask() {
     submitAsync {
         while (!disabled) {
             sitManager.sitters.forEach {
-                it.sendActionBar(STAND_UP)
+                it.sendActionBar(STAND_UP, STAND_UP_BE)
             }
             delay(5)
         }

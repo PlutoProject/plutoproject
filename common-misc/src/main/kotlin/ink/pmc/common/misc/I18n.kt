@@ -17,6 +17,9 @@ val STAND_UP
         .append(Component.keybind("key.sneak").color(mochaFlamingo))
         .append(Component.text(" 来站起").color(mochaText))
 
+val STAND_UP_BE
+    get() = Component.text("按下潜行键来站起").color(mochaText)
+
 val ILLEGAL_LOC
     get() =
         Component.text("无法在此处坐下，请检查是否有实体方块和足够的空间").color(mochaMaroon)

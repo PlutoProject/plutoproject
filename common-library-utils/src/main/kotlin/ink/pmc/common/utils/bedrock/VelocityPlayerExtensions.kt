@@ -20,3 +20,13 @@ fun Player.fallback(original: Component, bedrock: Component): Component {
 fun Player.sendMessage(component: Component, fallback: Component) {
     this.sendMessage(this.fallback(component, fallback))
 }
+
+@Suppress("UNUSED")
+fun Player.sendActionBar(component: Component, fallback: Component) {
+    this.sendActionBar(this.fallback(component, fallback))
+}
+
+@Suppress("UNUSED")
+fun Player.disconnect(component: Component, fallback: Component) {
+    this.disconnect(this.fallback(component, fallback))
+}

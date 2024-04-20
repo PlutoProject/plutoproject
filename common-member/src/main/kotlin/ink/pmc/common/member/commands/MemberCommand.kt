@@ -5,6 +5,7 @@ import com.velocitypowered.api.command.CommandSource
 import ink.pmc.common.member.*
 import ink.pmc.common.member.api.AuthType
 import ink.pmc.common.member.velocity.commandManager
+import ink.pmc.common.utils.bedrock.disconnect
 import ink.pmc.common.utils.bedrock.xuid
 import ink.pmc.common.utils.chat.replace
 import ink.pmc.common.utils.command.VelocityCommand
@@ -128,7 +129,7 @@ object MemberCommand : VelocityCommand() {
             val player = proxy.getPlayer(member.id)
 
             if (player.isPresent) {
-                player.get().disconnect(MEMBER_NOT_WHITELISTED)
+                player.get().disconnect(MEMBER_NOT_WHITELISTED, MEMBER_NOT_WHITELISTED_BE)
             }
 
             sender.sendMessage(

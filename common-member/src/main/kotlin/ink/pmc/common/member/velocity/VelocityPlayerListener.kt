@@ -6,10 +6,12 @@ import com.velocitypowered.api.event.connection.DisconnectEvent
 import com.velocitypowered.api.event.connection.PostLoginEvent
 import com.velocitypowered.api.event.player.GameProfileRequestEvent
 import ink.pmc.common.member.MEMBER_NOT_WHITELISTED
+import ink.pmc.common.member.MEMBER_NOT_WHITELISTED_BE
 import ink.pmc.common.member.adapter.BedrockAdapter
 import ink.pmc.common.member.api.AuthType
-import ink.pmc.common.member.isFloodgateSession
 import ink.pmc.common.member.memberService
+import ink.pmc.common.utils.bedrock.disconnect
+import ink.pmc.common.utils.bedrock.isBedrockSession
 import ink.pmc.common.utils.bedrock.xuid
 import ink.pmc.common.utils.concurrent.io
 import kotlinx.coroutines.flow.firstOrNull
@@ -25,7 +27,7 @@ object VelocityPlayerListener {
         val uuid = fallbackId(player.uniqueId)
 
         if (!memberService.isWhitelisted(uuid)) {
-            player.disconnect(MEMBER_NOT_WHITELISTED)
+            player.disconnect(MEMBER_NOT_WHITELISTED, MEMBER_NOT_WHITELISTED_BE)
             return@io
         }
 
@@ -58,7 +60,7 @@ object VelocityPlayerListener {
 
         val member = memberService.lookup(uuid)!!.refresh()!!
 
-        if (isFloodgateSession(originalId) && originalId != uuid) {
+        if (isBedrockSession(originalId) && originalId != uuid) {
             BedrockAdapter.adapt(event)
             return@io
         }
@@ -72,7 +74,7 @@ object VelocityPlayerListener {
     private suspend fun fallbackId(uuid: UUID): UUID {
         val beAccount = memberService.bedrockAccounts.find(eq("xuid", uuid.xuid)).firstOrNull()
 
-        val fallbackId = if (isFloodgateSession(uuid) && beAccount != null) {
+        val fallbackId = if (isBedrockSession(uuid) && beAccount != null) {
             memberService.lookup(beAccount.linkedWith)!!.id
         } else {
             uuid
