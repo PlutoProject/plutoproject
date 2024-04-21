@@ -15,11 +15,7 @@ object OneFieldAdapter : PacketAdapter(
     Play.Server.SET_SUBTITLE_TEXT,
     Play.Server.SET_ACTION_BAR_TEXT,
     Play.Server.KICK_DISCONNECT,
-    Play.Server.RESOURCE_PACK_SEND,
-    Play.Server.BOSS,
-    Play.Server.COMMANDS,
-    Play.Server.DISGUISED_CHAT,
-    Play.Server.MAP,
+    Play.Server.BOSS
 ) {
 
     override fun onPacketSending(event: PacketEvent?) {
