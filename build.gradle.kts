@@ -37,6 +37,7 @@ allprojects {
         maven(uri("https://repo.papermc.io/repository/maven-public/"))
         maven(uri("https://maven.nostal.ink/repository/maven-public"))
         maven(uri("https://repo.opencollab.dev/main/"))
+        maven(uri("https://repo.dmulloy2.net/repository/public/"))
     }
 
     val common = listOf(
@@ -247,6 +248,7 @@ fun debugInitStep(task: Task) {
 
 val paperPlugins = runPaper.downloadPluginsSpec {
     url("https://ci.lucko.me/job/spark/401/artifact/spark-bukkit/build/libs/spark-1.10.60-bukkit.jar")
+    url("https://github.com/dmulloy2/ProtocolLib/releases/download/5.2.0/ProtocolLib.jar")
 }
 
 val foliaPlugins = runPaper.downloadPluginsSpec {

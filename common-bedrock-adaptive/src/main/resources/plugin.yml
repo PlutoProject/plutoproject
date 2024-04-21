@@ -1,0 +1,9 @@
+main: ink.pmc.common.bedrockadaptive.BedrockAdaptivePlugin
+name: common-bedrock-adaptive
+version: ${version}
+api-version: ${api}
+folia-supported: true
+depend:
+  - common-dependency-loader
+  - common-utils
+  - ProtocolLib
