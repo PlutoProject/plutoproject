@@ -7,6 +7,7 @@ import ink.pmc.common.member.api.AuthType
 import ink.pmc.common.member.velocity.commandManager
 import ink.pmc.common.utils.bedrock.disconnect
 import ink.pmc.common.utils.bedrock.xuid
+import ink.pmc.common.utils.chat.PLAYER_NOT_ONLINE
 import ink.pmc.common.utils.chat.replace
 import ink.pmc.common.utils.command.VelocityCommand
 import ink.pmc.common.utils.command.velocityRequiredOnlinePlayersArgument
@@ -331,6 +332,47 @@ object MemberCommand : VelocityCommand() {
             )
         }
 
+    private val memberSessionType = commandManager.commandBuilder("member")
+        .permission("member.sessiontype")
+        .literal("sessiontype")
+        .argument(velocityRequiredOnlinePlayersArgument())
+        .suspendingHandler {
+            val sender = it.sender()
+            val name = it.get<String>("name")
+            val player = proxy.getPlayer(name)
+
+            if (player.isEmpty) {
+                sender.sendMessage(PLAYER_NOT_ONLINE)
+                return@suspendingHandler
+            }
+
+            val uuid = player.get().uniqueId
+
+            if (sessionService.isBedrockSession(uuid)) {
+                sender.sendMessage(
+                    MEMBER_SESSION_TYPE_LOOKUP
+                        .replace("<player>", Component.text(player.get().username).color(mochaYellow))
+                        .replace("<type>", MEMBER_SESSION_TYPE_BEDROCK)
+                )
+                return@suspendingHandler
+            }
+
+            if (sessionService.isLittleSkinSession(uuid)) {
+                sender.sendMessage(
+                    MEMBER_SESSION_TYPE_LOOKUP
+                        .replace("<player>", Component.text(player.get().username).color(mochaYellow))
+                        .replace("<type>", MEMBER_SESSION_TYPE_LITTLESKIN)
+                )
+                return@suspendingHandler
+            }
+
+            sender.sendMessage(
+                MEMBER_SESSION_TYPE_LOOKUP
+                    .replace("<player>", Component.text(player.get().username).color(mochaYellow))
+                    .replace("<type>", MEMBER_SESSION_TYPE_OFFICIAL)
+            )
+        }
+
     private fun parseAuthType(flagContext: FlagContext): AuthType? {
         if (!flagContext.isPresent("auth")) {
             return AuthType.OFFICIAL
@@ -373,6 +415,7 @@ object MemberCommand : VelocityCommand() {
         command(memberLookup)
         command(memberModifyLinkBeAccount)
         command(memberModifyUnlinkBeAccount)
+        command(memberSessionType)
     }
 
 }

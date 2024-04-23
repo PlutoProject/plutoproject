@@ -5,11 +5,15 @@ import com.velocitypowered.api.event.Subscribe
 import com.velocitypowered.api.event.connection.DisconnectEvent
 import com.velocitypowered.api.event.connection.PostLoginEvent
 import com.velocitypowered.api.event.player.GameProfileRequestEvent
+import com.velocitypowered.api.event.player.ServerConnectedEvent
 import ink.pmc.common.member.MEMBER_NOT_WHITELISTED
 import ink.pmc.common.member.MEMBER_NOT_WHITELISTED_BE
 import ink.pmc.common.member.adapter.BedrockAdapter
+import ink.pmc.common.member.adapter.LittleSkinAdapter
 import ink.pmc.common.member.api.AuthType
 import ink.pmc.common.member.memberService
+import ink.pmc.common.member.session.SessionType
+import ink.pmc.common.member.sessionService
 import ink.pmc.common.utils.bedrock.disconnect
 import ink.pmc.common.utils.bedrock.isBedrockSession
 import ink.pmc.common.utils.bedrock.xuid
@@ -46,6 +50,9 @@ object VelocityPlayerListener {
 
         memberService.modifier(uuid, true)!!.lastQuitedAt(Instant.now())
         memberService.update(uuid)
+
+        sessionService.bedrockSessions.remove(uuid)
+        sessionService.littleSkinSession.remove(uuid)
     }
 
     @Subscribe
@@ -65,9 +72,30 @@ object VelocityPlayerListener {
             return@io
         }
 
+        if (isBedrockSession(uuid)) {
+            sessionService.bedrockSessions.add(uuid)
+            return@io
+        }
+
         if (member.authType == AuthType.LITTLESKIN) {
             // LittleSkinAdapter.adapt(event)
+            sessionService.littleSkinSession.add(uuid)
             return@io
+        }
+    }
+
+    @Subscribe
+    fun serverConnectedEvent(event: ServerConnectedEvent) {
+        val player = event.player
+
+        if (sessionService.isBedrockSession(player.uniqueId)) {
+            velocitySessionService.messageAdd(SessionType.BEDROCK, player.uniqueId)
+            return
+        }
+
+        if (sessionService.isLittleSkinSession(player.uniqueId)) {
+            velocitySessionService.messageAdd(SessionType.LITTLESKIN, player.uniqueId)
+            return
         }
     }
 

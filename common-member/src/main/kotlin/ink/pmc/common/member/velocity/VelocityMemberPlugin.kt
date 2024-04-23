@@ -13,7 +13,9 @@ import com.velocitypowered.api.plugin.PluginContainer
 import com.velocitypowered.api.plugin.annotation.DataDirectory
 import com.velocitypowered.api.proxy.ProxyServer
 import ink.pmc.common.member.*
+import ink.pmc.common.member.api.session.ISessionService
 import ink.pmc.common.member.commands.MemberCommand
+import ink.pmc.common.member.session.VelocitySessionService
 import ink.pmc.common.utils.command.init
 import ink.pmc.common.utils.platform.proxy
 import ink.pmc.common.utils.platform.saveDefaultConfig
@@ -26,6 +28,7 @@ import java.util.logging.Logger
 
 lateinit var pluginContainer: PluginContainer
 lateinit var commandManager: VelocityCommandManager<CommandSource>
+lateinit var velocitySessionService: VelocitySessionService
 
 @Plugin(
     id = "common-member",
@@ -61,6 +64,10 @@ class VelocityMemberPlugin @Inject constructor(suspendingPluginContainer: Suspen
         }
 
         initMemberService()
+        sessionService = VelocitySessionService()
+        sessionService.init()
+        ISessionService.instance = sessionService
+        velocitySessionService = sessionService as VelocitySessionService
 
         commandManager = VelocityCommandManager(
             pluginContainer,

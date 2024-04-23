@@ -1,7 +1,6 @@
 package ink.pmc.common.utils.bedrock
 
 import ink.pmc.common.utils.isInDebugMode
-import ink.pmc.common.utils.platform.paper
 import ink.pmc.common.utils.visual.*
 import net.kyori.adventure.text.format.NamedTextColor
 import java.lang.reflect.Method
@@ -17,7 +16,7 @@ lateinit var floodgateApi: Any
 lateinit var isFloodgatePlayer: Method
 
 fun floodgateSupport(): Boolean {
-    return !isInDebugMode() && paper.pluginManager.getPlugin("floodgate") != null
+    return !isInDebugMode()
 }
 
 fun isBedrockSession(uuid: UUID): Boolean {

@@ -139,3 +139,15 @@ val MEMBER_LOOKUP
         .append(Component.text("<bedrockAccount>").color(mochaYellow))
         .appendNewline()
         .append(Component.text("个性签名：").color(mochaText).append(Component.text("<bio>").color(mochaYellow)))
+
+val MEMBER_SESSION_TYPE_OFFICIAL
+    get() = Component.text("正版验证").color(mochaFlamingo)
+
+val MEMBER_SESSION_TYPE_LITTLESKIN
+    get() = Component.text("LittleSkin 外置登录").color(mochaFlamingo)
+
+val MEMBER_SESSION_TYPE_BEDROCK
+    get() = Component.text("基岩版").color(mochaFlamingo)
+
+val MEMBER_SESSION_TYPE_LOOKUP
+    get() = Component.text("玩家 <player> 的会话类型为：<type>").color(mochaGreen)
