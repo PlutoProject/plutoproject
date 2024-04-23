@@ -8,6 +8,7 @@ import java.util.*
 
 class VelocitySessionService : AbstractSessionService() {
     override fun messageAdd(type: SessionType, uuid: UUID) {
+
         val out = ByteStreams.newDataOutput()
         val message = SessionMessage(SessionMessageType.ADD, type, uuid)
         out.writeUTF(message.toJsonString())

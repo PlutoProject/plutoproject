@@ -38,6 +38,7 @@ allprojects {
         maven(uri("https://maven.nostal.ink/repository/maven-public"))
         maven(uri("https://repo.opencollab.dev/main/"))
         maven(uri("https://repo.dmulloy2.net/repository/public/"))
+        maven(uri("https://mvn.exceptionflug.de/repository/exceptionflug-public/"))
     }
 
     val common = listOf(

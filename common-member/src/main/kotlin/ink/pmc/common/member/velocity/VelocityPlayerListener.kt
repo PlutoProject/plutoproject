@@ -9,7 +9,6 @@ import com.velocitypowered.api.event.player.ServerConnectedEvent
 import ink.pmc.common.member.MEMBER_NOT_WHITELISTED
 import ink.pmc.common.member.MEMBER_NOT_WHITELISTED_BE
 import ink.pmc.common.member.adapter.BedrockAdapter
-import ink.pmc.common.member.adapter.LittleSkinAdapter
 import ink.pmc.common.member.api.AuthType
 import ink.pmc.common.member.memberService
 import ink.pmc.common.member.session.SessionType

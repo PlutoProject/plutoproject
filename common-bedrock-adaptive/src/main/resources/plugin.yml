@@ -1,4 +1,4 @@
-main: ink.pmc.common.bedrockadaptive.BedrockAdaptivePlugin
+main: ink.pmc.common.bedrockadaptive.PaperBedrockAdaptivePlugin
 name: common-bedrock-adaptive
 version: ${version}
 api-version: ${api}
