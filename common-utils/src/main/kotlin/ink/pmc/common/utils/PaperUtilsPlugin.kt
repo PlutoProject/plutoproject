@@ -1,7 +1,6 @@
 package ink.pmc.common.utils
 
 import ink.pmc.common.utils.platform.*
-import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
 import java.util.concurrent.Executor
 
@@ -29,10 +28,8 @@ class PaperUtilsPlugin : JavaPlugin() {
             * 反射获取 DedicatedServer。
             * 由于 DedicatedServer 本身继承了 Executor，这里我们把它当作 Executor 来用。
             * */
-            val serverClassLoader = server.javaClass.classLoader
-            val craftServerClass = Class.forName("org.bukkit.craftbukkit.v1_20_R3.CraftServer", true, serverClassLoader)
-            val server = Bukkit.getServer()
-            val craftServer = craftServerClass.cast(server)
+            val craftServerClass = paper.javaClass
+            val craftServer = craftServerClass.cast(paper)
             val method = craftServer.javaClass.getDeclaredMethod("getServer")
             val dedicatedServer = method.invoke(craftServer)
 
