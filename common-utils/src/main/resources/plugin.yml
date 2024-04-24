@@ -3,5 +3,7 @@ name: common-utils
 version: ${version}
 api-version: ${api}
 folia-supported: true
+softdepend:
+  - floodgate
 depend:
   - common-dependency-loader

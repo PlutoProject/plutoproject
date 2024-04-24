@@ -1,6 +1,9 @@
 package ink.pmc.common.member.paper
 
+import com.github.shynixn.mccoroutine.bukkit.registerSuspendingEvents
 import ink.pmc.common.member.*
+import ink.pmc.common.member.api.session.ISessionService
+import ink.pmc.common.member.session.PaperSessionService
 import ink.pmc.common.utils.isInDebugMode
 import org.bukkit.plugin.java.JavaPlugin
 import java.io.File
@@ -27,6 +30,12 @@ class PaperMemberPlugin : JavaPlugin() {
         }
 
         initMemberService()
+        sessionService = PaperSessionService()
+        sessionService.init()
+        ISessionService.instance = sessionService
+
+        server.pluginManager.registerSuspendingEvents(PaperPlayerListener, this)
+
         disabled = false
     }
 

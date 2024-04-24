@@ -12,10 +12,14 @@ val SUICIDE
     get() = Component.text("你终结了你自己...")
         .color(mochaFlamingo)
 
+@Suppress("UNUSED")
 val STAND_UP
     get() = Component.text("使用 ").color(mochaText)
         .append(Component.keybind("key.sneak").color(mochaFlamingo))
         .append(Component.text(" 来站起").color(mochaText))
+
+val STAND_UP_BE
+    get() = Component.text("按下潜行键来站起").color(mochaText)
 
 val ILLEGAL_LOC
     get() =

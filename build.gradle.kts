@@ -37,6 +37,8 @@ allprojects {
         maven(uri("https://repo.papermc.io/repository/maven-public/"))
         maven(uri("https://maven.nostal.ink/repository/maven-public"))
         maven(uri("https://repo.opencollab.dev/main/"))
+        maven(uri("https://repo.dmulloy2.net/repository/public/"))
+        maven(uri("https://mvn.exceptionflug.de/repository/exceptionflug-public/"))
     }
 
     val common = listOf(
@@ -57,7 +59,9 @@ allprojects {
         "com.github.shynixn.mccoroutine:mccoroutine-bukkit-api:2.15.0",
         "com.github.shynixn.mccoroutine:mccoroutine-bukkit-core:2.15.0",
         "com.github.shynixn.mccoroutine:mccoroutine-velocity-api:2.15.0",
-        "com.github.shynixn.mccoroutine:mccoroutine-velocity-core:2.15.0"
+        "com.github.shynixn.mccoroutine:mccoroutine-velocity-core:2.15.0",
+        "net.bytebuddy:byte-buddy:1.14.13",
+        "net.bytebuddy:byte-buddy-agent:1.14.13"
     )
 
     val paper = listOf<String>()
@@ -247,6 +251,7 @@ fun debugInitStep(task: Task) {
 
 val paperPlugins = runPaper.downloadPluginsSpec {
     url("https://ci.lucko.me/job/spark/401/artifact/spark-bukkit/build/libs/spark-1.10.60-bukkit.jar")
+    url("https://github.com/dmulloy2/ProtocolLib/releases/download/5.2.0/ProtocolLib.jar")
 }
 
 val foliaPlugins = runPaper.downloadPluginsSpec {

@@ -19,6 +19,18 @@ val MEMBER_NOT_WHITELISTED
         .append(Component.text("如果您已通过申请，则可能是因为我们忘记为您添加白名单了。").color(mochaText))
         .appendNewline().append(Component.text("请联系当日的审核员来为您添加。").color(mochaText))
 
+val MEMBER_NOT_WHITELISTED_BE
+    get() = Component.empty()
+        .append(Component.text("您的游戏 ID 并没有获得白名单。").color(mochaText))
+        .appendNewline()
+        .append(Component.text("请加入我们的审核群 ").color(mochaText))
+        .append(Component.text("795681231 ").color(mochaYellow))
+        .append(Component.text("来进行申请。").color(mochaText))
+        .appendNewline()
+        .append(Component.text("如果您已通过申请，则可能是因为我们忘记为您添加白名单了。").color(mochaText))
+        .appendNewline()
+        .append(Component.text("请联系当日的审核员来为您添加。").color(mochaText))
+
 @Suppress("UNUSED")
 val MEMBER_BE_LOGIN
     get() = Component.empty()
@@ -127,3 +139,15 @@ val MEMBER_LOOKUP
         .append(Component.text("<bedrockAccount>").color(mochaYellow))
         .appendNewline()
         .append(Component.text("个性签名：").color(mochaText).append(Component.text("<bio>").color(mochaYellow)))
+
+val MEMBER_SESSION_TYPE_OFFICIAL
+    get() = Component.text("正版验证").color(mochaFlamingo)
+
+val MEMBER_SESSION_TYPE_LITTLESKIN
+    get() = Component.text("LittleSkin 外置登录").color(mochaFlamingo)
+
+val MEMBER_SESSION_TYPE_BEDROCK
+    get() = Component.text("基岩版").color(mochaFlamingo)
+
+val MEMBER_SESSION_TYPE_LOOKUP
+    get() = Component.text("玩家 <player> 的会话类型为：<type>").color(mochaGreen)
