@@ -2,7 +2,6 @@ package ink.pmc.common.member.adapter
 
 import com.velocitypowered.api.event.player.GameProfileRequestEvent
 import com.velocitypowered.api.util.GameProfile
-import ink.pmc.common.member.sessionService
 
 object LittleSkinAdapter : AuthAdapter {
 
