@@ -6,7 +6,7 @@ import dev.simplix.protocolize.api.listener.AbstractPacketListener
 import dev.simplix.protocolize.api.listener.PacketReceiveEvent
 import dev.simplix.protocolize.api.listener.PacketSendEvent
 import ink.pmc.common.bedrockadaptive.utils.replaceFallbackColor
-import ink.pmc.common.member.api.session.SessionService
+import ink.pmc.common.utils.bedrock.isFloodgatePlayer
 
 object TitleActionbarPacketListener : AbstractPacketListener<TitleActionbarPacket>(
     TitleActionbarPacket::class.java,
@@ -18,7 +18,7 @@ object TitleActionbarPacketListener : AbstractPacketListener<TitleActionbarPacke
     }
 
     override fun packetSend(event: PacketSendEvent<TitleActionbarPacket>) {
-        if (!SessionService.isBedrockSession(event.player().uniqueId())) {
+        if (!isFloodgatePlayer(event.player().uniqueId())) {
             return
         }
 

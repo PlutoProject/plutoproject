@@ -4,6 +4,7 @@ import ink.pmc.common.utils.bedrock.floodgateApi
 import ink.pmc.common.utils.bedrock.floodgateApiClass
 import ink.pmc.common.utils.bedrock.floodgateSupport
 import ink.pmc.common.utils.bedrock.isFloodgatePlayer
+import ink.pmc.common.utils.jvm.byteBuddy
 import ink.pmc.common.utils.platform.*
 import org.bukkit.plugin.java.JavaPlugin
 import java.util.*
@@ -20,6 +21,10 @@ private fun checkFolia(): Boolean {
 
 @Suppress("UNUSED")
 class PaperUtilsPlugin : JavaPlugin() {
+
+    override fun onLoad() {
+        byteBuddy // 初始化
+    }
 
     override fun onEnable() {
         isFolia = checkFolia()

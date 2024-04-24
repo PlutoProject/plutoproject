@@ -6,7 +6,7 @@ import dev.simplix.protocolize.api.listener.AbstractPacketListener
 import dev.simplix.protocolize.api.listener.PacketReceiveEvent
 import dev.simplix.protocolize.api.listener.PacketSendEvent
 import ink.pmc.common.bedrockadaptive.utils.replaceFallbackColor
-import ink.pmc.common.member.api.session.SessionService
+import ink.pmc.common.utils.bedrock.isFloodgatePlayer
 
 @Suppress("UNUSED")
 object HeaderAndFooterPacketListener : AbstractPacketListener<HeaderAndFooterPacket>(
@@ -19,7 +19,7 @@ object HeaderAndFooterPacketListener : AbstractPacketListener<HeaderAndFooterPac
     }
 
     override fun packetSend(event: PacketSendEvent<HeaderAndFooterPacket>) {
-        if (!SessionService.isBedrockSession(event.player().uniqueId())) {
+        if (!isFloodgatePlayer(event.player().uniqueId())) {
             return
         }
 

@@ -19,7 +19,7 @@ fun floodgateSupport(): Boolean {
     return !isInDebugMode()
 }
 
-fun isBedrockSession(uuid: UUID): Boolean {
+fun isFloodgatePlayer(uuid: UUID): Boolean {
     if (isInDebugMode()) {
         return false
     }

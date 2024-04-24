@@ -4,14 +4,12 @@ import com.electronwill.nightconfig.core.file.FileConfig
 import com.mongodb.kotlin.client.coroutine.MongoClient
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
 import ink.pmc.common.member.api.IMemberService
-import ink.pmc.common.member.session.AbstractSessionService
 import java.io.File
 import java.util.logging.Logger
 
 var disabled = true
 lateinit var serverLogger: Logger
 lateinit var memberService: AbstractMemberService
-lateinit var sessionService: AbstractSessionService
 lateinit var dataDir: File
 lateinit var configFile: File
 lateinit var config: FileConfig

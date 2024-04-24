@@ -7,7 +7,7 @@ import dev.simplix.protocolize.api.listener.AbstractPacketListener
 import dev.simplix.protocolize.api.listener.PacketReceiveEvent
 import dev.simplix.protocolize.api.listener.PacketSendEvent
 import ink.pmc.common.bedrockadaptive.utils.replaceFallbackColor
-import ink.pmc.common.member.api.session.SessionService
+import ink.pmc.common.utils.bedrock.isFloodgatePlayer
 
 object SystemChatPacketListener : AbstractPacketListener<SystemChatPacket>(
     SystemChatPacket::class.java,
@@ -31,7 +31,7 @@ object SystemChatPacketListener : AbstractPacketListener<SystemChatPacket>(
         chatTypeField.isAccessible = true
         chatTypeField.set(packet, type)
 
-        if (!SessionService.isBedrockSession(event.player().uniqueId())) {
+        if (!isFloodgatePlayer(event.player().uniqueId())) {
             return
         }
 

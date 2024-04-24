@@ -10,6 +10,7 @@ import ink.pmc.common.utils.bedrock.floodgateApi
 import ink.pmc.common.utils.bedrock.floodgateApiClass
 import ink.pmc.common.utils.bedrock.floodgateSupport
 import ink.pmc.common.utils.bedrock.isFloodgatePlayer
+import ink.pmc.common.utils.jvm.byteBuddy
 import ink.pmc.common.utils.platform.proxy
 import ink.pmc.common.utils.platform.proxyThread
 import ink.pmc.common.utils.platform.velocityUtilsPlugin
@@ -33,6 +34,7 @@ class VelocityUtilsPlugin {
     @Inject
     fun velocityUtils(server: ProxyServer, logger: Logger) {
         proxyServer = server
+        byteBuddy // 初始化
     }
 
     @Subscribe

@@ -86,7 +86,6 @@ class VelocityBedrockAdaptivePlugin @Inject constructor(suspendingPluginContaine
         * */
         // Protocolize.listenerProvider().registerListener(HeaderAndFooterPacketListener)
         Protocolize.listenerProvider().registerListener(BossBarPacketListener)
-        Protocolize.listenerProvider().registerListener(SessionPlayerChatPacketListener)
 
         disabled = false
     }

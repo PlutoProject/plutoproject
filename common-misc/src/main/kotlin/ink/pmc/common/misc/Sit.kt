@@ -1,6 +1,7 @@
 package ink.pmc.common.misc
 
 import ink.pmc.common.misc.api.sit.*
+import ink.pmc.common.utils.bedrock.isFloodgatePlayer
 import ink.pmc.common.utils.concurrent.submitAsync
 import ink.pmc.common.utils.entity.ensureThreadSafe
 import ink.pmc.common.utils.world.ensureThreadSafe
@@ -79,7 +80,12 @@ fun runActionBarOverrideTask() {
     submitAsync {
         while (!disabled) {
             sitManager.sitters.forEach {
-                it.sendActionBar(STAND_UP_BE) // 待修复的问题
+                if (isFloodgatePlayer(it.uniqueId)) {
+                    it.sendActionBar(STAND_UP_BE)
+                    return@forEach
+                }
+
+                it.sendActionBar(STAND_UP)
             }
             delay(5)
         }

@@ -5,7 +5,7 @@ import net.kyori.adventure.text.Component
 
 @Suppress("UNUSED")
 val Player.isBedrock: Boolean
-    get() = isBedrockSession(this.uniqueId)
+    get() = isFloodgatePlayer(this.uniqueId)
 
 @Suppress("UNUSED")
 fun Player.fallback(original: Component, bedrock: Component): Component {
