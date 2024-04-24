@@ -1,5 +1,6 @@
 package ink.pmc.common.misc
 
+import ink.pmc.common.member.api.session.SessionService
 import ink.pmc.common.misc.api.sit.*
 import ink.pmc.common.utils.bedrock.sendActionBar
 import ink.pmc.common.utils.concurrent.submitAsync
@@ -80,7 +81,12 @@ fun runActionBarOverrideTask() {
     submitAsync {
         while (!disabled) {
             sitManager.sitters.forEach {
-                it.sendActionBar(STAND_UP, STAND_UP_BE)
+                if (SessionService.isBedrockSession(it.uniqueId)) {
+                    it.sendActionBar(STAND_UP_BE)
+                    return@forEach
+                }
+
+                it.sendActionBar(STAND_UP)
             }
             delay(5)
         }

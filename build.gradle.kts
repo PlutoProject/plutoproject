@@ -59,7 +59,9 @@ allprojects {
         "com.github.shynixn.mccoroutine:mccoroutine-bukkit-api:2.15.0",
         "com.github.shynixn.mccoroutine:mccoroutine-bukkit-core:2.15.0",
         "com.github.shynixn.mccoroutine:mccoroutine-velocity-api:2.15.0",
-        "com.github.shynixn.mccoroutine:mccoroutine-velocity-core:2.15.0"
+        "com.github.shynixn.mccoroutine:mccoroutine-velocity-core:2.15.0",
+        "net.bytebuddy:byte-buddy:1.14.13",
+        "net.bytebuddy:byte-buddy-agent:1.14.13"
     )
 
     val paper = listOf<String>()
