@@ -13,14 +13,16 @@ import com.velocitypowered.api.plugin.annotation.DataDirectory
 import com.velocitypowered.api.proxy.ProxyServer
 import com.velocitypowered.proxy.protocol.packet.title.GenericTitlePacket
 import dev.simplix.protocolize.api.Protocolize
+import ink.pmc.common.bedrockadaptive.delegations.GeyserAttackIndicatorTitleDelegation
 import ink.pmc.common.bedrockadaptive.delegations.TitlePacketsDecodeDelegation
+import ink.pmc.common.bedrockadaptive.utils.cooldownUtilsClass
 import ink.pmc.common.bedrockadaptive.velocity.*
 import ink.pmc.common.utils.jvm.byteBuddy
 import ink.pmc.common.utils.platform.proxy
 import net.bytebuddy.asm.Advice
 import net.bytebuddy.dynamic.loading.ClassReloadingStrategy
 import net.bytebuddy.implementation.StubMethod
-import net.bytebuddy.matcher.ElementMatchers
+import net.bytebuddy.matcher.ElementMatchers.named
 import java.nio.file.Path
 import java.util.logging.Logger
 
@@ -36,7 +38,8 @@ val protocolVersion = ProtocolVersion.MINECRAFT_1_20_3
         Dependency(id = "common-dependency-loader-velocity"),
         Dependency(id = "common-utils"),
         Dependency(id = "common-member"),
-        Dependency(id = "protocolize")
+        Dependency(id = "protocolize"),
+        Dependency(id = "geyser")
     ]
 )
 @Suppress("UNUSED", "UNUSED_PARAMETER")
@@ -52,10 +55,16 @@ class VelocityBedrockAdaptivePlugin @Inject constructor(suspendingPluginContaine
         * */
         byteBuddy
             .redefine(GenericTitlePacket::class.java)
-            .method(ElementMatchers.named("decode"))
+            .method(named("decode"))
             .intercept(Advice.to(TitlePacketsDecodeDelegation::class.java).wrap(StubMethod.INSTANCE))
             .make()
             .load(GenericTitlePacket::class.java.classLoader, ClassReloadingStrategy.fromInstalledAgent())
+
+        byteBuddy
+            .redefine(cooldownUtilsClass)
+            .visit(Advice.to(GeyserAttackIndicatorTitleDelegation::class.java).on(named("getTitle")))
+            .make()
+            .load(cooldownUtilsClass.classLoader, ClassReloadingStrategy.fromInstalledAgent())
     }
 
     @Inject
