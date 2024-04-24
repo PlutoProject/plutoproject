@@ -9,7 +9,11 @@ import ink.pmc.common.bedrockadaptive.utils.replaceFallbackColor
 import ink.pmc.common.member.api.session.SessionService
 
 @Suppress("UNUSED")
-object HeaderAndFooterPacketListener : AbstractPacketListener<HeaderAndFooterPacket>(HeaderAndFooterPacket::class.java, Direction.UPSTREAM, 0) {
+object HeaderAndFooterPacketListener : AbstractPacketListener<HeaderAndFooterPacket>(
+    HeaderAndFooterPacket::class.java,
+    Direction.UPSTREAM,
+    0
+) {
 
     override fun packetReceive(event: PacketReceiveEvent<HeaderAndFooterPacket>) {
     }

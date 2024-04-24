@@ -81,12 +81,7 @@ fun runActionBarOverrideTask() {
     submitAsync {
         while (!disabled) {
             sitManager.sitters.forEach {
-                if (SessionService.isBedrockSession(it.uniqueId)) {
-                    it.sendActionBar(STAND_UP_BE)
-                    return@forEach
-                }
-
-                it.sendActionBar(STAND_UP)
+                it.sendActionBar(STAND_UP_BE) // 待修复的问题
             }
             delay(5)
         }

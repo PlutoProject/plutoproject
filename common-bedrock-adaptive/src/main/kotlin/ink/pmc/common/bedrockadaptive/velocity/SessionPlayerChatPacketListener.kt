@@ -6,7 +6,11 @@ import dev.simplix.protocolize.api.listener.AbstractPacketListener
 import dev.simplix.protocolize.api.listener.PacketReceiveEvent
 import dev.simplix.protocolize.api.listener.PacketSendEvent
 
-object SessionPlayerChatPacketListener : AbstractPacketListener<SessionPlayerChatPacket>(SessionPlayerChatPacket::class.java, Direction.UPSTREAM, 0) {
+object SessionPlayerChatPacketListener : AbstractPacketListener<SessionPlayerChatPacket>(
+    SessionPlayerChatPacket::class.java,
+    Direction.UPSTREAM,
+    0
+) {
 
     override fun packetReceive(event: PacketReceiveEvent<SessionPlayerChatPacket>) {
     }

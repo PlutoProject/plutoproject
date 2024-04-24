@@ -12,6 +12,7 @@ val SUICIDE
     get() = Component.text("你终结了你自己...")
         .color(mochaFlamingo)
 
+@Suppress("UNUSED")
 val STAND_UP
     get() = Component.text("使用 ").color(mochaText)
         .append(Component.keybind("key.sneak").color(mochaFlamingo))
