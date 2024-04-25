@@ -1,32 +1,33 @@
 package ink.pmc.common.misc
 
+import ink.pmc.common.utils.chat.replace
+import ink.pmc.common.utils.platform.paper
 import io.papermc.paper.chat.ChatRenderer
 import io.papermc.paper.event.player.AsyncChatEvent
 import net.kyori.adventure.audience.Audience
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.TextReplacementConfig
 import org.bukkit.entity.Player
 
 fun handleChatFormat(event: AsyncChatEvent) {
-    event.renderer(MiscChatRender)
+    val source = event.player
+    val message = event.message()
+    val component = CHAT_FORMAT
+        .replace("<player>", Component.text(source.name))
+        .replace("<message>", message)
+    paper.broadcast(component)
+    event.isCancelled = true
 }
 
+@Suppress("UNUSED", "DEPRECATION")
 object MiscChatRender : ChatRenderer {
 
     override fun render(source: Player, sourceDisplayName: Component, message: Component, viewer: Audience): Component {
-        val nameReplacement = TextReplacementConfig.builder()
-            .match("<player>")
-            .replacement(sourceDisplayName)
-            .build()
-
-        val messageReplacement = TextReplacementConfig.builder()
-            .match("<message>")
-            .replacement(message)
-            .build()
-
+        /*
+        * displayName 的 component 格式很怪异，会导致无法替换颜色。
+        * */
         return CHAT_FORMAT
-            .replaceText(nameReplacement)
-            .replaceText(messageReplacement)
+            .replace("<player>", Component.text(source.displayName))
+            .replace("<message>", message)
     }
 
 }

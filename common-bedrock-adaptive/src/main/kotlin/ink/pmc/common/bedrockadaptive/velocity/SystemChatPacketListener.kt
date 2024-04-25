@@ -9,6 +9,7 @@ import dev.simplix.protocolize.api.listener.PacketSendEvent
 import ink.pmc.common.bedrockadaptive.utils.replaceFallbackColor
 import ink.pmc.common.utils.bedrock.isFloodgatePlayer
 
+@Suppress("UNUSED")
 object SystemChatPacketListener : AbstractPacketListener<SystemChatPacket>(
     SystemChatPacket::class.java,
     Direction.UPSTREAM,

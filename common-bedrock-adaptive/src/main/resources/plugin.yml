@@ -6,4 +6,6 @@ folia-supported: true
 depend:
   - common-dependency-loader
   - common-utils
+  - common-member
+  - floodgate
   - ProtocolLib

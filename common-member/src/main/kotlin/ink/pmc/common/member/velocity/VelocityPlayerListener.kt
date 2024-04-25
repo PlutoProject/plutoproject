@@ -10,9 +10,11 @@ import ink.pmc.common.member.MEMBER_NOT_WHITELISTED
 import ink.pmc.common.member.MEMBER_NOT_WHITELISTED_BE
 import ink.pmc.common.member.adapter.BedrockAdapter
 import ink.pmc.common.member.api.AuthType
+import ink.pmc.common.member.bedrock.removeFloodgatePlayer
 import ink.pmc.common.member.memberService
 import ink.pmc.common.utils.bedrock.disconnect
 import ink.pmc.common.utils.bedrock.isFloodgatePlayer
+import ink.pmc.common.utils.bedrock.uuid
 import ink.pmc.common.utils.bedrock.xuid
 import ink.pmc.common.utils.concurrent.io
 import kotlinx.coroutines.flow.firstOrNull
@@ -23,13 +25,13 @@ import java.util.*
 object VelocityPlayerListener {
 
     @Subscribe
-    suspend fun postLoginEvent(event: PostLoginEvent) = io {
+    suspend fun postLoginEvent(event: PostLoginEvent) {
         val player = event.player
         val uuid = fallbackId(player.uniqueId)
 
         if (!memberService.isWhitelisted(uuid)) {
             player.disconnect(MEMBER_NOT_WHITELISTED, MEMBER_NOT_WHITELISTED_BE)
-            return@io
+            return
         }
 
         memberService.modifier(uuid, true)!!.lastJoinedAt(Instant.now())
@@ -37,16 +39,23 @@ object VelocityPlayerListener {
     }
 
     @Subscribe
-    suspend fun disconnectEvent(event: DisconnectEvent) = io {
+    suspend fun disconnectEvent(event: DisconnectEvent) {
         val player = event.player
         val uuid = player.uniqueId
 
+        removeFloodgatePlayer(uuid)
+
         if (!memberService.exist(uuid)) {
-            return@io
+            return
         }
 
-        memberService.modifier(uuid, true)!!.lastQuitedAt(Instant.now())
+        val member = memberService.lookup(uuid)!!.refresh()!!
+        member.modifier.lastQuitedAt(Instant.now())
         memberService.update(uuid)
+
+        if (member.bedrockAccount != null) {
+            removeFloodgatePlayer(member.bedrockAccount!!.xuid.uuid!!)
+        }
     }
 
     @Subscribe(order = PostOrder.FIRST)

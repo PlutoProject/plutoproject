@@ -29,3 +29,9 @@ fun addFloodgatePlayer(floodgatePlayer: Any): Any {
     map[uuid] = floodgatePlayer
     return floodgatePlayer
 }
+
+@Suppress("UNCHECKED_CAST")
+fun removeFloodgatePlayer(uuid: UUID) {
+    val map = floodgatePlayersField.get(floodgateApi) as MutableMap<UUID, Any>
+    map.remove(uuid)
+}

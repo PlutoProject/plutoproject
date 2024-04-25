@@ -3,6 +3,7 @@ package ink.pmc.common.utils.bedrock
 import ink.pmc.common.utils.isInDebugMode
 import ink.pmc.common.utils.visual.*
 import net.kyori.adventure.text.format.NamedTextColor
+import net.kyori.adventure.text.serializer.legacy.CharacterAndFormat
 import java.lang.reflect.Method
 import java.util.*
 
@@ -27,7 +28,7 @@ fun isFloodgatePlayer(uuid: UUID): Boolean {
     return isFloodgatePlayer.invoke(floodgateApi, uuid) as Boolean
 }
 
-val bedrockColorMapping = mutableMapOf(
+val bedrockColorMapping = mapOf(
     mochaGreen to NamedTextColor.GREEN,
     mochaSapphire to NamedTextColor.AQUA,
     mochaMaroon to NamedTextColor.RED,
@@ -54,4 +55,33 @@ val bedrockColorMapping = mutableMapOf(
     mochaSurface0 to materialDiamond,
     mochaBase to materialLapis,
     mochaMantle to materialAmethyst
+)
+
+val bedrockFormats = listOf(
+    CharacterAndFormat.characterAndFormat('a', mochaGreen),
+    CharacterAndFormat.characterAndFormat('b', mochaSapphire),
+    CharacterAndFormat.characterAndFormat('c', mochaMaroon),
+    CharacterAndFormat.characterAndFormat('d', mochaMauve),
+    CharacterAndFormat.characterAndFormat('e', mochaYellow),
+    CharacterAndFormat.characterAndFormat('f', mochaText),
+    CharacterAndFormat.characterAndFormat('0', mochaCrust),
+    CharacterAndFormat.characterAndFormat('1', mochaLavender),
+    CharacterAndFormat.characterAndFormat('2', mochaTeal),
+    CharacterAndFormat.characterAndFormat('3', mochaSky),
+    CharacterAndFormat.characterAndFormat('4', mochaRed),
+    CharacterAndFormat.characterAndFormat('5', mochaPink),
+    CharacterAndFormat.characterAndFormat('6', mochaPeach),
+    CharacterAndFormat.characterAndFormat('7', mochaSubtext1),
+    CharacterAndFormat.characterAndFormat('8', mochaSubtext0),
+    CharacterAndFormat.characterAndFormat('9', mochaBlue),
+    CharacterAndFormat.characterAndFormat('h', mochaOverlay2),
+    CharacterAndFormat.characterAndFormat('i', mochaOverlay1),
+    CharacterAndFormat.characterAndFormat('j', mochaOverlay0),
+    CharacterAndFormat.characterAndFormat('m', mochaRosewater),
+    CharacterAndFormat.characterAndFormat('n', mochaFlamingo),
+    CharacterAndFormat.characterAndFormat('p', mochaSurface2),
+    CharacterAndFormat.characterAndFormat('q', mochaSurface1),
+    CharacterAndFormat.characterAndFormat('s', mochaSurface0),
+    CharacterAndFormat.characterAndFormat('t', mochaBase),
+    CharacterAndFormat.characterAndFormat('u', mochaMantle)
 )

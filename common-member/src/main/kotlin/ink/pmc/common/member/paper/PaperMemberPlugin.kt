@@ -1,5 +1,6 @@
 package ink.pmc.common.member.paper
 
+import com.github.shynixn.mccoroutine.bukkit.registerSuspendingEvents
 import ink.pmc.common.member.*
 import ink.pmc.common.member.bedrock.GeyserSimpleFloodgateApiReplacement
 import ink.pmc.common.utils.isInDebugMode
@@ -30,6 +31,7 @@ class PaperMemberPlugin : JavaPlugin() {
         initMemberService()
         GeyserSimpleFloodgateApiReplacement.init()
 
+        server.pluginManager.registerSuspendingEvents(PaperPlayerListener, this)
         disabled = false
     }
 

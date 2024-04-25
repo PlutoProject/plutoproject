@@ -9,7 +9,7 @@ lateinit var protocolManager: ProtocolManager
 var disabled = true
 
 @Suppress("UNUSED")
-class BedrockAdaptivePlugin : JavaPlugin() {
+class PaperBedrockAdaptivePlugin : JavaPlugin() {
 
     override fun onEnable() {
         plugin = this

@@ -11,18 +11,12 @@ import com.velocitypowered.api.plugin.Plugin
 import com.velocitypowered.api.plugin.PluginContainer
 import com.velocitypowered.api.plugin.annotation.DataDirectory
 import com.velocitypowered.api.proxy.ProxyServer
-import com.velocitypowered.proxy.protocol.packet.title.GenericTitlePacket
 import dev.simplix.protocolize.api.Protocolize
-import ink.pmc.common.bedrockadaptive.delegations.GeyserAttackIndicatorTitleDelegation
-import ink.pmc.common.bedrockadaptive.delegations.TitlePacketsDecodeDelegation
-import ink.pmc.common.bedrockadaptive.utils.cooldownUtilsClass
 import ink.pmc.common.bedrockadaptive.velocity.*
-import ink.pmc.common.utils.jvm.byteBuddy
+import ink.pmc.common.bedrockadaptive.velocity.replacements.BedrockColorSerializerReplacement
+import ink.pmc.common.bedrockadaptive.velocity.replacements.GeyserAttackIndicatorReplacement
+import ink.pmc.common.bedrockadaptive.velocity.replacements.TitlePacketDecodeReplacement
 import ink.pmc.common.utils.platform.proxy
-import net.bytebuddy.asm.Advice
-import net.bytebuddy.dynamic.loading.ClassReloadingStrategy
-import net.bytebuddy.implementation.StubMethod
-import net.bytebuddy.matcher.ElementMatchers.named
 import java.nio.file.Path
 import java.util.logging.Logger
 
@@ -39,7 +33,8 @@ val protocolVersion = ProtocolVersion.MINECRAFT_1_20_3
         Dependency(id = "common-utils"),
         Dependency(id = "common-member"),
         Dependency(id = "protocolize"),
-        Dependency(id = "geyser")
+        Dependency(id = "geyser"),
+        Dependency(id = "floodgate")
     ]
 )
 @Suppress("UNUSED", "UNUSED_PARAMETER")
@@ -48,23 +43,9 @@ class VelocityBedrockAdaptivePlugin @Inject constructor(suspendingPluginContaine
     init {
         suspendingPluginContainer.initialize(this)
 
-        /*
-        * 由 GenericTitlePacket 派生的几个 Title 包都没有实现解码。
-        * 原因未知，但这会导致我们无法操作这些包。
-        * 在这里强行为该类插入 decode 的实现。
-        * */
-        byteBuddy
-            .redefine(GenericTitlePacket::class.java)
-            .method(named("decode"))
-            .intercept(Advice.to(TitlePacketsDecodeDelegation::class.java).wrap(StubMethod.INSTANCE))
-            .make()
-            .load(GenericTitlePacket::class.java.classLoader, ClassReloadingStrategy.fromInstalledAgent())
-
-        byteBuddy
-            .redefine(cooldownUtilsClass)
-            .visit(Advice.to(GeyserAttackIndicatorTitleDelegation::class.java).on(named("getTitle")))
-            .make()
-            .load(cooldownUtilsClass.classLoader, ClassReloadingStrategy.fromInstalledAgent())
+        TitlePacketDecodeReplacement.init()
+        GeyserAttackIndicatorReplacement.init()
+        BedrockColorSerializerReplacement.init()
     }
 
     @Inject
