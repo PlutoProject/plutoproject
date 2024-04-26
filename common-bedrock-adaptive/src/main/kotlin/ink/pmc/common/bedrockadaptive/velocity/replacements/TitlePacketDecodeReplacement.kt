@@ -6,7 +6,7 @@ import ink.pmc.common.utils.jvm.byteBuddy
 import net.bytebuddy.asm.Advice
 import net.bytebuddy.dynamic.loading.ClassReloadingStrategy
 import net.bytebuddy.implementation.StubMethod
-import net.bytebuddy.matcher.ElementMatchers
+import net.bytebuddy.matcher.ElementMatchers.named
 
 object TitlePacketDecodeReplacement {
 
@@ -18,7 +18,7 @@ object TitlePacketDecodeReplacement {
         * */
         byteBuddy
             .redefine(GenericTitlePacket::class.java)
-            .method(ElementMatchers.named("decode"))
+            .method(named("decode"))
             .intercept(Advice.to(TitlePacketsDecodeDelegation::class.java).wrap(StubMethod.INSTANCE))
             .make()
             .load(GenericTitlePacket::class.java.classLoader, ClassReloadingStrategy.fromInstalledAgent())/**/

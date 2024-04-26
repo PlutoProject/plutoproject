@@ -15,6 +15,7 @@ import dev.simplix.protocolize.api.Protocolize
 import ink.pmc.common.bedrockadaptive.velocity.*
 import ink.pmc.common.bedrockadaptive.velocity.replacements.BedrockColorSerializerReplacement
 import ink.pmc.common.bedrockadaptive.velocity.replacements.GeyserAttackIndicatorReplacement
+import ink.pmc.common.bedrockadaptive.velocity.replacements.SystemChatPacketDecodeReplacement
 import ink.pmc.common.bedrockadaptive.velocity.replacements.TitlePacketDecodeReplacement
 import ink.pmc.common.utils.platform.proxy
 import java.nio.file.Path
@@ -44,6 +45,7 @@ class VelocityBedrockAdaptivePlugin @Inject constructor(suspendingPluginContaine
         suspendingPluginContainer.initialize(this)
 
         TitlePacketDecodeReplacement.init()
+        SystemChatPacketDecodeReplacement.init()
         GeyserAttackIndicatorReplacement.init()
         BedrockColorSerializerReplacement.init()
     }

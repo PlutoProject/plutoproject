@@ -21,14 +21,9 @@ object SystemChatPacketListener : AbstractPacketListener<SystemChatPacket>(
 
     override fun packetSend(event: PacketSendEvent<SystemChatPacket>) {
         val packet = event.packet()
-
         val chatTypeField = packet.javaClass.getDeclaredField("type")
-        val type = ChatType.SYSTEM
+        val type = if (packet.type == ChatType.CHAT) ChatType.SYSTEM else packet.type
 
-        /*
-        * Protocolize 接管数据包后会由于未知原因将 ChatType 换为 CHAT。
-        * 这里强行换成 SYSTEM 以避免编码错误。
-        * */
         chatTypeField.isAccessible = true
         chatTypeField.set(packet, type)
 
