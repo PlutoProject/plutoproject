@@ -17,6 +17,7 @@ import ink.pmc.common.bedrockadaptive.velocity.replacements.BedrockColorSerializ
 import ink.pmc.common.bedrockadaptive.velocity.replacements.GeyserAttackIndicatorReplacement
 import ink.pmc.common.bedrockadaptive.velocity.replacements.SystemChatPacketDecodeReplacement
 import ink.pmc.common.bedrockadaptive.velocity.replacements.TitlePacketDecodeReplacement
+import ink.pmc.common.utils.PLUTO_VERSION
 import ink.pmc.common.utils.platform.proxy
 import java.nio.file.Path
 import java.util.logging.Logger
@@ -28,7 +29,7 @@ val protocolVersion = ProtocolVersion.MINECRAFT_1_20_3
 @Plugin(
     id = "common-bedrock-adaptive",
     name = "common-bedrock-adaptive",
-    version = "1.0.2",
+    version = PLUTO_VERSION,
     dependencies = [
         Dependency(id = "common-dependency-loader-velocity"),
         Dependency(id = "common-utils"),

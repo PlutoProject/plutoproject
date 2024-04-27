@@ -11,6 +11,7 @@ import com.velocitypowered.api.plugin.PluginContainer
 import com.velocitypowered.api.plugin.annotation.DataDirectory
 import com.velocitypowered.api.proxy.ProxyServer
 import ink.pmc.common.server.impl.velocity.VelocityServerService
+import ink.pmc.common.utils.PLUTO_VERSION
 import ink.pmc.common.utils.platform.saveDefaultConfig
 import org.incendo.cloud.SenderMapper
 import org.incendo.cloud.execution.ExecutionCoordinator
@@ -27,7 +28,7 @@ lateinit var proxyCommandManager: VelocityCommandManager<CommandSource>
 @Plugin(
     id = "common-server",
     name = "common-server",
-    version = "1.0.2",
+    version = PLUTO_VERSION,
     dependencies = [Dependency(id = "common-dependency-loader-velocity"), Dependency(id = "common-dependency-loader-velocity")]
 )
 @Suppress("UNUSED", "UNUSED_PARAMETER")

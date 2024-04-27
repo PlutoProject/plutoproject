@@ -22,7 +22,7 @@ lateinit var proxyServer: ProxyServer
 @Plugin(
     id = "common-utils",
     name = "common-utils",
-    version = "1.0.2",
+    version = PLUTO_VERSION,
     dependencies = [
         Dependency(id = "common-dependency-loader-velocity"),
         Dependency(id = "floodgate")

@@ -16,6 +16,7 @@ import ink.pmc.common.member.*
 import ink.pmc.common.member.bedrock.GeyserPlayerLinkReplacement
 import ink.pmc.common.member.bedrock.GeyserSimpleFloodgateApiReplacement
 import ink.pmc.common.member.commands.MemberCommand
+import ink.pmc.common.utils.PLUTO_VERSION
 import ink.pmc.common.utils.command.init
 import ink.pmc.common.utils.platform.proxy
 import ink.pmc.common.utils.platform.saveDefaultConfig
@@ -32,7 +33,7 @@ lateinit var commandManager: VelocityCommandManager<CommandSource>
 @Plugin(
     id = "common-member",
     name = "common-member",
-    version = "1.0.2",
+    version = PLUTO_VERSION,
     dependencies = [
         Dependency(id = "common-dependency-loader-velocity"),
         Dependency(id = "common-utils"),
