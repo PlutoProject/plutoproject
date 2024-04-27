@@ -107,6 +107,9 @@ val MEMBER_MODIFY_UNLINK_BE_FAILED_ALREADY_BE_ONLY
 val MEMBER_MODIFY_UNLINK_BE_FAILED_NOT_LINKED
     get() = Component.text("解绑失败，该玩家未绑定基岩版账号").color(mochaMaroon)
 
+val MEMBER_MODIFY_UNLINK_BE_KICK
+    get() = Component.text("您的基岩版账号已经被解绑，请使用 Java 版账号游玩。").color(mochaMaroon)
+
 val MEMBER_MODIFY_UNLINK_BE_SUCCEED
     get() = Component.text("已成功为玩家 <player> 解绑基岩版账号").color(mochaGreen)
 

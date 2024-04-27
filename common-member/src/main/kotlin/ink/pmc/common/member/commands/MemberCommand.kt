@@ -6,6 +6,7 @@ import ink.pmc.common.member.*
 import ink.pmc.common.member.api.AuthType
 import ink.pmc.common.member.velocity.commandManager
 import ink.pmc.common.utils.bedrock.disconnect
+import ink.pmc.common.utils.bedrock.isFloodgatePlayer
 import ink.pmc.common.utils.bedrock.xuid
 import ink.pmc.common.utils.chat.replace
 import ink.pmc.common.utils.command.VelocityCommand
@@ -288,6 +289,11 @@ object MemberCommand : VelocityCommand() {
 
             member.unlinkBedrock()
             member.update()
+
+            if (isFloodgatePlayer(member.id)) {
+                val player = proxy.getPlayer(member.id).get()
+                player.disconnect(MEMBER_MODIFY_UNLINK_BE_KICK)
+            }
 
             sender.sendMessage(MEMBER_MODIFY_UNLINK_BE_SUCCEED.replace("<player>", member.rawName))
         }
