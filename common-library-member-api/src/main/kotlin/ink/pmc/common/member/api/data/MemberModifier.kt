@@ -15,4 +15,6 @@ interface MemberModifier {
 
     fun bio(new: String)
 
+    fun hide(new: Boolean)
+
 }

@@ -92,7 +92,7 @@ val MEMBER_MODIFY_LINK_BE_FAILED_ALREADY_LINKED
     get() = Component.text("绑定失败，该玩家已经绑定过基岩版账号").color(mochaMaroon)
 
 val MEMBER_MODIFY_LINK_BE_FAILED_NOT_EXISTED
-    get() = Component.text("绑定失败，该基岩版账号不存在")
+    get() = Component.text("绑定失败，该基岩版账号不存在").color(mochaMaroon)
 
 val MEMBER_MODIFY_LINK_BE_SUCCEED
     get() = Component.text("已成功为玩家 <player> 绑定基岩版账号").color(mochaGreen)
@@ -112,6 +112,18 @@ val MEMBER_MODIFY_UNLINK_BE_KICK
 
 val MEMBER_MODIFY_UNLINK_BE_SUCCEED
     get() = Component.text("已成功为玩家 <player> 解绑基岩版账号").color(mochaGreen)
+
+val MEMBER_MODIFY_HIDE_SUCCEED
+    get() = Component.text("已成功隐藏玩家 <player>").color(mochaGreen)
+
+val MEMBER_MODIFY_UN_HIDE_SUCCEED
+    get() = Component.text("已成功取消玩家 <player> 的隐藏状态").color(mochaGreen)
+
+val MEMBER_MODIFY_HIDE_FAILED
+    get() = Component.text("玩家 <player> 本身就在隐藏状态中").color(mochaMaroon)
+
+val MEMBER_MODIFY_UN_HIDE_FAILED
+    get() = Component.text("玩家 <player> 本身就不在隐藏状态中").color(mochaMaroon)
 
 val MEMBER_LOOKUP
     get() = Component.text("UID：").color(mochaText).append(Component.text("<uid>").color(mochaYellow))
@@ -142,15 +154,5 @@ val MEMBER_LOOKUP
         .append(Component.text("<bedrockAccount>").color(mochaYellow))
         .appendNewline()
         .append(Component.text("个性签名：").color(mochaText).append(Component.text("<bio>").color(mochaYellow)))
-
-val MEMBER_SESSION_TYPE_OFFICIAL
-    get() = Component.text("正版验证").color(mochaFlamingo)
-
-val MEMBER_SESSION_TYPE_LITTLESKIN
-    get() = Component.text("LittleSkin 外置登录").color(mochaFlamingo)
-
-val MEMBER_SESSION_TYPE_BEDROCK
-    get() = Component.text("基岩版").color(mochaFlamingo)
-
-val MEMBER_SESSION_TYPE_LOOKUP
-    get() = Component.text("玩家 <player> 的会话类型为：<type>").color(mochaGreen)
+        .appendNewline()
+        .append(Component.text("是否隐藏：").color(mochaText).append(Component.text("<isHidden>").color(mochaYellow)))

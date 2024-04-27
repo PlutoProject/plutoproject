@@ -142,7 +142,8 @@ class MemberServiceImpl(
             if (authType.isBedrock) nextBedrockAccountId else null,
             null,
             mutableListOf(),
-            mutableListOf()
+            mutableListOf(),
+            false
         )
 
         if (authType.isBedrock) {
@@ -347,7 +348,8 @@ class MemberServiceImpl(
                     member.bedrockAccount?.id,
                     member.bio,
                     punishments,
-                    comments
+                    comments,
+                    member.isHidden
                 )
                 updateMember(newStorage)
             }

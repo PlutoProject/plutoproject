@@ -19,4 +19,5 @@ data class MemberStorage(
     var bio: String?,
     val punishments: MutableList<Long>,
     val comments: MutableList<Long>,
+    val isHidden: Boolean?
 )

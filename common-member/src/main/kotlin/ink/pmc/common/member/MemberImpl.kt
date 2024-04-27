@@ -49,6 +49,7 @@ class MemberImpl(
         BedrockAccountImpl(service, runBlocking { service.lookupBedrockAccount(storage.bedrockAccount!!)!! })
     }
     override var bio: String? = storage.bio
+    override var isHidden: Boolean = storage.isHidden ?: false
     override val commentRepository: CommentRepository = CommentRepositoryImpl(service, this)
     override val punishmentLogger: PunishmentLogger = PunishmentLoggerImpl(service, this)
     override val modifier: MemberModifier = MemberModifierImpl(this)

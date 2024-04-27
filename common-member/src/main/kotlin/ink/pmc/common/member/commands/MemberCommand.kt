@@ -93,11 +93,14 @@ object MemberCommand : VelocityCommand() {
             sender.sendMessage(MEMBER_CREATE_SUCCEED.replace("<player>", Component.text(name).color(mochaYellow)))
         }
 
+    // 给 exemptWhitelist 加一个 --hide(-h) 的标签。如果有这个标签在移除白名单之后就 hide。
+
     private val memberModifyExemptWhitelist = commandManager.commandBuilder("member")
         .permission("member.modify.exemptwhitelist")
         .literal("modify")
         .argument(velocityRequiredOnlinePlayersArgument())
         .literal("exemptwhitelist")
+        .flag(commandManager.flagBuilder("hide").withAliases("h"))
         .flag(commandManager.flagBuilder("auth").withAliases("a").withComponent(authTypeArg))
         .suspendingHandler {
             val sender = it.sender()
@@ -122,6 +125,14 @@ object MemberCommand : VelocityCommand() {
                         .replace("<player>", Component.text(name).color(mochaYellow))
                 )
                 return@suspendingHandler
+            }
+
+            if (it.flags().isPresent("hide") && !member.isHidden) {
+                member.modifier.hide(true)
+                sender.sendMessage(
+                    MEMBER_MODIFY_HIDE_SUCCEED
+                        .replace("<player>", Component.text(member.rawName).color(mochaYellow))
+                )
             }
 
             member.exemptWhitelist()
@@ -298,6 +309,86 @@ object MemberCommand : VelocityCommand() {
             sender.sendMessage(MEMBER_MODIFY_UNLINK_BE_SUCCEED.replace("<player>", member.rawName))
         }
 
+    private val memberModifyHide = commandManager.commandBuilder("member")
+        .permission("member.modify.hide")
+        .literal("modify")
+        .argument(velocityRequiredOnlinePlayersArgument())
+        .literal("hide")
+        .flag(commandManager.flagBuilder("auth").withAliases("a").withComponent(authTypeArg))
+        .suspendingHandler {
+            val sender = it.sender()
+            val name = it.get<String>("name")
+            val authType = parseAuthType(it.flags())
+
+            if (authType == null) {
+                sender.sendMessage(MEMBER_FETCH_FAILED_UNKNOWN_AUTH_TYPE)
+                return@suspendingHandler
+            }
+
+            if (!memberService.exist(name, authType)) {
+                sender.sendMessage(MEMBER_NOT_EXIST)
+                return@suspendingHandler
+            }
+
+            val member = memberService.lookup(name, authType)!!.refresh()!!
+
+            if (member.isHidden) {
+                sender.sendMessage(
+                    MEMBER_MODIFY_HIDE_FAILED
+                        .replace("<player>", Component.text(member.rawName))
+                )
+                return@suspendingHandler
+            }
+
+            member.modifier.hide(true)
+            member.update()
+
+            sender.sendMessage(
+                MEMBER_MODIFY_HIDE_SUCCEED
+                    .replace("<player>", Component.text(member.rawName))
+            )
+        }
+
+    private val memberModifyUnHide = commandManager.commandBuilder("member")
+        .permission("member.modify.unhide")
+        .literal("modify")
+        .argument(velocityRequiredOnlinePlayersArgument())
+        .literal("unhide")
+        .flag(commandManager.flagBuilder("auth").withAliases("a").withComponent(authTypeArg))
+        .suspendingHandler {
+            val sender = it.sender()
+            val name = it.get<String>("name")
+            val authType = parseAuthType(it.flags())
+
+            if (authType == null) {
+                sender.sendMessage(MEMBER_FETCH_FAILED_UNKNOWN_AUTH_TYPE)
+                return@suspendingHandler
+            }
+
+            if (!memberService.exist(name, authType)) {
+                sender.sendMessage(MEMBER_NOT_EXIST)
+                return@suspendingHandler
+            }
+
+            val member = memberService.lookup(name, authType)!!.refresh()!!
+
+            if (!member.isHidden) {
+                sender.sendMessage(
+                    MEMBER_MODIFY_UN_HIDE_FAILED
+                        .replace("<player>", Component.text(member.rawName))
+                )
+                return@suspendingHandler
+            }
+
+            member.modifier.hide(false)
+            member.update()
+
+            sender.sendMessage(
+                MEMBER_MODIFY_UN_HIDE_SUCCEED
+                    .replace("<player>", Component.text(member.rawName))
+            )
+        }
+
     private val memberLookup = commandManager.commandBuilder("member")
         .permission("member.lookup")
         .literal("lookup")
@@ -334,6 +425,7 @@ object MemberCommand : VelocityCommand() {
                     .replace("<dataContainer>", member.dataContainer.contents.toString())
                     .replace("<bedrockAccount>", nullableString(member.bedrockAccount?.gamertag))
                     .replace("<bio>", nullableString(member.bio))
+                    .replace("<isHidden>", booleanString(member.isHidden))
             )
         }
 
@@ -372,6 +464,10 @@ object MemberCommand : VelocityCommand() {
         return string
     }
 
+    private fun booleanString(boolean: Boolean): String {
+        return if (boolean) "是" else "否"
+    }
+
     init {
         command(memberCreate)
         command(memberModifyExemptWhitelist)
@@ -379,6 +475,8 @@ object MemberCommand : VelocityCommand() {
         command(memberLookup)
         command(memberModifyLinkBeAccount)
         command(memberModifyUnlinkBeAccount)
+        command(memberModifyHide)
+        command(memberModifyUnHide)
     }
 
 }

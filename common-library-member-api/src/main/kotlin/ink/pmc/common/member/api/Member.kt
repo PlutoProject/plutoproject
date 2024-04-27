@@ -23,6 +23,7 @@ interface Member {
     val dataContainer: DataContainer
     val bedrockAccount: BedrockAccount?
     val bio: String?
+    val isHidden: Boolean
     val commentRepository: CommentRepository
     val punishmentLogger: PunishmentLogger
     val modifier: MemberModifier
