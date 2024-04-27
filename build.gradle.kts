@@ -6,7 +6,7 @@ plugins {
     id("java-library")
     kotlin("plugin.serialization") version "1.9.23"
     kotlin("jvm") version "1.9.21"
-    id("xyz.jpenilla.run-paper") version "2.2.3"
+    id("xyz.jpenilla.run-paper") version "2.2.4"
     kotlin("kapt") version "1.9.23"
 }
 
