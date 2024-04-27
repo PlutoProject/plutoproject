@@ -93,8 +93,6 @@ object MemberCommand : VelocityCommand() {
             sender.sendMessage(MEMBER_CREATE_SUCCEED.replace("<player>", Component.text(name).color(mochaYellow)))
         }
 
-    // 给 exemptWhitelist 加一个 --hide(-h) 的标签。如果有这个标签在移除白名单之后就 hide。
-
     private val memberModifyExemptWhitelist = commandManager.commandBuilder("member")
         .permission("member.modify.exemptwhitelist")
         .literal("modify")
