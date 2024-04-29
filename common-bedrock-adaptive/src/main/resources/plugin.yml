@@ -3,9 +3,10 @@ name: common-bedrock-adaptive
 version: ${version}
 api-version: ${api}
 folia-supported: true
+softdepend:
+  - floodgate
 depend:
   - common-dependency-loader
   - common-utils
   - common-member
-  - floodgate
   - ProtocolLib

@@ -2,7 +2,11 @@ package ink.pmc.common.hypervisor
 
 import ink.pmc.common.utils.chat.replace
 import ink.pmc.common.utils.visual.*
+import net.kyori.adventure.key.Key
+import net.kyori.adventure.sound.Sound
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.title.Title
+import java.time.Duration
 
 val SERVER_STATUS
     get() = Component.text("服务器状态：").color(mochaFlamingo)
@@ -99,3 +103,13 @@ val Double.colorizedMSPTComponent: Component
 
         return Component.text(this).color(mochaMaroon)
     }
+
+val MUSHROOM_DETECTOR_PLAYER_PLACE
+    get() = Title.title(
+        Component.text(" "), Component.text("此处无法放置此类方块").color(mochaMaroon), Title.Times.times(
+            Duration.ZERO, Duration.ofMillis(1000), Duration.ZERO
+        )
+    )
+
+val MUSHROOM_DETECTOR_PLAYER_PLACE_SOUND
+    get() = Sound.sound(Key.key("block.note_block.hat"), Sound.Source.BLOCK, 1F, 1F)
