@@ -1,0 +1,9 @@
+main: ink.pmc.common.exchange
+name: common-exchange
+version: ${version}
+api-version: ${api}
+folia-supported: true
+depend:
+  - common-dependency-loader
+  - common-utils
+  - common-member
