@@ -9,7 +9,8 @@ class MemberModifierImpl(override val member: AbstractMember) : AbstractMemberMo
     private val impl = member as MemberImpl
 
     override fun name(new: String) {
-        impl.name = new
+        impl.name = new.lowercase()
+        impl.rawName = new
     }
 
     override fun createdAt(new: Instant) {

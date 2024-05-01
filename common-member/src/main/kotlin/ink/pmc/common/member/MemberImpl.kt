@@ -31,7 +31,7 @@ class MemberImpl(
     override val uid: Long = storage.uid
     override val id: UUID = UUID.fromString(storage.id)
     override var name: String = storage.name
-    override val rawName: String = storage.rawName
+    override var rawName: String = storage.rawName
     override var whitelistStatus: WhitelistStatus = WhitelistStatus.valueOf(storage.whitelistStatus)
     override val isWhitelisted: Boolean
         get() = whitelistStatus == WhitelistStatus.WHITELISTED
