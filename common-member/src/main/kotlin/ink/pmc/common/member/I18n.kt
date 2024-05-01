@@ -44,6 +44,10 @@ val MEMBER_BE_LOGIN
         .appendNewline()
         .append(Component.text("若您想让基岩版账号作为一个单独的账号，请向服务器管理组申请解绑。").color(mochaText))
 
+val MEMBER_NAME_CHANGED
+    get() = Component.text("检测到您的玩家名从 <oldName> 变更为 <newName>，已自动更新数据库内的数据")
+        .color(mochaGreen)
+
 val MEMBER_FETCH
     get() = Component.text("正在从验证服务器查询数据...").color(mochaText)
 

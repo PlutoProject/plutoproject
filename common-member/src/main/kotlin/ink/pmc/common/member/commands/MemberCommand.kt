@@ -60,22 +60,22 @@ object MemberCommand : VelocityCommand() {
             }
 
             sender.sendMessage(MEMBER_FETCH)
-            val uuid = authType.fetcher.fetch(name)
+            val profile = authType.fetcher.fetch(name)
 
-            if (uuid == null) {
+            if (profile == null) {
                 sender.sendMessage(MEMBER_FETCH_FAILED)
                 return@suspendingHandler
             }
 
             if (authType.isBedrock) {
-                val xuid = uuid.xuid
+                val xuid = profile.uuid.xuid
                 val beStorage = memberService.bedrockAccounts.find(eq("xuid", xuid)).firstOrNull()
 
                 if (beStorage != null) {
                     val linkedMember = memberService.lookup(beStorage.linkedWith)!!
                     sender.sendMessage(
                         MEMBER_CREATE_BE_ALREADY_EXISTED
-                            .replace("<player>", name)
+                            .replace("<player>", profile.name)
                             .replace("<gamertag>", Component.text(beStorage.gamertag).color(mochaYellow))
                             .replace("<xuid>", Component.text(beStorage.xuid).color(mochaYellow))
                             .replace("<other>", Component.text(linkedMember.rawName).color(mochaYellow))
@@ -84,13 +84,13 @@ object MemberCommand : VelocityCommand() {
                 }
             }
 
-            if (memberService.exist(uuid)) {
+            if (memberService.exist(profile.uuid)) {
                 sender.sendMessage(MEMBER_CREATE_ALREADY_EXIST)
                 return@suspendingHandler
             }
 
-            memberService.create(name, authType)
-            sender.sendMessage(MEMBER_CREATE_SUCCEED.replace("<player>", Component.text(name).color(mochaYellow)))
+            memberService.create(profile.name, authType)
+            sender.sendMessage(MEMBER_CREATE_SUCCEED.replace("<player>", Component.text(profile.name).color(mochaYellow)))
         }
 
     private val memberModifyExemptWhitelist = commandManager.commandBuilder("member")
@@ -120,7 +120,7 @@ object MemberCommand : VelocityCommand() {
             if (!member.isWhitelisted) {
                 sender.sendMessage(
                     MEMBER_MODIFY_EXEMPT_WHITELIST_FAILED_NOT_WHITELISTED
-                        .replace("<player>", Component.text(name).color(mochaYellow))
+                        .replace("<player>", Component.text(member.rawName).color(mochaYellow))
                 )
                 return@suspendingHandler
             }
@@ -145,7 +145,7 @@ object MemberCommand : VelocityCommand() {
             sender.sendMessage(
                 MEMBER_MODIFY_EXEMPT_WHITELIST_SUCCEED
                     .replace(
-                        "<player>", Component.text(name).color(mochaYellow)
+                        "<player>", Component.text(member.rawName).color(mochaYellow)
                     )
             )
         }
@@ -177,7 +177,7 @@ object MemberCommand : VelocityCommand() {
                 sender.sendMessage(
                     MEMBER_MODIFY_GRANT_WHITELIST_FAILED_ALREADY_WHITELISTED
                         .replace(
-                            "<player>", Component.text(name).color(mochaYellow)
+                            "<player>", Component.text(member.rawName).color(mochaYellow)
                         )
                 )
                 return@suspendingHandler
@@ -189,7 +189,7 @@ object MemberCommand : VelocityCommand() {
             sender.sendMessage(
                 MEMBER_MODIFY_GRAND_WHITELIST_SUCCEED
                     .replace(
-                        "<player>", Component.text(name).color(mochaYellow)
+                        "<player>", Component.text(member.rawName).color(mochaYellow)
                     )
             )
         }
@@ -232,7 +232,7 @@ object MemberCommand : VelocityCommand() {
             }
 
             sender.sendMessage(MEMBER_FETCH)
-            val xuid = AuthType.BEDROCK_ONLY.fetcher.fetch(gamertag)?.xuid
+            val xuid = AuthType.BEDROCK_ONLY.fetcher.fetch(gamertag)?.uuid?.xuid
 
             if (xuid == null) {
                 sender.sendMessage(MEMBER_MODIFY_LINK_BE_FAILED_NOT_EXISTED)

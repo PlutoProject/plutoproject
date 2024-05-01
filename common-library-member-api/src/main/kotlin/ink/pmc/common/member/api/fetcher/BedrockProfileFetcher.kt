@@ -5,35 +5,55 @@ import ink.pmc.common.utils.bedrock.uuid
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.Request
-import java.util.*
+import java.util.UUID
 
 private const val globalApi = "https://api.geysermc.org/v2/"
 
 @Suppress("UNUSED")
 object BedrockProfileFetcher : AbstractProfileFetcher() {
 
-    @OptIn(ExperimentalStdlibApi::class)
-    override suspend fun fetch(name: String): UUID? {
-        return withContext(Dispatchers.IO) {
-            try {
-                val request = Request.Builder()
-                    .url(globalApi + "xbox/xuid/${name.lowercase()}")
-                    .build()
-                val call = httpClient.newCall(request)
-
-                val response = call.execute()
-                val body = response.body
-                val jsonObject = JsonParser.parseString(body.string()).asJsonObject ?: return@withContext null
-                val element = jsonObject.get("xuid") ?: return@withContext null
-                // 显式指定包名，否则 IDEA 清理代码的 bug 会删掉 HexFormat 的 import
-                val xuid = element.asLong.toHexString(kotlin.text.HexFormat.Default)
-                val uuid = xuid.uuid ?: return@withContext null
-
-                return@withContext uuid
-            } catch (e: Exception) {
-                null
-            }
+    override suspend fun fetch(name: String): ProfileData? {
+        return try {
+            val fetchedXuid = lookupId(name) ?: return null
+            val fetchedName = lookupName(fetchedXuid) ?: return null
+            ProfileData(hexedXuid(fetchedXuid), fetchedName)
+        } catch (e: Exception) {
+            null
         }
+    }
+
+    private suspend fun lookupId(name: String): Long? = withContext(Dispatchers.IO) {
+        val request = Request.Builder()
+            .url("${globalApi}xbox/xuid/${name.lowercase()}")
+            .build()
+
+        val call = httpClient.newCall(request)
+
+        val response = call.execute()
+        val body = response.body
+        val jsonObject = JsonParser.parseString(body.string()).asJsonObject ?: return@withContext null
+
+        jsonObject.get("xuid").asLong
+    }
+
+    @OptIn(ExperimentalStdlibApi::class)
+    private fun hexedXuid(xuid: Long): UUID {
+        val hexXuid = xuid.toHexString(HexFormat.Default)
+        return hexXuid.uuid!!
+    }
+
+    private suspend fun lookupName(xuid: Long): String? = withContext(Dispatchers.IO) {
+        val request = Request.Builder()
+            .url("${globalApi}xbox/gamertag/$xuid")
+            .build()
+
+        val call = httpClient.newCall(request)
+
+        val response = call.execute()
+        val body = response.body
+        val jsonObject = JsonParser.parseString(body.string()).asJsonObject ?: return@withContext null
+
+        jsonObject.get("gamertag").asString ?: return@withContext null
     }
 
 }

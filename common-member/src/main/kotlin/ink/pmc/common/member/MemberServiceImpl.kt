@@ -114,7 +114,7 @@ class MemberServiceImpl(
             return loadedMembers.get(memberStorage.uid)
         }
 
-        val id = authType.fetcher.fetch(name) ?: return null
+        val profile = authType.fetcher.fetch(name) ?: return null
         val nextMember = currentStatus.nextMember()
         val nextDataContainer = currentStatus.nextDataContainer()
         val nextBedrockAccountId = currentStatus.nextBedrockAccount()
@@ -130,7 +130,7 @@ class MemberServiceImpl(
         memberStorage = MemberStorage(
             ObjectId(),
             nextMember,
-            id.toString(),
+            profile.uuid.toString(),
             name.lowercase(),
             name,
             WhitelistStatus.WHITELISTED.toString(),
@@ -147,7 +147,7 @@ class MemberServiceImpl(
         )
 
         if (authType.isBedrock) {
-            if (bedrockAccounts.find(eq("xuid", id.xuid)).firstOrNull() != null) {
+            if (bedrockAccounts.find(eq("xuid", profile.uuid)).firstOrNull() != null) {
                 return null
             }
 
@@ -155,7 +155,7 @@ class MemberServiceImpl(
                 ObjectId(),
                 nextBedrockAccountId,
                 nextMember,
-                id.xuid,
+                profile.uuid.xuid,
                 name
             )
 

@@ -5,19 +5,23 @@ import com.velocitypowered.api.event.PostOrder
 import com.velocitypowered.api.event.Subscribe
 import com.velocitypowered.api.event.connection.DisconnectEvent
 import com.velocitypowered.api.event.connection.PostLoginEvent
+import com.velocitypowered.api.event.connection.PreLoginEvent
 import com.velocitypowered.api.event.player.GameProfileRequestEvent
+import ink.pmc.common.member.MEMBER_NAME_CHANGED
 import ink.pmc.common.member.MEMBER_NOT_WHITELISTED
 import ink.pmc.common.member.MEMBER_NOT_WHITELISTED_BE
 import ink.pmc.common.member.adapter.BedrockAdapter
 import ink.pmc.common.member.api.AuthType
 import ink.pmc.common.member.bedrock.removeFloodgatePlayer
 import ink.pmc.common.member.memberService
-import ink.pmc.common.utils.bedrock.disconnect
 import ink.pmc.common.utils.bedrock.isFloodgatePlayer
 import ink.pmc.common.utils.bedrock.uuid
 import ink.pmc.common.utils.bedrock.xuid
+import ink.pmc.common.utils.chat.replace
 import ink.pmc.common.utils.concurrent.io
+import ink.pmc.common.utils.visual.mochaYellow
 import kotlinx.coroutines.flow.firstOrNull
+import net.kyori.adventure.text.Component
 import java.time.Instant
 import java.util.*
 
@@ -25,17 +29,43 @@ import java.util.*
 object VelocityPlayerListener {
 
     @Subscribe
-    suspend fun postLoginEvent(event: PostLoginEvent) {
-        val player = event.player
-        val uuid = fallbackId(player.uniqueId)
-
-        if (!memberService.isWhitelisted(uuid)) {
-            player.disconnect(MEMBER_NOT_WHITELISTED, MEMBER_NOT_WHITELISTED_BE)
+    suspend fun preLoginEvent(event: PreLoginEvent) {
+        if (event.uniqueId == null) {
+            event.result = PreLoginEvent.PreLoginComponentResult.denied(MEMBER_NOT_WHITELISTED)
             return
         }
 
-        memberService.modifier(uuid, true)!!.lastJoinedAt(Instant.now())
-        memberService.update(uuid)
+        val uuid = fallbackId(event.uniqueId!!)
+
+        if (!memberService.isWhitelisted(uuid)) {
+            event.result = PreLoginEvent.PreLoginComponentResult.denied(deniedPrompt(uuid))
+            return
+        }
+    }
+
+    private fun deniedPrompt(uuid: UUID): Component = if (isFloodgatePlayer(uuid)) {
+        MEMBER_NOT_WHITELISTED_BE
+    } else {
+        MEMBER_NOT_WHITELISTED
+    }
+
+    @Subscribe
+    suspend fun postLoginEvent(event: PostLoginEvent) {
+        val player = event.player
+        val uuid = player.uniqueId
+        val member = memberService.lookup(uuid)!!.refresh()!!
+
+        if (member.rawName != player.username) {
+            member.modifier.name(player.username)
+            player.sendMessage(
+                MEMBER_NAME_CHANGED
+                    .replace("<oldName>", Component.text(member.rawName).color(mochaYellow))
+                    .replace("<newName>", Component.text(player.username).color(mochaYellow))
+            )
+        }
+
+        member.modifier.lastJoinedAt(Instant.now())
+        member.update()
     }
 
     @Subscribe
