@@ -1,4 +1,4 @@
-main: ink.pmc.common.exchange
+main: ink.pmc.common.exchange.PaperExchangePlugin
 name: common-exchange
 version: ${version}
 api-version: ${api}

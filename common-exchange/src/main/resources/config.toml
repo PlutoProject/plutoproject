@@ -1,0 +1,11 @@
+server-identity = "identity"
+
+[exchange-lobby]
+world-name = "exchange-lobby"
+
+[exchange-lobby.teleport-location]
+x = 0.0
+y = 128.0
+z = 128.0
+yaw = 0.0
+pitch = 0.0
