@@ -3,6 +3,7 @@ package ink.pmc.common.utils.bedrock
 import ink.pmc.common.utils.isInDebugMode
 import ink.pmc.common.utils.visual.*
 import net.kyori.adventure.text.format.NamedTextColor
+import net.kyori.adventure.text.format.TextColor
 import net.kyori.adventure.text.serializer.legacy.CharacterAndFormat
 import java.lang.reflect.Method
 import java.util.*
@@ -27,6 +28,9 @@ fun isFloodgatePlayer(uuid: UUID): Boolean {
 
     return isFloodgatePlayer.invoke(floodgateApi, uuid) as Boolean
 }
+
+val TextColor.bedrockMapped: TextColor
+    get() = bedrockColorMapping[this] ?: this
 
 val bedrockColorMapping = mapOf(
     mochaGreen to NamedTextColor.GREEN,

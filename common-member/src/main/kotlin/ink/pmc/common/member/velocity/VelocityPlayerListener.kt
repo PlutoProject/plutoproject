@@ -28,21 +28,6 @@ import java.util.*
 @Suppress("UNUSED")
 object VelocityPlayerListener {
 
-    @Subscribe
-    suspend fun preLoginEvent(event: PreLoginEvent) {
-        if (event.uniqueId == null) {
-            event.result = PreLoginEvent.PreLoginComponentResult.denied(MEMBER_NOT_WHITELISTED)
-            return
-        }
-
-        val uuid = fallbackId(event.uniqueId!!)
-
-        if (!memberService.isWhitelisted(uuid)) {
-            event.result = PreLoginEvent.PreLoginComponentResult.denied(deniedPrompt(uuid))
-            return
-        }
-    }
-
     private fun deniedPrompt(uuid: UUID): Component = if (isFloodgatePlayer(uuid)) {
         MEMBER_NOT_WHITELISTED_BE
     } else {
@@ -52,7 +37,13 @@ object VelocityPlayerListener {
     @Subscribe
     suspend fun postLoginEvent(event: PostLoginEvent) {
         val player = event.player
-        val uuid = player.uniqueId
+        val uuid = fallbackId(player.uniqueId)
+
+        if (!memberService.isWhitelisted(uuid)) {
+            player.disconnect(deniedPrompt(uuid))
+            return
+        }
+
         val member = memberService.lookup(uuid)!!.refresh()!!
 
         if (member.rawName != player.username) {
@@ -102,6 +93,7 @@ object VelocityPlayerListener {
 
         if (isFloodgatePlayer(originalId) && originalId != uuid) {
             BedrockAdapter.adapt(event)
+            println("adapted")
             return@io
         }
 

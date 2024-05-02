@@ -1,5 +1,6 @@
 package ink.pmc.common.member
 
+import ink.pmc.common.utils.bedrock.bedrockMapped
 import ink.pmc.common.utils.chat.PLUTO_PROJECT
 import ink.pmc.common.utils.visual.*
 import net.kyori.adventure.text.Component
@@ -21,15 +22,15 @@ val MEMBER_NOT_WHITELISTED
 
 val MEMBER_NOT_WHITELISTED_BE
     get() = Component.empty()
-        .append(Component.text("您的游戏 ID 并没有获得白名单。").color(mochaText))
+        .append(Component.text("您的游戏 ID 并没有获得白名单。").color(mochaText.bedrockMapped))
         .appendNewline()
-        .append(Component.text("请加入我们的审核群 ").color(mochaText))
-        .append(Component.text("795681231 ").color(mochaYellow))
-        .append(Component.text("来进行申请。").color(mochaText))
+        .append(Component.text("请加入我们的审核群 ").color(mochaText.bedrockMapped))
+        .append(Component.text("795681231 ").color(mochaYellow.bedrockMapped))
+        .append(Component.text("来进行申请。").color(mochaText.bedrockMapped))
         .appendNewline()
-        .append(Component.text("如果您已通过申请，则可能是因为我们忘记为您添加白名单了。").color(mochaText))
+        .append(Component.text("如果您已通过申请，则可能是因为我们忘记为您添加白名单了。").color(mochaText.bedrockMapped))
         .appendNewline()
-        .append(Component.text("请联系当日的审核员来为您添加。").color(mochaText))
+        .append(Component.text("请联系当日的审核员来为您添加。").color(mochaText.bedrockMapped))
 
 @Suppress("UNUSED")
 val MEMBER_BE_LOGIN
@@ -112,7 +113,7 @@ val MEMBER_MODIFY_UNLINK_BE_FAILED_NOT_LINKED
     get() = Component.text("解绑失败，该玩家未绑定基岩版账号").color(mochaMaroon)
 
 val MEMBER_MODIFY_UNLINK_BE_KICK
-    get() = Component.text("您的基岩版账号已经被解绑，请使用 Java 版账号游玩。").color(mochaMaroon)
+    get() = Component.text("您的基岩版账号已经被解绑，请使用 Java 版账号游玩。").color(mochaMaroon.bedrockMapped)
 
 val MEMBER_MODIFY_UNLINK_BE_SUCCEED
     get() = Component.text("已成功为玩家 <player> 解绑基岩版账号").color(mochaGreen)
