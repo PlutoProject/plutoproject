@@ -93,7 +93,6 @@ object VelocityPlayerListener {
 
         if (isFloodgatePlayer(originalId) && originalId != uuid) {
             BedrockAdapter.adapt(event)
-            println("adapted")
             return@io
         }
 
