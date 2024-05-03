@@ -5,12 +5,12 @@ import org.bukkit.entity.Player
 @Suppress("UNUSED")
 interface IPaperExchangeService : IExchangeService {
 
+    val lobby: ExchangeLobby
+
     fun startExchange(player: Player)
 
-    fun endExchange(player: Player)
+    fun endExchange(player: Player, goBack: Boolean = true)
 
-    suspend fun startExchangeSuspending(player: Player)
-
-    suspend fun endExchangeSuspending(player: Player)
+    fun isInExchange(player: Player): Boolean
 
 }

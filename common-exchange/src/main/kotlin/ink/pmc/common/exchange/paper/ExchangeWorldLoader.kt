@@ -1,16 +1,15 @@
 package ink.pmc.common.exchange.paper
 
+import ink.pmc.common.exchange.ExchangeConfig
 import ink.pmc.common.utils.platform.paper
 import org.bukkit.World
 import org.bukkit.WorldCreator
-import java.io.File
 
 @Suppress("UNUSED")
-class ExchangeWorldLoader(worldFolder: File) {
+class ExchangeWorldLoader {
 
-    private val worldName = worldFolder.relativeTo(paper.worldContainer).toPath().toString()
     private lateinit var _world: World
-    private val worldCreator = WorldCreator(worldName)
+    private val worldCreator = WorldCreator(ExchangeConfig.ExchangeLobby.worldName)
     val world: World
         get() {
             if (!this::_world.isInitialized) {

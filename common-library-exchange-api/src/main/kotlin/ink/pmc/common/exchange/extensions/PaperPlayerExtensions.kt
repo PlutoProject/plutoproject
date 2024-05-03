@@ -29,9 +29,3 @@ fun Player.startExchange() = PaperExchangeService.startExchange(this)
 
 @Suppress("UNUSED")
 fun Player.endExchange() = PaperExchangeService.endExchange(this)
-
-@Suppress("UNUSED")
-suspend fun Player.startExchangeSuspending() = PaperExchangeService.startExchangeSuspending(this)
-
-@Suppress("UNUSED")
-suspend fun Player.endExchangeSuspending() = PaperExchangeService.endExchangeSuspending(this)

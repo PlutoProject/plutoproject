@@ -1,6 +1,6 @@
 package ink.pmc.common.exchange.velocity
 
-import com.google.common.eventbus.Subscribe
+import com.velocitypowered.api.event.Subscribe
 import com.velocitypowered.api.event.connection.PostLoginEvent
 import ink.pmc.common.exchange.initExchangeData
 import ink.pmc.common.member.api.MemberService

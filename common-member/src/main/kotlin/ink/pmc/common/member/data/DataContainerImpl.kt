@@ -17,10 +17,10 @@ class DataContainerImpl(private val service: AbstractMemberService, override val
     override val owner: Member by lazy { runBlocking { service.lookup(storage.owner)!! } }
     override val createdAt: Instant = Instant.ofEpochMilli(storage.createdAt)
     override var lastModifiedAt: Instant = Instant.ofEpochMilli(storage.lastModifiedAt)
-    override val contents: Map<String, String> = storage.contents
+    override val contents: MutableMap<String, String> = storage.contents
 
     override fun set(key: String, value: Any) {
-        storage.contents[key] = value.toJsonString()
+        contents[key] = value.toJsonString()
     }
 
     override fun <T> get(key: String, type: Class<T>): T? {
@@ -33,6 +33,10 @@ class DataContainerImpl(private val service: AbstractMemberService, override val
 
     override fun get(key: String): JsonObject {
         return JsonParser.parseString(storage.contents[key]!!).asJsonObject
+    }
+
+    override fun remove(key: String) {
+        contents.remove(key)
     }
 
     override fun getString(key: String): String? {
@@ -100,7 +104,7 @@ class DataContainerImpl(private val service: AbstractMemberService, override val
     }
 
     override fun contains(key: String): Boolean {
-        return storage.contents.containsKey(key)
+        return contents.containsKey(key)
     }
 
 }
