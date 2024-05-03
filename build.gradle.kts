@@ -61,7 +61,8 @@ allprojects {
         "com.github.shynixn.mccoroutine:mccoroutine-velocity-api:2.15.0",
         "com.github.shynixn.mccoroutine:mccoroutine-velocity-core:2.15.0",
         "net.bytebuddy:byte-buddy:1.14.14",
-        "net.bytebuddy:byte-buddy-agent:1.14.14"
+        "net.bytebuddy:byte-buddy-agent:1.14.14",
+        "org.jsoup:jsoup:1.17.2"
     )
 
     val paper = listOf<String>()

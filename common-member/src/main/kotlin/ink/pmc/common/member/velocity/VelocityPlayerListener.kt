@@ -5,7 +5,6 @@ import com.velocitypowered.api.event.PostOrder
 import com.velocitypowered.api.event.Subscribe
 import com.velocitypowered.api.event.connection.DisconnectEvent
 import com.velocitypowered.api.event.connection.PostLoginEvent
-import com.velocitypowered.api.event.connection.PreLoginEvent
 import com.velocitypowered.api.event.player.GameProfileRequestEvent
 import ink.pmc.common.member.MEMBER_NAME_CHANGED
 import ink.pmc.common.member.MEMBER_NOT_WHITELISTED
