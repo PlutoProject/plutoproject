@@ -14,7 +14,6 @@ import java.util.concurrent.CopyOnWriteArrayList
 class PaperExchangeService(override val lobby: ExchangeLobby) : AbstractPaperExchangeService() {
 
     override val inExchange: MutableList<UUID> = CopyOnWriteArrayList()
-    override val statusSnapshots: MutableMap<UUID, StatusSnapshot> = ConcurrentHashMap()
 
     override fun startExchange(player: Player) {
         if (isInExchange(player)) {
