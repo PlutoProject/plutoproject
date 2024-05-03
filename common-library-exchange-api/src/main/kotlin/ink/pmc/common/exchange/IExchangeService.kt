@@ -11,6 +11,8 @@ interface IExchangeService {
 
     fun tickets(member: Member): Long
 
+    fun tickets(member: Member, amount: Long): Boolean
+
     fun deposit(member: Member, amount: Long): Boolean
 
     fun withdraw(member: Member, amount: Long): Boolean

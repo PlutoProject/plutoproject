@@ -27,10 +27,10 @@ fun loadConfig(file: File) {
 suspend fun initExchangeData(member: Member) {
     val data = member.dataContainer
 
-    if (data.contains("exchange")) {
+    if (data.contains(EXCHANGE_TICKET_KEY)) {
         return
     }
 
-    data["exchange.tickets"] = 0L
+    data[EXCHANGE_TICKET_KEY] = 0L
     member.update()
 }

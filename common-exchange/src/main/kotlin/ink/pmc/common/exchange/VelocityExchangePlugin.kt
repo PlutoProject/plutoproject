@@ -3,6 +3,7 @@ package ink.pmc.common.exchange
 import com.github.shynixn.mccoroutine.velocity.SuspendingPluginContainer
 import com.github.shynixn.mccoroutine.velocity.registerSuspend
 import com.google.inject.Inject
+import com.velocitypowered.api.command.CommandSource
 import com.velocitypowered.api.event.Subscribe
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent
 import com.velocitypowered.api.event.proxy.ProxyShutdownEvent
@@ -11,15 +12,22 @@ import com.velocitypowered.api.plugin.Plugin
 import com.velocitypowered.api.plugin.PluginContainer
 import com.velocitypowered.api.plugin.annotation.DataDirectory
 import com.velocitypowered.api.proxy.ProxyServer
+import ink.pmc.common.exchange.velocity.TicketsCommand
+import ink.pmc.common.exchange.velocity.VelocityExchangeService
 import ink.pmc.common.exchange.velocity.VelocityPlayerListener
 import ink.pmc.common.utils.PLUTO_VERSION
+import ink.pmc.common.utils.command.init
 import ink.pmc.common.utils.platform.proxy
 import ink.pmc.common.utils.platform.saveDefaultConfig
+import org.incendo.cloud.SenderMapper
+import org.incendo.cloud.execution.ExecutionCoordinator
+import org.incendo.cloud.velocity.VelocityCommandManager
 import java.io.File
 import java.nio.file.Path
 import java.util.logging.Logger
 
 lateinit var pluginContainer: PluginContainer
+lateinit var velocityCommandManager: VelocityCommandManager<CommandSource>
 
 @Plugin(
     id = "common-exchange",
@@ -55,6 +63,15 @@ class VelocityExchangePlugin @Inject constructor(suspendingPluginContainer: Susp
             saveDefaultConfig(VelocityExchangePlugin::class.java, configFile)
         }
 
+        velocityCommandManager = VelocityCommandManager(
+            pluginContainer,
+            proxy,
+            ExecutionCoordinator.asyncCoordinator(),
+            SenderMapper.identity()
+        )
+
+        initService()
+        velocityCommandManager.init(TicketsCommand)
         proxy.eventManager.registerSuspend(this, VelocityPlayerListener)
         disabled = false
     }
@@ -62,6 +79,11 @@ class VelocityExchangePlugin @Inject constructor(suspendingPluginContainer: Susp
     @Subscribe
     fun proxyShutdownEvent(event: ProxyShutdownEvent) {
         disabled = true
+    }
+
+    private fun initService() {
+        exchangeService = VelocityExchangeService()
+        IExchangeService.instance = exchangeService
     }
 
 }

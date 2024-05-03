@@ -28,7 +28,11 @@ class DataContainerImpl(private val service: AbstractMemberService, override val
             return null
         }
 
-        return gson.fromJson(JsonParser.parseString(storage.contents[key]!!), type)
+        return try {
+            gson.fromJson(JsonParser.parseString(storage.contents[key]!!), type)
+        } catch (e: Exception) {
+            null
+        }
     }
 
     override fun get(key: String): JsonObject {
@@ -40,67 +44,39 @@ class DataContainerImpl(private val service: AbstractMemberService, override val
     }
 
     override fun getString(key: String): String? {
-        return get(key).asJsonPrimitive.asString
+        return get(key, String::class.java)
     }
 
     override fun getByte(key: String): Byte? {
-        return try {
-            get(key).asJsonPrimitive.asByte
-        } catch (e: Exception) {
-            null
-        }
+        return get(key, Byte::class.java)
     }
 
     override fun getShort(key: String): Short? {
-        return try {
-            get(key).asJsonPrimitive.asShort
-        } catch (e: Exception) {
-            null
-        }
+        return get(key, Short::class.java)
     }
 
     override fun getInt(key: String): Int? {
-        return try {
-            get(key).asJsonPrimitive.asInt
-        } catch (e: Exception) {
-            null
-        }
+        return get(key, Int::class.java)
     }
 
     override fun getLong(key: String): Long? {
-        return try {
-            get(key).asJsonPrimitive.asLong
-        } catch (e: Exception) {
-            null
-        }
+        return get(key, Long::class.java)
     }
 
     override fun getFloat(key: String): Float? {
-        return try {
-            get(key).asJsonPrimitive.asFloat
-        } catch (e: Exception) {
-            null
-        }
+        return get(key, Float::class.java)
     }
 
     override fun getDouble(key: String): Double? {
-        return try {
-            get(key).asJsonPrimitive.asDouble
-        } catch (e: Exception) {
-            null
-        }
+        return get(key, Double::class.java)
     }
 
     override fun getChar(key: String): Char? {
-        return getString(key)?.get(0)
+        return get(key, Char::class.java)
     }
 
     override fun getBoolean(key: String): Boolean {
-        return try {
-            get(key).asJsonPrimitive.asBoolean
-        } catch (e: Exception) {
-            false
-        }
+        return get(key, Boolean::class.java) ?: false
     }
 
     override fun contains(key: String): Boolean {

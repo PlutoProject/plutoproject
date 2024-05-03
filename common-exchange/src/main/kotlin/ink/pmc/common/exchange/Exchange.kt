@@ -7,15 +7,12 @@ import ink.pmc.common.utils.platform.paperUtilsPlugin
 import ink.pmc.common.utils.visual.mochaFlamingo
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextDecoration
-import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.InventoryAction
 import org.bukkit.event.inventory.InventoryCreativeEvent
-import org.bukkit.event.inventory.InventoryType
 import org.bukkit.event.player.PlayerRecipeDiscoverEvent
-import org.bukkit.inventory.CreativeCategory
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 
@@ -80,9 +77,11 @@ val bypassedActions = listOf(
 )
 
 fun handleInventory(event: InventoryCreativeEvent) {
-    val material = event.cursor.type
+    if (event.whoClicked.hasPermission("exchange.bypass")) {
+        return
+    }
 
-    println(event.action)
+    val material = event.cursor.type
 
     if (isForbiddenItem(event.cursor)) {
         return

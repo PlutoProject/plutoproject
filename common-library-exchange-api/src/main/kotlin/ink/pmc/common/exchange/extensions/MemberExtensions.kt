@@ -8,6 +8,9 @@ val Member.exchangeTickets: Long
     get() = ExchangeService.tickets(this)
 
 @Suppress("UNUSED")
+fun Member.tickets(amount: Long): Boolean = ExchangeService.tickets(this, amount)
+
+@Suppress("UNUSED")
 fun Member.deposit(amount: Long): Boolean = ExchangeService.deposit(this, amount)
 
 @Suppress("UNUSED")

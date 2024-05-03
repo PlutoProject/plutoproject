@@ -83,6 +83,7 @@ class PaperExchangePlugin : SuspendingJavaPlugin() {
     private fun initService(exchangeLobby: ExchangeLobby) {
         paperExchangeService = PaperExchangeService(exchangeLobby)
         exchangeService = paperExchangeService
+        IExchangeService.instance = exchangeService
     }
 
     private fun loadConfigPaper(config: Config) {
