@@ -62,8 +62,8 @@ object TicketsCommand : VelocityCommand() {
 
     private val ticketsSet = velocityCommandManager.commandBuilder("tickets", "exchangetickets")
         .permission("exchange.tickets.set")
-        .argument(velocityRequiredOnlinePlayersArgument())
         .literal("set")
+        .argument(velocityRequiredOnlinePlayersArgument())
         .required("amount", LongParser.longParser())
         .suspendingHandler {
             val sender = it.sender()
@@ -89,8 +89,8 @@ object TicketsCommand : VelocityCommand() {
 
     private val ticketsDeposit = velocityCommandManager.commandBuilder("tickets", "exchangetickets")
         .permission("exchange.tickets.deposit")
-        .argument(velocityRequiredOnlinePlayersArgument())
         .literal("deposit")
+        .argument(velocityRequiredOnlinePlayersArgument())
         .required("amount", LongParser.longParser())
         .suspendingHandler {
             val sender = it.sender()
@@ -116,8 +116,8 @@ object TicketsCommand : VelocityCommand() {
 
     private val ticketsWithdraw = velocityCommandManager.commandBuilder("tickets", "exchangetickets")
         .permission("exchange.tickets.withdraw")
-        .argument(velocityRequiredOnlinePlayersArgument())
         .literal("withdraw")
+        .argument(velocityRequiredOnlinePlayersArgument())
         .required("amount", LongParser.longParser())
         .suspendingHandler {
             val sender = it.sender()

@@ -3,18 +3,27 @@ package ink.pmc.common.exchange
 import com.electronwill.nightconfig.core.Config
 import com.github.shynixn.mccoroutine.bukkit.SuspendingJavaPlugin
 import com.github.shynixn.mccoroutine.bukkit.registerSuspendingEvents
-import ink.pmc.common.exchange.paper.ExchangeLobbyImpl
-import ink.pmc.common.exchange.paper.ExchangeWorldLoader
+import ink.pmc.common.exchange.paper.*
 import ink.pmc.common.exchange.paper.PaperExchangeService
-import ink.pmc.common.exchange.paper.PaperPlayerListener
+import ink.pmc.common.exchange.paper.commands.CheckoutCommand
+import ink.pmc.common.exchange.paper.commands.ExchangeCommand
+import ink.pmc.common.exchange.paper.utils.disableGameRules
+import ink.pmc.common.exchange.serializers.*
+import ink.pmc.common.utils.command.init
 import ink.pmc.common.utils.isInDebugMode
+import ink.pmc.common.utils.json.transformGson
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.World
-import org.bukkit.block.data.type.Stairs
+import org.bukkit.command.CommandSender
+import org.bukkit.inventory.Inventory
+import org.bukkit.potion.PotionEffect
+import org.incendo.cloud.execution.ExecutionCoordinator
+import org.incendo.cloud.paper.PaperCommandManager
 import java.io.File
 
 lateinit var paperExchangeService: PaperExchangeService
+lateinit var paperCommandManager: PaperCommandManager<CommandSender>
 lateinit var worldFolder: File
 lateinit var worldLoader: ExchangeWorldLoader
 lateinit var world: World
@@ -64,11 +73,30 @@ class PaperExchangePlugin : SuspendingJavaPlugin() {
                 )
             )
 
+            disableGameRules(world)
             logger.info("World loaded!")
         } catch (e: Exception) {
             logger.severe("Failed to load world!")
             e.printStackTrace()
             return
+        }
+
+        paperCommandManager = PaperCommandManager.createNative(
+            this,
+            ExecutionCoordinator.asyncCoordinator()
+        )
+
+        paperCommandManager.registerBrigadier()
+        paperCommandManager.init(ExchangeCommand)
+        paperCommandManager.init(CheckoutCommand)
+
+        transformGson {
+            registerTypeAdapter(Location::class.java, LocationSerializer)
+            registerTypeAdapter(Location::class.java, LocationDeserializer)
+            registerTypeAdapter(PotionEffect::class.java, PotionEffectSerializer)
+            registerTypeAdapter(PotionEffect::class.java, PotionEffectDeserializer)
+            registerTypeAdapter(Inventory::class.java, InventorySerializer)
+            registerTypeAdapter(Inventory::class.java, InventoryDeserializer)
         }
 
         initService(exchangeLobby)

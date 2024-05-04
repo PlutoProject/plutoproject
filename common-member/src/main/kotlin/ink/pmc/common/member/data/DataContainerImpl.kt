@@ -5,8 +5,8 @@ import com.google.gson.JsonParser
 import ink.pmc.common.member.AbstractMemberService
 import ink.pmc.common.member.api.Member
 import ink.pmc.common.member.storage.DataContainerStorage
-import ink.pmc.common.utils.json.gson
 import ink.pmc.common.utils.json.toJsonString
+import ink.pmc.common.utils.json.toObject
 import kotlinx.coroutines.runBlocking
 import java.time.Instant
 
@@ -29,7 +29,7 @@ class DataContainerImpl(private val service: AbstractMemberService, override val
         }
 
         return try {
-            gson.fromJson(JsonParser.parseString(storage.contents[key]!!), type)
+            storage.contents[key]!!.toObject(type)
         } catch (e: Exception) {
             null
         }

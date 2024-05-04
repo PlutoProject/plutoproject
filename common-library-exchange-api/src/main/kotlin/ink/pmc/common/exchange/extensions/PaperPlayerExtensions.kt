@@ -28,7 +28,7 @@ fun Player.noLessThan(amount: Long): Boolean = ExchangeService.noLessThan(this.m
 fun Player.noMoreThan(amount: Long) = ExchangeService.noMoreThan(this.member, amount)
 
 @Suppress("UNUSED")
-fun Player.startExchange() = PaperExchangeService.startExchange(this)
+suspend fun Player.startExchange() = PaperExchangeService.startExchange(this)
 
 @Suppress("UNUSED")
-fun Player.endExchange() = PaperExchangeService.endExchange(this)
+suspend fun Player.endExchange() = PaperExchangeService.endExchange(this)
