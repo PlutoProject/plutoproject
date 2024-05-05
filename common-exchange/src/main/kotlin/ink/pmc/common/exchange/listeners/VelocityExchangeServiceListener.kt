@@ -1,4 +1,4 @@
-package ink.pmc.common.exchange.velocity
+package ink.pmc.common.exchange.listeners
 
 import com.velocitypowered.api.event.Subscribe
 import com.velocitypowered.api.event.connection.PostLoginEvent
@@ -6,10 +6,10 @@ import ink.pmc.common.exchange.initExchangeData
 import ink.pmc.common.member.api.MemberService
 
 @Suppress("UNUSED")
-object VelocityPlayerListener {
+object VelocityExchangeServiceListener {
 
     @Subscribe
-    suspend fun postConnectEvent(event: PostLoginEvent) {
+    suspend fun postLoginEvent(event: PostLoginEvent) {
         val uuid = event.player.uniqueId
 
         if (!MemberService.exist(uuid)) {

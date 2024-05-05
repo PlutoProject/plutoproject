@@ -1,4 +1,4 @@
-package ink.pmc.common.exchange.velocity
+package ink.pmc.common.exchange.commands
 
 import com.velocitypowered.api.proxy.Player
 import ink.pmc.common.exchange.*

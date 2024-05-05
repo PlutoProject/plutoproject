@@ -1,4 +1,4 @@
-package ink.pmc.common.exchange.paper.utils
+package ink.pmc.common.exchange.utils
 
 import ink.pmc.common.exchange.*
 import ink.pmc.common.exchange.paper.StatusSnapshot

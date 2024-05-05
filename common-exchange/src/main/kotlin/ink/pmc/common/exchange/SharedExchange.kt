@@ -22,6 +22,7 @@ fun loadConfig(file: File) {
     fileConfig = FileConfig.builder(file).sync().build()
     fileConfig.load()
     ExchangeConfig.identity = fileConfig.get("server-identity")
+    ExchangeConfig.Tickets.daily = fileConfig.get("tickets.daily")
 }
 
 suspend fun initExchangeData(member: Member) {

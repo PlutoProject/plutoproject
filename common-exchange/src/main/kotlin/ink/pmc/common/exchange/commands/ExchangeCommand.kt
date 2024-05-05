@@ -1,8 +1,8 @@
-package ink.pmc.common.exchange.paper.commands
+package ink.pmc.common.exchange.commands
 
 import ink.pmc.common.exchange.*
-import ink.pmc.common.exchange.paper.utils.isCheckoutSign
-import ink.pmc.common.exchange.paper.utils.markAsCheckoutSign
+import ink.pmc.common.exchange.utils.isCheckoutSign
+import ink.pmc.common.exchange.utils.markAsCheckoutSign
 import ink.pmc.common.utils.chat.NON_PLAYER
 import ink.pmc.common.utils.chat.PLAYER_NOT_ONLINE
 import ink.pmc.common.utils.chat.replace
@@ -111,7 +111,7 @@ object ExchangeCommand : PaperCommand() {
                 return@suspendingHandler
             }
 
-            player.sync { checkout(player) }
+            player.sync { paperExchangeService.checkout(player) }
             sender.sendMessage(
                 EXCHANGE_ADMIN_CHECKOUT_SUCCEED
                     .replace("<player>", Component.text(player.name).color(mochaYellow))

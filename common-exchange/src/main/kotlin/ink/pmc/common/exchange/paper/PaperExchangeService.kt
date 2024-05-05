@@ -1,7 +1,7 @@
 package ink.pmc.common.exchange.paper
 
 import ink.pmc.common.exchange.*
-import ink.pmc.common.exchange.paper.utils.*
+import ink.pmc.common.exchange.utils.*
 import ink.pmc.common.member.api.paper.member
 import ink.pmc.common.utils.chat.replace
 import ink.pmc.common.utils.platform.threadSafeTeleport

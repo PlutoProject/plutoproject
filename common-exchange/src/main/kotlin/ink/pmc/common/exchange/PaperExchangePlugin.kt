@@ -5,9 +5,10 @@ import com.github.shynixn.mccoroutine.bukkit.SuspendingJavaPlugin
 import com.github.shynixn.mccoroutine.bukkit.registerSuspendingEvents
 import ink.pmc.common.exchange.paper.*
 import ink.pmc.common.exchange.paper.PaperExchangeService
-import ink.pmc.common.exchange.paper.commands.CheckoutCommand
-import ink.pmc.common.exchange.paper.commands.ExchangeCommand
-import ink.pmc.common.exchange.paper.utils.disableGameRules
+import ink.pmc.common.exchange.commands.CheckoutCommand
+import ink.pmc.common.exchange.commands.ExchangeCommand
+import ink.pmc.common.exchange.listeners.PaperExchangeServiceListener
+import ink.pmc.common.exchange.utils.disableGameRules
 import ink.pmc.common.exchange.serializers.*
 import ink.pmc.common.utils.command.init
 import ink.pmc.common.utils.isInDebugMode
@@ -100,7 +101,7 @@ class PaperExchangePlugin : SuspendingJavaPlugin() {
         }
 
         initService(exchangeLobby)
-        server.pluginManager.registerSuspendingEvents(PaperPlayerListener, this)
+        server.pluginManager.registerSuspendingEvents(PaperExchangeServiceListener, this)
         disabled = false
     }
 
@@ -122,8 +123,6 @@ class PaperExchangePlugin : SuspendingJavaPlugin() {
         ExchangeConfig.ExchangeLobby.TeleportLocation.z = config.get("exchange-lobby.teleport-location.z")
         ExchangeConfig.ExchangeLobby.TeleportLocation.yaw = config.get("exchange-lobby.teleport-location.yaw")
         ExchangeConfig.ExchangeLobby.TeleportLocation.pitch = config.get("exchange-lobby.teleport-location.pitch")
-
-        ExchangeConfig.Tickets.daily = config.get("tickets.daily")
 
         ExchangeConfig.AvailableItems.materials = processMaterials(config.get("available-items.materials"))
     }

@@ -1,8 +1,8 @@
 package ink.pmc.common.exchange.serializers
 
 import com.google.gson.*
-import ink.pmc.common.exchange.paper.utils.inventoryFromBase64
-import ink.pmc.common.exchange.paper.utils.inventoryToBase64
+import ink.pmc.common.exchange.utils.inventoryFromBase64
+import ink.pmc.common.exchange.utils.inventoryToBase64
 import ink.pmc.common.utils.json.toJsonElement
 import ink.pmc.common.utils.json.toObject
 import org.bukkit.inventory.Inventory
