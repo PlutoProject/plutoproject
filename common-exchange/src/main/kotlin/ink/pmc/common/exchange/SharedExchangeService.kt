@@ -5,12 +5,12 @@ import ink.pmc.common.member.api.Member
 abstract class SharedExchangeService : AbstractExchangeService() {
 
     override fun tickets(member: Member): Long {
-        return member.dataContainer.getLong(EXCHANGE_TICKET_KEY) ?: run { println("null"); 0 }
+        return member.dataContainer.getLong(TICKET_KEY) ?: run { println("null"); 0 }
     }
 
     override fun tickets(member: Member, amount: Long): Boolean {
         return try {
-            member.dataContainer[EXCHANGE_TICKET_KEY] = amount
+            member.dataContainer[TICKET_KEY] = amount
             true
         } catch (e: Exception) {
             false
@@ -19,7 +19,7 @@ abstract class SharedExchangeService : AbstractExchangeService() {
 
     override fun deposit(member: Member, amount: Long): Boolean {
         return try {
-            member.dataContainer[EXCHANGE_TICKET_KEY] = tickets(member) + amount
+            member.dataContainer[TICKET_KEY] = tickets(member) + amount
             true
         } catch (e: Exception) {
             false
@@ -31,7 +31,7 @@ abstract class SharedExchangeService : AbstractExchangeService() {
             if (!noLessThan(member, amount)) {
                 return false
             }
-            member.dataContainer[EXCHANGE_TICKET_KEY] = tickets(member) - amount
+            member.dataContainer[TICKET_KEY] = tickets(member) - amount
             true
         } catch (e: Exception) {
             false

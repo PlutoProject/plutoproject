@@ -19,7 +19,7 @@ object ExchangeConfig {
     }
 
     object Tickets {
-        var daily: Int = 0
+        var daily: Long = 0
     }
 
     object AvailableItems {

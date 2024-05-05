@@ -25,13 +25,12 @@ fun loadConfig(file: File) {
     ExchangeConfig.Tickets.daily = fileConfig.get("tickets.daily")
 }
 
-suspend fun initExchangeData(member: Member) {
+fun initExchangeData(member: Member) {
     val data = member.dataContainer
 
-    if (data.contains(EXCHANGE_TICKET_KEY)) {
+    if (data.contains(TICKET_KEY)) {
         return
     }
 
-    data[EXCHANGE_TICKET_KEY] = 0L
-    member.update()
+    data[TICKET_KEY] = 0L
 }
