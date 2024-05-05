@@ -66,7 +66,7 @@ fun hasStatusSnapshot(player: Player): Boolean {
     return dataContainer.contains(STATUS_SNAPSHOT_KEY)
 }
 
-suspend fun snapshotStatus(player: Player) {
+fun snapshotStatus(player: Player) {
     val member = player.member
     val dataContainer = member.dataContainer
 
@@ -76,10 +76,9 @@ suspend fun snapshotStatus(player: Player) {
 
     val snapshot = StatusSnapshot.create(player)
     dataContainer[STATUS_SNAPSHOT_KEY] = snapshot
-    member.update()
 }
 
-suspend fun restoreStatus(player: Player, restoreLocation: Boolean = true) {
+fun restoreStatus(player: Player, restoreLocation: Boolean = true) {
     val member = player.member
     val dataContainer = member.dataContainer
 
@@ -90,7 +89,6 @@ suspend fun restoreStatus(player: Player, restoreLocation: Boolean = true) {
     val snapshot = dataContainer[STATUS_SNAPSHOT_KEY, StatusSnapshot::class.java]!!
     snapshot.restore(player, restoreLocation)
     dataContainer.remove(STATUS_SNAPSHOT_KEY)
-    member.update()
 }
 
 fun clearInventory(player: Player) {

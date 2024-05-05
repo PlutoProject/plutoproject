@@ -31,7 +31,13 @@ val EXCHANGE_START_SUCCEED
     get() = Component.text("正在将你传送到兑换商店...").color(mochaGreen)
 
 val EXCHANGE_START_FAILED_ALREADY_IN
-    get() = Component.text("你已经正在兑换商店中了").color(mochaMaroon)
+    get() = Component.text("你已经正在兑换商店中了！").color(mochaMaroon)
+
+val EXCHANGE_END_SUCCEED
+    get() = Component.text("正在将你传送到原本的位置...").color(mochaGreen)
+
+val EXCHANGE_END_FAILED_NOT_IN
+    get() = Component.text("你并不在兑换商店中！").color(mochaMaroon)
 
 val CHECKOUT_SUCCEED
     get() = Component.text("结账成功！此次购买花费了 <amount> 个兑换券").color(mochaGreen)

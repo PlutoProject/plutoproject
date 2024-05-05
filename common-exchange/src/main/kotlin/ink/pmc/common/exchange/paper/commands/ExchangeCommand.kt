@@ -32,7 +32,6 @@ object ExchangeCommand : PaperCommand() {
             }
 
             sender.sync { paperExchangeService.startExchange(sender) }
-            sender.sendMessage(EXCHANGE_START_SUCCEED)
         }
 
     private val exchangeAdminStart = paperCommandManager.commandBuilder("exchangeadmin")

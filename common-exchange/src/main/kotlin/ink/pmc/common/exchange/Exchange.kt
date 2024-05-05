@@ -1,20 +1,14 @@
 package ink.pmc.common.exchange
 
 import com.destroystokyo.paper.event.player.PlayerAdvancementCriterionGrantEvent
-import ink.pmc.common.exchange.extensions.noLessThan
 import ink.pmc.common.exchange.paper.utils.*
-import ink.pmc.common.member.api.paper.member
-import ink.pmc.common.utils.chat.replace
 import ink.pmc.common.utils.platform.paper
 import ink.pmc.common.utils.platform.paperUtilsPlugin
-import ink.pmc.common.utils.visual.mochaText
-import net.kyori.adventure.text.Component
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.block.Action
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.block.BlockPlaceEvent
-import org.bukkit.event.inventory.InventoryAction
 import org.bukkit.event.inventory.InventoryCreativeEvent
 import org.bukkit.event.player.PlayerDropItemEvent
 import org.bukkit.event.player.PlayerInteractEvent

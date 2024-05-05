@@ -6,15 +6,13 @@ import ink.pmc.common.member.api.paper.member
 import ink.pmc.common.utils.chat.replace
 import ink.pmc.common.utils.platform.threadSafeTeleport
 import ink.pmc.common.utils.visual.mochaText
-import kotlinx.coroutines.runBlocking
 import net.kyori.adventure.text.Component
 import org.bukkit.entity.Player
 import java.util.*
-import java.util.concurrent.CopyOnWriteArrayList
 
 class PaperExchangeService(override val lobby: ExchangeLobby) : AbstractPaperExchangeService() {
 
-    override val inExchange: MutableList<UUID> = CopyOnWriteArrayList()
+    override val inExchange: MutableList<UUID> = mutableListOf()
 
     override suspend fun startExchange(player: Player) {
         if (isInExchange(player)) {
@@ -27,10 +25,13 @@ class PaperExchangeService(override val lobby: ExchangeLobby) : AbstractPaperExc
         applyExchangeStatus(player)
         hidePlayer(player)
         inExchange.add(player.uniqueId)
+        player.sendMessage(EXCHANGE_START_SUCCEED)
+        player.member.update()
     }
 
     override suspend fun endExchange(player: Player, goBack: Boolean) {
         if (!isInExchange(player)) {
+            player.sendMessage(EXCHANGE_END_FAILED_NOT_IN)
             return
         }
 
@@ -38,6 +39,8 @@ class PaperExchangeService(override val lobby: ExchangeLobby) : AbstractPaperExc
         restoreStatus(player, goBack)
         showPlayer(player)
         inExchange.remove(player.uniqueId)
+        player.sendMessage(EXCHANGE_END_SUCCEED)
+        player.member.update()
     }
 
     override suspend fun checkout(player: Player): Long {
@@ -62,13 +65,16 @@ class PaperExchangeService(override val lobby: ExchangeLobby) : AbstractPaperExc
             return 0
         }
 
+        clearInventory(player)
+        restoreStatus(player)
+        showPlayer(player)
+        inExchange.remove(player.uniqueId)
         player.sendMessage(
             CHECKOUT_SUCCEED
                 .replace("<amount>", Component.text(price).color(mochaText))
         )
-
-        endExchange(player)
         distributeItems(player, cart)
+        player.member.update()
 
         return price
     }
