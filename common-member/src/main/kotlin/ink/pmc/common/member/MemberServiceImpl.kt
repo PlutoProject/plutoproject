@@ -41,7 +41,7 @@ class MemberServiceImpl(
         database.getCollection("member_data_containers")
     override val bedrockAccounts: MongoCollection<BedrockAccountStorage> =
         database.getCollection("member_bedrock_accounts")
-    override val loadedMembers: LoadingCache<Long, Member> = Caffeine.newBuilder()
+    override val loadedMembers: LoadingCache<Long, Member?> = Caffeine.newBuilder()
         .refreshAfterWrite(Duration.ofMinutes(10))
         .expireAfterWrite(Duration.ofMinutes(10))
         .build { runBlocking { loadMember(it) } }
@@ -428,16 +428,16 @@ class MemberServiceImpl(
     }
 
     override suspend fun update(uid: Long) {
-        val member = loadedMembers.asMap().values.firstOrNull { it.uid == uid }
+        val member = loadedMembers.asMap().values.firstOrNull { it != null && it.uid == uid }
         if (member == null) {
             return
         }
 
-        update(loadedMembers.get(uid))
+        update(loadedMembers.get(uid)!!)
     }
 
     override suspend fun update(uuid: UUID) {
-        val member = loadedMembers.asMap().values.firstOrNull { it.id == uuid }
+        val member = loadedMembers.asMap().values.firstOrNull { it != null && it.id == uuid }
         if (member == null) {
             return
         }
