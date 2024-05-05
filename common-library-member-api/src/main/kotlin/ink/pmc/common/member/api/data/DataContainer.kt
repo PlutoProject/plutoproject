@@ -19,6 +19,8 @@ interface DataContainer {
 
     operator fun get(key: String): JsonObject
 
+    fun remove(key: String)
+
     fun getString(key: String): String?
 
     fun getByte(key: String): Byte?

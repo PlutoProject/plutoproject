@@ -5,8 +5,8 @@ import com.google.gson.JsonParser
 import ink.pmc.common.member.AbstractMemberService
 import ink.pmc.common.member.api.Member
 import ink.pmc.common.member.storage.DataContainerStorage
-import ink.pmc.common.utils.json.gson
 import ink.pmc.common.utils.json.toJsonString
+import ink.pmc.common.utils.json.toObject
 import kotlinx.coroutines.runBlocking
 import java.time.Instant
 
@@ -17,10 +17,10 @@ class DataContainerImpl(private val service: AbstractMemberService, override val
     override val owner: Member by lazy { runBlocking { service.lookup(storage.owner)!! } }
     override val createdAt: Instant = Instant.ofEpochMilli(storage.createdAt)
     override var lastModifiedAt: Instant = Instant.ofEpochMilli(storage.lastModifiedAt)
-    override val contents: Map<String, String> = storage.contents
+    override val contents: MutableMap<String, String> = storage.contents
 
     override fun set(key: String, value: Any) {
-        storage.contents[key] = value.toJsonString()
+        contents[key] = value.toJsonString()
     }
 
     override fun <T> get(key: String, type: Class<T>): T? {
@@ -28,79 +28,59 @@ class DataContainerImpl(private val service: AbstractMemberService, override val
             return null
         }
 
-        return gson.fromJson(JsonParser.parseString(storage.contents[key]!!), type)
+        return try {
+            storage.contents[key]!!.toObject(type)
+        } catch (e: Exception) {
+            null
+        }
     }
 
     override fun get(key: String): JsonObject {
         return JsonParser.parseString(storage.contents[key]!!).asJsonObject
     }
 
+    override fun remove(key: String) {
+        contents.remove(key)
+    }
+
     override fun getString(key: String): String? {
-        return get(key).asJsonPrimitive.asString
+        return get(key, String::class.java)
     }
 
     override fun getByte(key: String): Byte? {
-        return try {
-            get(key).asJsonPrimitive.asByte
-        } catch (e: Exception) {
-            null
-        }
+        return get(key, Byte::class.java)
     }
 
     override fun getShort(key: String): Short? {
-        return try {
-            get(key).asJsonPrimitive.asShort
-        } catch (e: Exception) {
-            null
-        }
+        return get(key, Short::class.java)
     }
 
     override fun getInt(key: String): Int? {
-        return try {
-            get(key).asJsonPrimitive.asInt
-        } catch (e: Exception) {
-            null
-        }
+        return get(key, Int::class.java)
     }
 
     override fun getLong(key: String): Long? {
-        return try {
-            get(key).asJsonPrimitive.asLong
-        } catch (e: Exception) {
-            null
-        }
+        return get(key, Long::class.java)
     }
 
     override fun getFloat(key: String): Float? {
-        return try {
-            get(key).asJsonPrimitive.asFloat
-        } catch (e: Exception) {
-            null
-        }
+        return get(key, Float::class.java)
     }
 
     override fun getDouble(key: String): Double? {
-        return try {
-            get(key).asJsonPrimitive.asDouble
-        } catch (e: Exception) {
-            null
-        }
+        return get(key, Double::class.java)
     }
 
     override fun getChar(key: String): Char? {
-        return getString(key)?.get(0)
+        return get(key, Char::class.java)
     }
 
     override fun getBoolean(key: String): Boolean {
-        return try {
-            get(key).asJsonPrimitive.asBoolean
-        } catch (e: Exception) {
-            false
-        }
+        return get(key, Boolean::class.java) ?: false
     }
 
     override fun contains(key: String): Boolean {
-        return storage.contents.containsKey(key)
+        return contents.containsKey(key)
     }
 
 }
