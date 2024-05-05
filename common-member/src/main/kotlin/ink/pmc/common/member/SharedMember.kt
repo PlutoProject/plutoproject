@@ -46,7 +46,7 @@ fun initMemberService() {
 }
 
 fun safeDisable() {
-    memberService.loadedMembers.invalidateAll()
-    memberService.loadedMembers.cleanUp()
+    memberService.loadedMembers.synchronous().invalidateAll()
+    memberService.loadedMembers.synchronous().cleanUp()
     mongoClient.close()
 }

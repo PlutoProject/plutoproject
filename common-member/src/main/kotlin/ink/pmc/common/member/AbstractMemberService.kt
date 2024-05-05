@@ -1,6 +1,6 @@
 package ink.pmc.common.member
 
-import com.github.benmanes.caffeine.cache.LoadingCache
+import com.github.benmanes.caffeine.cache.AsyncLoadingCache
 import com.mongodb.kotlin.client.coroutine.MongoCollection
 import ink.pmc.common.member.api.IMemberService
 import ink.pmc.common.member.api.Member
@@ -14,7 +14,7 @@ abstract class AbstractMemberService : IMemberService {
     abstract val comments: MongoCollection<CommentStorage>
     abstract val dataContainers: MongoCollection<DataContainerStorage>
     abstract val bedrockAccounts: MongoCollection<BedrockAccountStorage>
-    abstract val loadedMembers: LoadingCache<Long, Member?>
+    abstract val loadedMembers: AsyncLoadingCache<Long, Member?>
     abstract val currentStatus: StatusStorage
 
     abstract suspend fun lookupMemberStorage(uid: Long): MemberStorage?

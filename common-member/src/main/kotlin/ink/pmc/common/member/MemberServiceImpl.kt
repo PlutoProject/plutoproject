@@ -1,7 +1,8 @@
 package ink.pmc.common.member
 
+import com.github.benmanes.caffeine.cache.AsyncCacheLoader
+import com.github.benmanes.caffeine.cache.AsyncLoadingCache
 import com.github.benmanes.caffeine.cache.Caffeine
-import com.github.benmanes.caffeine.cache.LoadingCache
 import com.mongodb.client.model.Filters.*
 import com.mongodb.kotlin.client.coroutine.MongoCollection
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
@@ -16,14 +17,18 @@ import ink.pmc.common.member.data.AbstractDataContainer
 import ink.pmc.common.member.punishment.AbstractPunishment
 import ink.pmc.common.member.storage.*
 import ink.pmc.common.utils.bedrock.xuid
+import ink.pmc.common.utils.concurrent.submitAsyncIO
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.future.asCompletableFuture
+import kotlinx.coroutines.future.await
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import org.bson.types.ObjectId
 import java.time.Duration
 import java.time.Instant
 import java.util.*
+import java.util.concurrent.CompletableFuture
 
 @Suppress("UNUSED")
 const val UID_START = 10000L
@@ -41,11 +46,13 @@ class MemberServiceImpl(
         database.getCollection("member_data_containers")
     override val bedrockAccounts: MongoCollection<BedrockAccountStorage> =
         database.getCollection("member_bedrock_accounts")
-    override val loadedMembers: LoadingCache<Long, Member?> = Caffeine.newBuilder()
+    private val cacheLoader =
+        AsyncCacheLoader<Long, Member> { key, _ -> submitAsyncIO<Member> { loadMember(key) }.asCompletableFuture() }
+    override val loadedMembers: AsyncLoadingCache<Long, Member?> = Caffeine.newBuilder()
         .refreshAfterWrite(Duration.ofMinutes(10))
         .expireAfterWrite(Duration.ofMinutes(10))
-        .build { runBlocking { loadMember(it) } }
-    override var currentStatus: StatusStorage
+        .buildAsync(cacheLoader)
+    override lateinit var currentStatus: StatusStorage
 
     override suspend fun lookupMemberStorage(uid: Long): MemberStorage? {
         return members.find(eq("uid", uid)).firstOrNull()
@@ -92,14 +99,14 @@ class MemberServiceImpl(
 
     init {
         var lookupStatus: StatusStorage?
-        runBlocking {
+        submitAsyncIO {
             lookupStatus = status.find(exists("lastMember")).firstOrNull()
             if (lookupStatus == null) {
                 lookupStatus = StatusStorage(ObjectId(), -1, -1, -1, -1, -1)
                 status.insertOne(lookupStatus!!)
             }
+            currentStatus = lookupStatus!!
         }
-        currentStatus = lookupStatus!!
     }
 
     override suspend fun create(name: String, authType: AuthType): Member? {
@@ -111,7 +118,7 @@ class MemberServiceImpl(
         ).firstOrNull()
 
         if (memberStorage != null) {
-            return loadedMembers.get(memberStorage.uid)
+            return loadedMembers.get(memberStorage.uid).await()
         }
 
         val profile = authType.fetcher.fetch(name) ?: return null
@@ -168,7 +175,7 @@ class MemberServiceImpl(
         currentStatus.increaseMember()
 
         val member = MemberImpl(this, memberStorage)
-        loadedMembers.put(nextMember, member)
+        loadedMembers.put(nextMember, CompletableFuture.completedFuture(member))
         update(member)
 
         // 初始化需要从数据库获取的值
@@ -185,7 +192,7 @@ class MemberServiceImpl(
             return@withContext null
         }
 
-        loadedMembers.get(uid)
+        loadedMembers.get(uid).await()
     }
 
     override suspend fun lookup(uuid: UUID): Member? {
@@ -194,7 +201,7 @@ class MemberServiceImpl(
         }
 
         val storage = members.find(eq("id", uuid.toString())).firstOrNull() ?: return null
-        return loadedMembers.get(storage.uid)
+        return loadedMembers.get(storage.uid).await()
     }
 
     override suspend fun lookup(name: String, authType: AuthType): Member? {
@@ -204,7 +211,7 @@ class MemberServiceImpl(
                 eq("authType", authType.toString())
             )
         ).firstOrNull() ?: return null
-        return loadedMembers.get(member.uid)
+        return loadedMembers.get(member.uid).await()
     }
 
     override fun get(uid: Long): Member? = runBlocking {
@@ -428,21 +435,21 @@ class MemberServiceImpl(
     }
 
     override suspend fun update(uid: Long) {
-        val member = loadedMembers.asMap().values.firstOrNull { it != null && it.uid == uid }
+        val member = loadedMembers.asMap().values.firstOrNull { it.await()?.uid == uid }
         if (member == null) {
             return
         }
 
-        update(loadedMembers.get(uid)!!)
+        update(loadedMembers.get(uid).await()!!)
     }
 
     override suspend fun update(uuid: UUID) {
-        val member = loadedMembers.asMap().values.firstOrNull { it != null && it.id == uuid }
+        val member = loadedMembers.asMap().values.firstOrNull { it.await()?.id == uuid }
         if (member == null) {
             return
         }
 
-        update(member)
+        update(member.await()!!)
     }
 
     override suspend fun refresh(member: Member): Member? {
@@ -451,7 +458,7 @@ class MemberServiceImpl(
         }
 
         currentStatus = status.find(exists("lastMember")).firstOrNull()!!
-        loadedMembers.invalidate(member.uid)
+        loadedMembers.synchronous().invalidate(member.uid)
         return lookup(member.uid)
     }
 
@@ -461,7 +468,7 @@ class MemberServiceImpl(
         }
 
         currentStatus = status.find(exists("lastMember")).firstOrNull()!!
-        loadedMembers.invalidate(uid)
+        loadedMembers.synchronous().invalidate(uid)
         return lookup(uid)
     }
 
@@ -472,7 +479,7 @@ class MemberServiceImpl(
 
         val member = lookup(uuid)
         currentStatus = status.find(exists("lastMember")).firstOrNull()!!
-        loadedMembers.invalidate(member!!.uid)
+        loadedMembers.synchronous().invalidate(member!!.uid)
         return lookup(uuid)
     }
 
