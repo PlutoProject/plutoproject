@@ -7,24 +7,28 @@ import ink.pmc.common.member.api.punishment.Punishment
 import ink.pmc.common.member.api.punishment.PunishmentLogger
 import ink.pmc.common.member.api.punishment.PunishmentType
 import ink.pmc.common.member.storage.PunishmentStorage
-import kotlinx.coroutines.runBlocking
+import ink.pmc.common.utils.concurrent.submitAsyncIO
 import org.bson.types.ObjectId
 
 class PunishmentLoggerImpl(private val service: AbstractMemberService, private val member: AbstractMember) :
     PunishmentLogger {
 
-    override val historyPunishments: Collection<Punishment> = runBlocking {
-        val list = mutableListOf<Punishment>()
-        member.storage.punishments.forEach {
-            list.add(PunishmentImpl(service, service.lookupPunishmentStorage(it)!!))
+    override lateinit var historyPunishments: Collection<Punishment>
+    override var lastPunishment: Punishment? = null
+
+    init {
+        submitAsyncIO {
+            historyPunishments = member.storage.punishments.map {
+                PunishmentImpl(member, service, service.lookupPunishmentStorage(it)!!)
+            }
         }
-        list
-    }
-    override var lastPunishment: Punishment? = runBlocking {
-        if (member.storage.punishments.isEmpty()) {
-            return@runBlocking null
+
+        submitAsyncIO {
+            if (member.storage.punishments.isEmpty()) {
+                return@submitAsyncIO
+            }
+            lastPunishment = PunishmentImpl(member, service, service.lookupPunishmentStorage(member.storage.punishments.last())!!)
         }
-        PunishmentImpl(service, service.lookupPunishmentStorage(member.storage.punishments.last())!!)
     }
 
     override fun create(type: PunishmentType, executor: Member): Punishment {
@@ -43,7 +47,7 @@ class PunishmentLoggerImpl(private val service: AbstractMemberService, private v
         service.currentStatus.increasePunishment()
         member.storage.punishments.add(id)
 
-        return PunishmentImpl(service, storage)
+        return PunishmentImpl(member, service, storage)
     }
 
     override fun get(id: Long): Punishment? {

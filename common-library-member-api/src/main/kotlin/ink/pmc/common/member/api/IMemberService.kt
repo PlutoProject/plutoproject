@@ -25,8 +25,6 @@ interface IMemberService {
 
     suspend fun lookup(name: String, authType: AuthType = AuthType.OFFICIAL): Member?
 
-    operator fun get(uid: Long): Member?
-
     suspend fun exist(uid: Long): Boolean
 
     suspend fun exist(uuid: UUID): Boolean

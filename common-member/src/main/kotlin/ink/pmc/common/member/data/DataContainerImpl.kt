@@ -2,19 +2,16 @@ package ink.pmc.common.member.data
 
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
-import ink.pmc.common.member.AbstractMemberService
 import ink.pmc.common.member.api.Member
 import ink.pmc.common.member.storage.DataContainerStorage
 import ink.pmc.common.utils.json.toJsonString
 import ink.pmc.common.utils.json.toObject
-import kotlinx.coroutines.runBlocking
 import java.time.Instant
 
-class DataContainerImpl(private val service: AbstractMemberService, override val storage: DataContainerStorage) :
+class DataContainerImpl(override val owner: Member, override val storage: DataContainerStorage) :
     AbstractDataContainer() {
 
     override val id: Long = storage.id
-    override val owner: Member by lazy { runBlocking { service.lookup(storage.owner)!! } }
     override val createdAt: Instant = Instant.ofEpochMilli(storage.createdAt)
     override var lastModifiedAt: Instant = Instant.ofEpochMilli(storage.lastModifiedAt)
     override val contents: MutableMap<String, String> = storage.contents

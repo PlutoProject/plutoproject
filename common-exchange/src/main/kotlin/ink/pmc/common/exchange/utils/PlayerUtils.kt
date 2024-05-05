@@ -60,14 +60,14 @@ fun getRemainingSpace(player: Player): Int {
     return remainingSpace
 }
 
-fun hasStatusSnapshot(player: Player): Boolean {
-    val member = player.member
+suspend fun hasStatusSnapshot(player: Player): Boolean {
+    val member = player.member()
     val dataContainer = member.dataContainer
     return dataContainer.contains(STATUS_SNAPSHOT_KEY)
 }
 
-fun snapshotStatus(player: Player) {
-    val member = player.member
+suspend fun snapshotStatus(player: Player) {
+    val member = player.member()
     val dataContainer = member.dataContainer
 
     if (hasStatusSnapshot(player)) {
@@ -78,8 +78,8 @@ fun snapshotStatus(player: Player) {
     dataContainer[STATUS_SNAPSHOT_KEY] = snapshot
 }
 
-fun restoreStatus(player: Player, restoreLocation: Boolean = true) {
-    val member = player.member
+suspend fun restoreStatus(player: Player, restoreLocation: Boolean = true) {
+    val member = player.member()
     val dataContainer = member.dataContainer
 
     if (!hasStatusSnapshot(player)) {

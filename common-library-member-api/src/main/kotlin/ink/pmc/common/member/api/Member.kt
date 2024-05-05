@@ -32,7 +32,7 @@ interface Member {
 
     fun grantWhitelist()
 
-    fun linkBedrock(xuid: String, gamertag: String): BedrockAccount?
+    suspend fun linkBedrock(xuid: String, gamertag: String): BedrockAccount?
 
     fun unlinkBedrock()
 

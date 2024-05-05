@@ -6,26 +6,25 @@ import ink.pmc.common.member.api.paper.member
 import org.bukkit.entity.Player
 
 @Suppress("UNUSED")
-val Player.exchangeTickets: Long
-    get() = ExchangeService.tickets(this.member)
+suspend fun Player.exchangeTickets(): Long = ExchangeService.tickets(this.member())
 
 @Suppress("UNUSED")
-fun Player.tickets(amount: Long): Boolean = ExchangeService.tickets(this.member, amount)
+suspend fun Player.tickets(amount: Long): Boolean = ExchangeService.tickets(this.member(), amount)
 
 @Suppress("UNUSED")
-fun Player.deposit(amount: Long): Boolean = ExchangeService.deposit(this.member, amount)
+suspend fun Player.deposit(amount: Long): Boolean = ExchangeService.deposit(this.member(), amount)
 
 @Suppress("UNUSED")
-fun Player.withdraw(amount: Long): Boolean = ExchangeService.withdraw(this.member, amount)
+suspend fun Player.withdraw(amount: Long): Boolean = ExchangeService.withdraw(this.member(), amount)
 
 @Suppress("UNUSED")
-fun Player.match(condition: (Long) -> Boolean): Boolean = ExchangeService.match(this.member, condition)
+suspend fun Player.match(condition: (Long) -> Boolean): Boolean = ExchangeService.match(this.member(), condition)
 
 @Suppress("UNUSED")
-fun Player.noLessThan(amount: Long): Boolean = ExchangeService.noLessThan(this.member, amount)
+suspend fun Player.noLessThan(amount: Long): Boolean = ExchangeService.noLessThan(this.member(), amount)
 
 @Suppress("UNUSED")
-fun Player.noMoreThan(amount: Long) = ExchangeService.noMoreThan(this.member, amount)
+suspend fun Player.noMoreThan(amount: Long) = ExchangeService.noMoreThan(this.member(), amount)
 
 @Suppress("UNUSED")
 suspend fun Player.startExchange() = PaperExchangeService.startExchange(this)

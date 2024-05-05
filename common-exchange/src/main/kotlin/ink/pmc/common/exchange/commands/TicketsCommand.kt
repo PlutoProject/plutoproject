@@ -28,7 +28,7 @@ object TicketsCommand : VelocityCommand() {
                 return@suspendingHandler
             }
 
-            val member = sender.member.refresh()!!
+            val member = sender.member().refresh()!!
             val tickets = member.exchangeTickets
 
             sender.sendMessage(
@@ -50,7 +50,7 @@ object TicketsCommand : VelocityCommand() {
                 return@suspendingHandler
             }
 
-            val member = player.get().member.refresh()!!
+            val member = player.get().member().refresh()!!
             val tickets = member.exchangeTickets
 
             sender.sendMessage(
@@ -76,7 +76,7 @@ object TicketsCommand : VelocityCommand() {
                 return@suspendingHandler
             }
 
-            val member = player.get().member.refresh()!!
+            val member = player.get().member().refresh()!!
             member.tickets(amount)
             member.update()
 
@@ -103,7 +103,7 @@ object TicketsCommand : VelocityCommand() {
                 return@suspendingHandler
             }
 
-            val member = player.get().member.refresh()!!
+            val member = player.get().member().refresh()!!
             member.deposit(amount)
             member.update()
 
@@ -130,7 +130,7 @@ object TicketsCommand : VelocityCommand() {
                 return@suspendingHandler
             }
 
-            val member = player.get().member.refresh()!!
+            val member = player.get().member().refresh()!!
 
             if (!member.noLessThan(amount)) {
                 sender.sendMessage(

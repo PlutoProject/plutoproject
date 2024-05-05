@@ -11,6 +11,7 @@ interface Punishment {
     val time: Instant
     val belongs: Member
     val isRevoked: Boolean
-    val executor: Member
+
+    suspend fun executor(): Member
 
 }

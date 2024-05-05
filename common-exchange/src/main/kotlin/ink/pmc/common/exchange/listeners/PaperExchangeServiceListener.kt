@@ -41,7 +41,7 @@ object PaperExchangeServiceListener : Listener {
         }
 
         restoreStatus(player)
-        player.member.update()
+        player.member().update()
 
         paperExchangeService.inExchange.forEach {
             player.hidePlayer(paperUtilsPlugin, paper.getPlayer(it)!!)

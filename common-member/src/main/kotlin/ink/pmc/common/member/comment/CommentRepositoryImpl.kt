@@ -4,21 +4,19 @@ import ink.pmc.common.member.AbstractMember
 import ink.pmc.common.member.AbstractMemberService
 import ink.pmc.common.member.api.comment.Comment
 import ink.pmc.common.member.storage.CommentStorage
-import kotlinx.coroutines.runBlocking
+import ink.pmc.common.utils.concurrent.submitAsyncIO
 import org.bson.types.ObjectId
 
 class CommentRepositoryImpl(private val service: AbstractMemberService, private val member: AbstractMember) :
     AbstractCommentRepository() {
 
-    override val comments: MutableCollection<Comment> by lazy {
-        runBlocking {
-            val list = mutableListOf<Comment>()
+    override lateinit var comments: MutableCollection<Comment>
 
-            member.storage.comments.forEach {
-                list.add(CommentImpl(service, service.lookupCommentStorage(it)!!))
-            }
-
-            list
+    init {
+        submitAsyncIO {
+            comments = member.storage.comments.map {
+                CommentImpl(member, service.lookupCommentStorage(it)!!)
+            }.toMutableList()
         }
     }
 
@@ -37,7 +35,7 @@ class CommentRepositoryImpl(private val service: AbstractMemberService, private 
         service.currentStatus.increaseComment()
         member.storage.comments.add(id)
 
-        return CommentImpl(service, storage)
+        return CommentImpl(member, storage)
     }
 
     override fun set(creator: Long, content: String) {

@@ -12,13 +12,11 @@ import ink.pmc.common.member.api.punishment.PunishmentLogger
 import ink.pmc.common.member.comment.CommentRepositoryImpl
 import ink.pmc.common.member.data.AbstractBedrockAccount
 import ink.pmc.common.member.data.BedrockAccountImpl
-import ink.pmc.common.member.data.DataContainerImpl
 import ink.pmc.common.member.data.MemberModifierImpl
 import ink.pmc.common.member.punishment.PunishmentLoggerImpl
 import ink.pmc.common.member.storage.BedrockAccountStorage
 import ink.pmc.common.member.storage.MemberStorage
 import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.runBlocking
 import org.bson.types.ObjectId
 import java.time.Instant
 import java.util.*
@@ -41,13 +39,8 @@ class MemberImpl(
         if (storage.lastJoinedAt != null) Instant.ofEpochMilli(storage.lastJoinedAt!!) else null
     override var lastQuitedAt: Instant? =
         if (storage.lastQuitedAt != null) Instant.ofEpochMilli(storage.lastQuitedAt!!) else null
-    override val dataContainer: DataContainer =
-        DataContainerImpl(service, runBlocking { service.lookupDataContainerStorage(storage.dataContainer)!! })
-    override var bedrockAccount: BedrockAccount? = if (storage.bedrockAccount == null) {
-        null
-    } else {
-        BedrockAccountImpl(service, runBlocking { service.lookupBedrockAccount(storage.bedrockAccount!!)!! })
-    }
+    override lateinit var dataContainer: DataContainer
+    override var bedrockAccount: BedrockAccount? = null
     override var bio: String? = storage.bio
     override var isHidden: Boolean = storage.isHidden ?: false
     override val commentRepository: CommentRepository = CommentRepositoryImpl(service, this)
@@ -70,12 +63,12 @@ class MemberImpl(
         return service.members.find(eq("uid", uid)).firstOrNull() != null
     }
 
-    override fun linkBedrock(xuid: String, gamertag: String): BedrockAccount? {
+    override suspend fun linkBedrock(xuid: String, gamertag: String): BedrockAccount? {
         if (bedrockAccount != null) {
             unlinkBedrock()
         }
 
-        if (runBlocking { service.bedrockAccounts.find(eq("", xuid)).firstOrNull() } != null) {
+        if (service.bedrockAccounts.find(eq("", xuid)).firstOrNull() != null) {
             return null
         }
 
@@ -89,7 +82,7 @@ class MemberImpl(
         )
 
         service.currentStatus.increaseBedrockAccount()
-        val account = BedrockAccountImpl(service, storage)
+        val account = BedrockAccountImpl(this, storage)
         bedrockAccount = account
 
         return account

@@ -14,6 +14,8 @@ import ink.pmc.common.member.comment.AbstractComment
 import ink.pmc.common.member.comment.AbstractCommentRepository
 import ink.pmc.common.member.data.AbstractBedrockAccount
 import ink.pmc.common.member.data.AbstractDataContainer
+import ink.pmc.common.member.data.BedrockAccountImpl
+import ink.pmc.common.member.data.DataContainerImpl
 import ink.pmc.common.member.punishment.AbstractPunishment
 import ink.pmc.common.member.storage.*
 import ink.pmc.common.utils.bedrock.xuid
@@ -22,7 +24,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.future.asCompletableFuture
 import kotlinx.coroutines.future.await
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import org.bson.types.ObjectId
 import java.time.Duration
@@ -47,7 +48,7 @@ class MemberServiceImpl(
     override val bedrockAccounts: MongoCollection<BedrockAccountStorage> =
         database.getCollection("member_bedrock_accounts")
     private val cacheLoader =
-        AsyncCacheLoader<Long, Member> { key, _ -> submitAsyncIO<Member> { loadMember(key) }.asCompletableFuture() }
+        AsyncCacheLoader<Long, Member?> { key, _ -> submitAsyncIO<Member?> { loadMember(key) }.asCompletableFuture() }
     override val loadedMembers: AsyncLoadingCache<Long, Member?> = Caffeine.newBuilder()
         .refreshAfterWrite(Duration.ofMinutes(10))
         .expireAfterWrite(Duration.ofMinutes(10))
@@ -76,13 +77,18 @@ class MemberServiceImpl(
 
     private val service = this
 
-    private suspend fun loadMember(uid: Long): Member {
-        val memberStorage = members.find(eq("uid", uid)).firstOrNull()!!
+    private suspend fun loadMember(uid: Long): Member? {
+        val memberStorage = members.find(eq("uid", uid)).firstOrNull() ?: return null
         return createMemberInstance(memberStorage)
     }
 
     private suspend fun createMemberInstance(storage: MemberStorage): Member = withContext(Dispatchers.IO) {
-        MemberImpl(service, storage)
+        MemberImpl(service, storage).apply {
+            dataContainer = DataContainerImpl(this, lookupDataContainerStorage(storage.dataContainer)!!)
+            if (storage.bedrockAccount != null) {
+                bedrockAccount = BedrockAccountImpl(this, lookupBedrockAccount(storage.bedrockAccount!!)!!)
+            }
+        }
     }
 
     override suspend fun lastUid(): Long {
@@ -153,6 +159,11 @@ class MemberServiceImpl(
             false
         )
 
+        val member = MemberImpl(this, memberStorage)
+        member.dataContainer = DataContainerImpl(member, dataContainerStorage)
+
+        loadedMembers.put(nextMember, CompletableFuture.completedFuture(member))
+
         if (authType.isBedrock) {
             if (bedrockAccounts.find(eq("xuid", profile.uuid)).firstOrNull() != null) {
                 return null
@@ -166,23 +177,15 @@ class MemberServiceImpl(
                 name
             )
 
+            member.bedrockAccount = BedrockAccountImpl(member, bedrockStorage)
             updateBedrockAccount(bedrockStorage)
             currentStatus.increaseBedrockAccount()
         }
 
         updateDataContainer(dataContainerStorage)
+        update(member)
         currentStatus.increaseDataContainer()
         currentStatus.increaseMember()
-
-        val member = MemberImpl(this, memberStorage)
-        loadedMembers.put(nextMember, CompletableFuture.completedFuture(member))
-        update(member)
-
-        // 初始化需要从数据库获取的值
-        member.dataContainer.owner
-        if (member.bedrockAccount != null) {
-            member.bedrockAccount!!.linkedWith
-        }
 
         return member
     }
@@ -212,10 +215,6 @@ class MemberServiceImpl(
             )
         ).firstOrNull() ?: return null
         return loadedMembers.get(member.uid).await()
-    }
-
-    override fun get(uid: Long): Member? = runBlocking {
-        lookup(uid)
     }
 
     override suspend fun exist(uid: Long): Boolean {
@@ -371,7 +370,7 @@ class MemberServiceImpl(
                         it.time.toEpochMilli(),
                         it.belongs.uid,
                         it.isRevoked,
-                        it.executor.uid
+                        it.executor().uid
                     )
                     updatePunishment(storage)
                 }
