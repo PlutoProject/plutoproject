@@ -4,19 +4,18 @@ import com.github.benmanes.caffeine.cache.AsyncCacheLoader
 import com.github.benmanes.caffeine.cache.AsyncLoadingCache
 import com.github.benmanes.caffeine.cache.Caffeine
 import com.mongodb.client.model.Filters.*
+import com.mongodb.client.model.ReplaceOptions
 import com.mongodb.kotlin.client.coroutine.MongoCollection
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
 import ink.pmc.common.member.api.AuthType
 import ink.pmc.common.member.api.Member
 import ink.pmc.common.member.api.WhitelistStatus
 import ink.pmc.common.member.api.data.MemberModifier
-import ink.pmc.common.member.comment.AbstractComment
 import ink.pmc.common.member.comment.AbstractCommentRepository
 import ink.pmc.common.member.data.AbstractBedrockAccount
 import ink.pmc.common.member.data.AbstractDataContainer
 import ink.pmc.common.member.data.BedrockAccountImpl
 import ink.pmc.common.member.data.DataContainerImpl
-import ink.pmc.common.member.punishment.AbstractPunishment
 import ink.pmc.common.member.storage.*
 import ink.pmc.common.utils.bedrock.xuid
 import ink.pmc.common.utils.concurrent.submitAsyncIO
@@ -55,6 +54,8 @@ class MemberServiceImpl(
         .buildAsync(cacheLoader)
     override lateinit var currentStatus: StatusStorage
 
+    private val updateOptions = ReplaceOptions().upsert(true)
+
     override suspend fun lookupMemberStorage(uid: Long): MemberStorage? {
         return members.find(eq("uid", uid)).firstOrNull()
     }
@@ -75,12 +76,12 @@ class MemberServiceImpl(
         return bedrockAccounts.find(eq("id", id)).firstOrNull()
     }
 
-    private val service = this
-
     private suspend fun loadMember(uid: Long): Member? {
         val memberStorage = members.find(eq("uid", uid)).firstOrNull() ?: return null
         return createMemberInstance(memberStorage)
     }
+
+    private val service = this
 
     private suspend fun createMemberInstance(storage: MemberStorage): Member = withContext(Dispatchers.IO) {
         MemberImpl(service, storage).apply {
@@ -293,39 +294,37 @@ class MemberServiceImpl(
     }
 
     private suspend fun updateMember(member: MemberStorage) {
-        members.deleteOne(eq("uid", member.uid))
-        members.insertOne(member)
+        members.replaceOne(eq("uid", member.uid), member, updateOptions)
     }
 
     private suspend fun updatePunishment(punishment: PunishmentStorage) {
-        punishments.deleteOne(eq("id", punishment.id))
-        punishments.insertOne(punishment)
+        punishments.replaceOne(eq("id", punishment.id), punishment, updateOptions)
     }
 
     private suspend fun updateComment(comment: CommentStorage, removal: Boolean = false) {
-        comments.deleteOne(eq("id", comment.id))
-
-        if (!removal) {
-            comments.insertOne(comment)
+        if (removal) {
+            comments.deleteOne(eq("id", comment.id))
+            return
         }
+
+        comments.replaceOne(eq("id", comment.id), comment, updateOptions)
     }
 
     private suspend fun updateDataContainer(dataContainer: DataContainerStorage) {
-        dataContainers.deleteOne(eq("id", dataContainer.id))
-        dataContainers.insertOne(dataContainer)
+        dataContainers.replaceOne(eq("id", dataContainer.id), dataContainer, updateOptions)
     }
 
     private suspend fun updateBedrockAccount(bedrockAccountStorage: BedrockAccountStorage, removal: Boolean = false) {
-        bedrockAccounts.deleteOne(eq("id", bedrockAccountStorage.id))
-
-        if (!removal) {
-            bedrockAccounts.insertOne(bedrockAccountStorage)
+        if (removal) {
+            bedrockAccounts.deleteOne(eq("id", bedrockAccountStorage.id))
+            return
         }
+
+        bedrockAccounts.replaceOne(eq("id", bedrockAccountStorage.id), bedrockAccountStorage, updateOptions)
     }
 
     private suspend fun updateStatus(statusStorage: StatusStorage) {
-        status.deleteOne(exists("lastMember"))
-        status.insertOne(statusStorage)
+        status.replaceOne(exists("lastMember"), statusStorage, updateOptions)
     }
 
     override suspend fun update(member: Member) {
@@ -336,11 +335,10 @@ class MemberServiceImpl(
 
             // 使用 run 包裹，来在不同的部分使用一样的临时变量名
             run {
-                val storage = (member as AbstractMember).storage
                 val punishments = member.punishmentLogger.historyPunishments.map { it.id }.toMutableList()
                 val comments = member.commentRepository.comments.map { it.id }.toMutableList()
                 val newStorage = MemberStorage(
-                    storage.objectId,
+                    ObjectId(),
                     member.uid,
                     member.id.toString(),
                     member.name,
@@ -362,9 +360,8 @@ class MemberServiceImpl(
 
             run {
                 member.punishmentLogger.historyPunishments.forEach {
-                    val objectId = (it as AbstractPunishment).storage.objectId
                     val storage = PunishmentStorage(
-                        objectId,
+                        ObjectId(),
                         it.id,
                         it.type.toString(),
                         it.time.toEpochMilli(),
@@ -379,10 +376,8 @@ class MemberServiceImpl(
             run {
                 val repo = member.commentRepository as AbstractCommentRepository
                 repo.comments.forEach {
-                    val abs = (it as AbstractComment)
-                    val obj = abs.storage.objectId
                     val storage = CommentStorage(
-                        obj,
+                        ObjectId(),
                         it.id,
                         it.createdAt.toEpochMilli(),
                         it.creator.uid,
@@ -397,9 +392,8 @@ class MemberServiceImpl(
 
             run {
                 val container = member.dataContainer as AbstractDataContainer
-                val obj = container.storage.objectId
                 val storage = DataContainerStorage(
-                    obj,
+                    ObjectId(),
                     container.id,
                     container.owner.uid,
                     container.createdAt.toEpochMilli(),
@@ -417,9 +411,8 @@ class MemberServiceImpl(
 
                 if (abs.bedrockAccount != null) {
                     val account = member.bedrockAccount as AbstractBedrockAccount
-                    val obj = account.storage.objectId
                     val storage = BedrockAccountStorage(
-                        obj,
+                        ObjectId(),
                         account.id,
                         account.linkedWith.uid,
                         account.xuid,
@@ -434,20 +427,12 @@ class MemberServiceImpl(
     }
 
     override suspend fun update(uid: Long) {
-        val member = loadedMembers.asMap().values.firstOrNull { it.await()?.uid == uid }
-        if (member == null) {
-            return
-        }
-
+        loadedMembers.asMap().values.firstOrNull { it.await()?.uid == uid } ?: return
         update(loadedMembers.get(uid).await()!!)
     }
 
     override suspend fun update(uuid: UUID) {
-        val member = loadedMembers.asMap().values.firstOrNull { it.await()?.id == uuid }
-        if (member == null) {
-            return
-        }
-
+        val member = loadedMembers.asMap().values.firstOrNull { it.await()?.id == uuid } ?: return
         update(member.await()!!)
     }
 
