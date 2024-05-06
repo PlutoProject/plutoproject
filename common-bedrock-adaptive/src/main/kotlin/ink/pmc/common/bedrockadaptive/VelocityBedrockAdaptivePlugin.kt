@@ -13,7 +13,10 @@ import com.velocitypowered.api.plugin.annotation.DataDirectory
 import com.velocitypowered.api.proxy.ProxyServer
 import dev.simplix.protocolize.api.Protocolize
 import ink.pmc.common.bedrockadaptive.velocity.*
-import ink.pmc.common.bedrockadaptive.velocity.replacements.*
+import ink.pmc.common.bedrockadaptive.velocity.replacements.BedrockColorSerializerReplacement
+import ink.pmc.common.bedrockadaptive.velocity.replacements.GeyserAttackIndicatorReplacement
+import ink.pmc.common.bedrockadaptive.velocity.replacements.SystemChatPacketDecodeReplacement
+import ink.pmc.common.bedrockadaptive.velocity.replacements.TitlePacketDecodeReplacement
 import ink.pmc.common.utils.PLUTO_VERSION
 import ink.pmc.common.utils.platform.proxy
 import java.nio.file.Path

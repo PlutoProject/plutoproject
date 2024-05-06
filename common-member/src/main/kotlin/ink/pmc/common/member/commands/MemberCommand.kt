@@ -90,7 +90,12 @@ object MemberCommand : VelocityCommand() {
             }
 
             memberService.create(profile.name, authType)
-            sender.sendMessage(MEMBER_CREATE_SUCCEED.replace("<player>", Component.text(profile.name).color(mochaYellow)))
+            sender.sendMessage(
+                MEMBER_CREATE_SUCCEED.replace(
+                    "<player>",
+                    Component.text(profile.name).color(mochaYellow)
+                )
+            )
         }
 
     private val memberModifyExemptWhitelist = commandManager.commandBuilder("member")

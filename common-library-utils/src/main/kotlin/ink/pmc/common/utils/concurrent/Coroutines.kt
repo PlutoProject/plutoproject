@@ -34,7 +34,8 @@ fun submitAsyncIO(block: suspend CoroutineScope.() -> Unit) = GlobalScope.launch
 
 @Suppress("UNUSED")
 @OptIn(DelicateCoroutinesApi::class)
-fun <T> submitAsyncIO(block: suspend CoroutineScope.() -> T): Deferred<T> = GlobalScope.async(Dispatchers.IO) { block() }
+fun <T> submitAsyncIO(block: suspend CoroutineScope.() -> T): Deferred<T> =
+    GlobalScope.async(Dispatchers.IO) { block() }
 
 @Suppress("UNUSED")
 @OptIn(DelicateCoroutinesApi::class)

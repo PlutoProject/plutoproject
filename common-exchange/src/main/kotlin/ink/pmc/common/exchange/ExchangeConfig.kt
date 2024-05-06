@@ -9,6 +9,7 @@ object ExchangeConfig {
 
     object ExchangeLobby {
         lateinit var worldName: String
+
         object TeleportLocation {
             var x: Double = 0.0
             var y: Double = 128.0

@@ -20,11 +20,12 @@ class PaperExchangeService(override val lobby: ExchangeLobby) : AbstractPaperExc
             return
         }
 
+        inExchange.add(player.uniqueId)
+        player.member().refresh()!!
         snapshotStatus(player)
         player.threadSafeTeleport(exchangeLobby.teleportLocation)
         applyExchangeStatus(player)
         hidePlayer(player)
-        inExchange.add(player.uniqueId)
         player.sendMessage(EXCHANGE_START_SUCCEED)
         player.member().update()
     }
@@ -35,10 +36,11 @@ class PaperExchangeService(override val lobby: ExchangeLobby) : AbstractPaperExc
             return
         }
 
+        inExchange.remove(player.uniqueId)
+        player.member().refresh()!!
         clearInventory(player)
         restoreStatus(player, goBack)
         showPlayer(player)
-        inExchange.remove(player.uniqueId)
         player.sendMessage(EXCHANGE_END_SUCCEED)
         player.member().update()
     }
@@ -65,10 +67,10 @@ class PaperExchangeService(override val lobby: ExchangeLobby) : AbstractPaperExc
             return 0
         }
 
+        inExchange.remove(player.uniqueId)
         clearInventory(player)
         restoreStatus(player)
         showPlayer(player)
-        inExchange.remove(player.uniqueId)
         player.sendMessage(
             CHECKOUT_SUCCEED
                 .replace("<amount>", Component.text(price).color(mochaText))

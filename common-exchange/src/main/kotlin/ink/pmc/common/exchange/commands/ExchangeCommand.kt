@@ -12,7 +12,6 @@ import ink.pmc.common.utils.concurrent.sync
 import ink.pmc.common.utils.visual.mochaYellow
 import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
-import org.bukkit.block.data.type.WallSign
 import org.bukkit.entity.Player
 import org.incendo.cloud.kotlin.coroutines.extension.suspendingHandler
 

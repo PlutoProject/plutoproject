@@ -27,7 +27,8 @@ class PunishmentLoggerImpl(private val service: AbstractMemberService, private v
             if (member.storage.punishments.isEmpty()) {
                 return@submitAsyncIO
             }
-            lastPunishment = PunishmentImpl(member, service, service.lookupPunishmentStorage(member.storage.punishments.last())!!)
+            lastPunishment =
+                PunishmentImpl(member, service, service.lookupPunishmentStorage(member.storage.punishments.last())!!)
         }
     }
 

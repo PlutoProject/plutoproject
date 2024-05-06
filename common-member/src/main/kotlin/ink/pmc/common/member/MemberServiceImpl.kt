@@ -11,11 +11,13 @@ import ink.pmc.common.member.api.AuthType
 import ink.pmc.common.member.api.Member
 import ink.pmc.common.member.api.WhitelistStatus
 import ink.pmc.common.member.api.data.MemberModifier
+import ink.pmc.common.member.comment.AbstractComment
 import ink.pmc.common.member.comment.AbstractCommentRepository
 import ink.pmc.common.member.data.AbstractBedrockAccount
 import ink.pmc.common.member.data.AbstractDataContainer
 import ink.pmc.common.member.data.BedrockAccountImpl
 import ink.pmc.common.member.data.DataContainerImpl
+import ink.pmc.common.member.punishment.AbstractPunishment
 import ink.pmc.common.member.storage.*
 import ink.pmc.common.utils.bedrock.xuid
 import ink.pmc.common.utils.concurrent.submitAsyncIO
@@ -76,12 +78,12 @@ class MemberServiceImpl(
         return bedrockAccounts.find(eq("id", id)).firstOrNull()
     }
 
+    private val service = this
+
     private suspend fun loadMember(uid: Long): Member? {
         val memberStorage = members.find(eq("uid", uid)).firstOrNull() ?: return null
         return createMemberInstance(memberStorage)
     }
-
-    private val service = this
 
     private suspend fun createMemberInstance(storage: MemberStorage): Member = withContext(Dispatchers.IO) {
         MemberImpl(service, storage).apply {
@@ -335,10 +337,11 @@ class MemberServiceImpl(
 
             // 使用 run 包裹，来在不同的部分使用一样的临时变量名
             run {
+                val storage = (member as AbstractMember).storage
                 val punishments = member.punishmentLogger.historyPunishments.map { it.id }.toMutableList()
                 val comments = member.commentRepository.comments.map { it.id }.toMutableList()
                 val newStorage = MemberStorage(
-                    ObjectId(),
+                    storage.objectId,
                     member.uid,
                     member.id.toString(),
                     member.name,
@@ -360,8 +363,9 @@ class MemberServiceImpl(
 
             run {
                 member.punishmentLogger.historyPunishments.forEach {
+                    val objectId = (it as AbstractPunishment).storage.objectId
                     val storage = PunishmentStorage(
-                        ObjectId(),
+                        objectId,
                         it.id,
                         it.type.toString(),
                         it.time.toEpochMilli(),
@@ -376,8 +380,10 @@ class MemberServiceImpl(
             run {
                 val repo = member.commentRepository as AbstractCommentRepository
                 repo.comments.forEach {
+                    val abs = (it as AbstractComment)
+                    val obj = abs.storage.objectId
                     val storage = CommentStorage(
-                        ObjectId(),
+                        obj,
                         it.id,
                         it.createdAt.toEpochMilli(),
                         it.creator.uid,
@@ -392,8 +398,9 @@ class MemberServiceImpl(
 
             run {
                 val container = member.dataContainer as AbstractDataContainer
+                val obj = container.storage.objectId
                 val storage = DataContainerStorage(
-                    ObjectId(),
+                    obj,
                     container.id,
                     container.owner.uid,
                     container.createdAt.toEpochMilli(),
@@ -411,8 +418,9 @@ class MemberServiceImpl(
 
                 if (abs.bedrockAccount != null) {
                     val account = member.bedrockAccount as AbstractBedrockAccount
+                    val obj = account.storage.objectId
                     val storage = BedrockAccountStorage(
-                        ObjectId(),
+                        obj,
                         account.id,
                         account.linkedWith.uid,
                         account.xuid,

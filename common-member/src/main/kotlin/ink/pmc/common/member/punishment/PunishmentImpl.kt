@@ -6,7 +6,11 @@ import ink.pmc.common.member.api.punishment.PunishmentType
 import ink.pmc.common.member.storage.PunishmentStorage
 import java.time.Instant
 
-class PunishmentImpl(override val belongs: Member, private val service: AbstractMemberService, override val storage: PunishmentStorage) :
+class PunishmentImpl(
+    override val belongs: Member,
+    private val service: AbstractMemberService,
+    override val storage: PunishmentStorage
+) :
     AbstractPunishment() {
 
     override val id: Long = storage.id
