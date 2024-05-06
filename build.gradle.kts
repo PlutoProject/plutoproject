@@ -59,7 +59,7 @@ allprojects {
         "com.github.shynixn.mccoroutine:mccoroutine-bukkit-api:2.15.0",
         "com.github.shynixn.mccoroutine:mccoroutine-bukkit-core:2.15.0",
         "com.github.shynixn.mccoroutine:mccoroutine-velocity-api:2.15.0",
-        "com.github.shynixn.mccoroutine:mccoroutine-velocity-core:2.15.0",
+        "com.github.shynixn.mccoroutine:mccoroutine-velocity-core:2.16.0",
         "net.bytebuddy:byte-buddy:1.14.14",
         "net.bytebuddy:byte-buddy-agent:1.14.14",
         "org.jsoup:jsoup:1.17.2"
