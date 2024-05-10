@@ -2,15 +2,15 @@ import xyz.jpenilla.runpaper.task.RunServer
 
 plugins {
     id("java")
-    id("com.github.johnrengelman.shadow") version "8.1.1"
     id("java-library")
-    kotlin("plugin.serialization") version "1.9.23"
-    kotlin("jvm") version "1.9.21"
-    id("xyz.jpenilla.run-paper") version "2.2.4"
-    kotlin("kapt") version "1.9.23"
+    alias(libs.plugins.kotlin)
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.kotlin.kapt)
+    alias(libs.plugins.shadow)
+    alias(libs.plugins.runpaper)
 }
 
-fun kotlinDep(s: String): String {
+fun kotlin(s: String): String {
     return "org.jetbrains.kotlin.$s"
 }
 
@@ -18,14 +18,12 @@ allprojects {
 
     apply {
         plugin("java")
-        plugin("com.github.johnrengelman.shadow")
         plugin("java-library")
-        plugin(kotlinDep("jvm"))
-        plugin(kotlinDep("plugin.serialization"))
-        plugin(kotlinDep("kapt"))
+        plugin(kotlin("jvm"))
+        plugin(kotlin("plugin.serialization"))
+        plugin(kotlin("kapt"))
+        plugin("com.github.johnrengelman.shadow")
     }
-
-    val bukkitAPIVersion by extra("1.20")
 
     this.group = "ink.pmc.common"
     this.version = "1.1.0"
@@ -41,64 +39,36 @@ allprojects {
         maven(uri("https://mvn.exceptionflug.de/repository/exceptionflug-public/"))
     }
 
-    val common = listOf(
-        "com.squareup.okhttp3:okhttp:5.0.0-alpha.12",
-        "com.google.code.gson:gson:2.10.1",
-        "org.mongodb:mongodb-driver-kotlin-coroutine:5.0.1",
-        "com.github.ben-manes.caffeine:caffeine:3.1.8",
-        "com.catppuccin:catppuccin-palette:1.0.0",
-        "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0",
-        "com.electronwill.night-config:core:3.6.7",
-        "com.electronwill.night-config:toml:3.6.0",
-        "org.incendo:cloud-paper:2.0.0-beta.5",
-        "org.incendo:cloud-velocity:2.0.0-beta.2",
-        "org.incendo:cloud-kotlin-coroutines:2.0.0-beta.4",
-        "io.netty:netty-all:4.1.109.Final",
-        // Floodgate 依赖问题，见 https://github.com/GeyserMC/Floodgate/issues/495
-        //"org.geysermc.geyser:api:2.2.0-SNAPSHOT"
-        "com.github.shynixn.mccoroutine:mccoroutine-bukkit-api:2.15.0",
-        "com.github.shynixn.mccoroutine:mccoroutine-bukkit-core:2.15.0",
-        "com.github.shynixn.mccoroutine:mccoroutine-velocity-api:2.15.0",
-        "com.github.shynixn.mccoroutine:mccoroutine-velocity-core:2.15.0",
-        "net.bytebuddy:byte-buddy:1.14.14",
-        "net.bytebuddy:byte-buddy-agent:1.14.14",
-        "org.jsoup:jsoup:1.17.2"
-    )
-
-    val paper = listOf<String>()
-
-    val velocity = listOf<String>()
-    val project = this
-
-    dependencies {
-        common.forEach {
-            if (project.name != "common-dependency-loader-velocity") {
-                compileOnlyApi(it)
-            } else {
-                implementation(it)
-            }
+    fun DependencyHandlerScope.dep(dep: Provider<*>) {
+        if (project.name.contains("dependency-loader")) {
+            implementation(dep)
+            return
         }
+        compileOnly(dep)
     }
 
-    if (!this.name.contains("velocity")) {
-        dependencies {
-            paper.forEach { compileOnlyApi(it) }
-            compileOnly("ink.pmc.leaves:leaves-pmc-api:1.20.4-R0.1-SNAPSHOT")
-        }
-    } else if (this.name.contains("velocity")) {
-        dependencies {
-            velocity.forEach { compileOnlyApi(it) }
-            compileOnly("com.velocitypowered:velocity-api:3.3.0-SNAPSHOT")
-            kapt("com.velocitypowered:velocity-api:3.3.0-SNAPSHOT")
-        }
+    dependencies {
+        dep(rootProject.libs.bundles.kotlin)
+        dep(rootProject.libs.bundles.mccoroutine)
+        dep(rootProject.libs.bundles.cloud)
+        dep(rootProject.libs.bundles.bytebuddy)
+        dep(rootProject.libs.bundles.nightconfig)
+        dep(rootProject.libs.paper.api)
+        dep(rootProject.libs.velocity.api)
+        dep(rootProject.libs.okhttp)
+        dep(rootProject.libs.gson)
+        dep(rootProject.libs.mongodb)
+        dep(rootProject.libs.catppuccin)
+        dep(rootProject.libs.netty)
+        dep(rootProject.libs.jsoup)
     }
 
     tasks.processResources {
         inputs.property("version", rootProject.version)
-        inputs.property("api", bukkitAPIVersion)
+        inputs.property("api", libs.versions.bukkit)
 
         filesMatching("plugin.yml") {
-            expand("version" to version, "api" to bukkitAPIVersion)
+            expand("version" to version, "api" to libs.versions.bukkit)
         }
     }
 
@@ -110,11 +80,6 @@ allprojects {
     }
 }
 
-dependencies {
-    compileOnly("com.velocitypowered:velocity-api:3.3.0-SNAPSHOT")
-    kapt("com.velocitypowered:velocity-api:3.3.0-SNAPSHOT")
-}
-
 fun trim(jarName: String): String {
     return jarName.replace(
         jarName.substring(
@@ -124,8 +89,6 @@ fun trim(jarName: String): String {
         ""
     )
 }
-
-val velocityShared = listOf("common-member")
 
 val String.trimmed: String
     get() = trim(this)
@@ -210,12 +173,6 @@ tasks.register("runFoliaWithoutDebugMode") {
     group = "run paper"
     dependsOn(tasks.named("markAsNonDebugMode"), tasks.named("runFolia"))
 }
-
-// 不要用这个，会和 Paper 和 Folia 的测试共用文件夹
-// Velocity 还是单独开一个服务端测试吧
-/*tasks.register("Velocity") {
-    runTest(tasks.runVelocity.get(), true)
-}*/
 
 runPaper.folia.registerTask()
 runPaper.disablePluginJarDetection()
