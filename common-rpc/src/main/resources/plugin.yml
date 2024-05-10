@@ -1,0 +1,8 @@
+main: ink.pmc.common.rpc.PaperRpcPlugin
+name: common-rpc
+version: ${version}
+api-version: ${api}
+folia-supported: true
+depend:
+  - common-dependency-loader
+  - common-utils

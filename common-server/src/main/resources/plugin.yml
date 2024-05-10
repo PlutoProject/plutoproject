@@ -1,8 +1,0 @@
-main: ink.pmc.common.server.PaperServerPlugin
-name: common-server
-version: ${version}
-api-version: ${api}
-folia-supported: true
-depend:
-  - common-dependency-loader
-  - common-utils

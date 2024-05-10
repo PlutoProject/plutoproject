@@ -1,3 +1,4 @@
+import org.jetbrains.kotlin.ir.backend.js.compile
 import xyz.jpenilla.runpaper.task.RunServer
 
 plugins {
@@ -8,6 +9,7 @@ plugins {
     alias(libs.plugins.kotlin.kapt)
     alias(libs.plugins.shadow)
     alias(libs.plugins.runpaper)
+    alias(libs.plugins.protobuf)
 }
 
 fun kotlin(s: String): String {
@@ -25,6 +27,7 @@ allprojects {
         plugin(kotlin("plugin.serialization"))
         plugin(kotlin("kapt"))
         plugin("com.github.johnrengelman.shadow")
+        plugin("com.google.protobuf")
     }
 
     this.group = "ink.pmc.common"
@@ -55,6 +58,8 @@ allprojects {
         dep(rootProject.libs.bundles.cloud)
         dep(rootProject.libs.bundles.bytebuddy)
         dep(rootProject.libs.bundles.nightconfig)
+        dep(rootProject.libs.bundles.protobuf)
+        dep(rootProject.libs.bundles.grpc)
         dep(rootProject.libs.paper.api)
         dep(rootProject.libs.velocity.api)
         dep(rootProject.libs.okhttp)
@@ -79,6 +84,31 @@ allprojects {
         archiveClassifier = ""
         onlyIf { project != rootProject && !project.name.startsWith("common-library-") }
         destinationDirectory.set(file("$rootDir/build-outputs"))
+    }
+
+    protobuf {
+        protoc {
+            artifact = rootProject.libs.protoc.asProvider().get().toString()
+        }
+        plugins {
+            create("grpc") {
+                artifact = rootProject.libs.protoc.gen.grpc.java.get().toString()
+            }
+            create("grpckt") {
+                artifact = rootProject.libs.protoc.gen.grpc.kotlin.get().toString() + ":jdk8@jar"
+            }
+        }
+        generateProtoTasks {
+            all().forEach {
+                it.plugins {
+                    create("grpc")
+                    create("grpckt")
+                }
+                it.builtins {
+                    create("kotlin")
+                }
+            }
+        }
     }
 }
 
