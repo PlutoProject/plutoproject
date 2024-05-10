@@ -3,7 +3,7 @@ kotlin = "1.9.24"
 kotlinx-coroutine = "1.8.0"
 bukkit = "1.20"
 nightconfig = "3.6.7"
-mccoroutine = "2.15.0"
+mccoroutine = "2.16.0"
 bytebuddy = "1.14.14"
 
 [libraries]
