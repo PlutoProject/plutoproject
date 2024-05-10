@@ -1,0 +1,7 @@
+syntax = "proto3";
+package ink.pmc.common.member.proto;
+option optimize_for = CODE_SIZE;
+
+message MemberDiff {
+
+}

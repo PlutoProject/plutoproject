@@ -1,0 +1,12 @@
+syntax = "proto3";
+package ink.pmc.common.member.proto;
+option optimize_for = CODE_SIZE;
+
+import "google/protobuf/empty.proto";
+import "masterbound/MemberUpdateNotify.proto";
+import "nodebound/MemberUpdateBroadcast.proto";
+
+service MemberRpc {
+  rpc NotifyMemberUpdate(masterbound.MemberUpdateNotify) returns (masterbound.MemberUpdateNotify);
+  rpc MonitorMemberUpdate(google.protobuf.Empty) returns (nodebound.MemberUpdateNotify);
+}
