@@ -1,4 +1,3 @@
-import org.jetbrains.kotlin.ir.backend.js.compile
 import xyz.jpenilla.runpaper.task.RunServer
 
 plugins {
