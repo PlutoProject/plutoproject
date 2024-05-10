@@ -1,6 +1,0 @@
-token = "123456"
-address = "localhost:5677"
-
-[configuration]
-id = 0
-name = "proxy"

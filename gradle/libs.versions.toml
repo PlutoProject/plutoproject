@@ -10,6 +10,7 @@ grpc-kotlin = "1.4.1"
 
 [libraries]
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
+kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
 kotlinx-coroutine-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutine" }
 paper-api = { module = "io.papermc.paper:paper-api", version = "1.20.4-R0.1-SNAPSHOT" }
 velocity-api = { module = "com.velocitypowered:velocity-api", version = "3.3.0-SNAPSHOT" }
@@ -37,19 +38,21 @@ protocollib = { module = "com.comphenix.protocol:ProtocolLib", version = "5.1.0"
 spark-api = { module = "me.lucko:spark-api", version = "0.1-SNAPSHOT" }
 protoc = { group = "com.google.protobuf", name = "protoc", version.ref = "protobuf" }
 protobuf-kotlin = { group = "com.google.protobuf", name = "protobuf-kotlin", version.ref = "protobuf" }
+grpc-protobuf = { group = "io.grpc", name = "grpc-protobuf", version.ref = "grpc" }
 grpc-okhttp = { group = "io.grpc", name = "grpc-okhttp", version.ref = "grpc" }
+grpc-stub = { group = "io.grpc", name = "grpc-stub", version.ref = "grpc" }
 grpc-kotlin-stub = { group = "io.grpc", name = "grpc-kotlin-stub", version.ref = "grpc-kotlin" }
 protoc-gen-grpc-java = { group = "io.grpc", name = "protoc-gen-grpc-java", version.ref = "grpc" }
 protoc-gen-grpc-kotlin = { group = "io.grpc", name = "protoc-gen-grpc-kotlin", version.ref = "grpc-kotlin" }
 
 [bundles]
-kotlin = ["kotlin-stdlib", "kotlinx-coroutine-core"]
+kotlin = ["kotlin-stdlib", "kotlin-reflect", "kotlinx-coroutine-core"]
 nightconfig = ["nightconfig-core", "nightconfig-toml"]
 cloud = ["cloud-paper", "cloud-velocity", "cloud-coroutines"]
 mccoroutine = ["mccoroutine-bukkit-api", "mccoroutine-bukkit-core", "mccoroutine-velocity-api", "mccoroutine-velocity-core"]
 bytebuddy = ["bytebuddy", "bytebuddy-agent"]
 protobuf = ["protobuf-kotlin"]
-grpc = ["grpc-okhttp", "grpc-kotlin-stub"]
+grpc = ["grpc-protobuf", "grpc-okhttp", "grpc-stub", "grpc-kotlin-stub"]
 
 [plugins]
 kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }

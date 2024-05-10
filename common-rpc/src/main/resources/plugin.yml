@@ -1,5 +1,5 @@
-main: ink.pmc.common.server.PaperServerPlugin
-name: common-server
+main: ink.pmc.common.rpc.PaperRpcPlugin
+name: common-rpc
 version: ${version}
 api-version: ${api}
 folia-supported: true
