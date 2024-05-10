@@ -45,5 +45,5 @@ bytebuddy = ["bytebuddy", "bytebuddy-agent"]
 kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
-runpaper = { id = "xyz.jpenilla.run-paper", version = "2.2.4" }
+runpaper = { id = "xyz.jpenilla.run-paper", version = "2.3.0" }
 shadow = { id = "com.github.johnrengelman.shadow", version = "8.1.1" }
