@@ -14,7 +14,7 @@ velocity-api = { module = "com.velocitypowered:velocity-api", version = "3.3.0-S
 velocity = { module = "com.velocitypowered:velocity", version = "3.3.0-379" }
 okhttp = { module = "com.squareup.okhttp3:okhttp", version = "5.0.0-alpha.12" }
 gson = { module = "com.google.code.gson:gson", version = "2.10.1" }
-mongodb = { module = "org.mongodb:mongodb-driver-kotlin-coroutine", version = "5.0.1" }
+mongodb = { module = "org.mongodb:mongodb-driver-kotlin-coroutine", version = "5.1.0" }
 caffeine = { module = "com.github.ben-manes.caffeine:caffeine", version = "3.1.8" }
 catppuccin = { module = "com.catppuccin:catppuccin-palette", version = "1.0.0" }
 nightconfig-core = { module = "com.electronwill.night-config:core", version.ref = "nightconfig" }
