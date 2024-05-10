@@ -14,6 +14,8 @@ fun kotlin(s: String): String {
     return "org.jetbrains.kotlin.$s"
 }
 
+val bukkitApiVersion by extra("1.20")
+
 allprojects {
 
     apply {
@@ -65,10 +67,10 @@ allprojects {
 
     tasks.processResources {
         inputs.property("version", rootProject.version)
-        inputs.property("api", libs.versions.bukkit)
+        inputs.property("api", bukkitApiVersion)
 
         filesMatching("plugin.yml") {
-            expand("version" to version, "api" to libs.versions.bukkit)
+            expand("version" to version, "api" to bukkitApiVersion)
         }
     }
 
