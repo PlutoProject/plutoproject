@@ -71,8 +71,7 @@ abstract class BaseMemberServiceImpl(
     private val cacheLoader =
         AsyncCacheLoader<Long, AbstractMember?> { key, _ -> submitAsyncIO<AbstractMember?> { loadMember(key) }.asCompletableFuture() }
     override val loadedMembers: AsyncLoadingCache<Long, AbstractMember?> = Caffeine.newBuilder()
-        .refreshAfterWrite(Duration.ofMinutes(10))
-        .expireAfterWrite(Duration.ofMinutes(10))
+        .refreshAfterWrite(Duration.ofMinutes(5))
         .buildAsync(cacheLoader)
     private lateinit var status: StatusStorage
     override lateinit var currentStatus: StatusStorage

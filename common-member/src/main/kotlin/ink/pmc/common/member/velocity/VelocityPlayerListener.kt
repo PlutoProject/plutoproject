@@ -76,6 +76,13 @@ object VelocityPlayerListener {
         if (member.bedrockAccount != null) {
             removeFloodgatePlayer(member.bedrockAccount!!.xuid.uuid!!)
         }
+
+        // 清理缓存的 Member
+        if (memberService.loadedMembers.getIfPresent(member.uid) != null) {
+            return
+        }
+
+        memberService.loadedMembers.synchronous().invalidate(member.uid)
     }
 
     @Subscribe(order = PostOrder.FIRST)

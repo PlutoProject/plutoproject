@@ -15,8 +15,12 @@ class PaperMemberService(database: MongoDatabase) : BaseMemberServiceImpl(databa
     }
 
     override suspend fun monitorUpdate() {
-        stub.monitorMemberUpdate(Empty.getDefaultInstance()).collect {
-            handleUpdate(it)
+        try {
+            stub.monitorMemberUpdate(Empty.getDefaultInstance()).collect {
+                handleUpdate(it)
+            }
+        } catch (_: Exception) {
+            // Ignore exception
         }
     }
 
