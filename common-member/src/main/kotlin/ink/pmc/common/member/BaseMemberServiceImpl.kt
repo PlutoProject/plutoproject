@@ -4,15 +4,15 @@ import com.github.benmanes.caffeine.cache.AsyncCacheLoader
 import com.github.benmanes.caffeine.cache.AsyncLoadingCache
 import com.github.benmanes.caffeine.cache.Caffeine
 import com.mongodb.client.model.Filters.*
+import com.mongodb.client.model.PushOptions
 import com.mongodb.client.model.UpdateOptions
 import com.mongodb.client.model.Updates.*
 import com.mongodb.kotlin.client.coroutine.MongoCollection
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
 import ink.pmc.common.member.api.AuthType
-import ink.pmc.common.member.api.BedrockAccount
 import ink.pmc.common.member.api.Member
 import ink.pmc.common.member.api.WhitelistStatus
-import ink.pmc.common.member.api.data.DataContainer
+import ink.pmc.common.member.api.comment.Comment
 import ink.pmc.common.member.api.data.MemberModifier
 import ink.pmc.common.member.api.punishment.Punishment
 import ink.pmc.common.member.data.BedrockAccountImpl
@@ -36,6 +36,10 @@ import org.bson.conversions.Bson
 import org.bson.types.ObjectId
 import org.javers.core.diff.Diff
 import org.javers.core.diff.changetype.ValueChange
+import org.javers.core.diff.changetype.container.ElementValueChange
+import org.javers.core.diff.changetype.container.ListChange
+import org.javers.core.diff.changetype.container.ValueAdded
+import org.javers.core.diff.changetype.container.ValueRemoved
 import org.javers.core.diff.changetype.map.EntryAdded
 import org.javers.core.diff.changetype.map.EntryRemoved
 import org.javers.core.diff.changetype.map.EntryValueChange
@@ -44,12 +48,12 @@ import java.time.Duration
 import java.time.Instant
 import java.util.*
 import java.util.concurrent.CompletableFuture
-import javax.xml.stream.events.Comment
 
-@Suppress("UNUSED")
 const val UID_START = 10000L
+const val COMMENTS_KEY = "_comments"
+const val PUNISHMENTS_LEY = "_punishments"
 
-private typealias DiffType = MemberDiffOuterClass.DiffType
+typealias DiffType = MemberDiffOuterClass.DiffType
 
 @Suppress("UNUSED")
 abstract class BaseMemberServiceImpl(
@@ -70,23 +74,36 @@ abstract class BaseMemberServiceImpl(
         .buildAsync(cacheLoader)
     private lateinit var status: StatusStorage
     override lateinit var currentStatus: StatusStorage
-
     private val updateOptions = UpdateOptions().upsert(true)
 
     override suspend fun lookupPunishment(id: Long): Punishment? {
-        TODO()
+        return withContext(Dispatchers.IO) {
+            val memberStorage = members.find(elemMatch("contents.$PUNISHMENTS_LEY.id", eq(id))).firstOrNull()
+                ?: return@withContext null
+            val member = lookup(memberStorage.uid)!!
+            member.punishmentContainer[id]
+        }
     }
 
     override suspend fun lookupComment(id: Long): Comment? {
-        TODO()
+        return withContext(Dispatchers.IO) {
+            val memberStorage = members.find(elemMatch("contents.$COMMENTS_KEY.id", eq(id))).firstOrNull()
+                ?: return@withContext null
+            val member = lookup(memberStorage.uid)!!
+            member.commentContainer[id]
+        }
     }
 
-    override suspend fun lookupDataContainer(id: Long): DataContainer? {
-        TODO("Not yet implemented")
+    override suspend fun lookupBedrockAccountStorage(id: Long): BedrockAccountStorage? {
+        return withContext(Dispatchers.IO) {
+            bedrockAccounts.find(eq("id", id)).firstOrNull()
+        }
     }
 
-    override suspend fun lookupBedrockAccount(id: Long): BedrockAccount? {
-        TODO("Not yet implemented")
+    override suspend fun lookupDataContainerStorage(id: Long): DataContainerStorage? {
+        return withContext(Dispatchers.IO) {
+            dataContainers.find(eq("id", id)).firstOrNull()
+        }
     }
 
     private suspend fun loadMember(uid: Long): AbstractMember? {
@@ -256,11 +273,11 @@ abstract class BaseMemberServiceImpl(
     }
 
     override suspend fun existPunishment(id: Long): Boolean {
-        TODO()
+        return lookupPunishment(id) != null
     }
 
     override suspend fun existComment(id: Long): Boolean {
-        TODO()
+        return lookupComment(id) != null
     }
 
     override suspend fun existDataContainer(id: Long): Boolean {
@@ -310,7 +327,37 @@ abstract class BaseMemberServiceImpl(
     }
 
     private suspend fun saveMember(old: MemberStorage?, new: MemberStorage): Diff {
-        TODO()
+        val bson = mutableListOf<Bson>()
+        val diff = new.diff(old)
+
+        if (!diff.hasChanges()) {
+            return diff
+        }
+
+        diff.changes.filterIsInstance<ValueChange>().forEach {
+            bson.add(set(it.propertyName, it.right))
+        }
+
+        diff.changes.filterIsInstance<ListChange>().forEach { containerChange ->
+            val arrayName = containerChange.propertyName
+
+            containerChange.changes.filterIsInstance<ValueAdded>().forEach {
+                bson.add(pushEach(arrayName, listOf(it.value), PushOptions().position(it.index)))
+            }
+
+            containerChange.changes.filterIsInstance<ElementValueChange>().forEach {
+                bson.add(set("$arrayName.${it.index}", it.rightValue))
+            }
+
+            containerChange.changes.filterIsInstance<ValueRemoved>().forEach {
+                bson.add(unset("$arrayName.${it.index}"))
+                bson.add(pull(arrayName, null))
+            }
+        }
+
+        val updates = combine(bson)
+        members.updateOne(eq("uid", new.uid), updates, updateOptions)
+        return diff
     }
 
     private suspend fun saveBedrockAccount(old: BedrockAccountStorage?, new: BedrockAccountStorage?): Diff {

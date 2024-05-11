@@ -9,7 +9,6 @@ import org.javers.core.diff.changetype.map.EntryRemoved
 import org.javers.core.diff.changetype.map.EntryValueChange
 import org.javers.core.diff.changetype.map.MapChange
 
-@Suppress("UNCHECKED_CAST")
 data class DataContainerStorage(
     @BsonId val objectId: ObjectId,
     var id: Long,

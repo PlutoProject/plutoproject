@@ -2,12 +2,11 @@ package ink.pmc.common.member.comment
 
 import ink.pmc.common.member.AbstractMember
 import ink.pmc.common.member.AbstractMemberService
+import ink.pmc.common.member.COMMENTS_KEY
 import ink.pmc.common.member.api.comment.Comment
 import ink.pmc.common.member.memberService
 import ink.pmc.common.member.storage.CommentStorage
 import ink.pmc.common.utils.concurrent.submitAsyncIO
-
-private const val COMMENTS_KEY = "_comments"
 
 class CommentContainerImpl(private val service: AbstractMemberService, private val member: AbstractMember) :
     AbstractCommentContainer() {

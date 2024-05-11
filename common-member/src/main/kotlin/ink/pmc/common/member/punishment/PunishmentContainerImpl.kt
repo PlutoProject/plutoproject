@@ -2,14 +2,13 @@ package ink.pmc.common.member.punishment
 
 import ink.pmc.common.member.AbstractMember
 import ink.pmc.common.member.AbstractMemberService
+import ink.pmc.common.member.PUNISHMENTS_LEY
 import ink.pmc.common.member.api.Member
 import ink.pmc.common.member.api.punishment.Punishment
 import ink.pmc.common.member.api.punishment.PunishmentType
 import ink.pmc.common.member.memberService
 import ink.pmc.common.member.storage.PunishmentStorage
 import ink.pmc.common.utils.concurrent.submitAsyncIO
-
-private const val PUNISHMENTS_LEY = "_punishments"
 
 class PunishmentContainerImpl(private val service: AbstractMemberService, private val member: AbstractMember) :
     AbstractPunishmentContainer() {

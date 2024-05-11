@@ -1,11 +1,11 @@
 package ink.pmc.common.member.api
 
+import ink.pmc.common.member.api.comment.Comment
 import ink.pmc.common.member.api.data.DataContainer
 import ink.pmc.common.member.api.data.MemberModifier
 import ink.pmc.common.member.api.punishment.Punishment
 import java.time.Instant
 import java.util.*
-import javax.xml.stream.events.Comment
 
 @Suppress("UNUSED", "INAPPLICABLE_JVM_NAME")
 interface IMemberService {
@@ -45,10 +45,6 @@ interface IMemberService {
     suspend fun lookupPunishment(id: Long): Punishment?
 
     suspend fun lookupComment(id: Long): Comment?
-
-    suspend fun lookupDataContainer(id: Long): DataContainer?
-
-    suspend fun lookupBedrockAccount(id: Long): BedrockAccount?
 
     suspend fun isWhitelisted(uid: Long): Boolean
 
