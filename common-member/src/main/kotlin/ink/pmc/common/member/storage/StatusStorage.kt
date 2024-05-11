@@ -21,7 +21,7 @@ data class StatusStorage(
 
     override fun applyDiff(diff: Diff): Diffable<StatusStorage> {
         diff.changes.filterIsInstance<ValueChange>().forEach {
-            when(it.propertyName) {
+            when (it.propertyName) {
                 "lastMember" -> lastMember = it.right as Long
                 "lastPunishment" -> lastPunishment = it.right as Long
                 "lastComment" -> lastComment = it.right as Long

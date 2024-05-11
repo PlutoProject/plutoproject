@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 class VelocityMemberService(database: MongoDatabase) : BaseMemberServiceImpl(database) {
 
     private val monitorFlow = MutableSharedFlow<MemberUpdateNotify>()
-    val rpcService  = object : MemberRpcGrpcKt.MemberRpcCoroutineImplBase() {
+    val rpcService = object : MemberRpcGrpcKt.MemberRpcCoroutineImplBase() {
         override suspend fun notifyMemberUpdate(request: MemberUpdateNotify): Empty {
             handleUpdate(request)
             notifyUpdate(request)

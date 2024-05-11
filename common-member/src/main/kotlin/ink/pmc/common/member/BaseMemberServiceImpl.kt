@@ -474,12 +474,13 @@ abstract class BaseMemberServiceImpl(
             val member = loadedMembers.get(memberId).get()!! as MemberImpl
             val memberDiff = notify.diff
 
-            when(memberDiff.type) {
+            when (memberDiff.type) {
                 DiffType.MODIFY -> {
                     val diff = memberDiff.diff.toDiff()!!
                     val diffedMemberStorage = member.storage.copy().applyDiff(diff)
                     member.reload(diffedMemberStorage as MemberStorage)
                 }
+
                 else -> {}
             }
 
@@ -491,31 +492,35 @@ abstract class BaseMemberServiceImpl(
 
             if (memberDiff.hasBedrockAccountDiff()) {
                 val bedrockAccountDiff = memberDiff.bedrockAccountDiff
-                when(bedrockAccountDiff.type) {
+                when (bedrockAccountDiff.type) {
                     DiffType.ADD -> {
                         val storage = bedrockAccountDiff.storage.toObject(BedrockAccountStorage::class.java)
                         member.bedrockAccount = BedrockAccountImpl(member, storage)
                     }
+
                     DiffType.REMOVE -> {
                         member.bedrockAccount = null
                     }
+
                     DiffType.MODIFY -> {
                         val diff = bedrockAccountDiff.diff.toDiff()!!
                         val diffedBedrockAccountStorage = member.bedrockAccount!!.storage.copy().applyDiff(diff)
                         member.bedrockAccount!!.reload(diffedBedrockAccountStorage as BedrockAccountStorage)
                     }
+
                     else -> {}
                 }
             }
 
             if (memberDiff.hasDataContainerDiff()) {
                 val dataContainerDiff = memberDiff.dataContainerDiff
-                when(dataContainerDiff.type) {
+                when (dataContainerDiff.type) {
                     DiffType.MODIFY -> {
                         val diff = dataContainerDiff.diff.toDiff()!!
                         val diffedDataContainerStorage = member.dataContainer.storage.copy().applyDiff(diff)
                         member.dataContainer.reload(diffedDataContainerStorage as DataContainerStorage)
                     }
+
                     else -> {}
                 }
             }

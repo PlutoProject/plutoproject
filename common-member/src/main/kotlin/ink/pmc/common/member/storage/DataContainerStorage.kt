@@ -21,7 +21,7 @@ data class DataContainerStorage(
 
     override fun applyDiff(diff: Diff): Diffable<DataContainerStorage> {
         diff.changes.filterIsInstance<ValueChange>().forEach {
-            when(it.propertyName) {
+            when (it.propertyName) {
                 "id" -> id = it.right as Long
                 "owner" -> owner = it.right as Long
                 "createdAt" -> createdAt = it.right as Long

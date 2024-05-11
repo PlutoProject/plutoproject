@@ -1,6 +1,5 @@
 package ink.pmc.common.member.punishment
 
-import ink.pmc.common.member.AbstractMemberService
 import ink.pmc.common.member.api.Member
 import ink.pmc.common.member.api.punishment.PunishmentType
 import ink.pmc.common.member.storage.PunishmentStorage

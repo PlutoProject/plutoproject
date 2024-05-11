@@ -1,6 +1,5 @@
 package ink.pmc.common.member.punishment
 
-import ink.pmc.common.member.api.punishment.Punishment
 import ink.pmc.common.member.api.punishment.PunishmentContainer
 
 abstract class AbstractPunishmentContainer : PunishmentContainer {

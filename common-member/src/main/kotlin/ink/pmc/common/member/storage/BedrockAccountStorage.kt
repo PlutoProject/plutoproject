@@ -16,7 +16,7 @@ data class BedrockAccountStorage(
 
     override fun applyDiff(diff: Diff): Diffable<BedrockAccountStorage> {
         diff.changes.filterIsInstance<ValueChange>().forEach {
-            when(it.propertyName) {
+            when (it.propertyName) {
                 "id" -> id = it.right as Long
                 "linkedWith" -> linkedWith = it.right as Long
                 "xuid" -> xuid = it.right as String
