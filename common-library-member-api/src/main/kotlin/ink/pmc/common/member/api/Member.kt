@@ -1,9 +1,9 @@
 package ink.pmc.common.member.api
 
-import ink.pmc.common.member.api.comment.CommentRepository
+import ink.pmc.common.member.api.comment.CommentContainer
 import ink.pmc.common.member.api.data.DataContainer
 import ink.pmc.common.member.api.data.MemberModifier
-import ink.pmc.common.member.api.punishment.PunishmentLogger
+import ink.pmc.common.member.api.punishment.PunishmentContainer
 import java.time.Instant
 import java.util.*
 
@@ -24,8 +24,8 @@ interface Member {
     val bedrockAccount: BedrockAccount?
     val bio: String?
     val isHidden: Boolean
-    val commentRepository: CommentRepository
-    val punishmentLogger: PunishmentLogger
+    val commentContainer: CommentContainer
+    val punishmentContainer: PunishmentContainer
     val modifier: MemberModifier
 
     fun exemptWhitelist()
@@ -38,8 +38,8 @@ interface Member {
 
     suspend fun isValid(): Boolean
 
-    suspend fun update()
+    suspend fun save()
 
-    suspend fun refresh(): Member?
+    suspend fun reload(): Member?
 
 }

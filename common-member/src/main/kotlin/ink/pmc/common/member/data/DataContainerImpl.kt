@@ -8,6 +8,7 @@ import ink.pmc.common.utils.json.toJsonString
 import ink.pmc.common.utils.json.toObject
 import java.time.Instant
 
+@Suppress("UNCHECKED_CAST")
 class DataContainerImpl(override val owner: Member, override val storage: DataContainerStorage) :
     AbstractDataContainer() {
 
@@ -74,6 +75,19 @@ class DataContainerImpl(override val owner: Member, override val storage: DataCo
 
     override fun getBoolean(key: String): Boolean {
         return get(key, Boolean::class.java) ?: false
+    }
+
+    override fun <T> getCollection(key: String, type: Class<T>): Collection<T>? {
+        return try {
+            val obj = get(key, Any::class.java)
+            if (obj is Collection<*>) {
+                obj as Collection<T>
+            } else {
+                null
+            }
+        } catch (e: Exception) {
+            null
+        }
     }
 
     override fun contains(key: String): Boolean {

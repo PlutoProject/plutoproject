@@ -4,6 +4,8 @@ import ink.pmc.common.member.UID_START
 import ink.pmc.common.utils.concurrent.withLock
 import org.bson.codecs.pojo.annotations.BsonId
 import org.bson.types.ObjectId
+import org.javers.core.diff.Diff
+import org.javers.core.diff.changetype.ValueChange
 import java.util.concurrent.locks.ReentrantLock
 
 data class StatusStorage(
@@ -13,9 +15,21 @@ data class StatusStorage(
     var lastComment: Long,
     var lastDataContainer: Long,
     var lastBedrockAccount: Long
-) {
+) : Diffable<StatusStorage>() {
 
     private val accessLock = ReentrantLock()
+
+    override fun applyDiff(diff: Diff) {
+        diff.changes.filterIsInstance<ValueChange>().forEach {
+            when(it.propertyName) {
+                "lastMember" -> lastMember = it.right as Long
+                "lastPunishment" -> lastPunishment = it.right as Long
+                "lastComment" -> lastComment = it.right as Long
+                "lastDataContainer" -> lastDataContainer = it.right as Long
+                "lastBedrockAccount" -> lastBedrockAccount = it.right as Long
+            }
+        }
+    }
 
     fun nextMember(): Long {
         if (lastMember == -1L) {

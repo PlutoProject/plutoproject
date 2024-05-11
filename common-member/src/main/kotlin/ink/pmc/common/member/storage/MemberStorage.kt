@@ -2,6 +2,7 @@ package ink.pmc.common.member.storage
 
 import org.bson.codecs.pojo.annotations.BsonId
 import org.bson.types.ObjectId
+import org.javers.core.diff.Diff
 
 data class MemberStorage(
     @BsonId val objectId: ObjectId,
@@ -19,5 +20,12 @@ data class MemberStorage(
     var bio: String?,
     val punishments: MutableList<Long>,
     val comments: MutableList<Long>,
-    val isHidden: Boolean?
-)
+    val isHidden: Boolean?,
+    var new: Boolean = false
+) : Diffable<MemberStorage>() {
+
+    override fun applyDiff(diff: Diff) {
+        TODO("Not yet implemented")
+    }
+
+}

@@ -39,6 +39,8 @@ interface DataContainer {
 
     fun getBoolean(key: String): Boolean
 
+    fun <T> getCollection(key: String, type: Class<T>): Collection<T>?
+
     fun contains(key: String): Boolean
 
 }

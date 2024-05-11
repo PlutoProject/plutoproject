@@ -3,19 +3,34 @@ package ink.pmc.common.member.comment
 import ink.pmc.common.member.AbstractMember
 import ink.pmc.common.member.AbstractMemberService
 import ink.pmc.common.member.api.comment.Comment
+import ink.pmc.common.member.memberService
 import ink.pmc.common.member.storage.CommentStorage
 import ink.pmc.common.utils.concurrent.submitAsyncIO
-import org.bson.types.ObjectId
 
-class CommentRepositoryImpl(private val service: AbstractMemberService, private val member: AbstractMember) :
-    AbstractCommentRepository() {
+private const val COMMENTS_KEY = "_comments"
 
+class CommentContainerImpl(private val service: AbstractMemberService, private val member: AbstractMember) :
+    AbstractCommentContainer() {
+
+    private val commentStorages: MutableCollection<CommentStorage> = mutableListOf()
     override lateinit var comments: MutableCollection<Comment>
+
+    private fun loadComments() {
+        commentStorages.clear()
+
+        if (!member.dataContainer.contains(COMMENTS_KEY)) {
+            return
+        }
+
+        val storages = member.dataContainer.getCollection(COMMENTS_KEY, CommentStorage::class.java)!!.toMutableList()
+        commentStorages.addAll(storages)
+    }
 
     init {
         submitAsyncIO {
-            comments = member.storage.comments.map {
-                CommentImpl(member, service.lookupCommentStorage(it)!!)
+            loadComments()
+            comments = commentStorages.map {
+                CommentImpl(it, memberService.lookup(it.creator)!!)
             }.toMutableList()
         }
     }
@@ -24,7 +39,6 @@ class CommentRepositoryImpl(private val service: AbstractMemberService, private 
         val id = service.currentStatus.nextComment()
 
         val storage = CommentStorage(
-            ObjectId(),
             id,
             System.currentTimeMillis(),
             creator,
@@ -33,13 +47,31 @@ class CommentRepositoryImpl(private val service: AbstractMemberService, private 
         )
 
         service.currentStatus.increaseComment()
-        member.storage.comments.add(id)
-
-        return CommentImpl(member, storage)
+        return CommentImpl(storage, member)
     }
 
     override fun set(creator: Long, content: String) {
         comment(creator, content)
+    }
+
+    override fun reload() {
+        loadComments()
+    }
+
+    override fun save() {
+        member.dataContainer.remove(COMMENTS_KEY)
+
+        val storages = comments.map {
+            CommentStorage(
+                it.id,
+                it.createdAt.toEpochMilli(),
+                it.creator.uid,
+                it.content,
+                it.isModified
+            )
+        }
+
+        member.dataContainer[COMMENTS_KEY] = storages
     }
 
     override fun modify(id: Long, new: String): Comment? {
@@ -55,18 +87,13 @@ class CommentRepositoryImpl(private val service: AbstractMemberService, private 
         return comment
     }
 
-    override fun lookup(id: Long): Comment? {
+    override fun get(id: Long): Comment? {
         if (!exist(id)) {
             return null
         }
 
         val comment = comments.first { it.id == id } as AbstractComment
-
         return comment
-    }
-
-    override fun get(id: Long): Comment? {
-        return lookup(id)
     }
 
     override fun exist(id: Long): Boolean {

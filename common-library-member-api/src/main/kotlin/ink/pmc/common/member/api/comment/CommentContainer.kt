@@ -3,7 +3,7 @@ package ink.pmc.common.member.api.comment
 import ink.pmc.common.member.api.Member
 
 @Suppress("UNUSED")
-interface CommentRepository {
+interface CommentContainer {
 
     val comments: Collection<Comment>
 
@@ -16,8 +16,6 @@ interface CommentRepository {
     operator fun set(creator: Member, content: String)
 
     fun modify(id: Long, new: String): Comment?
-
-    fun lookup(id: Long): Comment?
 
     operator fun get(id: Long): Comment?
 

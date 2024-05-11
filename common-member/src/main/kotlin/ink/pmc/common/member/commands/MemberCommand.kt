@@ -120,7 +120,7 @@ object MemberCommand : VelocityCommand() {
                 return@suspendingHandler
             }
 
-            val member = memberService.lookup(name, authType)!!.refresh()!!
+            val member = memberService.lookup(name, authType)!!.reload()!!
 
             if (!member.isWhitelisted) {
                 sender.sendMessage(
@@ -139,7 +139,7 @@ object MemberCommand : VelocityCommand() {
             }
 
             member.exemptWhitelist()
-            member.update()
+            member.save()
 
             val player = proxy.getPlayer(member.id)
 
@@ -176,7 +176,7 @@ object MemberCommand : VelocityCommand() {
                 return@suspendingHandler
             }
 
-            val member = memberService.lookup(name, authType)!!.refresh()!!
+            val member = memberService.lookup(name, authType)!!.reload()!!
 
             if (member.isWhitelisted) {
                 sender.sendMessage(
@@ -189,7 +189,7 @@ object MemberCommand : VelocityCommand() {
             }
 
             member.grantWhitelist()
-            member.update()
+            member.save()
 
             sender.sendMessage(
                 MEMBER_MODIFY_GRAND_WHITELIST_SUCCEED
@@ -229,7 +229,7 @@ object MemberCommand : VelocityCommand() {
                 return@suspendingHandler
             }
 
-            val member = memberService.lookup(name, authType)!!.refresh()!!
+            val member = memberService.lookup(name, authType)!!.reload()!!
 
             if (member.bedrockAccount != null) {
                 sender.sendMessage(MEMBER_MODIFY_LINK_BE_FAILED_ALREADY_LINKED)
@@ -258,7 +258,7 @@ object MemberCommand : VelocityCommand() {
             }
 
             member.linkBedrock(xuid, gamertag)
-            member.update()
+            member.save()
 
             sender.sendMessage(
                 MEMBER_MODIFY_LINK_BE_SUCCEED
@@ -294,7 +294,7 @@ object MemberCommand : VelocityCommand() {
                 return@suspendingHandler
             }
 
-            val member = memberService.lookup(name, authType)!!.refresh()!!
+            val member = memberService.lookup(name, authType)!!.reload()!!
 
             if (member.bedrockAccount == null) {
                 sender.sendMessage(MEMBER_MODIFY_UNLINK_BE_FAILED_NOT_LINKED)
@@ -302,7 +302,7 @@ object MemberCommand : VelocityCommand() {
             }
 
             member.unlinkBedrock()
-            member.update()
+            member.save()
 
             if (isFloodgatePlayer(member.id)) {
                 val player = proxy.getPlayer(member.id).get()
@@ -333,7 +333,7 @@ object MemberCommand : VelocityCommand() {
                 return@suspendingHandler
             }
 
-            val member = memberService.lookup(name, authType)!!.refresh()!!
+            val member = memberService.lookup(name, authType)!!.reload()!!
 
             if (member.isHidden) {
                 sender.sendMessage(
@@ -344,7 +344,7 @@ object MemberCommand : VelocityCommand() {
             }
 
             member.modifier.hide(true)
-            member.update()
+            member.save()
 
             sender.sendMessage(
                 MEMBER_MODIFY_HIDE_SUCCEED
@@ -373,7 +373,7 @@ object MemberCommand : VelocityCommand() {
                 return@suspendingHandler
             }
 
-            val member = memberService.lookup(name, authType)!!.refresh()!!
+            val member = memberService.lookup(name, authType)!!.reload()!!
 
             if (!member.isHidden) {
                 sender.sendMessage(
@@ -384,7 +384,7 @@ object MemberCommand : VelocityCommand() {
             }
 
             member.modifier.hide(false)
-            member.update()
+            member.save()
 
             sender.sendMessage(
                 MEMBER_MODIFY_UN_HIDE_SUCCEED
@@ -412,7 +412,7 @@ object MemberCommand : VelocityCommand() {
                 return@suspendingHandler
             }
 
-            val member = memberService.lookup(name, authType)!!.refresh()!!
+            val member = memberService.lookup(name, authType)!!.reload()!!
 
             sender.sendMessage(
                 MEMBER_LOOKUP

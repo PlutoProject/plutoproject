@@ -7,6 +7,7 @@ bytebuddy = "1.14.14"
 protobuf = "3.25.3"
 grpc = "1.62.2"
 grpc-kotlin = "1.4.1"
+javers = "7.4.2"
 
 [libraries]
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
@@ -44,6 +45,7 @@ grpc-stub = { group = "io.grpc", name = "grpc-stub", version.ref = "grpc" }
 grpc-kotlin-stub = { group = "io.grpc", name = "grpc-kotlin-stub", version.ref = "grpc-kotlin" }
 protoc-gen-grpc-java = { group = "io.grpc", name = "protoc-gen-grpc-java", version.ref = "grpc" }
 protoc-gen-grpc-kotlin = { group = "io.grpc", name = "protoc-gen-grpc-kotlin", version.ref = "grpc-kotlin" }
+javers-core = { module = "org.javers:javers-core", version.ref = "javers" }
 
 [bundles]
 kotlin = ["kotlin-stdlib", "kotlin-reflect", "kotlinx-coroutine-core"]
@@ -53,6 +55,7 @@ mccoroutine = ["mccoroutine-bukkit-api", "mccoroutine-bukkit-core", "mccoroutine
 bytebuddy = ["bytebuddy", "bytebuddy-agent"]
 protobuf = ["protobuf-kotlin"]
 grpc = ["grpc-protobuf", "grpc-okhttp", "grpc-stub", "grpc-kotlin-stub"]
+javers = ["javers-core"]
 
 [plugins]
 kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }

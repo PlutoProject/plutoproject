@@ -1,7 +1,0 @@
-syntax = "proto3";
-package ink.pmc.common.member.proto.nodebound;
-option optimize_for = CODE_SIZE;
-
-message MemberUpdateNotify {
-
-}

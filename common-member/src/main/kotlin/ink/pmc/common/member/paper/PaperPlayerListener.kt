@@ -21,7 +21,7 @@ object PaperPlayerListener : Listener {
             return
         }
 
-        val member = memberService.lookup(player.uniqueId)!!.refresh()!!
+        val member = memberService.lookup(player.uniqueId)!!.reload()!!
 
         if (member.bedrockAccount != null) {
             removeFloodgatePlayer(member.bedrockAccount!!.xuid.uuid!!)

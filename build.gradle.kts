@@ -59,6 +59,7 @@ allprojects {
         dep(rootProject.libs.bundles.nightconfig)
         dep(rootProject.libs.bundles.protobuf)
         dep(rootProject.libs.bundles.grpc)
+        dep(rootProject.libs.bundles.javers)
         dep(rootProject.libs.paper.api)
         dep(rootProject.libs.velocity.api)
         dep(rootProject.libs.okhttp)

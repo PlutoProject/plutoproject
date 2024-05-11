@@ -4,7 +4,7 @@ import ink.pmc.common.member.api.Member
 import ink.pmc.common.member.storage.CommentStorage
 import java.time.Instant
 
-class CommentImpl(override val creator: Member, override val storage: CommentStorage) :
+class CommentImpl(override val storage: CommentStorage, override val creator: Member) :
     AbstractComment() {
 
     override val id: Long = storage.id

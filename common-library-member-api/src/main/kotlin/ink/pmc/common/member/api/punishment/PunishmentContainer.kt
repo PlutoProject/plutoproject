@@ -3,12 +3,12 @@ package ink.pmc.common.member.api.punishment
 import ink.pmc.common.member.api.Member
 
 @Suppress("UNUSED")
-interface PunishmentLogger {
+interface PunishmentContainer {
 
-    val historyPunishments: Collection<Punishment>
+    val punishments: Collection<Punishment>
     val lastPunishment: Punishment?
 
-    fun create(type: PunishmentType, executor: Member): Punishment
+    fun create(type: PunishmentType, executor: Member?): Punishment
 
     operator fun get(id: Long): Punishment?
 

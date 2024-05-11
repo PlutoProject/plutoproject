@@ -5,15 +5,15 @@ import ink.pmc.common.member.api.AuthType
 import ink.pmc.common.member.api.BedrockAccount
 import ink.pmc.common.member.api.Member
 import ink.pmc.common.member.api.WhitelistStatus
-import ink.pmc.common.member.api.comment.CommentRepository
-import ink.pmc.common.member.api.data.DataContainer
+import ink.pmc.common.member.api.comment.CommentContainer
 import ink.pmc.common.member.api.data.MemberModifier
-import ink.pmc.common.member.api.punishment.PunishmentLogger
-import ink.pmc.common.member.comment.CommentRepositoryImpl
+import ink.pmc.common.member.api.punishment.PunishmentContainer
+import ink.pmc.common.member.comment.CommentContainerImpl
 import ink.pmc.common.member.data.AbstractBedrockAccount
+import ink.pmc.common.member.data.AbstractDataContainer
 import ink.pmc.common.member.data.BedrockAccountImpl
 import ink.pmc.common.member.data.MemberModifierImpl
-import ink.pmc.common.member.punishment.PunishmentLoggerImpl
+import ink.pmc.common.member.punishment.PunishmentContainerImpl
 import ink.pmc.common.member.storage.BedrockAccountStorage
 import ink.pmc.common.member.storage.MemberStorage
 import kotlinx.coroutines.flow.firstOrNull
@@ -23,7 +23,7 @@ import java.util.*
 
 class MemberImpl(
     private val service: AbstractMemberService,
-    override val storage: MemberStorage
+    override var storage: MemberStorage
 ) : AbstractMember() {
 
     override val uid: Long = storage.uid
@@ -39,12 +39,12 @@ class MemberImpl(
         if (storage.lastJoinedAt != null) Instant.ofEpochMilli(storage.lastJoinedAt!!) else null
     override var lastQuitedAt: Instant? =
         if (storage.lastQuitedAt != null) Instant.ofEpochMilli(storage.lastQuitedAt!!) else null
-    override lateinit var dataContainer: DataContainer
-    override var bedrockAccount: BedrockAccount? = null
+    override lateinit var dataContainer: AbstractDataContainer
+    override var bedrockAccount: AbstractBedrockAccount? = null
     override var bio: String? = storage.bio
     override var isHidden: Boolean = storage.isHidden ?: false
-    override val commentRepository: CommentRepository = CommentRepositoryImpl(service, this)
-    override val punishmentLogger: PunishmentLogger = PunishmentLoggerImpl(service, this)
+    override val commentContainer: CommentContainer = CommentContainerImpl(service, this)
+    override val punishmentContainer: PunishmentContainer = PunishmentContainerImpl(service, this)
     override val modifier: MemberModifier = MemberModifierImpl(this)
 
     override fun exemptWhitelist() {
@@ -94,16 +94,15 @@ class MemberImpl(
         }
 
         val bedrockAccountStorage = (bedrockAccount as AbstractBedrockAccount).storage
-        dirtyBedrockAccounts.add(bedrockAccountStorage)
         bedrockAccount = null
     }
 
-    override suspend fun update() {
-        service.update(this)
+    override suspend fun save() {
+        service.save(this)
     }
 
-    override suspend fun refresh(): Member? {
-        return service.refresh(this)
+    override suspend fun reload(): Member? {
+        return service.reload(this)
     }
 
 }

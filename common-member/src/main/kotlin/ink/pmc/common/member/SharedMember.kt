@@ -4,6 +4,7 @@ import com.electronwill.nightconfig.core.file.FileConfig
 import com.mongodb.kotlin.client.coroutine.MongoClient
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
 import ink.pmc.common.member.api.IMemberService
+import org.javers.core.JaversBuilder
 import java.io.File
 import java.util.logging.Logger
 
@@ -15,6 +16,7 @@ lateinit var configFile: File
 lateinit var config: FileConfig
 lateinit var mongoClient: MongoClient
 lateinit var database: MongoDatabase
+val javers = JaversBuilder.javers().build()!!
 
 fun createDataDir() {
     if (!dataDir.exists()) {
@@ -41,7 +43,7 @@ fun connectDatabase() {
 fun initMemberService() {
     loadConfig(configFile)
     connectDatabase()
-    memberService = MemberServiceImpl(database)
+    // memberService = BaseMemberServiceImpl(database)
     IMemberService.instance = memberService
 }
 

@@ -2,6 +2,35 @@ syntax = "proto3";
 package ink.pmc.common.member.proto;
 option optimize_for = CODE_SIZE;
 
-message MemberDiff {
+enum DiffType {
+  ADD = 0;
+  MODIFY = 1;
+  REMOVE = 2;
+}
 
+message MemberDiff {
+  DiffType type = 1;
+  optional string storage = 2;
+  optional string diff = 3;
+  optional StatusDiff status_diff = 4;
+  optional BedrockAccountDiff bedrock_account_diff = 5;
+  optional DataContainerDiff data_container_diff = 6;
+}
+
+message StatusDiff {
+  DiffType type = 1;
+  optional string storage = 2;
+  optional string diff = 3;
+}
+
+message BedrockAccountDiff {
+  DiffType type = 1;
+  optional string storage = 2;
+  optional string diff = 3;
+}
+
+message DataContainerDiff {
+  DiffType type = 1;
+  optional string storage = 2;
+  optional string diff = 3;
 }

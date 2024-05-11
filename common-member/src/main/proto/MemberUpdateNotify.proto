@@ -1,0 +1,11 @@
+syntax = "proto3";
+package ink.pmc.common.member.proto;
+option optimize_for = CODE_SIZE;
+
+import "MemberDiff.proto";
+
+message MemberUpdateNotify {
+  string service_id = 1;
+  uint64 member_id = 2;
+  MemberDiff diff = 3;
+}
