@@ -8,9 +8,10 @@ import org.javers.core.diff.changetype.map.EntryAdded
 import org.javers.core.diff.changetype.map.EntryRemoved
 import org.javers.core.diff.changetype.map.EntryValueChange
 import org.javers.core.diff.changetype.map.MapChange
+import org.javers.core.metamodel.annotation.DiffIgnore
 
 data class DataContainerStorage(
-    @BsonId val objectId: ObjectId,
+    @BsonId @DiffIgnore val objectId: ObjectId,
     var id: Long,
     var owner: Long,
     var createdAt: Long,

@@ -8,13 +8,14 @@ import org.javers.core.diff.changetype.container.ElementValueChange
 import org.javers.core.diff.changetype.container.ListChange
 import org.javers.core.diff.changetype.container.ValueAdded
 import org.javers.core.diff.changetype.container.ValueRemoved
+import org.javers.core.metamodel.annotation.DiffIgnore
 import java.lang.reflect.Modifier
 
 private val cls = MemberStorage::class.java
 
 @Suppress("UNCHECKED_CAST")
 data class MemberStorage(
-    @BsonId val objectId: ObjectId,
+    @BsonId @DiffIgnore val objectId: ObjectId,
     var uid: Long,
     var id: String,
     var name: String,

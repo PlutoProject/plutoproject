@@ -4,9 +4,10 @@ import org.bson.codecs.pojo.annotations.BsonId
 import org.bson.types.ObjectId
 import org.javers.core.diff.Diff
 import org.javers.core.diff.changetype.ValueChange
+import org.javers.core.metamodel.annotation.DiffIgnore
 
 data class BedrockAccountStorage(
-    @BsonId var objectId: ObjectId,
+    @BsonId @DiffIgnore var objectId: ObjectId,
     var id: Long,
     var linkedWith: Long,
     var xuid: String,

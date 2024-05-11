@@ -6,10 +6,11 @@ import org.bson.codecs.pojo.annotations.BsonId
 import org.bson.types.ObjectId
 import org.javers.core.diff.Diff
 import org.javers.core.diff.changetype.ValueChange
+import org.javers.core.metamodel.annotation.DiffIgnore
 import java.util.concurrent.locks.ReentrantLock
 
 data class StatusStorage(
-    @BsonId val objectId: ObjectId,
+    @BsonId @DiffIgnore val objectId: ObjectId,
     var lastMember: Long,
     var lastPunishment: Long,
     var lastComment: Long,
