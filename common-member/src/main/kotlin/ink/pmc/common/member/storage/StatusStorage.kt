@@ -19,7 +19,7 @@ data class StatusStorage(
 
     private val accessLock = ReentrantLock()
 
-    override fun applyDiff(diff: Diff) {
+    override fun applyDiff(diff: Diff): Diffable<StatusStorage> {
         diff.changes.filterIsInstance<ValueChange>().forEach {
             when(it.propertyName) {
                 "lastMember" -> lastMember = it.right as Long
@@ -29,6 +29,8 @@ data class StatusStorage(
                 "lastBedrockAccount" -> lastBedrockAccount = it.right as Long
             }
         }
+
+        return this
     }
 
     fun nextMember(): Long {
