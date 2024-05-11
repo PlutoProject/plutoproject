@@ -4,9 +4,10 @@ import com.github.benmanes.caffeine.cache.AsyncLoadingCache
 import com.mongodb.kotlin.client.coroutine.MongoCollection
 import ink.pmc.common.member.api.IMemberService
 import ink.pmc.common.member.storage.*
+import java.io.Closeable
 import java.util.UUID
 
-abstract class AbstractMemberService : IMemberService {
+abstract class AbstractMemberService : IMemberService, Closeable {
 
     val id: UUID = UUID.randomUUID()
     abstract val statusCollection: MongoCollection<StatusStorage>

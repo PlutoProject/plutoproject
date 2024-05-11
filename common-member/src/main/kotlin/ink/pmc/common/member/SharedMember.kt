@@ -3,14 +3,13 @@ package ink.pmc.common.member
 import com.electronwill.nightconfig.core.file.FileConfig
 import com.mongodb.kotlin.client.coroutine.MongoClient
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
-import ink.pmc.common.member.api.IMemberService
 import org.javers.core.JaversBuilder
 import java.io.File
 import java.util.logging.Logger
 
 var disabled = true
 lateinit var serverLogger: Logger
-lateinit var memberService: AbstractMemberService
+lateinit var memberService: BaseMemberServiceImpl
 lateinit var dataDir: File
 lateinit var configFile: File
 lateinit var config: FileConfig
@@ -40,11 +39,9 @@ fun connectDatabase() {
     database = mongoClient.getDatabase(db)
 }
 
-fun initMemberService() {
+fun initService() {
     loadConfig(configFile)
     connectDatabase()
-    // memberService = BaseMemberServiceImpl(database)
-    IMemberService.instance = memberService
 }
 
 fun safeDisable() {

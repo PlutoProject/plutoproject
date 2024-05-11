@@ -18,6 +18,7 @@ import ink.pmc.common.member.api.punishment.Punishment
 import ink.pmc.common.member.data.BedrockAccountImpl
 import ink.pmc.common.member.data.DataContainerImpl
 import ink.pmc.common.member.proto.*
+import ink.pmc.common.member.proto.MemberDiffOuterClass.DiffType
 import ink.pmc.common.member.proto.MemberUpdateNotifyOuterClass.MemberUpdateNotify
 import ink.pmc.common.member.storage.BedrockAccountStorage
 import ink.pmc.common.member.storage.DataContainerStorage
@@ -28,6 +29,7 @@ import ink.pmc.common.utils.concurrent.io
 import ink.pmc.common.utils.concurrent.submitAsyncIO
 import ink.pmc.common.utils.json.toJsonString
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.future.asCompletableFuture
 import kotlinx.coroutines.future.await
@@ -53,13 +55,12 @@ const val UID_START = 10000L
 const val COMMENTS_KEY = "_comments"
 const val PUNISHMENTS_LEY = "_punishments"
 
-typealias DiffType = MemberDiffOuterClass.DiffType
-
 @Suppress("UNUSED")
 abstract class BaseMemberServiceImpl(
     database: MongoDatabase
 ) : AbstractMemberService() {
 
+    private var closed = false
     override val statusCollection: MongoCollection<StatusStorage> = database.getCollection("member_status")
     override val members: MongoCollection<MemberStorage> = database.getCollection("member_members")
     override val dataContainers: MongoCollection<DataContainerStorage> =
@@ -75,6 +76,7 @@ abstract class BaseMemberServiceImpl(
     private lateinit var status: StatusStorage
     override lateinit var currentStatus: StatusStorage
     private val updateOptions = UpdateOptions().upsert(true)
+    private val monitorJob: Job
 
     override suspend fun lookupPunishment(id: Long): Punishment? {
         return withContext(Dispatchers.IO) {
@@ -148,6 +150,13 @@ abstract class BaseMemberServiceImpl(
             status = lookupStatus
             currentStatus = lookupStatus
         }
+
+        monitorJob = submitAsyncIO { monitorUpdate() }
+    }
+
+    override fun close() {
+        monitorJob.cancel()
+        closed = true
     }
 
     override suspend fun create(name: String, authType: AuthType): Member? {
@@ -447,6 +456,22 @@ abstract class BaseMemberServiceImpl(
     }
 
     abstract suspend fun notifyUpdate(notify: MemberUpdateNotify)
+
+    abstract suspend fun monitorUpdate()
+
+    suspend fun handleUpdate(notify: MemberUpdateNotify) {
+        if (UUID.fromString(notify.serviceId) == id) {
+            return
+        }
+
+        val memberId = notify.memberId
+
+        if (loadedMembers.getIfPresent(memberId) == null) {
+            return
+        }
+
+        val diff = notify.diff
+    }
 
     override suspend fun save(member: Member) {
         if (member !is AbstractMember) {

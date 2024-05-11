@@ -13,13 +13,16 @@ import com.velocitypowered.api.plugin.PluginContainer
 import com.velocitypowered.api.plugin.annotation.DataDirectory
 import com.velocitypowered.api.proxy.ProxyServer
 import ink.pmc.common.member.*
+import ink.pmc.common.member.api.IMemberService
 import ink.pmc.common.member.bedrock.GeyserPlayerLinkReplacement
 import ink.pmc.common.member.bedrock.GeyserSimpleFloodgateApiReplacement
 import ink.pmc.common.member.commands.MemberCommand
+import ink.pmc.common.rpc.RpcServer
 import ink.pmc.common.utils.PLUTO_VERSION
 import ink.pmc.common.utils.command.init
 import ink.pmc.common.utils.platform.proxy
 import ink.pmc.common.utils.platform.saveDefaultConfig
+import org.checkerframework.common.initializedfields.qual.InitializedFieldsBottom
 import org.incendo.cloud.SenderMapper
 import org.incendo.cloud.execution.ExecutionCoordinator
 import org.incendo.cloud.velocity.VelocityCommandManager
@@ -37,6 +40,7 @@ lateinit var commandManager: VelocityCommandManager<CommandSource>
     dependencies = [
         Dependency(id = "common-dependency-loader-velocity"),
         Dependency(id = "common-utils"),
+        Dependency(id = "common-rpc"),
         Dependency(id = "floodgate", optional = true)
     ]
 )
@@ -51,11 +55,6 @@ class VelocityMemberPlugin @Inject constructor(suspendingPluginContainer: Suspen
     fun memberPluginVelocity(server: ProxyServer, logger: Logger, @DataDirectory dataDirectoryPath: Path) {
         serverLogger = logger
         dataDir = dataDirectoryPath.toFile()
-    }
-
-    @Subscribe
-    fun proxyInitializeEvent(event: ProxyInitializeEvent) {
-        pluginContainer = proxy.pluginManager.getPlugin("common-member").get()
 
         createDataDir()
         configFile = File(dataDir, "config.toml")
@@ -64,7 +63,17 @@ class VelocityMemberPlugin @Inject constructor(suspendingPluginContainer: Suspen
             saveDefaultConfig(VelocityMemberPlugin::class.java, configFile)
         }
 
-        initMemberService()
+        initVelocityService()
+
+        RpcServer.apply {
+            addService((memberService as VelocityMemberService).rpcService)
+        }
+    }
+
+    @Subscribe
+    fun proxyInitializeEvent(event: ProxyInitializeEvent) {
+        pluginContainer = proxy.pluginManager.getPlugin("common-member").get()
+
         GeyserPlayerLinkReplacement.init()
         GeyserSimpleFloodgateApiReplacement.init()
 
@@ -84,6 +93,12 @@ class VelocityMemberPlugin @Inject constructor(suspendingPluginContainer: Suspen
     fun proxyShutdownEvent(event: ProxyShutdownEvent) {
         safeDisable()
         disabled = true
+    }
+
+    private fun initVelocityService() {
+        initService()
+        memberService = VelocityMemberService(database)
+        IMemberService.instance = memberService
     }
 
 }

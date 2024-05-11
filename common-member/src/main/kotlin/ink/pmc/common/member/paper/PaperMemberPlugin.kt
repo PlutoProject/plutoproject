@@ -2,6 +2,7 @@ package ink.pmc.common.member.paper
 
 import com.github.shynixn.mccoroutine.bukkit.registerSuspendingEvents
 import ink.pmc.common.member.*
+import ink.pmc.common.member.api.IMemberService
 import ink.pmc.common.member.bedrock.GeyserSimpleFloodgateApiReplacement
 import ink.pmc.common.utils.isInDebugMode
 import org.bukkit.plugin.java.JavaPlugin
@@ -28,7 +29,7 @@ class PaperMemberPlugin : JavaPlugin() {
             saveResource("config.toml", false)
         }
 
-        initMemberService()
+        initPaperService()
         GeyserSimpleFloodgateApiReplacement.init()
 
         server.pluginManager.registerSuspendingEvents(PaperPlayerListener, this)
@@ -42,6 +43,12 @@ class PaperMemberPlugin : JavaPlugin() {
 
         safeDisable()
         disabled = true
+    }
+
+    private fun initPaperService() {
+        initService()
+        memberService = PaperMemberService(database)
+        IMemberService.instance = memberService
     }
 
 }
