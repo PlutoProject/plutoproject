@@ -315,7 +315,7 @@ abstract class BaseMemberServiceImpl(
         val member = lookup(uid)
 
         if (refresh) {
-            return member!!.reload()!!.modifier
+            return member!!.sync()!!.modifier
         }
 
         return member!!.modifier
@@ -329,7 +329,7 @@ abstract class BaseMemberServiceImpl(
         val member = lookup(uuid)
 
         if (refresh) {
-            return member!!.reload()!!.modifier
+            return member!!.sync()!!.modifier
         }
 
         return member!!.modifier
@@ -591,7 +591,7 @@ abstract class BaseMemberServiceImpl(
         save(member.await()!!)
     }
 
-    override suspend fun reload(member: Member): Member? {
+    override suspend fun sync(member: Member): Member? {
         if (!exist(member.uid)) {
             return null
         }
@@ -601,7 +601,7 @@ abstract class BaseMemberServiceImpl(
         return lookup(member.uid)
     }
 
-    override suspend fun reload(uid: Long): Member? {
+    override suspend fun sync(uid: Long): Member? {
         if (!exist(uid)) {
             return null
         }
@@ -611,7 +611,7 @@ abstract class BaseMemberServiceImpl(
         return lookup(uid)
     }
 
-    override suspend fun reload(uuid: UUID): Member? {
+    override suspend fun sync(uuid: UUID): Member? {
         if (!exist(uuid)) {
             return null
         }

@@ -101,8 +101,8 @@ class MemberImpl(
         service.save(this)
     }
 
-    override suspend fun reload(): Member? {
-        return service.reload(this)
+    override suspend fun sync(): Member? {
+        return service.sync(this)
     }
 
 }

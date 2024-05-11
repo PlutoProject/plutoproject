@@ -120,7 +120,7 @@ object MemberCommand : VelocityCommand() {
                 return@suspendingHandler
             }
 
-            val member = memberService.lookup(name, authType)!!.reload()!!
+            val member = memberService.lookup(name, authType)!!.sync()!!
 
             if (!member.isWhitelisted) {
                 sender.sendMessage(
@@ -176,7 +176,7 @@ object MemberCommand : VelocityCommand() {
                 return@suspendingHandler
             }
 
-            val member = memberService.lookup(name, authType)!!.reload()!!
+            val member = memberService.lookup(name, authType)!!.sync()!!
 
             if (member.isWhitelisted) {
                 sender.sendMessage(
@@ -229,7 +229,7 @@ object MemberCommand : VelocityCommand() {
                 return@suspendingHandler
             }
 
-            val member = memberService.lookup(name, authType)!!.reload()!!
+            val member = memberService.lookup(name, authType)!!.sync()!!
 
             if (member.bedrockAccount != null) {
                 sender.sendMessage(MEMBER_MODIFY_LINK_BE_FAILED_ALREADY_LINKED)
@@ -294,7 +294,7 @@ object MemberCommand : VelocityCommand() {
                 return@suspendingHandler
             }
 
-            val member = memberService.lookup(name, authType)!!.reload()!!
+            val member = memberService.lookup(name, authType)!!.sync()!!
 
             if (member.bedrockAccount == null) {
                 sender.sendMessage(MEMBER_MODIFY_UNLINK_BE_FAILED_NOT_LINKED)
@@ -333,7 +333,7 @@ object MemberCommand : VelocityCommand() {
                 return@suspendingHandler
             }
 
-            val member = memberService.lookup(name, authType)!!.reload()!!
+            val member = memberService.lookup(name, authType)!!.sync()!!
 
             if (member.isHidden) {
                 sender.sendMessage(
@@ -373,7 +373,7 @@ object MemberCommand : VelocityCommand() {
                 return@suspendingHandler
             }
 
-            val member = memberService.lookup(name, authType)!!.reload()!!
+            val member = memberService.lookup(name, authType)!!.sync()!!
 
             if (!member.isHidden) {
                 sender.sendMessage(
@@ -412,7 +412,7 @@ object MemberCommand : VelocityCommand() {
                 return@suspendingHandler
             }
 
-            val member = memberService.lookup(name, authType)!!.reload()!!
+            val member = memberService.lookup(name, authType)!!.sync()!!
 
             sender.sendMessage(
                 MEMBER_LOOKUP

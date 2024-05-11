@@ -40,6 +40,6 @@ interface Member {
 
     suspend fun save()
 
-    suspend fun reload(): Member?
+    suspend fun sync(): Member?
 
 }

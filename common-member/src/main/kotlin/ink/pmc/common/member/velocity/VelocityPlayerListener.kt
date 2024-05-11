@@ -43,7 +43,7 @@ object VelocityPlayerListener {
             return
         }
 
-        val member = memberService.lookup(uuid)!!.reload()!!
+        val member = memberService.lookup(uuid)!!.sync()!!
 
         if (member.rawName != player.username) {
             member.modifier.name(player.username)
@@ -69,7 +69,7 @@ object VelocityPlayerListener {
             return
         }
 
-        val member = memberService.lookup(uuid)!!.reload()!!
+        val member = memberService.lookup(uuid)!!.sync()!!
         member.modifier.lastQuitedAt(Instant.now())
         memberService.save(uuid)
 
@@ -88,7 +88,7 @@ object VelocityPlayerListener {
             return@io
         }
 
-        val member = memberService.lookup(uuid)!!.reload()!!
+        val member = memberService.lookup(uuid)!!.sync()!!
 
         if (isFloodgatePlayer(originalId) && originalId != uuid) {
             BedrockAdapter.adapt(event)

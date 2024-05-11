@@ -21,7 +21,7 @@ class PaperExchangeService(override val lobby: ExchangeLobby) : AbstractPaperExc
         }
 
         inExchange.add(player.uniqueId)
-        player.member().reload()!!
+        player.member().sync()!!
         snapshotStatus(player)
         player.threadSafeTeleport(exchangeLobby.teleportLocation)
         applyExchangeStatus(player)
@@ -37,7 +37,7 @@ class PaperExchangeService(override val lobby: ExchangeLobby) : AbstractPaperExc
         }
 
         inExchange.remove(player.uniqueId)
-        player.member().reload()!!
+        player.member().sync()!!
         clearInventory(player)
         restoreStatus(player, goBack)
         showPlayer(player)
@@ -50,7 +50,7 @@ class PaperExchangeService(override val lobby: ExchangeLobby) : AbstractPaperExc
             return 0
         }
 
-        val member = player.member().reload()!!
+        val member = player.member().sync()!!
         val cart = cart(player)
         val price = cart.size.toLong()
 

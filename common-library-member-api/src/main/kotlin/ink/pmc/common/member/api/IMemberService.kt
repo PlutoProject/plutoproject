@@ -1,7 +1,6 @@
 package ink.pmc.common.member.api
 
 import ink.pmc.common.member.api.comment.Comment
-import ink.pmc.common.member.api.data.DataContainer
 import ink.pmc.common.member.api.data.MemberModifier
 import ink.pmc.common.member.api.punishment.Punishment
 import java.time.Instant
@@ -56,14 +55,14 @@ interface IMemberService {
 
     suspend fun save(member: Member)
 
-    suspend fun reload(member: Member): Member?
+    suspend fun sync(member: Member): Member?
 
     suspend fun save(uid: Long)
 
-    suspend fun reload(uid: Long): Member?
+    suspend fun sync(uid: Long): Member?
 
     suspend fun save(uuid: UUID)
 
-    suspend fun reload(uuid: UUID): Member?
+    suspend fun sync(uuid: UUID): Member?
 
 }
