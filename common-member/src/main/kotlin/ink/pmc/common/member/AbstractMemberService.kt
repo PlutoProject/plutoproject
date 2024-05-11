@@ -9,7 +9,7 @@ import java.util.UUID
 abstract class AbstractMemberService : IMemberService {
 
     val id: UUID = UUID.randomUUID()
-    abstract val status: MongoCollection<StatusStorage>
+    abstract val statusCollection: MongoCollection<StatusStorage>
     abstract val members: MongoCollection<MemberStorage>
     abstract val dataContainers: MongoCollection<DataContainerStorage>
     abstract val bedrockAccounts: MongoCollection<BedrockAccountStorage>

@@ -56,7 +56,7 @@ abstract class BaseMemberServiceImpl(
     database: MongoDatabase
 ) : AbstractMemberService() {
 
-    override val status: MongoCollection<StatusStorage> = database.getCollection("member_status")
+    override val statusCollection: MongoCollection<StatusStorage> = database.getCollection("member_status")
     override val members: MongoCollection<MemberStorage> = database.getCollection("member_members")
     override val dataContainers: MongoCollection<DataContainerStorage> =
         database.getCollection("member_data_containers")
@@ -68,6 +68,7 @@ abstract class BaseMemberServiceImpl(
         .refreshAfterWrite(Duration.ofMinutes(10))
         .expireAfterWrite(Duration.ofMinutes(10))
         .buildAsync(cacheLoader)
+    private lateinit var status: StatusStorage
     override lateinit var currentStatus: StatusStorage
 
     private val updateOptions = UpdateOptions().upsert(true)
@@ -118,14 +119,17 @@ abstract class BaseMemberServiceImpl(
     }
 
     init {
-        var lookupStatus: StatusStorage?
         submitAsyncIO {
-            lookupStatus = status.find(exists("lastMember")).firstOrNull()
+            var lookupStatus: StatusStorage?
+            lookupStatus = statusCollection.find(exists("lastMember")).firstOrNull()
+
             if (lookupStatus == null) {
                 lookupStatus = StatusStorage(ObjectId(), -1, -1, -1, -1, -1)
-                status.insertOne(lookupStatus!!)
+                statusCollection.insertOne(lookupStatus)
             }
-            currentStatus = lookupStatus!!
+
+            status = lookupStatus
+            currentStatus = lookupStatus
         }
     }
 
@@ -309,13 +313,17 @@ abstract class BaseMemberServiceImpl(
         TODO()
     }
 
-    private suspend fun saveBedrockAccount(old: BedrockAccountStorage?, new: BedrockAccountStorage?): Diff? {
+    private suspend fun saveBedrockAccount(old: BedrockAccountStorage?, new: BedrockAccountStorage?): Diff {
         if (new == null) {
-            return null
+            return javers.compare(old, null)
         }
 
         val bson = mutableListOf<Bson>()
         val diff = new.diff(old)
+
+        if (!diff.hasChanges()) {
+            return diff
+        }
 
         diff.changes.filterIsInstance<ValueChange>().forEach {
             when (it.propertyName) {
@@ -334,6 +342,10 @@ abstract class BaseMemberServiceImpl(
     private suspend fun saveDataContainer(old: DataContainerStorage?, new: DataContainerStorage): Diff {
         val bson = mutableListOf<Bson>()
         val diff = new.diff(old)
+
+        if (!diff.hasChanges()) {
+            return diff
+        }
 
         diff.changes.filterIsInstance<ValueChange>().forEach {
             when (it.propertyName) {
@@ -363,8 +375,28 @@ abstract class BaseMemberServiceImpl(
         return diff
     }
 
-    private suspend fun saveStatus(statusStorage: StatusStorage): Diff {
-        TODO()
+    private suspend fun saveStatus(old: StatusStorage, new: StatusStorage): Diff {
+        val bson = mutableListOf<Bson>()
+        val diff = new.diff(old)
+
+        if (!diff.hasChanges()) {
+            return diff
+        }
+
+        diff.changes.filterIsInstance<ValueChange>().forEach {
+            when (it.propertyName) {
+                "lastMember" -> bson.add(set("lastMember", it.right))
+                "lastPunishment" -> bson.add(set("lastPunishment", it.right))
+                "lastComment" -> bson.add(set("lastComment", it.right))
+                "lastDataContainer" -> bson.add(set("lastDataContainer", it.right))
+                "lastBedrockAccount" -> bson.add(set("lastBedrockAccount", it.right))
+            }
+        }
+
+        val updates = combine(bson)
+        dataContainers.updateOne(exists("lastMember"), updates, updateOptions)
+        status = currentStatus
+        return diff
     }
 
     abstract suspend fun notifyUpdate(notify: MemberUpdateNotify)
@@ -418,14 +450,19 @@ abstract class BaseMemberServiceImpl(
                 if (member.bedrockAccount?.storage?.new == true) null else member.bedrockAccount!!.storage
             val oldDataContainerStorage = if (member.dataContainer.storage.new) null else member.dataContainer.storage
 
-            val diffStatus = saveStatus(currentStatus)
+            val diffStatus = saveStatus(status, currentStatus)
             val diffMember = saveMember(oldMemberStorage, modifiedMemberStorage)
             val diffBedrockAccount = saveBedrockAccount(oldBedrockAccountStorage, modifiedBedrockAccountStorage)
             val diffDataContainer = saveDataContainer(oldDataContainerStorage, modifiedDataContainerStorage)
 
+            if (!diffMember.hasChanges()) {
+                return@io
+            }
+
             val notify = memberUpdateNotify {
                 serviceId = id.toString()
                 memberId = member.uid
+
                 diff = memberDiff {
                     type = if (oldMemberStorage == null) {
                         storage = modifiedMemberStorage.toJsonString()
@@ -440,25 +477,29 @@ abstract class BaseMemberServiceImpl(
                         diff = diffStatus.toJson()
                     }
 
-                    bedrockAccountDiff {
-                        type = if (oldBedrockAccountStorage == null && modifiedBedrockAccountStorage != null) {
-                            storage = modifiedBedrockAccountStorage.toJsonString()
-                            DiffType.ADD
-                        } else if (modifiedBedrockAccountStorage == null) {
-                            DiffType.REMOVE
-                        } else {
-                            diff = diffBedrockAccount!!.toJson()
-                            DiffType.MODIFY
+                    if (diffBedrockAccount.hasChanges()) {
+                        bedrockAccountDiff = bedrockAccountDiff {
+                            type = if (oldBedrockAccountStorage == null && modifiedBedrockAccountStorage != null) {
+                                storage = modifiedBedrockAccountStorage.toJsonString()
+                                DiffType.ADD
+                            } else if (modifiedBedrockAccountStorage == null) {
+                                DiffType.REMOVE
+                            } else {
+                                diff = diffBedrockAccount.toJson()
+                                DiffType.MODIFY
+                            }
                         }
                     }
 
-                    dataContainerDiff {
-                        type = if (oldDataContainerStorage == null) {
-                            storage = modifiedDataContainerStorage.toJsonString()
-                            DiffType.ADD
-                        } else {
-                            diff = diffDataContainer.toJson()
-                            DiffType.MODIFY
+                    if (diffDataContainer.hasChanges()) {
+                        dataContainerDiff = dataContainerDiff {
+                            type = if (oldDataContainerStorage == null) {
+                                storage = modifiedDataContainerStorage.toJsonString()
+                                DiffType.ADD
+                            } else {
+                                diff = diffDataContainer.toJson()
+                                DiffType.MODIFY
+                            }
                         }
                     }
                 }
@@ -483,7 +524,7 @@ abstract class BaseMemberServiceImpl(
             return null
         }
 
-        currentStatus = status.find(exists("lastMember")).firstOrNull()!!
+        currentStatus = statusCollection.find(exists("lastMember")).firstOrNull()!!
         loadedMembers.synchronous().invalidate(member.uid)
         return lookup(member.uid)
     }
@@ -493,7 +534,7 @@ abstract class BaseMemberServiceImpl(
             return null
         }
 
-        currentStatus = status.find(exists("lastMember")).firstOrNull()!!
+        currentStatus = statusCollection.find(exists("lastMember")).firstOrNull()!!
         loadedMembers.synchronous().invalidate(uid)
         return lookup(uid)
     }
@@ -504,7 +545,7 @@ abstract class BaseMemberServiceImpl(
         }
 
         val member = lookup(uuid)
-        currentStatus = status.find(exists("lastMember")).firstOrNull()!!
+        currentStatus = statusCollection.find(exists("lastMember")).firstOrNull()!!
         loadedMembers.synchronous().invalidate(member!!.uid)
         return lookup(uuid)
     }
