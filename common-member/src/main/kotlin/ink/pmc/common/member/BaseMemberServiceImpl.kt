@@ -316,7 +316,7 @@ abstract class BaseMemberServiceImpl(
         val member = lookup(uid)
 
         if (refresh) {
-            return member!!.sync()!!.modifier
+            return member!!.modifier
         }
 
         return member!!.modifier
@@ -330,7 +330,7 @@ abstract class BaseMemberServiceImpl(
         val member = lookup(uuid)
 
         if (refresh) {
-            return member!!.sync()!!.modifier
+            return member!!.modifier
         }
 
         return member!!.modifier

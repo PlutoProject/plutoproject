@@ -19,7 +19,7 @@ object VelocityExchangeServiceListener {
             return
         }
 
-        val member = MemberService.lookup(uuid)!!.sync()!!
+        val member = MemberService.lookup(uuid)!!
         initExchangeData(member)
         distributeTicket(player.member())
         member.save()
