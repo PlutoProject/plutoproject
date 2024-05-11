@@ -26,14 +26,14 @@ class MemberImpl(
     override var storage: MemberStorage
 ) : AbstractMember() {
 
-    override val uid: Long = storage.uid
-    override val id: UUID = UUID.fromString(storage.id)
+    override var uid: Long = storage.uid
+    override var id: UUID = UUID.fromString(storage.id)
     override var name: String = storage.name
     override var rawName: String = storage.rawName
     override var whitelistStatus: WhitelistStatus = WhitelistStatus.valueOf(storage.whitelistStatus)
     override val isWhitelisted: Boolean
         get() = whitelistStatus == WhitelistStatus.WHITELISTED
-    override val authType: AuthType = AuthType.valueOf(storage.authType)
+    override var authType: AuthType = AuthType.valueOf(storage.authType)
     override var createdAt: Instant = Instant.ofEpochMilli(storage.createdAt)
     override var lastJoinedAt: Instant? =
         if (storage.lastJoinedAt != null) Instant.ofEpochMilli(storage.lastJoinedAt!!) else null
@@ -103,6 +103,36 @@ class MemberImpl(
 
     override suspend fun sync(): Member? {
         return service.sync(this)
+    }
+
+    override fun reload(storage: MemberStorage) {
+        uid = storage.uid
+        id = UUID.fromString(storage.id)
+        name = storage.name
+        rawName = storage.rawName
+        whitelistStatus = WhitelistStatus.valueOf(storage.whitelistStatus)
+        authType = AuthType.valueOf(storage.authType)
+        createdAt = Instant.ofEpochMilli(storage.createdAt)
+        lastJoinedAt = if (storage.lastJoinedAt != null) {
+            Instant.ofEpochMilli(storage.lastJoinedAt!!)
+        } else {
+            null
+        }
+        lastQuitedAt = if (storage.lastQuitedAt != null) {
+            Instant.ofEpochMilli(storage.lastQuitedAt!!)
+        } else {
+            null
+        }
+        /*
+        if (storage.bedrockAccount != null && bedrockAccount == null) {
+            bedrockAccount = BedrockAccountImpl(this, memberService.lookupBedrockAccountStorage(storage.bedrockAccount!!)!!)
+        }
+        if (storage.bedrockAccount == null && bedrockAccount != null) {
+            bedrockAccount = null
+        }*/
+        bio = storage.bio
+        isHidden = storage.isHidden ?: false
+        this.storage = storage
     }
 
 }

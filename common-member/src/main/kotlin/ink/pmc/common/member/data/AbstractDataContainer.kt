@@ -19,4 +19,6 @@ abstract class AbstractDataContainer : DataContainer {
         return storage.hashCode()
     }
 
+    abstract fun reload(storage: DataContainerStorage)
+
 }

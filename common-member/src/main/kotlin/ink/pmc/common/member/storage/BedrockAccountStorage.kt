@@ -14,7 +14,7 @@ data class BedrockAccountStorage(
     var new: Boolean = false
 ) : Diffable<BedrockAccountStorage>() {
 
-    override fun applyDiff(diff: Diff) {
+    override fun applyDiff(diff: Diff): Diffable<BedrockAccountStorage> {
         diff.changes.filterIsInstance<ValueChange>().forEach {
             when(it.propertyName) {
                 "id" -> id = it.right as Long
@@ -23,6 +23,8 @@ data class BedrockAccountStorage(
                 "gamertag" -> gamertag = it.right as String
             }
         }
+
+        return this
     }
 
 }

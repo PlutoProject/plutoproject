@@ -33,7 +33,7 @@ data class MemberStorage(
     var new: Boolean = false
 ) : Diffable<MemberStorage>() {
 
-    override fun applyDiff(diff: Diff) {
+    override fun applyDiff(diff: Diff): Diffable<MemberStorage> {
         diff.changes.filterIsInstance<ValueChange>().forEach {
             val field = cls.getDeclaredField(it.propertyName).apply {
                 isAccessible = true
@@ -66,6 +66,8 @@ data class MemberStorage(
                 collection.remove(it.index)
             }
         }
+
+        return this
     }
 
 }

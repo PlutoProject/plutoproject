@@ -23,4 +23,6 @@ abstract class AbstractMember : Member {
         return storage.hashCode()
     }
 
+    abstract fun reload(storage: MemberStorage)
+
 }

@@ -19,7 +19,7 @@ data class DataContainerStorage(
     var new: Boolean = false
 ) : Diffable<DataContainerStorage>() {
 
-    override fun applyDiff(diff: Diff) {
+    override fun applyDiff(diff: Diff): Diffable<DataContainerStorage> {
         diff.changes.filterIsInstance<ValueChange>().forEach {
             when(it.propertyName) {
                 "id" -> id = it.right as Long
@@ -42,6 +42,8 @@ data class DataContainerStorage(
                 contents.remove(it.key)
             }
         }
+
+        return this
     }
 
 }

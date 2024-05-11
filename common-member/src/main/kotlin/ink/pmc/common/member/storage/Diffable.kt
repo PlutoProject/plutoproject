@@ -9,6 +9,6 @@ abstract class Diffable<T> {
         return javers.compare(old, this)
     }
 
-    abstract fun applyDiff(diff: Diff)
+    abstract fun applyDiff(diff: Diff): Diffable<T>
 
 }

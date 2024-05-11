@@ -28,6 +28,7 @@ import ink.pmc.common.utils.bedrock.xuid
 import ink.pmc.common.utils.concurrent.io
 import ink.pmc.common.utils.concurrent.submitAsyncIO
 import ink.pmc.common.utils.json.toJsonString
+import ink.pmc.common.utils.json.toObject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.firstOrNull
@@ -460,17 +461,66 @@ abstract class BaseMemberServiceImpl(
     abstract suspend fun monitorUpdate()
 
     suspend fun handleUpdate(notify: MemberUpdateNotify) {
-        if (UUID.fromString(notify.serviceId) == id) {
-            return
+        withContext(Dispatchers.IO) {
+            if (UUID.fromString(notify.serviceId) == id) {
+                return@withContext
+            }
+
+            val memberId = notify.memberId
+
+            if (loadedMembers.getIfPresent(memberId) == null) {
+                return@withContext
+            }
+
+            val member = loadedMembers.get(memberId).get()!! as MemberImpl
+            val memberDiff = notify.diff
+
+            when(memberDiff.type) {
+                DiffType.MODIFY -> {
+                    val diff = memberDiff.diff.toDiff()!!
+                    val diffedMemberStorage = member.storage.copy().applyDiff(diff)
+                    member.reload(diffedMemberStorage as MemberStorage)
+                }
+                else -> {}
+            }
+
+            if (memberDiff.hasStatusDiff()) {
+                val diff = memberDiff.statusDiff.diff.toDiff()!!
+                currentStatus.applyDiff(diff)
+                status = currentStatus
+            }
+
+            if (memberDiff.hasBedrockAccountDiff()) {
+                val bedrockAccountDiff = memberDiff.bedrockAccountDiff
+                when(bedrockAccountDiff.type) {
+                    DiffType.ADD -> {
+                        val storage = bedrockAccountDiff.storage.toObject(BedrockAccountStorage::class.java)
+                        member.bedrockAccount = BedrockAccountImpl(member, storage)
+                    }
+                    DiffType.REMOVE -> {
+                        member.bedrockAccount = null
+                    }
+                    DiffType.MODIFY -> {
+                        val diff = bedrockAccountDiff.diff.toDiff()!!
+                        val diffedBedrockAccountStorage = member.bedrockAccount!!.storage.copy().applyDiff(diff)
+                        member.bedrockAccount!!.reload(diffedBedrockAccountStorage as BedrockAccountStorage)
+                    }
+                    else -> {}
+                }
+            }
+
+            if (memberDiff.hasDataContainerDiff()) {
+                val dataContainerDiff = memberDiff.dataContainerDiff
+                when(dataContainerDiff.type) {
+                    DiffType.MODIFY -> {
+                        val diff = dataContainerDiff.diff.toDiff()!!
+                        val diffedDataContainerStorage = member.dataContainer.storage.copy().applyDiff(diff)
+                        member.dataContainer.reload(diffedDataContainerStorage as DataContainerStorage)
+                    }
+                    else -> {}
+                }
+            }
         }
-
-        val memberId = notify.memberId
-
-        if (loadedMembers.getIfPresent(memberId) == null) {
-            return
-        }
-
-        val diff = notify.diff
     }
 
     override suspend fun save(member: Member) {

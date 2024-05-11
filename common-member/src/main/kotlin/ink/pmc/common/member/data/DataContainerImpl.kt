@@ -9,13 +9,20 @@ import ink.pmc.common.utils.json.toObject
 import java.time.Instant
 
 @Suppress("UNCHECKED_CAST")
-class DataContainerImpl(override val owner: Member, override val storage: DataContainerStorage) :
+class DataContainerImpl(override val owner: Member, override var storage: DataContainerStorage) :
     AbstractDataContainer() {
 
     override val id: Long = storage.id
     override val createdAt: Instant = Instant.ofEpochMilli(storage.createdAt)
     override var lastModifiedAt: Instant = Instant.ofEpochMilli(storage.lastModifiedAt)
     override val contents: MutableMap<String, String> = storage.contents
+
+    override fun reload(storage: DataContainerStorage) {
+        lastModifiedAt = Instant.ofEpochMilli(storage.lastModifiedAt)
+        contents.clear()
+        contents.entries.addAll(storage.contents.entries)
+        this.storage = storage
+    }
 
     override fun set(key: String, value: Any) {
         contents[key] = value.toJsonString()

@@ -19,4 +19,6 @@ abstract class AbstractBedrockAccount : BedrockAccount {
         return id.hashCode()
     }
 
+    abstract fun reload(storage: BedrockAccountStorage)
+
 }
