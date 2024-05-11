@@ -78,7 +78,8 @@ class MemberImpl(
             id,
             uid,
             xuid,
-            gamertag
+            gamertag,
+            true
         )
 
         service.currentStatus.increaseBedrockAccount()
@@ -93,7 +94,6 @@ class MemberImpl(
             return
         }
 
-        val bedrockAccountStorage = (bedrockAccount as AbstractBedrockAccount).storage
         bedrockAccount = null
     }
 

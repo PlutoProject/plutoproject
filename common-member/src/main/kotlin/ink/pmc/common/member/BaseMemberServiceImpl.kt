@@ -49,6 +49,8 @@ import javax.xml.stream.events.Comment
 @Suppress("UNUSED")
 const val UID_START = 10000L
 
+private typealias DiffType = MemberDiffOuterClass.DiffType
+
 @Suppress("UNUSED")
 abstract class BaseMemberServiceImpl(
     database: MongoDatabase
@@ -425,12 +427,12 @@ abstract class BaseMemberServiceImpl(
                 serviceId = id.toString()
                 memberId = member.uid
                 diff = memberDiff {
-                    if (oldMemberStorage == null) {
-                        type = DiffType.ADD
+                    type = if (oldMemberStorage == null) {
                         storage = modifiedMemberStorage.toJsonString()
+                        DiffType.ADD
                     } else {
-                        type = DiffType.MODIFY
                         diff = diffMember.toJson()
+                        DiffType.MODIFY
                     }
 
                     statusDiff = statusDiff {
@@ -438,27 +440,25 @@ abstract class BaseMemberServiceImpl(
                         diff = diffStatus.toJson()
                     }
 
-                    if (oldBedrockAccountStorage == null && modifiedBedrockAccountStorage != null) {
-                        bedrockAccountDiff = bedrockAccountDiff {
-                            type = DiffType.ADD
+                    bedrockAccountDiff {
+                        type = if (oldBedrockAccountStorage == null && modifiedBedrockAccountStorage != null) {
                             storage = modifiedBedrockAccountStorage.toJsonString()
-                        }
-                    } else {
-                        bedrockAccountDiff = bedrockAccountDiff {
-                            type = DiffType.MODIFY
+                            DiffType.ADD
+                        } else if (modifiedBedrockAccountStorage == null) {
+                            DiffType.REMOVE
+                        } else {
                             diff = diffBedrockAccount!!.toJson()
+                            DiffType.MODIFY
                         }
                     }
 
-                    if (oldDataContainerStorage == null) {
-                        dataContainerDiff = dataContainerDiff {
-                            type = DiffType.ADD
+                    dataContainerDiff {
+                        type = if (oldDataContainerStorage == null) {
                             storage = modifiedDataContainerStorage.toJsonString()
-                        }
-                    } else {
-                        dataContainerDiff = dataContainerDiff {
-                            type = DiffType.MODIFY
+                            DiffType.ADD
+                        } else {
                             diff = diffDataContainer.toJson()
+                            DiffType.MODIFY
                         }
                     }
                 }
@@ -510,5 +510,3 @@ abstract class BaseMemberServiceImpl(
     }
 
 }
-
-typealias DiffType = MemberDiffOuterClass.DiffType
