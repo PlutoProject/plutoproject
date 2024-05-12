@@ -5,6 +5,7 @@ import com.github.benmanes.caffeine.cache.AsyncLoadingCache
 import com.github.benmanes.caffeine.cache.Caffeine
 import com.mongodb.client.model.Filters.*
 import com.mongodb.client.model.PushOptions
+import com.mongodb.client.model.ReplaceOptions
 import com.mongodb.client.model.UpdateOptions
 import com.mongodb.client.model.Updates.*
 import com.mongodb.kotlin.client.coroutine.MongoCollection
@@ -78,6 +79,7 @@ abstract class BaseMemberServiceImpl(
     private lateinit var status: StatusStorage
     override lateinit var currentStatus: StatusStorage
     private val updateOptions = UpdateOptions().upsert(true)
+    private val replaceOptions = ReplaceOptions().upsert(true)
     private val monitorJob: Job
 
     override suspend fun lookupPunishment(id: Long): Punishment? {
@@ -344,13 +346,14 @@ abstract class BaseMemberServiceImpl(
     }
 
     private suspend fun saveMember(old: MemberStorage?, new: MemberStorage): Diff {
-        val bson = mutableListOf<Bson>()
+        // val bson = mutableListOf<Bson>()
         val diff = new.diff(old)
 
         if (!diff.hasChanges()) {
             return diff
         }
 
+        /*
         diff.changes.filterIsInstance<ValueChange>().forEach {
             bson.add(set(it.propertyName, it.right))
         }
@@ -373,7 +376,9 @@ abstract class BaseMemberServiceImpl(
         }
 
         val updates = combine(bson)
-        members.updateOne(eq("uid", new.uid), updates, updateOptions)
+         */
+        members.replaceOne(eq("uid", new.uid), new, replaceOptions)
+        // members.updateOne(eq("uid", new.uid), updates, updateOptions)
         return diff
     }
 
@@ -382,13 +387,14 @@ abstract class BaseMemberServiceImpl(
             return javers.compare(old, null)
         }
 
-        val bson = mutableListOf<Bson>()
+        // val bson = mutableListOf<Bson>()
         val diff = new.diff(old)
 
         if (!diff.hasChanges()) {
             return diff
         }
 
+        /*
         diff.changes.filterIsInstance<ValueChange>().forEach {
             when (it.propertyName) {
                 "id" -> bson.add(set("id", it.right))
@@ -399,18 +405,21 @@ abstract class BaseMemberServiceImpl(
         }
 
         val updates = combine(bson)
-        bedrockAccounts.updateOne(eq("id", new.id), updates, updateOptions)
+         */
+        bedrockAccounts.replaceOne(eq("id", new.id), new, replaceOptions)
+        // bedrockAccounts.updateOne(eq("id", new.id), updates, updateOptions)
         return diff
     }
 
     private suspend fun saveDataContainer(old: DataContainerStorage?, new: DataContainerStorage): Diff {
-        val bson = mutableListOf<Bson>()
+        // val bson = mutableListOf<Bson>()
         val diff = new.diff(old)
 
         if (!diff.hasChanges()) {
             return diff
         }
 
+        /*
         diff.changes.filterIsInstance<ValueChange>().forEach {
             when (it.propertyName) {
                 "id" -> bson.add(set("id", it.right))
@@ -435,7 +444,9 @@ abstract class BaseMemberServiceImpl(
         }
 
         val updates = combine(bson)
-        dataContainers.updateOne(eq("id", new.id), updates, updateOptions)
+         */
+        dataContainers.replaceOne(eq("id", new.id), new, replaceOptions)
+        // dataContainers.updateOne(eq("id", new.id), updates, updateOptions)
         return diff
     }
 
