@@ -18,7 +18,7 @@ data class StatusStorage(
     var lastBedrockAccount: Long
 ) : Diffable<StatusStorage>() {
 
-    private val accessLock = ReentrantLock()
+    @DiffIgnore private val accessLock = ReentrantLock()
 
     override fun applyDiff(diff: Diff): Diffable<StatusStorage> {
         diff.changes.filterIsInstance<ValueChange>().forEach {
