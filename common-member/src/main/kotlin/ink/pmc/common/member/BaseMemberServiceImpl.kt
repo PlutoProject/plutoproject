@@ -13,13 +13,16 @@ import ink.pmc.common.member.api.AuthType
 import ink.pmc.common.member.api.Member
 import ink.pmc.common.member.api.WhitelistStatus
 import ink.pmc.common.member.api.comment.Comment
+import ink.pmc.common.member.api.comment.CommentContainer
 import ink.pmc.common.member.api.data.MemberModifier
 import ink.pmc.common.member.api.punishment.Punishment
+import ink.pmc.common.member.comment.CommentContainerImpl
 import ink.pmc.common.member.data.BedrockAccountImpl
 import ink.pmc.common.member.data.DataContainerImpl
 import ink.pmc.common.member.proto.*
 import ink.pmc.common.member.proto.MemberDiffOuterClass.DiffType
 import ink.pmc.common.member.proto.MemberUpdateNotifyOuterClass.MemberUpdateNotify
+import ink.pmc.common.member.punishment.PunishmentContainerImpl
 import ink.pmc.common.member.storage.BedrockAccountStorage
 import ink.pmc.common.member.storage.DataContainerStorage
 import ink.pmc.common.member.storage.MemberStorage
@@ -118,9 +121,13 @@ abstract class BaseMemberServiceImpl(
         return withContext(Dispatchers.IO) {
             MemberImpl(service, storage).apply {
                 dataContainer = DataContainerImpl(this, lookupDataContainerStorage(storage.dataContainer)!!)
+
                 if (storage.bedrockAccount != null) {
                     bedrockAccount = BedrockAccountImpl(this, lookupBedrockAccountStorage(storage.bedrockAccount!!)!!)
                 }
+
+                commentContainer = CommentContainerImpl(service, this)
+                punishmentContainer = PunishmentContainerImpl(service, this)
             }
         }
     }
@@ -207,6 +214,8 @@ abstract class BaseMemberServiceImpl(
 
         val member = MemberImpl(this, memberStorage)
         member.dataContainer = DataContainerImpl(member, dataContainerStorage)
+        member.commentContainer = CommentContainerImpl(this, member)
+        member.punishmentContainer = PunishmentContainerImpl(this, member)
 
         loadedMembers.put(nextMember, CompletableFuture.completedFuture(member))
 
