@@ -8,8 +8,9 @@ interface Comment {
 
     val id: Long
     val createdAt: Instant
-    val creator: Member
     val content: String
     val isModified: Boolean
+
+    suspend fun creator(): Member?
 
 }

@@ -6,38 +6,23 @@ import ink.pmc.common.member.PUNISHMENTS_LEY
 import ink.pmc.common.member.api.Member
 import ink.pmc.common.member.api.punishment.Punishment
 import ink.pmc.common.member.api.punishment.PunishmentType
-import ink.pmc.common.member.memberService
 import ink.pmc.common.member.storage.PunishmentStorage
-import ink.pmc.common.utils.concurrent.submitAsyncIO
 
 class PunishmentContainerImpl(private val service: AbstractMemberService, private val member: AbstractMember) :
     AbstractPunishmentContainer() {
 
-    private val punishmentStorages: MutableCollection<PunishmentStorage> = mutableListOf()
-    override lateinit var punishments: MutableCollection<Punishment>
-    override var lastPunishment: Punishment? = null
+    override val punishments: MutableCollection<AbstractPunishment>
+        get() = lookup()
+    override var lastPunishment: Punishment? = if (punishments.isEmpty()) null else punishments.last()
 
-    private fun loadPunishments() {
-        punishmentStorages.clear()
-
-        if (!member.dataContainer.contains(PUNISHMENTS_LEY)) {
-            return
-        }
-
-        val storages =
-            member.dataContainer.getCollection(PUNISHMENTS_LEY, PunishmentStorage::class.java)!!.toMutableList()
-        punishmentStorages.addAll(storages)
+    private fun update(list: MutableCollection<AbstractPunishment>) {
+        member.dataContainer[PUNISHMENTS_LEY] = list.map { it.storage }
     }
 
-    init {
-        submitAsyncIO {
-            submitAsyncIO {
-                loadPunishments()
-                punishments = punishmentStorages.map {
-                    PunishmentImpl(it, member, if (it.executor == null) null else memberService.lookup(it.executor)!!)
-                }.toMutableList()
-            }
-        }
+    private fun lookup(): MutableCollection<AbstractPunishment> {
+        return member.dataContainer.getCollection(PUNISHMENTS_LEY, PunishmentStorage::class.java)!!.map {
+            PunishmentImpl(it, member)
+        }.toMutableList()
     }
 
     override fun create(type: PunishmentType, executor: Member?): Punishment {
@@ -52,8 +37,12 @@ class PunishmentContainerImpl(private val service: AbstractMemberService, privat
             false
         )
 
+        val punishment = PunishmentImpl(storage, member)
+        val updated = lookup().apply { add(punishment) }
+        update(updated)
+
         service.currentStatus.increasePunishment()
-        return PunishmentImpl(storage, member, executor)
+        return punishment
     }
 
     override fun get(id: Long): Punishment? {
@@ -61,7 +50,7 @@ class PunishmentContainerImpl(private val service: AbstractMemberService, privat
             return null
         }
 
-        val punishment = punishments.first { it.id == id } as AbstractPunishment
+        val punishment = punishments.first { it.id == id }
         return punishment
     }
 
@@ -70,33 +59,20 @@ class PunishmentContainerImpl(private val service: AbstractMemberService, privat
     }
 
     override fun revoke(punishment: Punishment) {
+        if (!exist(punishment.id)) {
+            return
+        }
+
         if (punishment.isRevoked) {
             return
         }
 
-        val impl = punishment as PunishmentImpl
-        impl.storage.isRevoked = true
-    }
-
-    override fun reload() {
-        loadPunishments()
-    }
-
-    override fun save() {
-        member.dataContainer.remove(PUNISHMENTS_LEY)
-
-        val storages = punishments.map {
-            PunishmentStorage(
-                it.id,
-                it.type.toString(),
-                it.time.toEpochMilli(),
-                it.belongs.uid,
-                it.executor?.uid,
-                it.isRevoked
-            )
+        val updatedPunishment = (punishment as PunishmentImpl).apply { isRevoked = true }
+        val updated = punishments.toMutableList().apply {
+            val index = indexOfFirst { it.id == punishment.id }
+            this.add(index, updatedPunishment)
         }
-
-        member.dataContainer[PUNISHMENTS_LEY] = storages
+        update(updated)
     }
 
 }

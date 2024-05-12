@@ -10,7 +10,8 @@ interface Punishment {
     val type: PunishmentType
     val time: Instant
     val belongs: Member
-    val executor: Member?
     val isRevoked: Boolean
+
+    suspend fun executor(): Member?
 
 }

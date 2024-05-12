@@ -12,8 +12,4 @@ abstract class AbstractPunishmentContainer : PunishmentContainer {
         revoke(get(punishmentId)!!)
     }
 
-    abstract fun reload()
-
-    abstract fun save()
-
 }

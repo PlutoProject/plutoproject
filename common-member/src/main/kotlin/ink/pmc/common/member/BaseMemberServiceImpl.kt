@@ -346,6 +346,11 @@ abstract class BaseMemberServiceImpl(
     }
 
     private suspend fun saveMember(old: MemberStorage?, new: MemberStorage): Diff {
+        if (old == null) {
+            members.insertOne(new)
+            return javers.compare(null, new)
+        }
+
         val bson = mutableListOf<Bson>()
         val diff = new.diff(old)
 
@@ -384,12 +389,22 @@ abstract class BaseMemberServiceImpl(
     }
 
     private suspend fun saveBedrockAccount(old: BedrockAccountStorage?, new: BedrockAccountStorage?): Diff {
-        if (new == null) {
+        if (old == null && new == null) {
+            return javers.compare(null, null)
+        }
+
+        if (old == null && new != null) {
+            bedrockAccounts.insertOne(new)
+            return javers.compare(null, new)
+        }
+
+        if (old != null && new == null) {
+            bedrockAccounts.deleteOne(eq("id", old.id))
             return javers.compare(old, null)
         }
 
         val bson = mutableListOf<Bson>()
-        val diff = new.diff(old)
+        val diff = new!!.diff(old)
 
         if (!diff.hasChanges()) {
             return diff
@@ -410,6 +425,11 @@ abstract class BaseMemberServiceImpl(
     }
 
     private suspend fun saveDataContainer(old: DataContainerStorage?, new: DataContainerStorage): Diff {
+        if (old == null) {
+            dataContainers.insertOne(new)
+            return javers.compare(null, new)
+        }
+
         val bson = mutableListOf<Bson>()
         val diff = new.diff(old)
 
@@ -539,8 +559,6 @@ abstract class BaseMemberServiceImpl(
                         val diff = dataContainerDiff.diff.toDiff()!!
                         val diffedDataContainerStorage = member.dataContainer.storage.copy().applyDiff(diff)
                         member.dataContainer.reload(diffedDataContainerStorage as DataContainerStorage)
-                        member.commentContainer.reload()
-                        member.punishmentContainer.reload()
                     }
 
                     else -> {}

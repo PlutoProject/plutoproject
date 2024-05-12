@@ -4,34 +4,21 @@ import ink.pmc.common.member.AbstractMember
 import ink.pmc.common.member.AbstractMemberService
 import ink.pmc.common.member.COMMENTS_KEY
 import ink.pmc.common.member.api.comment.Comment
-import ink.pmc.common.member.memberService
 import ink.pmc.common.member.storage.CommentStorage
-import ink.pmc.common.utils.concurrent.submitAsyncIO
 
 class CommentContainerImpl(private val service: AbstractMemberService, private val member: AbstractMember) :
     AbstractCommentContainer() {
+    override val comments: MutableCollection<AbstractComment>
+        get() = lookup()
 
-    private val commentStorages: MutableCollection<CommentStorage> = mutableListOf()
-    override lateinit var comments: MutableCollection<Comment>
-
-    private fun loadComments() {
-        commentStorages.clear()
-
-        if (!member.dataContainer.contains(COMMENTS_KEY)) {
-            return
-        }
-
-        val storages = member.dataContainer.getCollection(COMMENTS_KEY, CommentStorage::class.java)!!.toMutableList()
-        commentStorages.addAll(storages)
+    private fun update(list: MutableCollection<AbstractComment>) {
+        member.dataContainer[COMMENTS_KEY] = list.map { it.storage }
     }
 
-    init {
-        submitAsyncIO {
-            loadComments()
-            comments = commentStorages.map {
-                CommentImpl(it, memberService.lookup(it.creator)!!)
-            }.toMutableList()
-        }
+    private fun lookup(): MutableCollection<AbstractComment> {
+        return member.dataContainer.getCollection(COMMENTS_KEY, CommentStorage::class.java)!!.map {
+            CommentImpl(it)
+        }.toMutableList()
     }
 
     override fun comment(creator: Long, content: String): Comment {
@@ -45,32 +32,16 @@ class CommentContainerImpl(private val service: AbstractMemberService, private v
             false
         )
 
+        val comment = CommentImpl(storage)
+        val updated = lookup().apply { add(comment) }
+        update(updated)
         service.currentStatus.increaseComment()
-        return CommentImpl(storage, member)
+
+        return comment
     }
 
     override fun set(creator: Long, content: String) {
         comment(creator, content)
-    }
-
-    override fun reload() {
-        loadComments()
-    }
-
-    override fun save() {
-        member.dataContainer.remove(COMMENTS_KEY)
-
-        val storages = comments.map {
-            CommentStorage(
-                it.id,
-                it.createdAt.toEpochMilli(),
-                it.creator.uid,
-                it.content,
-                it.isModified
-            )
-        }
-
-        member.dataContainer[COMMENTS_KEY] = storages
     }
 
     override fun modify(id: Long, new: String): Comment? {
@@ -83,6 +54,12 @@ class CommentContainerImpl(private val service: AbstractMemberService, private v
         comment.content = new
         comment.isModified = true
 
+        val updated = lookup().toMutableList().apply {
+            val index = indexOfFirst { it.id == id }
+            add(index, comment)
+        }
+        update(updated)
+
         return comment
     }
 
@@ -91,7 +68,7 @@ class CommentContainerImpl(private val service: AbstractMemberService, private v
             return null
         }
 
-        val comment = comments.first { it.id == id } as AbstractComment
+        val comment = comments.first { it.id == id }
         return comment
     }
 
@@ -104,9 +81,8 @@ class CommentContainerImpl(private val service: AbstractMemberService, private v
             return
         }
 
-        val comment = comments.first { it.id == id } as CommentImpl
-        dirtyComments.add(comment.storage)
-        comments.removeIf { it.id == id }
+        val updated = lookup().apply { removeIf { it.id == id } }
+        update(updated)
     }
 
 }
