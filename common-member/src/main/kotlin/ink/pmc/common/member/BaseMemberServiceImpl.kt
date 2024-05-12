@@ -4,10 +4,10 @@ import com.github.benmanes.caffeine.cache.AsyncCacheLoader
 import com.github.benmanes.caffeine.cache.AsyncLoadingCache
 import com.github.benmanes.caffeine.cache.Caffeine
 import com.mongodb.client.model.Filters.*
+import com.mongodb.client.model.PushOptions
 import com.mongodb.client.model.ReplaceOptions
 import com.mongodb.client.model.UpdateOptions
-import com.mongodb.client.model.Updates.combine
-import com.mongodb.client.model.Updates.set
+import com.mongodb.client.model.Updates.*
 import com.mongodb.kotlin.client.coroutine.MongoCollection
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
 import ink.pmc.common.member.api.AuthType
@@ -42,6 +42,14 @@ import org.bson.conversions.Bson
 import org.bson.types.ObjectId
 import org.javers.core.diff.Diff
 import org.javers.core.diff.changetype.ValueChange
+import org.javers.core.diff.changetype.container.ElementValueChange
+import org.javers.core.diff.changetype.container.ListChange
+import org.javers.core.diff.changetype.container.ValueAdded
+import org.javers.core.diff.changetype.container.ValueRemoved
+import org.javers.core.diff.changetype.map.EntryAdded
+import org.javers.core.diff.changetype.map.EntryRemoved
+import org.javers.core.diff.changetype.map.EntryValueChange
+import org.javers.core.diff.changetype.map.MapChange
 import java.time.Duration
 import java.time.Instant
 import java.util.*
@@ -338,14 +346,13 @@ abstract class BaseMemberServiceImpl(
     }
 
     private suspend fun saveMember(old: MemberStorage?, new: MemberStorage): Diff {
-        // val bson = mutableListOf<Bson>()
+        val bson = mutableListOf<Bson>()
         val diff = new.diff(old)
 
         if (!diff.hasChanges()) {
             return diff
         }
 
-        /*
         diff.changes.filterIsInstance<ValueChange>().forEach {
             bson.add(set(it.propertyName, it.right))
         }
@@ -368,9 +375,7 @@ abstract class BaseMemberServiceImpl(
         }
 
         val updates = combine(bson)
-         */
-        members.replaceOne(eq("uid", new.uid), new, replaceOptions)
-        // members.updateOne(eq("uid", new.uid), updates, updateOptions)
+        members.updateOne(eq("uid", new.uid), updates, updateOptions)
         return diff
     }
 
@@ -379,14 +384,13 @@ abstract class BaseMemberServiceImpl(
             return javers.compare(old, null)
         }
 
-        // val bson = mutableListOf<Bson>()
+        val bson = mutableListOf<Bson>()
         val diff = new.diff(old)
 
         if (!diff.hasChanges()) {
             return diff
         }
 
-        /*
         diff.changes.filterIsInstance<ValueChange>().forEach {
             when (it.propertyName) {
                 "id" -> bson.add(set("id", it.right))
@@ -397,21 +401,18 @@ abstract class BaseMemberServiceImpl(
         }
 
         val updates = combine(bson)
-         */
-        bedrockAccounts.replaceOne(eq("id", new.id), new, replaceOptions)
-        // bedrockAccounts.updateOne(eq("id", new.id), updates, updateOptions)
+        bedrockAccounts.updateOne(eq("id", new.id), updates, updateOptions)
         return diff
     }
 
     private suspend fun saveDataContainer(old: DataContainerStorage?, new: DataContainerStorage): Diff {
-        // val bson = mutableListOf<Bson>()
+        val bson = mutableListOf<Bson>()
         val diff = new.diff(old)
 
         if (!diff.hasChanges()) {
             return diff
         }
 
-        /*
         diff.changes.filterIsInstance<ValueChange>().forEach {
             when (it.propertyName) {
                 "id" -> bson.add(set("id", it.right))
@@ -436,9 +437,7 @@ abstract class BaseMemberServiceImpl(
         }
 
         val updates = combine(bson)
-         */
-        dataContainers.replaceOne(eq("id", new.id), new, replaceOptions)
-        // dataContainers.updateOne(eq("id", new.id), updates, updateOptions)
+        dataContainers.updateOne(eq("id", new.id), updates, updateOptions)
         return diff
     }
 
