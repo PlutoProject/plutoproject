@@ -10,11 +10,14 @@ import org.bson.types.ObjectId
 import org.javers.core.diff.Diff
 import org.javers.core.diff.changetype.ValueChange
 import org.javers.core.metamodel.annotation.DiffIgnore
+import org.javers.core.metamodel.annotation.Id
+import org.javers.core.metamodel.annotation.TypeName
 import java.util.concurrent.locks.ReentrantLock
 
 @Serializable
+@TypeName("Status")
 data class StatusStorage(
-    @DiffIgnore @SerialName("_id") @Contextual val objectId: ObjectId,
+    @Id @SerialName("_id") @Contextual val objectId: ObjectId,
     var lastMember: Long,
     var lastPunishment: Long,
     var lastComment: Long,

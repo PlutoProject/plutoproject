@@ -12,15 +12,19 @@ import org.javers.core.diff.changetype.map.EntryRemoved
 import org.javers.core.diff.changetype.map.EntryValueChange
 import org.javers.core.diff.changetype.map.MapChange
 import org.javers.core.metamodel.annotation.DiffIgnore
+import org.javers.core.metamodel.annotation.DiffInclude
+import org.javers.core.metamodel.annotation.Id
+import org.javers.core.metamodel.annotation.TypeName
 
 @Serializable
+@TypeName("DataContainer")
 data class DataContainerStorage(
     @DiffIgnore @SerialName("_id") @Contextual val objectId: ObjectId,
-    var id: Long,
+    @Id var id: Long,
     var owner: Long,
     var createdAt: Long,
     var lastModifiedAt: Long,
-    var contents: MutableMap<String, String>,
+    @DiffInclude var contents: MutableMap<String, String>,
     @Transient var new: Boolean = false
 ) : Diffable<DataContainerStorage>() {
 

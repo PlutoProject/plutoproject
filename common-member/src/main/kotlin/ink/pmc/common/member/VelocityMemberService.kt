@@ -23,6 +23,7 @@ class VelocityMemberService(database: MongoDatabase) : BaseMemberServiceImpl(dat
     }
 
     override suspend fun notifyUpdate(notify: MemberUpdateNotify) {
+        serverLogger.info("Sending notify (serviceId=${notify.serviceId}) to servers behind proxy...")
         monitorFlow.emit(notify)
     }
 

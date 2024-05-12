@@ -350,8 +350,11 @@ abstract class BaseMemberServiceImpl(
         val diff = new.diff(old)
 
         if (!diff.hasChanges()) {
+            println("member: no diff")
             return diff
         }
+
+        println("member changes: ${javers.jsonConverter.toJson(diff)}")
 
         diff.changes.filterIsInstance<ValueChange>().forEach {
             bson.add(set(it.propertyName, it.right))
@@ -375,6 +378,7 @@ abstract class BaseMemberServiceImpl(
         }
 
         val updates = combine(bson)
+        println("member: updates $updates")
         members.updateOne(eq("uid", new.uid), updates, updateOptions)
         return diff
     }
@@ -410,8 +414,11 @@ abstract class BaseMemberServiceImpl(
         val diff = new.diff(old)
 
         if (!diff.hasChanges()) {
+            println("dc: no diff")
             return diff
         }
+
+        println("dc changes: ${javers.jsonConverter.toJson(diff)}")
 
         diff.changes.filterIsInstance<ValueChange>().forEach {
             when (it.propertyName) {
@@ -437,6 +444,7 @@ abstract class BaseMemberServiceImpl(
         }
 
         val updates = combine(bson)
+        println("dc: updates $updates")
         dataContainers.updateOne(eq("id", new.id), updates, updateOptions)
         return diff
     }
@@ -531,6 +539,8 @@ abstract class BaseMemberServiceImpl(
                         val diff = dataContainerDiff.diff.toDiff()!!
                         val diffedDataContainerStorage = member.dataContainer.storage.copy().applyDiff(diff)
                         member.dataContainer.reload(diffedDataContainerStorage as DataContainerStorage)
+                        member.commentContainer.reload()
+                        member.punishmentContainer.reload()
                     }
 
                     else -> {}
@@ -565,6 +575,7 @@ abstract class BaseMemberServiceImpl(
                 member.commentContainer.comments.map { it.id }.toMutableList(),
                 member.isHidden
             )
+            println("new member: $modifiedMemberStorage")
             val modifiedBedrockAccountStorage = if (member.bedrockAccount != null) {
                 BedrockAccountStorage(
                     member.bedrockAccount!!.storage.objectId,
@@ -586,6 +597,7 @@ abstract class BaseMemberServiceImpl(
             )
 
             val oldMemberStorage = if (member.storage.new) null else member.storage
+            println("old member: $oldMemberStorage")
             val oldBedrockAccountStorage =
                 if (member.bedrockAccount == null || member.bedrockAccount?.storage?.new == true) null else member.bedrockAccount!!.storage
             val oldDataContainerStorage = if (member.dataContainer.storage.new) null else member.dataContainer.storage
@@ -645,6 +657,7 @@ abstract class BaseMemberServiceImpl(
                 }
             }
 
+            println("notify")
             notifyUpdate(notify)
         }
     }

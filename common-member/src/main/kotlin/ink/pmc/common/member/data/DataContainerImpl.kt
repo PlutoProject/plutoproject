@@ -15,16 +15,17 @@ class DataContainerImpl(override val owner: Member, override var storage: DataCo
     override val id: Long = storage.id
     override val createdAt: Instant = Instant.ofEpochMilli(storage.createdAt)
     override var lastModifiedAt: Instant = Instant.ofEpochMilli(storage.lastModifiedAt)
-    override val contents: MutableMap<String, String> = storage.contents
+    override val contents: MutableMap<String, String> = storage.contents.toMutableMap() // 复制原 Map，不要引用 storage 里的 Map
 
     override fun reload(storage: DataContainerStorage) {
         lastModifiedAt = Instant.ofEpochMilli(storage.lastModifiedAt)
         contents.clear()
-        contents.entries.addAll(storage.contents.entries)
+        contents.putAll(storage.contents)
         this.storage = storage
     }
 
     override fun set(key: String, value: Any) {
+        lastModifiedAt = Instant.now()
         contents[key] = value.toJsonString()
     }
 

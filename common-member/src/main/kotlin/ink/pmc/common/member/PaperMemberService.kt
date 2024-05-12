@@ -5,10 +5,11 @@ import com.mongodb.kotlin.client.coroutine.MongoDatabase
 import ink.pmc.common.member.proto.MemberRpcGrpcKt
 import ink.pmc.common.member.proto.MemberUpdateNotifyOuterClass.MemberUpdateNotify
 import ink.pmc.common.rpc.RpcClient
+import io.grpc.Metadata
 
 class PaperMemberService(database: MongoDatabase) : BaseMemberServiceImpl(database) {
 
-    private val stub = RpcClient.stub(MemberRpcGrpcKt.MemberRpcCoroutineStub::class)
+    private lateinit var stub: MemberRpcGrpcKt.MemberRpcCoroutineStub
 
     override suspend fun notifyUpdate(notify: MemberUpdateNotify) {
         serverLogger.info("Sending an update notify to proxy for UID ${notify.memberId}...")
@@ -16,12 +17,12 @@ class PaperMemberService(database: MongoDatabase) : BaseMemberServiceImpl(databa
     }
 
     override suspend fun monitorUpdate() {
-        try {
-            stub.monitorMemberUpdate(Empty.getDefaultInstance()).collect {
-                handleUpdate(it)
-            }
-        } catch (_: Exception) {
-            // Ignore exception
+        if (!::stub.isInitialized) {
+            stub = MemberRpcGrpcKt.MemberRpcCoroutineStub(RpcClient.channel)
+        }
+
+        stub.monitorMemberUpdate(Empty.getDefaultInstance()).collect {
+            handleUpdate(it)
         }
     }
 

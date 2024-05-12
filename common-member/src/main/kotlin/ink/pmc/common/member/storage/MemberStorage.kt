@@ -12,15 +12,19 @@ import org.javers.core.diff.changetype.container.ListChange
 import org.javers.core.diff.changetype.container.ValueAdded
 import org.javers.core.diff.changetype.container.ValueRemoved
 import org.javers.core.metamodel.annotation.DiffIgnore
+import org.javers.core.metamodel.annotation.DiffInclude
+import org.javers.core.metamodel.annotation.Id
+import org.javers.core.metamodel.annotation.TypeName
 import java.lang.reflect.Modifier
 
 private val cls = MemberStorage::class.java
 
 @Suppress("UNCHECKED_CAST")
 @Serializable
+@TypeName("Member")
 data class MemberStorage(
     @DiffIgnore @SerialName("_id") @Contextual val objectId: ObjectId,
-    var uid: Long,
+    @Id var uid: Long,
     var id: String,
     var name: String,
     var rawName: String,
@@ -29,11 +33,11 @@ data class MemberStorage(
     var createdAt: Long,
     var lastJoinedAt: Long?,
     var lastQuitedAt: Long?,
-    var dataContainer: Long,
+    @DiffInclude var dataContainer: Long,
     var bedrockAccount: Long?,
     var bio: String?,
-    var punishments: MutableList<Long>,
-    var comments: MutableList<Long>,
+    @DiffInclude var punishments: MutableList<Long>,
+    @DiffInclude var comments: MutableList<Long>,
     var isHidden: Boolean?,
     @Transient var new: Boolean = false
 ) : Diffable<MemberStorage>() {
