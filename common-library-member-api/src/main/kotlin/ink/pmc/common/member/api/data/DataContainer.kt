@@ -2,6 +2,8 @@ package ink.pmc.common.member.api.data
 
 import com.google.gson.JsonObject
 import ink.pmc.common.member.api.Member
+import org.bson.BSONObject
+import org.bson.Document
 import java.time.Instant
 
 @Suppress("UNUSED")
@@ -11,13 +13,11 @@ interface DataContainer {
     val owner: Member
     val createdAt: Instant
     val lastModifiedAt: Instant
-    val contents: Map<String, String>
+    val contents: Document
 
     operator fun set(key: String, value: Any)
 
     operator fun <T> get(key: String, type: Class<T>): T?
-
-    operator fun get(key: String): JsonObject
 
     fun remove(key: String)
 

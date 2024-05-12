@@ -1,11 +1,8 @@
 package ink.pmc.common.member.data
 
-import com.google.gson.JsonObject
-import com.google.gson.JsonParser
 import ink.pmc.common.member.api.Member
 import ink.pmc.common.member.storage.DataContainerStorage
-import ink.pmc.common.utils.json.toJsonString
-import ink.pmc.common.utils.json.toObject
+import org.bson.Document
 import java.time.Instant
 
 @Suppress("UNCHECKED_CAST")
@@ -15,7 +12,7 @@ class DataContainerImpl(override val owner: Member, override var storage: DataCo
     override val id: Long = storage.id
     override val createdAt: Instant = Instant.ofEpochMilli(storage.createdAt)
     override var lastModifiedAt: Instant = Instant.ofEpochMilli(storage.lastModifiedAt)
-    override val contents: MutableMap<String, String> = storage.contents.toMutableMap() // 复制原 Map，不要引用 storage 里的 Map
+    override val contents: Document = storage.contents // 复制原 Map，不要引用 storage 里的 Map
 
     override fun reload(storage: DataContainerStorage) {
         lastModifiedAt = Instant.ofEpochMilli(storage.lastModifiedAt)
@@ -26,7 +23,7 @@ class DataContainerImpl(override val owner: Member, override var storage: DataCo
 
     override fun set(key: String, value: Any) {
         lastModifiedAt = Instant.now()
-        contents[key] = value.toJsonString()
+        contents[key] = value
     }
 
     override fun <T> get(key: String, type: Class<T>): T? {
@@ -35,14 +32,10 @@ class DataContainerImpl(override val owner: Member, override var storage: DataCo
         }
 
         return try {
-            storage.contents[key]!!.toObject(type)
+            storage.contents[key]!! as T?
         } catch (e: Exception) {
             null
         }
-    }
-
-    override fun get(key: String): JsonObject {
-        return JsonParser.parseString(storage.contents[key]!!).asJsonObject
     }
 
     override fun remove(key: String) {

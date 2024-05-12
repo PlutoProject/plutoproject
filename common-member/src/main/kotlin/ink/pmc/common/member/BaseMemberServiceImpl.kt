@@ -34,6 +34,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.future.asCompletableFuture
 import kotlinx.coroutines.future.await
 import kotlinx.coroutines.withContext
+import org.bson.Document
 import org.bson.conversions.Bson
 import org.bson.types.ObjectId
 import org.javers.core.diff.Diff
@@ -50,10 +51,6 @@ import java.time.Duration
 import java.time.Instant
 import java.util.*
 import java.util.concurrent.CompletableFuture
-
-const val UID_START = 10000L
-const val COMMENTS_KEY = "_comments"
-const val PUNISHMENTS_LEY = "_punishments"
 
 @Suppress("UNUSED")
 abstract class BaseMemberServiceImpl(
@@ -164,7 +161,7 @@ abstract class BaseMemberServiceImpl(
             nextMember,
             System.currentTimeMillis(),
             System.currentTimeMillis(),
-            mutableMapOf(),
+            Document(),
             true
         )
         memberStorage = MemberStorage(
@@ -571,7 +568,7 @@ abstract class BaseMemberServiceImpl(
                 member.dataContainer.owner.uid,
                 member.dataContainer.createdAt.toEpochMilli(),
                 member.dataContainer.lastModifiedAt.toEpochMilli(),
-                member.dataContainer.contents.toMutableMap()
+                member.dataContainer.contents
             )
 
             val oldMemberStorage = if (member.storage.new) null else member.storage

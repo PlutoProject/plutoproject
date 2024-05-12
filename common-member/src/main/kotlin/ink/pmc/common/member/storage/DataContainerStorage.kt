@@ -4,6 +4,7 @@ import kotlinx.serialization.Contextual
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
+import org.bson.Document
 import org.bson.types.ObjectId
 import org.javers.core.diff.Diff
 import org.javers.core.diff.changetype.ValueChange
@@ -24,7 +25,7 @@ data class DataContainerStorage(
     var owner: Long,
     var createdAt: Long,
     var lastModifiedAt: Long,
-    @DiffInclude var contents: MutableMap<String, String>,
+    @DiffInclude @Contextual var contents: Document,
     @Transient var new: Boolean = false
 ) : Diffable<DataContainerStorage>() {
 
