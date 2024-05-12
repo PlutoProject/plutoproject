@@ -13,7 +13,6 @@ import ink.pmc.common.member.api.AuthType
 import ink.pmc.common.member.api.Member
 import ink.pmc.common.member.api.WhitelistStatus
 import ink.pmc.common.member.api.comment.Comment
-import ink.pmc.common.member.api.comment.CommentContainer
 import ink.pmc.common.member.api.data.MemberModifier
 import ink.pmc.common.member.api.punishment.Punishment
 import ink.pmc.common.member.comment.CommentContainerImpl
@@ -582,7 +581,7 @@ abstract class BaseMemberServiceImpl(
 
             val oldMemberStorage = if (member.storage.new) null else member.storage
             val oldBedrockAccountStorage =
-                if (member.bedrockAccount?.storage?.new == true) null else member.bedrockAccount!!.storage
+                if (member.bedrockAccount == null || member.bedrockAccount?.storage?.new == true) null else member.bedrockAccount!!.storage
             val oldDataContainerStorage = if (member.dataContainer.storage.new) null else member.dataContainer.storage
 
             val diffStatus = saveStatus(status, currentStatus)
