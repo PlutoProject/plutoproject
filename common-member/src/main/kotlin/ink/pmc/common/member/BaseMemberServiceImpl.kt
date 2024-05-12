@@ -13,16 +13,12 @@ import com.mongodb.kotlin.client.coroutine.MongoDatabase
 import ink.pmc.common.member.api.AuthType
 import ink.pmc.common.member.api.Member
 import ink.pmc.common.member.api.WhitelistStatus
-import ink.pmc.common.member.api.comment.Comment
 import ink.pmc.common.member.api.data.MemberModifier
-import ink.pmc.common.member.api.punishment.Punishment
-import ink.pmc.common.member.comment.CommentContainerImpl
 import ink.pmc.common.member.data.BedrockAccountImpl
 import ink.pmc.common.member.data.DataContainerImpl
 import ink.pmc.common.member.proto.*
 import ink.pmc.common.member.proto.MemberDiffOuterClass.DiffType
 import ink.pmc.common.member.proto.MemberUpdateNotifyOuterClass.MemberUpdateNotify
-import ink.pmc.common.member.punishment.PunishmentContainerImpl
 import ink.pmc.common.member.storage.BedrockAccountStorage
 import ink.pmc.common.member.storage.DataContainerStorage
 import ink.pmc.common.member.storage.MemberStorage
@@ -82,24 +78,6 @@ abstract class BaseMemberServiceImpl(
     private val replaceOptions = ReplaceOptions().upsert(true)
     private val monitorJob: Job
 
-    override suspend fun lookupPunishment(id: Long): Punishment? {
-        return withContext(Dispatchers.IO) {
-            val memberStorage = members.find(elemMatch("contents.$PUNISHMENTS_LEY.id", eq(id))).firstOrNull()
-                ?: return@withContext null
-            val member = lookup(memberStorage.uid)!!
-            member.punishmentContainer[id]
-        }
-    }
-
-    override suspend fun lookupComment(id: Long): Comment? {
-        return withContext(Dispatchers.IO) {
-            val memberStorage = members.find(elemMatch("contents.$COMMENTS_KEY.id", eq(id))).firstOrNull()
-                ?: return@withContext null
-            val member = lookup(memberStorage.uid)!!
-            member.commentContainer[id]
-        }
-    }
-
     override suspend fun lookupBedrockAccountStorage(id: Long): BedrockAccountStorage? {
         return withContext(Dispatchers.IO) {
             bedrockAccounts.find(eq("id", id)).firstOrNull()
@@ -122,13 +100,9 @@ abstract class BaseMemberServiceImpl(
         return withContext(Dispatchers.IO) {
             MemberImpl(service, storage).apply {
                 dataContainer = DataContainerImpl(this, lookupDataContainerStorage(storage.dataContainer)!!)
-
                 if (storage.bedrockAccount != null) {
                     bedrockAccount = BedrockAccountImpl(this, lookupBedrockAccountStorage(storage.bedrockAccount!!)!!)
                 }
-
-                commentContainer = CommentContainerImpl(service, this)
-                punishmentContainer = PunishmentContainerImpl(service, this)
             }
         }
     }
@@ -207,16 +181,12 @@ abstract class BaseMemberServiceImpl(
             nextDataContainer,
             if (authType.isBedrock) nextBedrockAccountId else null,
             null,
-            mutableListOf(),
-            mutableListOf(),
             false,
             new = true
         )
 
         val member = MemberImpl(this, memberStorage)
         member.dataContainer = DataContainerImpl(member, dataContainerStorage)
-        member.commentContainer = CommentContainerImpl(this, member)
-        member.punishmentContainer = PunishmentContainerImpl(this, member)
 
         loadedMembers.put(nextMember, CompletableFuture.completedFuture(member))
 
@@ -289,14 +259,6 @@ abstract class BaseMemberServiceImpl(
             )
         ).firstOrNull()
         return member != null
-    }
-
-    override suspend fun existPunishment(id: Long): Boolean {
-        return lookupPunishment(id) != null
-    }
-
-    override suspend fun existComment(id: Long): Boolean {
-        return lookupComment(id) != null
     }
 
     override suspend fun existDataContainer(id: Long): Boolean {
@@ -589,8 +551,6 @@ abstract class BaseMemberServiceImpl(
                 member.dataContainer.id,
                 member.bedrockAccount?.id,
                 member.bio,
-                member.punishmentContainer.punishments.map { it.id }.toMutableList(),
-                member.commentContainer.comments.map { it.id }.toMutableList(),
                 member.isHidden
             )
             println("new member: $modifiedMemberStorage")

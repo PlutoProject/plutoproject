@@ -5,7 +5,6 @@ import com.mongodb.kotlin.client.coroutine.MongoDatabase
 import ink.pmc.common.member.proto.MemberRpcGrpcKt
 import ink.pmc.common.member.proto.MemberUpdateNotifyOuterClass.MemberUpdateNotify
 import ink.pmc.common.rpc.RpcClient
-import io.grpc.Metadata
 
 class PaperMemberService(database: MongoDatabase) : BaseMemberServiceImpl(database) {
 

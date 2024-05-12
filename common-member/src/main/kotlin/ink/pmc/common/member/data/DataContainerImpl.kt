@@ -87,13 +87,14 @@ class DataContainerImpl(override val owner: Member, override var storage: DataCo
 
     override fun <T> getCollection(key: String, type: Class<T>): Collection<T>? {
         return try {
-            val obj = get(key, Any::class.java)
+            val obj = get(key, ArrayList::class.java)
             if (obj is Collection<*>) {
                 obj as Collection<T>
             } else {
                 null
             }
         } catch (e: Exception) {
+            e.printStackTrace()
             null
         }
     }

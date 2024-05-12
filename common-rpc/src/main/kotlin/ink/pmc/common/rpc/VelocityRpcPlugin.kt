@@ -84,7 +84,7 @@ class VelocityRpcPlugin @Inject constructor(suspendingPluginContainer: Suspendin
         configFile = File(dataDir, "config_server.toml")
 
         if (!configFile.exists()) {
-            saveConfig(VelocityRpcPlugin::class.java, "config_server.toml",configFile)
+            saveConfig(VelocityRpcPlugin::class.java, "config_server.toml", configFile)
         }
 
         loadConfig(configFile)

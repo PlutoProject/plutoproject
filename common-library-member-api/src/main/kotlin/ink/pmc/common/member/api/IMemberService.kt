@@ -1,8 +1,6 @@
 package ink.pmc.common.member.api
 
-import ink.pmc.common.member.api.comment.Comment
 import ink.pmc.common.member.api.data.MemberModifier
-import ink.pmc.common.member.api.punishment.Punishment
 import java.time.Instant
 import java.util.*
 
@@ -33,17 +31,9 @@ interface IMemberService {
 
     suspend fun exist(name: String, authType: AuthType = AuthType.OFFICIAL): Boolean
 
-    suspend fun existPunishment(id: Long): Boolean
-
-    suspend fun existComment(id: Long): Boolean
-
     suspend fun existDataContainer(id: Long): Boolean
 
     suspend fun existBedrockAccount(id: Long): Boolean
-
-    suspend fun lookupPunishment(id: Long): Punishment?
-
-    suspend fun lookupComment(id: Long): Comment?
 
     suspend fun isWhitelisted(uid: Long): Boolean
 

@@ -5,15 +5,11 @@ import ink.pmc.common.member.api.AuthType
 import ink.pmc.common.member.api.BedrockAccount
 import ink.pmc.common.member.api.Member
 import ink.pmc.common.member.api.WhitelistStatus
-import ink.pmc.common.member.api.comment.CommentContainer
 import ink.pmc.common.member.api.data.MemberModifier
-import ink.pmc.common.member.api.punishment.PunishmentContainer
-import ink.pmc.common.member.comment.AbstractCommentContainer
 import ink.pmc.common.member.data.AbstractBedrockAccount
 import ink.pmc.common.member.data.AbstractDataContainer
 import ink.pmc.common.member.data.BedrockAccountImpl
 import ink.pmc.common.member.data.MemberModifierImpl
-import ink.pmc.common.member.punishment.AbstractPunishmentContainer
 import ink.pmc.common.member.storage.BedrockAccountStorage
 import ink.pmc.common.member.storage.MemberStorage
 import kotlinx.coroutines.flow.firstOrNull
@@ -43,8 +39,6 @@ class MemberImpl(
     override var bedrockAccount: AbstractBedrockAccount? = null
     override var bio: String? = storage.bio
     override var isHidden: Boolean = storage.isHidden ?: false
-    override lateinit var commentContainer: AbstractCommentContainer
-    override lateinit var punishmentContainer: AbstractPunishmentContainer
     override val modifier: MemberModifier = MemberModifierImpl(this)
 
     override fun exemptWhitelist() {

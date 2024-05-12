@@ -36,8 +36,6 @@ data class MemberStorage(
     @DiffInclude var dataContainer: Long,
     var bedrockAccount: Long?,
     var bio: String?,
-    @DiffInclude var punishments: MutableList<Long>,
-    @DiffInclude var comments: MutableList<Long>,
     var isHidden: Boolean?,
     @Transient var new: Boolean = false
 ) : Diffable<MemberStorage>() {
