@@ -26,7 +26,11 @@ class RpcClientImpl(private val host: String, private val port: Int) : IRpcClien
             return cachedStubs[cls] as T
         }
 
-        return cls.constructors.first().call(channel).also {
+        val cons = cls.constructors.first()
+        val param = cons.parameters[0]
+        val args = mapOf(param to channel)
+
+        return cls.constructors.first().callBy(args).also {
             cachedStubs[cls] = it
         }
     }
