@@ -12,7 +12,7 @@ data class BedrockAccountStorage(
     var linkedWith: Long,
     var xuid: String,
     var gamertag: String,
-    @Transient var new: Boolean = false
+    var new: Boolean = false
 ) : Diffable<BedrockAccountStorage>() {
 
     override fun applyDiff(diff: Diff): Diffable<BedrockAccountStorage> {

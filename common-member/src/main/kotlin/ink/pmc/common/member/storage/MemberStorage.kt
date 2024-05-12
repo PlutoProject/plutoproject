@@ -30,8 +30,8 @@ data class MemberStorage(
     var bio: String?,
     var punishments: MutableList<Long>,
     var comments: MutableList<Long>,
-    var isHidden: Boolean?,
-    @Transient var new: Boolean = false
+    var isHidden: Boolean = false,
+    var new: Boolean = false
 ) : Diffable<MemberStorage>() {
 
     override fun applyDiff(diff: Diff): Diffable<MemberStorage> {

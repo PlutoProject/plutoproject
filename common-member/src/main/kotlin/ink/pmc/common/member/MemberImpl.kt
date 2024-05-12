@@ -40,7 +40,7 @@ class MemberImpl(
     override lateinit var dataContainer: AbstractDataContainer
     override var bedrockAccount: AbstractBedrockAccount? = null
     override var bio: String? = storage.bio
-    override var isHidden: Boolean = storage.isHidden ?: false
+    override var isHidden: Boolean = storage.isHidden
     override lateinit var commentContainer: CommentContainer
     override lateinit var punishmentContainer: PunishmentContainer
     override val modifier: MemberModifier = MemberModifierImpl(this)
@@ -129,7 +129,7 @@ class MemberImpl(
             bedrockAccount = null
         }*/
         bio = storage.bio
-        isHidden = storage.isHidden ?: false
+        isHidden = storage.isHidden
         this.storage = storage
     }
 

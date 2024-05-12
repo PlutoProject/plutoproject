@@ -17,7 +17,7 @@ data class DataContainerStorage(
     var createdAt: Long,
     var lastModifiedAt: Long,
     var contents: MutableMap<String, String>,
-    @Transient var new: Boolean = false
+    var new: Boolean = false
 ) : Diffable<DataContainerStorage>() {
 
     override fun applyDiff(diff: Diff): Diffable<DataContainerStorage> {
