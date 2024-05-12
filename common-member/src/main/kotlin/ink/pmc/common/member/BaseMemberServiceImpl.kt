@@ -4,10 +4,10 @@ import com.github.benmanes.caffeine.cache.AsyncCacheLoader
 import com.github.benmanes.caffeine.cache.AsyncLoadingCache
 import com.github.benmanes.caffeine.cache.Caffeine
 import com.mongodb.client.model.Filters.*
-import com.mongodb.client.model.PushOptions
 import com.mongodb.client.model.ReplaceOptions
 import com.mongodb.client.model.UpdateOptions
-import com.mongodb.client.model.Updates.*
+import com.mongodb.client.model.Updates.combine
+import com.mongodb.client.model.Updates.set
 import com.mongodb.kotlin.client.coroutine.MongoCollection
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
 import ink.pmc.common.member.api.AuthType
@@ -42,14 +42,6 @@ import org.bson.conversions.Bson
 import org.bson.types.ObjectId
 import org.javers.core.diff.Diff
 import org.javers.core.diff.changetype.ValueChange
-import org.javers.core.diff.changetype.container.ElementValueChange
-import org.javers.core.diff.changetype.container.ListChange
-import org.javers.core.diff.changetype.container.ValueAdded
-import org.javers.core.diff.changetype.container.ValueRemoved
-import org.javers.core.diff.changetype.map.EntryAdded
-import org.javers.core.diff.changetype.map.EntryRemoved
-import org.javers.core.diff.changetype.map.EntryValueChange
-import org.javers.core.diff.changetype.map.MapChange
 import java.time.Duration
 import java.time.Instant
 import java.util.*
@@ -484,6 +476,8 @@ abstract class BaseMemberServiceImpl(
                 return@withContext
             }
 
+            serverLogger.info("Received update notify from server (serviceId=${notify.serviceId}) for UID ${notify.memberId}, processing...")
+
             val memberId = notify.memberId
 
             if (loadedMembers.getIfPresent(memberId) == null) {
@@ -544,6 +538,8 @@ abstract class BaseMemberServiceImpl(
                 }
             }
         }
+
+        serverLogger.info("Notify processed for UID ${notify.memberId}")
     }
 
     override suspend fun save(member: Member) {

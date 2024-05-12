@@ -12,8 +12,8 @@ class VelocityMemberService(database: MongoDatabase) : BaseMemberServiceImpl(dat
     private val monitorFlow = MutableSharedFlow<MemberUpdateNotify>()
     val rpcService = object : MemberRpcGrpcKt.MemberRpcCoroutineImplBase() {
         override suspend fun notifyMemberUpdate(request: MemberUpdateNotify): Empty {
-            handleUpdate(request)
             notifyUpdate(request)
+            handleUpdate(request)
             return Empty.getDefaultInstance()
         }
 

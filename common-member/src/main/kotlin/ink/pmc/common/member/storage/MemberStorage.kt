@@ -1,6 +1,9 @@
 package ink.pmc.common.member.storage
 
-import org.bson.codecs.pojo.annotations.BsonId
+import kotlinx.serialization.Contextual
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 import org.bson.types.ObjectId
 import org.javers.core.diff.Diff
 import org.javers.core.diff.changetype.ValueChange
@@ -14,8 +17,9 @@ import java.lang.reflect.Modifier
 private val cls = MemberStorage::class.java
 
 @Suppress("UNCHECKED_CAST")
+@Serializable
 data class MemberStorage(
-    @BsonId @DiffIgnore val objectId: ObjectId,
+    @DiffIgnore @SerialName("_id") @Contextual val objectId: ObjectId,
     var uid: Long,
     var id: String,
     var name: String,
@@ -30,7 +34,7 @@ data class MemberStorage(
     var bio: String?,
     var punishments: MutableList<Long>,
     var comments: MutableList<Long>,
-    var isHidden: Boolean = false,
+    var isHidden: Boolean?,
     @Transient var new: Boolean = false
 ) : Diffable<MemberStorage>() {
 

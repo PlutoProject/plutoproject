@@ -2,15 +2,19 @@ package ink.pmc.common.member.storage
 
 import ink.pmc.common.member.UID_START
 import ink.pmc.common.utils.concurrent.withLock
-import org.bson.codecs.pojo.annotations.BsonId
+import kotlinx.serialization.Contextual
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 import org.bson.types.ObjectId
 import org.javers.core.diff.Diff
 import org.javers.core.diff.changetype.ValueChange
 import org.javers.core.metamodel.annotation.DiffIgnore
 import java.util.concurrent.locks.ReentrantLock
 
+@Serializable
 data class StatusStorage(
-    @BsonId @DiffIgnore val objectId: ObjectId,
+    @DiffIgnore @SerialName("_id") @Contextual val objectId: ObjectId,
     var lastMember: Long,
     var lastPunishment: Long,
     var lastComment: Long,

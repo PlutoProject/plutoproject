@@ -11,6 +11,7 @@ class PaperMemberService(database: MongoDatabase) : BaseMemberServiceImpl(databa
     private val stub = RpcClient.stub(MemberRpcGrpcKt.MemberRpcCoroutineStub::class)
 
     override suspend fun notifyUpdate(notify: MemberUpdateNotify) {
+        serverLogger.info("Sending an update notify to proxy for UID ${notify.memberId}...")
         stub.notifyMemberUpdate(notify)
     }
 

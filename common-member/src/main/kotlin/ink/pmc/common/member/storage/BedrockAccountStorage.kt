@@ -1,13 +1,17 @@
 package ink.pmc.common.member.storage
 
-import org.bson.codecs.pojo.annotations.BsonId
+import kotlinx.serialization.Contextual
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 import org.bson.types.ObjectId
 import org.javers.core.diff.Diff
 import org.javers.core.diff.changetype.ValueChange
 import org.javers.core.metamodel.annotation.DiffIgnore
 
+@Serializable
 data class BedrockAccountStorage(
-    @BsonId @DiffIgnore var objectId: ObjectId,
+    @DiffIgnore @SerialName("_id") @Contextual var objectId: ObjectId,
     var id: Long,
     var linkedWith: Long,
     var xuid: String,
