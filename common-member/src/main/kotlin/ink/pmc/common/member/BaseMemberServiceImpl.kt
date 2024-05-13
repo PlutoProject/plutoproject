@@ -16,9 +16,10 @@ import ink.pmc.common.member.api.WhitelistStatus
 import ink.pmc.common.member.api.data.MemberModifier
 import ink.pmc.common.member.data.BedrockAccountImpl
 import ink.pmc.common.member.data.DataContainerImpl
-import ink.pmc.common.member.proto.*
-import ink.pmc.common.member.proto.MemberDiffOuterClass.DiffType
+import ink.pmc.common.member.proto.DiffOuterClass.DiffType
 import ink.pmc.common.member.proto.MemberUpdateNotifyOuterClass.MemberUpdateNotify
+import ink.pmc.common.member.proto.diff
+import ink.pmc.common.member.proto.memberUpdateNotify
 import ink.pmc.common.member.storage.BedrockAccountStorage
 import ink.pmc.common.member.storage.DataContainerStorage
 import ink.pmc.common.member.storage.MemberStorage
@@ -35,7 +36,6 @@ import kotlinx.coroutines.future.asCompletableFuture
 import kotlinx.coroutines.future.await
 import kotlinx.coroutines.withContext
 import org.bson.BsonDocument
-import org.bson.Document
 import org.bson.conversions.Bson
 import org.bson.types.ObjectId
 import org.javers.core.diff.Diff
@@ -474,26 +474,29 @@ abstract class BaseMemberServiceImpl(
             }
 
             val member = loadedMembers.get(memberId).get()!! as MemberImpl
-            val memberDiff = notify.diff
 
-            when (memberDiff.type) {
-                DiffType.MODIFY -> {
-                    val diff = memberDiff.diff.toDiff()!!
-                    val diffedMemberStorage = member.storage.copy().applyDiff(diff)
-                    member.reload(diffedMemberStorage as MemberStorage)
+            if (notify.hasMemberDiff()) {
+                val memberDiff = notify.memberDiff
+                when (memberDiff.type) {
+                    DiffType.MODIFY -> {
+                        val diff = memberDiff.diff.toDiff()!!
+                        val diffedMemberStorage = member.storage.copy().applyDiff(diff)
+                        member.reload(diffedMemberStorage as MemberStorage)
+                    }
+
+                    else -> {}
                 }
-
-                else -> {}
             }
 
-            if (memberDiff.hasStatusDiff()) {
-                val diff = memberDiff.statusDiff.diff.toDiff()!!
+            if (notify.hasStatusDiff()) {
+                val statusDiff = notify.statusDiff
+                val diff = statusDiff.diff.toDiff()!!
                 currentStatus.applyDiff(diff)
                 status = currentStatus
             }
 
-            if (memberDiff.hasBedrockAccountDiff()) {
-                val bedrockAccountDiff = memberDiff.bedrockAccountDiff
+            if (notify.hasBedrockAccountDiff()) {
+                val bedrockAccountDiff = notify.bedrockAccountDiff
                 when (bedrockAccountDiff.type) {
                     DiffType.ADD -> {
                         val storage = bedrockAccountDiff.storage.toObject(BedrockAccountStorage::class.java)
@@ -514,8 +517,8 @@ abstract class BaseMemberServiceImpl(
                 }
             }
 
-            if (memberDiff.hasDataContainerDiff()) {
-                val dataContainerDiff = memberDiff.dataContainerDiff
+            if (notify.hasDataContainerDiff()) {
+                val dataContainerDiff = notify.dataContainerDiff
                 when (dataContainerDiff.type) {
                     DiffType.MODIFY -> {
                         val diff = dataContainerDiff.diff.toDiff()!!
@@ -553,51 +556,51 @@ abstract class BaseMemberServiceImpl(
             val diffBedrockAccount = saveBedrockAccount(oldBedrockAccountStorage, modifiedBedrockAccountStorage)
             val diffDataContainer = saveDataContainer(oldDataContainerStorage, modifiedDataContainerStorage)
 
-            if (!diffMember.hasChanges()) {
-                return@io
-            }
-
             val notify = memberUpdateNotify {
                 serviceId = id.toString()
                 memberId = member.uid
 
-                diff = memberDiff {
-                    type = if (oldMemberStorage == null) {
-                        storage = modifiedMemberStorage.toJsonString()
-                        DiffType.ADD
-                    } else {
-                        diff = diffMember.toJson()
-                        DiffType.MODIFY
-                    }
-
-                    statusDiff = statusDiff {
+                if (diffStatus.hasChanges()) {
+                    statusDiff = diff {
                         type = DiffType.MODIFY
                         diff = diffStatus.toJson()
                     }
+                }
 
-                    if (diffBedrockAccount.hasChanges()) {
-                        bedrockAccountDiff = bedrockAccountDiff {
-                            type = if (oldBedrockAccountStorage == null && modifiedBedrockAccountStorage != null) {
-                                storage = modifiedBedrockAccountStorage.toJsonString()
-                                DiffType.ADD
-                            } else if (modifiedBedrockAccountStorage == null) {
-                                DiffType.REMOVE
-                            } else {
-                                diff = diffBedrockAccount.toJson()
-                                DiffType.MODIFY
-                            }
+                if (diffMember.hasChanges()) {
+                    memberDiff = diff {
+                        type = if (oldMemberStorage == null) {
+                            storage = modifiedMemberStorage.toJsonString()
+                            DiffType.ADD
+                        } else {
+                            diff = diffMember.toJson()
+                            DiffType.MODIFY
                         }
                     }
+                }
 
-                    if (diffDataContainer.hasChanges()) {
-                        dataContainerDiff = dataContainerDiff {
-                            type = if (oldDataContainerStorage == null) {
-                                storage = modifiedDataContainerStorage.toJsonString()
-                                DiffType.ADD
-                            } else {
-                                diff = diffDataContainer.toJson()
-                                DiffType.MODIFY
-                            }
+                if (diffBedrockAccount.hasChanges()) {
+                    bedrockAccountDiff = diff {
+                        type = if (oldBedrockAccountStorage == null && modifiedBedrockAccountStorage != null) {
+                            storage = modifiedBedrockAccountStorage.toJsonString()
+                            DiffType.ADD
+                        } else if (modifiedBedrockAccountStorage == null) {
+                            DiffType.REMOVE
+                        } else {
+                            diff = diffBedrockAccount.toJson()
+                            DiffType.MODIFY
+                        }
+                    }
+                }
+
+                if (diffDataContainer.hasChanges()) {
+                    dataContainerDiff = diff {
+                        type = if (oldDataContainerStorage == null) {
+                            storage = modifiedDataContainerStorage.toJsonString()
+                            DiffType.ADD
+                        } else {
+                            diff = diffDataContainer.toJson()
+                            DiffType.MODIFY
                         }
                     }
                 }

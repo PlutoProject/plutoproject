@@ -1,6 +1,5 @@
 syntax = "proto3";
 package ink.pmc.common.member.proto;
-// option optimize_for = CODE_SIZE;
 
 import "google/protobuf/empty.proto";
 import "MemberUpdateNotify.proto";
