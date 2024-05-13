@@ -3,13 +3,7 @@ package ink.pmc.common.member.data
 import ink.pmc.common.member.api.Member
 import ink.pmc.common.member.serverLogger
 import ink.pmc.common.member.storage.DataContainerStorage
-import ink.pmc.common.utils.json.gson
-import ink.pmc.common.utils.storage.asBson
-import ink.pmc.common.utils.storage.asObject
-import org.bson.BsonDocument
-import org.bson.BsonNull
-import org.bson.BsonString
-import org.bson.BsonValue
+import org.bson.*
 import java.time.Instant
 import java.util.logging.Level
 
@@ -39,31 +33,160 @@ class DataContainerImpl(override val owner: Member, override var storage: DataCo
         )
     }
 
-    override fun set(key: String, value: Any) {
-        lastModifiedAt = Instant.now()
-        contents[key] = value.asBson
+    private fun toBson(obj: Any?): BsonValue {
+        if (obj == null) {
+            return BsonNull()
+        }
+
+        return when (obj) {
+            is Byte -> BsonInt32(obj.toInt())
+            is Short -> BsonInt32(obj.toInt())
+            is Int -> BsonInt32(obj)
+            is Long -> BsonInt64(obj)
+            is Float -> BsonDouble(obj.toDouble())
+            is Double -> BsonDouble(obj)
+            is Char -> BsonString(obj.toString())
+            is Boolean -> BsonBoolean(obj)
+            is String -> BsonString(obj)
+            is Collection<*> -> BsonArray(obj.filterNotNull().map { toBson(it) })
+            is Map<*, *> -> BsonDocument(obj.entries.filter { it.key is String && it.value != null }
+                .map { BsonElement(it.key as String, toBson(it.value!!)) })
+
+            else -> {
+                throw IllegalStateException("Type not supported: ${obj::class.java.name}")
+            }
+        }
     }
 
-    override fun <T> get(key: String, type: Class<T>): T? {
-        if (!contains(key)) {
+    private fun fromBson(value: BsonValue?): Any? {
+        if (value == null) {
             return null
         }
 
-        return try {
-            val str = contents[key]!!.asString().value
-            return gson.fromJson(str, type)
-        } catch (e: Exception) {
-            serverLogger.log(
-                Level.SEVERE,
-                "Failed to obtain a value from data container (key=$key) of member (uid=${owner.uid}, name=${owner.name})",
-                e
-            )
-            null
+        return when (value) {
+            is BsonInt32 -> value.value
+            is BsonInt64 -> value.value
+            is BsonDouble -> value.value
+            is BsonString -> value.value
+            is BsonBoolean -> value.value
+            is BsonNull -> return null
+            is BsonArray -> return value.values.map { fromBson(it) }
+            is BsonDocument -> return value.entries.associate { it.key to fromBson(it.value) }
+            else -> {
+                throw IllegalStateException("Type not supported: ${value::class.java.name}")
+            }
         }
     }
 
-    override fun get(key: String): BsonValue {
-        return contents[key] ?: BsonNull()
+    private fun isNestedKey(key: String): Boolean {
+        return key.contains('.')
+    }
+
+    private fun isLegalNestedKey(key: String): Boolean {
+        return !key.startsWith('.') && !key.endsWith('.')
+    }
+
+    private fun throwIfIllegalNestedKey(key: String) {
+        if (!isLegalNestedKey(key)) {
+            throw IllegalStateException("Illegal key: $key")
+        }
+    }
+
+    private fun setNested(key: String, value: BsonValue) {
+        throwIfIllegalNestedKey(key)
+
+        val keys = key.split('.')
+        val range = keys.indices
+        val last = range.last
+        var curr = contents
+
+        for (i in range) {
+            if (i == last) {
+                curr[keys[i]] = value
+                break
+            }
+
+            val next = curr.computeIfAbsent(keys[i]) { BsonDocument() }
+
+            if (next !is BsonDocument) {
+                throw IllegalStateException("Key ${keys.joinToString(".")} isn't BsonDocument")
+            }
+
+            curr = next
+        }
+    }
+
+    private fun getNested(key: String): BsonValue? {
+        throwIfIllegalNestedKey(key)
+        
+        val keys = key.split('.')
+        val range = keys.indices
+        val last = range.last
+        var curr = contents
+
+        for (i in range) {
+            if (i == last) {
+                return curr[keys[i]]
+            }
+
+            val next = curr[keys[i]] ?: return null
+
+            if (next !is BsonDocument) {
+                return null
+            }
+
+            curr = next
+        }
+
+        return null
+    }
+
+    private fun containsNested(key: String): Boolean {
+        return getNested(key) != null
+    }
+
+    override fun set(key: String, value: Any) {
+        setBson(key, toBson(value))
+    }
+
+    override fun get(key: String): Any? {
+        return fromBson(getNested(key))
+    }
+
+    override fun setBson(key: String, value: BsonValue) {
+        try {
+            lastModifiedAt = Instant.now()
+
+            if (isNestedKey(key)) {
+                setNested(key, value)
+            }
+
+            contents[key] = value
+        } catch (e: Exception) {
+            serverLogger.log(
+                Level.SEVERE,
+                "Failed to set a value in UID ${owner.uid}'s data container (key=$key, value=$value)",
+                e
+            )
+        }
+    }
+
+    override fun getBson(key: String): BsonValue? {
+        try {
+            if (isNestedKey(key)) {
+                return getNested(key)
+            }
+
+            return contents[key]
+        } catch (e: Exception) {
+            serverLogger.log(
+                Level.SEVERE,
+                "Failed to get a value in UID ${owner.uid}'s data container (key=$key)",
+                e
+            )
+
+            return null
+        }
     }
 
     override fun remove(key: String) {
@@ -71,114 +194,74 @@ class DataContainerImpl(override val owner: Member, override var storage: DataCo
     }
 
     override fun getString(key: String): String? {
-        if (!contains(key)) {
-            return null
-        }
-
-        return contents.getString(key)?.value
+        return get(key) as String?
     }
 
     override fun getByte(key: String): Byte? {
-        if (!contains(key)) {
-            return null
-        }
-
-        return contents.getString(key)?.value?.toByteOrNull()
+        return getString(key)?.toByte()
     }
 
     override fun getShort(key: String): Short? {
-        if (!contains(key)) {
-            return null
-        }
-
-        return contents.getInt32(key)?.value?.toShort()
+        return getInt(key)?.toShort()
     }
 
     override fun getInt(key: String): Int? {
-        if (!contains(key)) {
-            return null
-        }
-
-        return contents.getInt32(key)?.value
+        return get(key) as Int?
     }
 
     override fun getLong(key: String): Long? {
-        if (!contains(key)) {
-            return null
-        }
-
-        return contents.getInt64(key)?.value
+        return get(key) as Long?
     }
 
     override fun getFloat(key: String): Float? {
-        if (!contains(key)) {
-            return null
-        }
-
-        return contents.getDouble(key)?.value?.toFloat()
+        return getDouble(key)?.toFloat()
     }
 
     override fun getDouble(key: String): Double? {
-        if (!contains(key)) {
-            return null
-        }
-
-        return contents.getDouble(key)?.value
+        return get(key) as Double?
     }
 
     override fun getChar(key: String): Char? {
-        if (!contains(key)) {
-            return null
-        }
-
-        return contents.getString(key)?.value?.toCharArray()?.get(0)
+        return getString(key)?.get(0)
     }
 
     override fun getBoolean(key: String): Boolean {
-        if (!contains(key)) {
-            return false
-        }
-
-        return contents.getBoolean(key)?.value ?: false
+        return get(key) as Boolean? ?: false
     }
 
-    override fun <T> getCollection(key: String, type: Class<T>): Collection<T>? {
-        if (!contains(key)) {
-            return null
-        }
-
-        val array = contents.getArray(key) ?: return null
-
+    override fun <T> getList(key: String): List<*>? {
         return try {
-            array.asObject as Collection<T>
+            get(key) as List<T>
         } catch (e: Exception) {
             serverLogger.log(
                 Level.SEVERE,
-                "Failed to obtain a collection value from data container (key=$key) of member (uid=${owner.uid}, name=${owner.name})"
+                "Failed to get a list in UID ${owner.uid}'s data container (key=$key)",
+                e
             )
+
             null
         }
     }
 
-    override fun <T> getMap(key: String, keyType: Class<T>): Map<String, T>? {
-        if (!contains(key)) {
-            return null
-        }
-
-        val document = contents.getDocument(key) ?: return null
-
+    override fun <T> getMap(key: String): Map<String, *>? {
         return try {
-            document.asObject as Map<String, T>
+            get(key) as Map<String, T>
         } catch (e: Exception) {
             serverLogger.log(
                 Level.SEVERE,
-                "Failed to obtain a map value from data container (key=$key) of member (uid=${owner.uid}, name=${owner.name})"
+                "Failed to get a map in UID ${owner.uid}'s data container (key=$key)",
+                e
             )
+
             null
         }
     }
 
     override fun contains(key: String): Boolean {
+        if (isNestedKey(key)) {
+            return containsNested(key)
+        }
+
         return contents.containsKey(key)
     }
 

@@ -1,6 +1,7 @@
 package ink.pmc.common.member.api.data
 
 import ink.pmc.common.member.api.Member
+import org.bson.BsonArray
 import org.bson.BsonDocument
 import org.bson.BsonValue
 import java.time.Instant
@@ -16,9 +17,11 @@ interface DataContainer {
 
     operator fun set(key: String, value: Any)
 
-    operator fun <T> get(key: String, type: Class<T>): T?
+    operator fun get(key: String): Any?
 
-    operator fun get(key: String): BsonValue
+    fun setBson(key: String, value: BsonValue)
+
+    fun getBson(key: String): BsonValue?
 
     fun remove(key: String)
 
@@ -40,9 +43,9 @@ interface DataContainer {
 
     fun getBoolean(key: String): Boolean
 
-    fun <T> getCollection(key: String, type: Class<T>): Collection<T>?
+    fun <T> getList(key: String): List<*>?
 
-    fun <T> getMap(key: String, keyType: Class<T>): Map<String, T>?
+    fun <T> getMap(key: String): Map<String, *>?
 
     fun contains(key: String): Boolean
 

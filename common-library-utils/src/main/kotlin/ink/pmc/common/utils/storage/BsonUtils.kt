@@ -19,15 +19,13 @@ val Any?.asBson: BsonValue
             is Char -> BsonString(this.toString())
             is Boolean -> BsonBoolean(this)
             is String -> BsonString(this)
-            is Collection<*> -> BsonArray(this.map { it.asBson })
-            is Map<*, *> -> BsonDocument(this.map { BsonElement(it.key.toString(), it.value.asBson) })
             else -> BsonString(this.toJsonString())
         }
     }
 
 val BsonValue.asObject: Any?
     get() {
-        return when(this) {
+        return when (this) {
             is BsonInt32 -> this.value
             is BsonInt64 -> this.value
             is BsonDouble -> this.value
@@ -36,6 +34,21 @@ val BsonValue.asObject: Any?
             is BsonNull -> return null
             is BsonArray -> this.values.map { it.asObject }
             is BsonDocument -> this.entries.associate { it.key to it.value.asObject }
-            else -> this.asString()
+            else -> return null
+        }
+    }
+
+val BsonValue.string: String
+    get() {
+        return when (this) {
+            is BsonInt32 -> this.value.toString()
+            is BsonInt64 -> this.value.toString()
+            is BsonDouble -> this.value.toString()
+            is BsonString -> this.value
+            is BsonBoolean -> this.value.toString()
+            is BsonNull -> return "null"
+            is BsonArray -> this.values.map { it.asObject }.toJsonString()
+            is BsonDocument -> this.entries.associate { it.key to it.value.asObject }.toJsonString()
+            else -> return "null"
         }
     }
