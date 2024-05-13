@@ -537,42 +537,10 @@ abstract class BaseMemberServiceImpl(
         }
 
         io {
-            val modifiedMemberStorage = MemberStorage(
-                member.storage.objectId,
-                member.uid,
-                member.id.toString(),
-                member.name,
-                member.rawName,
-                member.whitelistStatus.toString(),
-                member.authType.toString(),
-                member.createdAt.toEpochMilli(),
-                member.lastJoinedAt?.toEpochMilli(),
-                member.lastQuitedAt?.toEpochMilli(),
-                member.dataContainer.id,
-                member.bedrockAccount?.id,
-                member.bio,
-                member.isHidden
-            )
+            val modifiedMemberStorage = member.storage.copy(new = false)
             println("new member: $modifiedMemberStorage")
-            val modifiedBedrockAccountStorage = if (member.bedrockAccount != null) {
-                BedrockAccountStorage(
-                    member.bedrockAccount!!.storage.objectId,
-                    member.bedrockAccount!!.id,
-                    member.bedrockAccount!!.linkedWith.uid,
-                    member.bedrockAccount!!.xuid,
-                    member.bedrockAccount!!.gamertag
-                )
-            } else {
-                null
-            }
-            val modifiedDataContainerStorage = DataContainerStorage(
-                member.dataContainer.storage.objectId,
-                member.dataContainer.id,
-                member.dataContainer.owner.uid,
-                member.dataContainer.createdAt.toEpochMilli(),
-                member.dataContainer.lastModifiedAt.toEpochMilli(),
-                member.dataContainer.contents
-            )
+            val modifiedBedrockAccountStorage = member.bedrockAccount?.storage?.copy(new = false)
+            val modifiedDataContainerStorage = member.dataContainer.storage.copy(new = false)
 
             val oldMemberStorage = if (member.storage.new) null else member.storage
             println("old member: $oldMemberStorage")
@@ -634,6 +602,12 @@ abstract class BaseMemberServiceImpl(
                     }
                 }
             }
+
+            member.storage = modifiedMemberStorage
+            if (member.bedrockAccount != null && modifiedBedrockAccountStorage != null) {
+                member.bedrockAccount!!.storage = modifiedBedrockAccountStorage
+            }
+            member.dataContainer.storage = modifiedDataContainerStorage
 
             println("notify")
             notifyUpdate(notify)

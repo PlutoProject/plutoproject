@@ -7,7 +7,7 @@ import ink.pmc.common.member.storage.MemberStorage
 
 abstract class AbstractMember : Member {
 
-    abstract val storage: MemberStorage
+    abstract var storage: MemberStorage
     abstract override val bedrockAccount: AbstractBedrockAccount?
     abstract override val dataContainer: AbstractDataContainer
 

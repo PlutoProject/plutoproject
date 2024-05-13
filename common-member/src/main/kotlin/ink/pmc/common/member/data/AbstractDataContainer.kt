@@ -5,7 +5,7 @@ import ink.pmc.common.member.storage.DataContainerStorage
 
 abstract class AbstractDataContainer : DataContainer {
 
-    abstract val storage: DataContainerStorage
+    abstract var storage: DataContainerStorage
 
     override fun equals(other: Any?): Boolean {
         if (other !is DataContainer) {

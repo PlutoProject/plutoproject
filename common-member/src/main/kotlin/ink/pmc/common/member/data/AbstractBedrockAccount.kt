@@ -5,7 +5,7 @@ import ink.pmc.common.member.storage.BedrockAccountStorage
 
 abstract class AbstractBedrockAccount : BedrockAccount {
 
-    abstract val storage: BedrockAccountStorage
+    abstract var storage: BedrockAccountStorage
 
     override fun equals(other: Any?): Boolean {
         if (other !is BedrockAccount) {
