@@ -61,42 +61,82 @@ class DataContainerImpl(override val owner: Member, override var storage: DataCo
     }
 
     override fun getString(key: String): String? {
+        if (!contains(key)) {
+            return null
+        }
+
         return contents.getString(key)?.value
     }
 
     override fun getByte(key: String): Byte? {
+        if (!contains(key)) {
+            return null
+        }
+
         return contents.getString(key)?.value?.toByteOrNull()
     }
 
     override fun getShort(key: String): Short? {
+        if (!contains(key)) {
+            return null
+        }
+
         return contents.getInt32(key)?.value?.toShort()
     }
 
     override fun getInt(key: String): Int? {
+        if (!contains(key)) {
+            return null
+        }
+
         return contents.getInt32(key)?.value
     }
 
     override fun getLong(key: String): Long? {
+        if (!contains(key)) {
+            return null
+        }
+
         return contents.getInt64(key)?.value
     }
 
     override fun getFloat(key: String): Float? {
+        if (!contains(key)) {
+            return null
+        }
+
         return contents.getDouble(key)?.value?.toFloat()
     }
 
     override fun getDouble(key: String): Double? {
+        if (!contains(key)) {
+            return null
+        }
+
         return contents.getDouble(key)?.value
     }
 
     override fun getChar(key: String): Char? {
+        if (!contains(key)) {
+            return null
+        }
+
         return contents.getString(key)?.value?.toCharArray()?.get(0)
     }
 
     override fun getBoolean(key: String): Boolean {
+        if (!contains(key)) {
+            return false
+        }
+
         return contents.getBoolean(key)?.value ?: false
     }
 
     override fun <T> getCollection(key: String, type: Class<T>): Collection<T>? {
+        if (!contains(key)) {
+            return null
+        }
+
         val array = contents.getArray(key) ?: return null
 
         return try {
@@ -111,6 +151,10 @@ class DataContainerImpl(override val owner: Member, override var storage: DataCo
     }
 
     override fun <T> getMap(key: String, keyType: Class<T>): Map<String, T>? {
+        if (!contains(key)) {
+            return null
+        }
+
         val document = contents.getDocument(key) ?: return null
 
         return try {
