@@ -49,7 +49,7 @@ allprojects {
             implementation(dep)
             return
         }
-        implementation(dep)
+        compileOnly(dep)
     }
 
     dependencies {

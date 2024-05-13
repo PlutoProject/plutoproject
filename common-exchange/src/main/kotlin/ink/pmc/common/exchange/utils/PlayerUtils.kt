@@ -5,6 +5,8 @@ import ink.pmc.common.exchange.paper.StatusSnapshot
 import ink.pmc.common.member.api.paper.member
 import ink.pmc.common.utils.chat.replace
 import ink.pmc.common.utils.concurrent.sync
+import ink.pmc.common.utils.json.toJsonString
+import ink.pmc.common.utils.json.toObject
 import ink.pmc.common.utils.platform.paper
 import ink.pmc.common.utils.platform.paperUtilsPlugin
 import ink.pmc.common.utils.visual.mochaFlamingo
@@ -76,7 +78,7 @@ suspend fun snapshotStatus(player: Player) {
     }
 
     val snapshot = StatusSnapshot.create(player)
-    dataContainer[STATUS_SNAPSHOT_KEY] = snapshot
+    dataContainer[STATUS_SNAPSHOT_KEY] = snapshot.toJsonString()
 }
 
 suspend fun restoreStatus(player: Player, restoreLocation: Boolean = true) {
@@ -88,7 +90,7 @@ suspend fun restoreStatus(player: Player, restoreLocation: Boolean = true) {
             return@sync
         }
 
-        val snapshot = dataContainer[STATUS_SNAPSHOT_KEY, StatusSnapshot::class.java]!!
+        val snapshot = dataContainer.getString(STATUS_SNAPSHOT_KEY)!!.toObject(StatusSnapshot::class.java)
         snapshot.restore(player, restoreLocation)
         dataContainer.remove(STATUS_SNAPSHOT_KEY)
     }
