@@ -129,4 +129,23 @@ class MemberImpl(
         this.storage = storage
     }
 
+    override fun toStorage(): MemberStorage {
+        return storage.copy(
+            uid = this.uid,
+            id = this.id.toString(),
+            name = this.name,
+            rawName = this.rawName,
+            whitelistStatus = this.whitelistStatus.toString(),
+            authType = this.authType.toString(),
+            createdAt = this.createdAt.toEpochMilli(),
+            lastJoinedAt = this.lastJoinedAt?.toEpochMilli(),
+            lastQuitedAt = this.lastQuitedAt?.toEpochMilli(),
+            dataContainer = this.dataContainer.id,
+            bedrockAccount = this.bedrockAccount?.id,
+            bio = this.bio,
+            isHidden = this.isHidden,
+            new = false
+        )
+    }
+
 }

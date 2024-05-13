@@ -15,4 +15,14 @@ class BedrockAccountImpl(override val linkedWith: Member, override var storage: 
         this.storage = storage
     }
 
+    override fun toStorage(): BedrockAccountStorage {
+        return storage.copy(
+            id = this.id,
+            linkedWith = this.linkedWith.uid,
+            xuid = this.xuid,
+            gamertag = this.gamertag,
+            new = false
+        )
+    }
+
 }

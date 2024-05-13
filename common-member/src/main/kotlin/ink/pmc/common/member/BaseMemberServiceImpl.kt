@@ -540,16 +540,20 @@ abstract class BaseMemberServiceImpl(
         }
 
         io {
-            val modifiedMemberStorage = member.storage.copy(new = false)
+            val modifiedMemberStorage = member.toStorage()
             println("new member: $modifiedMemberStorage")
-            val modifiedBedrockAccountStorage = member.bedrockAccount?.storage?.copy(new = false)
-            val modifiedDataContainerStorage = member.dataContainer.storage.copy(new = false)
+            val modifiedBedrockAccountStorage = member.bedrockAccount?.toStorage()
+            println("new ba: $modifiedBedrockAccountStorage")
+            val modifiedDataContainerStorage = member.dataContainer.toStorage()
+            println("new dc: $modifiedDataContainerStorage")
 
             val oldMemberStorage = if (member.storage.new) null else member.storage
             println("old member: $oldMemberStorage")
             val oldBedrockAccountStorage =
                 if (member.bedrockAccount == null || member.bedrockAccount?.storage?.new == true) null else member.bedrockAccount!!.storage
+            println("old ba: $oldBedrockAccountStorage")
             val oldDataContainerStorage = if (member.dataContainer.storage.new) null else member.dataContainer.storage
+            println("old dc: $oldDataContainerStorage")
 
             val diffStatus = saveStatus(status, currentStatus)
             val diffMember = saveMember(oldMemberStorage, modifiedMemberStorage)

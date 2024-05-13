@@ -33,7 +33,7 @@ data class MemberStorage(
     var createdAt: Long,
     var lastJoinedAt: Long?,
     var lastQuitedAt: Long?,
-    @DiffInclude var dataContainer: Long,
+    var dataContainer: Long,
     var bedrockAccount: Long?,
     var bio: String?,
     var isHidden: Boolean?,

@@ -2,8 +2,9 @@ package ink.pmc.common.member.data
 
 import ink.pmc.common.member.api.data.DataContainer
 import ink.pmc.common.member.storage.DataContainerStorage
+import ink.pmc.common.member.storage.Storable
 
-abstract class AbstractDataContainer : DataContainer {
+abstract class AbstractDataContainer : DataContainer, Storable<DataContainerStorage> {
 
     abstract var storage: DataContainerStorage
 
@@ -18,7 +19,5 @@ abstract class AbstractDataContainer : DataContainer {
     override fun hashCode(): Int {
         return storage.hashCode()
     }
-
-    abstract fun reload(storage: DataContainerStorage)
 
 }

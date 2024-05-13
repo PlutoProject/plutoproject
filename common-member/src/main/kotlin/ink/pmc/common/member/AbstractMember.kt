@@ -4,8 +4,9 @@ import ink.pmc.common.member.api.Member
 import ink.pmc.common.member.data.AbstractBedrockAccount
 import ink.pmc.common.member.data.AbstractDataContainer
 import ink.pmc.common.member.storage.MemberStorage
+import ink.pmc.common.member.storage.Storable
 
-abstract class AbstractMember : Member {
+abstract class AbstractMember : Member, Storable<MemberStorage> {
 
     abstract var storage: MemberStorage
     abstract override val bedrockAccount: AbstractBedrockAccount?
@@ -22,7 +23,5 @@ abstract class AbstractMember : Member {
     override fun hashCode(): Int {
         return storage.hashCode()
     }
-
-    abstract fun reload(storage: MemberStorage)
 
 }

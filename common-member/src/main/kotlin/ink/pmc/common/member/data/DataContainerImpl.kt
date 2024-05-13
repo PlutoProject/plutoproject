@@ -29,6 +29,17 @@ class DataContainerImpl(override val owner: Member, override var storage: DataCo
         this.storage = storage
     }
 
+    override fun toStorage(): DataContainerStorage {
+        return storage.copy(
+            id = this.id,
+            owner = this.owner.uid,
+            createdAt = this.createdAt.toEpochMilli(),
+            lastModifiedAt = this.lastModifiedAt.toEpochMilli(),
+            contents = this.contents,
+            new = false
+        )
+    }
+
     override fun set(key: String, value: Any) {
         lastModifiedAt = Instant.now()
         contents[key] = value.asBson

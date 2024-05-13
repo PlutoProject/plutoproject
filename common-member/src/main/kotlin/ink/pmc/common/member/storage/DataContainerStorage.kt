@@ -14,7 +14,6 @@ import org.javers.core.diff.changetype.map.EntryRemoved
 import org.javers.core.diff.changetype.map.EntryValueChange
 import org.javers.core.diff.changetype.map.MapChange
 import org.javers.core.metamodel.annotation.DiffIgnore
-import org.javers.core.metamodel.annotation.DiffInclude
 import org.javers.core.metamodel.annotation.Id
 import org.javers.core.metamodel.annotation.TypeName
 
@@ -26,7 +25,7 @@ data class DataContainerStorage(
     var owner: Long,
     var createdAt: Long,
     var lastModifiedAt: Long,
-    @DiffInclude @Contextual var contents: BsonDocument,
+    @Contextual var contents: BsonDocument,
     @Transient var new: Boolean = false
 ) : Diffable<DataContainerStorage>() {
 

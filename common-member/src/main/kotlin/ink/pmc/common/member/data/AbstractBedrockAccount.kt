@@ -2,8 +2,9 @@ package ink.pmc.common.member.data
 
 import ink.pmc.common.member.api.BedrockAccount
 import ink.pmc.common.member.storage.BedrockAccountStorage
+import ink.pmc.common.member.storage.Storable
 
-abstract class AbstractBedrockAccount : BedrockAccount {
+abstract class AbstractBedrockAccount : BedrockAccount, Storable<BedrockAccountStorage> {
 
     abstract var storage: BedrockAccountStorage
 
@@ -18,7 +19,5 @@ abstract class AbstractBedrockAccount : BedrockAccount {
     override fun hashCode(): Int {
         return id.hashCode()
     }
-
-    abstract fun reload(storage: BedrockAccountStorage)
 
 }
