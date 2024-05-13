@@ -20,12 +20,11 @@ class DataContainerImpl(override val owner: Member, override var storage: DataCo
     override val id: Long = storage.id
     override val createdAt: Instant = Instant.ofEpochMilli(storage.createdAt)
     override var lastModifiedAt: Instant = Instant.ofEpochMilli(storage.lastModifiedAt)
-    override val contents: BsonDocument = storage.contents.clone() // 复制原 Document，不要引用 storage 里的 Document
+    override var contents: BsonDocument = storage.contents.clone() // 复制原 Document，不要引用 storage 里的 Document
 
     override fun reload(storage: DataContainerStorage) {
         lastModifiedAt = Instant.ofEpochMilli(storage.lastModifiedAt)
-        contents.clear()
-        contents.putAll(storage.contents)
+        contents = storage.contents.clone()
         this.storage = storage
     }
 
@@ -35,7 +34,7 @@ class DataContainerImpl(override val owner: Member, override var storage: DataCo
             owner = this.owner.uid,
             createdAt = this.createdAt.toEpochMilli(),
             lastModifiedAt = this.lastModifiedAt.toEpochMilli(),
-            contents = this.contents,
+            contents = this.contents.clone(),
             new = false
         )
     }
@@ -51,7 +50,7 @@ class DataContainerImpl(override val owner: Member, override var storage: DataCo
         }
 
         return try {
-            val str = (contents[key] as BsonString).value
+            val str = contents[key]!!.asString().value
             return gson.fromJson(str, type)
         } catch (e: Exception) {
             serverLogger.log(

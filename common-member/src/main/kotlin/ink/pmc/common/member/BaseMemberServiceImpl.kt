@@ -411,18 +411,10 @@ abstract class BaseMemberServiceImpl(
             }
         }
 
-        diff.changes.filterIsInstance<MapChange<*>>().forEach { mapChange ->
-            mapChange.entryChanges.filterIsInstance<EntryAdded>().forEach {
-                bson.add(set("contents.${it.key}", it.value))
-            }
+        val mapChanged = diff.changes.filterIsInstance<MapChange<*>>().isNotEmpty()
 
-            mapChange.entryChanges.filterIsInstance<EntryValueChange>().forEach {
-                bson.add(set("contents.${it.key}", it.rightValue))
-            }
-
-            mapChange.entryChanges.filterIsInstance<EntryRemoved>().forEach {
-                bson.add(unset("contents.${it.key}"))
-            }
+        if (mapChanged) {
+            bson.add(set("contents", new.contents))
         }
 
         val updates = combine(bson)
@@ -479,6 +471,7 @@ abstract class BaseMemberServiceImpl(
                 val memberDiff = notify.memberDiff
                 when (memberDiff.type) {
                     DiffType.MODIFY -> {
+                        println("update: member diff: ${memberDiff.diff}")
                         val diff = memberDiff.diff.toDiff()!!
                         val diffedMemberStorage = member.storage.copy().applyDiff(diff)
                         member.reload(diffedMemberStorage as MemberStorage)
@@ -508,6 +501,7 @@ abstract class BaseMemberServiceImpl(
                     }
 
                     DiffType.MODIFY -> {
+                        println("update: ba diff: ${bedrockAccountDiff.diff}")
                         val diff = bedrockAccountDiff.diff.toDiff()!!
                         val diffedBedrockAccountStorage = member.bedrockAccount!!.storage.copy().applyDiff(diff)
                         member.bedrockAccount!!.reload(diffedBedrockAccountStorage as BedrockAccountStorage)
@@ -521,6 +515,7 @@ abstract class BaseMemberServiceImpl(
                 val dataContainerDiff = notify.dataContainerDiff
                 when (dataContainerDiff.type) {
                     DiffType.MODIFY -> {
+                        println("update: dc diff: ${dataContainerDiff.diff}")
                         val diff = dataContainerDiff.diff.toDiff()!!
                         val diffedDataContainerStorage = member.dataContainer.storage.copy().applyDiff(diff)
                         member.dataContainer.reload(diffedDataContainerStorage as DataContainerStorage)
@@ -550,7 +545,7 @@ abstract class BaseMemberServiceImpl(
             val oldMemberStorage = if (member.storage.new) null else member.storage
             println("old member: $oldMemberStorage")
             val oldBedrockAccountStorage =
-                if (member.bedrockAccount == null || member.bedrockAccount?.storage?.new == true) null else member.bedrockAccount!!.storage
+                if (member.bedrockAccount?.storage?.new == true) null else member.bedrockAccount?.storage
             println("old ba: $oldBedrockAccountStorage")
             val oldDataContainerStorage = if (member.dataContainer.storage.new) null else member.dataContainer.storage
             println("old dc: $oldDataContainerStorage")

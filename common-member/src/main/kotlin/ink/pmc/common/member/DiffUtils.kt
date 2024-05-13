@@ -7,9 +7,5 @@ fun Diff.toJson(): String {
 }
 
 fun String.toDiff(): Diff? {
-    return try {
-        javers.jsonConverter.fromJson(this, Diff::class.java)
-    } catch (e: Exception) {
-        null
-    }
+    return javers.jsonConverter.fromJson(this, Diff::class.java)
 }
