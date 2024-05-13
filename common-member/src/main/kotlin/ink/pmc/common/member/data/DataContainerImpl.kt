@@ -61,39 +61,39 @@ class DataContainerImpl(override val owner: Member, override var storage: DataCo
     }
 
     override fun getString(key: String): String? {
-        return get(key, String::class.java)
+        return contents.getString(key)?.value
     }
 
     override fun getByte(key: String): Byte? {
-        return get(key, Byte::class.java)
+        return contents.getString(key)?.value?.toByteOrNull()
     }
 
     override fun getShort(key: String): Short? {
-        return get(key, Short::class.java)
+        return contents.getInt32(key)?.value?.toShort()
     }
 
     override fun getInt(key: String): Int? {
-        return get(key, Int::class.java)
+        return contents.getInt32(key)?.value
     }
 
     override fun getLong(key: String): Long? {
-        return get(key, Long::class.java)
+        return contents.getInt64(key)?.value
     }
 
     override fun getFloat(key: String): Float? {
-        return get(key, Float::class.java)
+        return contents.getDouble(key)?.value?.toFloat()
     }
 
     override fun getDouble(key: String): Double? {
-        return get(key, Double::class.java)
+        return contents.getDouble(key)?.value
     }
 
     override fun getChar(key: String): Char? {
-        return get(key, Char::class.java)
+        return contents.getString(key)?.value?.toCharArray()?.get(0)
     }
 
     override fun getBoolean(key: String): Boolean {
-        return get(key, Boolean::class.java) ?: false
+        return contents.getBoolean(key)?.value ?: false
     }
 
     override fun <T> getCollection(key: String, type: Class<T>): Collection<T>? {
