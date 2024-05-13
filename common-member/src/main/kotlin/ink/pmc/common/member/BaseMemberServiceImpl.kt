@@ -34,6 +34,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.future.asCompletableFuture
 import kotlinx.coroutines.future.await
 import kotlinx.coroutines.withContext
+import org.bson.BsonDocument
 import org.bson.Document
 import org.bson.conversions.Bson
 import org.bson.types.ObjectId
@@ -51,6 +52,8 @@ import java.time.Duration
 import java.time.Instant
 import java.util.*
 import java.util.concurrent.CompletableFuture
+
+const val UID_START = 10000L
 
 @Suppress("UNUSED")
 abstract class BaseMemberServiceImpl(
@@ -161,7 +164,7 @@ abstract class BaseMemberServiceImpl(
             nextMember,
             System.currentTimeMillis(),
             System.currentTimeMillis(),
-            Document(),
+            BsonDocument(),
             true
         )
         memberStorage = MemberStorage(

@@ -1,9 +1,17 @@
 package ink.pmc.common.member.data
 
 import ink.pmc.common.member.api.Member
+import ink.pmc.common.member.serverLogger
 import ink.pmc.common.member.storage.DataContainerStorage
-import org.bson.Document
+import ink.pmc.common.utils.json.gson
+import ink.pmc.common.utils.storage.asBson
+import ink.pmc.common.utils.storage.asObject
+import org.bson.BsonDocument
+import org.bson.BsonNull
+import org.bson.BsonString
+import org.bson.BsonValue
 import java.time.Instant
+import java.util.logging.Level
 
 @Suppress("UNCHECKED_CAST")
 class DataContainerImpl(override val owner: Member, override var storage: DataContainerStorage) :
@@ -12,7 +20,7 @@ class DataContainerImpl(override val owner: Member, override var storage: DataCo
     override val id: Long = storage.id
     override val createdAt: Instant = Instant.ofEpochMilli(storage.createdAt)
     override var lastModifiedAt: Instant = Instant.ofEpochMilli(storage.lastModifiedAt)
-    override val contents: Document = storage.contents // 复制原 Map，不要引用 storage 里的 Map
+    override val contents: BsonDocument = storage.contents.clone() // 复制原 Document，不要引用 storage 里的 Document
 
     override fun reload(storage: DataContainerStorage) {
         lastModifiedAt = Instant.ofEpochMilli(storage.lastModifiedAt)
@@ -23,7 +31,7 @@ class DataContainerImpl(override val owner: Member, override var storage: DataCo
 
     override fun set(key: String, value: Any) {
         lastModifiedAt = Instant.now()
-        contents[key] = value
+        contents[key] = value.asBson
     }
 
     override fun <T> get(key: String, type: Class<T>): T? {
@@ -32,10 +40,20 @@ class DataContainerImpl(override val owner: Member, override var storage: DataCo
         }
 
         return try {
-            storage.contents[key]!! as T?
+            val str = (contents[key] as BsonString).value
+            return gson.fromJson(str, type)
         } catch (e: Exception) {
+            serverLogger.log(
+                Level.SEVERE,
+                "Failed to obtain a value from data container (key=$key) of member (uid=${owner.uid}, name=${owner.name})",
+                e
+            )
             null
         }
+    }
+
+    override fun get(key: String): BsonValue {
+        return contents[key] ?: BsonNull()
     }
 
     override fun remove(key: String) {
@@ -79,15 +97,29 @@ class DataContainerImpl(override val owner: Member, override var storage: DataCo
     }
 
     override fun <T> getCollection(key: String, type: Class<T>): Collection<T>? {
+        val array = contents.getArray(key) ?: return null
+
         return try {
-            val obj = get(key, ArrayList::class.java)
-            if (obj is Collection<*>) {
-                obj as Collection<T>
-            } else {
-                null
-            }
+            array.asObject as Collection<T>
         } catch (e: Exception) {
-            e.printStackTrace()
+            serverLogger.log(
+                Level.SEVERE,
+                "Failed to obtain a collection value from data container (key=$key) of member (uid=${owner.uid}, name=${owner.name})"
+            )
+            null
+        }
+    }
+
+    override fun <T> getMap(key: String, keyType: Class<T>): Map<String, T>? {
+        val document = contents.getDocument(key) ?: return null
+
+        return try {
+            document.asObject as Map<String, T>
+        } catch (e: Exception) {
+            serverLogger.log(
+                Level.SEVERE,
+                "Failed to obtain a map value from data container (key=$key) of member (uid=${owner.uid}, name=${owner.name})"
+            )
             null
         }
     }

@@ -1,10 +1,11 @@
 package ink.pmc.common.member.storage
 
+import ink.pmc.common.utils.storage.asBson
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
-import org.bson.Document
+import org.bson.BsonDocument
 import org.bson.types.ObjectId
 import org.javers.core.diff.Diff
 import org.javers.core.diff.changetype.ValueChange
@@ -25,7 +26,7 @@ data class DataContainerStorage(
     var owner: Long,
     var createdAt: Long,
     var lastModifiedAt: Long,
-    @DiffInclude @Contextual var contents: Document,
+    @DiffInclude @Contextual var contents: BsonDocument,
     @Transient var new: Boolean = false
 ) : Diffable<DataContainerStorage>() {
 
@@ -41,11 +42,11 @@ data class DataContainerStorage(
 
         diff.changes.filterIsInstance<MapChange<*>>().forEach { mapChange ->
             mapChange.entryChanges.filterIsInstance<EntryAdded>().forEach {
-                contents[it.key as String] = it.value as String
+                contents[it.key as String] = it.value.asBson
             }
 
             mapChange.entryChanges.filterIsInstance<EntryValueChange>().forEach {
-                contents.replace(it.key as String, it.rightValue as String)
+                contents.replace(it.key as String, it.rightValue.asBson)
             }
 
             mapChange.entryChanges.filterIsInstance<EntryRemoved>().forEach {
