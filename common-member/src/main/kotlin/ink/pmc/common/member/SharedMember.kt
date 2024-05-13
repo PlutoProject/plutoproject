@@ -3,6 +3,10 @@ package ink.pmc.common.member
 import com.electronwill.nightconfig.core.file.FileConfig
 import com.mongodb.kotlin.client.coroutine.MongoClient
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
+import ink.pmc.common.member.storage.BedrockAccountStorage
+import ink.pmc.common.member.storage.DataContainerStorage
+import ink.pmc.common.member.storage.MemberStorage
+import ink.pmc.common.member.storage.StatusStorage
 import org.javers.core.JaversBuilder
 import java.io.File
 import java.util.logging.Logger
@@ -15,7 +19,12 @@ lateinit var configFile: File
 lateinit var config: FileConfig
 lateinit var mongoClient: MongoClient
 lateinit var database: MongoDatabase
-val javers = JaversBuilder.javers().build()!!
+val javers = JaversBuilder.javers()
+    .registerEntity(BedrockAccountStorage::class.java)
+    .registerEntity(DataContainerStorage::class.java)
+    .registerEntity(MemberStorage::class.java)
+    .registerEntity(StatusStorage::class.java)
+    .build()!!
 
 fun createDataDir() {
     if (!dataDir.exists()) {
