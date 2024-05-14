@@ -408,6 +408,7 @@ abstract class BaseMemberServiceImpl(
                 "owner" -> bson.add(set("owner", it.right))
                 "createdAt" -> bson.add(set("createdAt", it.right))
                 "lastModifiedAt" -> bson.add(set("lastModifiedAt", it.right))
+                "contents" -> bson.add(set("contents", it.right))
             }
         }
 

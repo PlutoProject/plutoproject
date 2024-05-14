@@ -4,6 +4,7 @@ import ink.pmc.common.exchange.*
 import ink.pmc.common.exchange.utils.*
 import ink.pmc.common.member.api.paper.member
 import ink.pmc.common.utils.chat.replace
+import ink.pmc.common.utils.concurrent.submitAsyncIO
 import ink.pmc.common.utils.platform.threadSafeTeleport
 import ink.pmc.common.utils.visual.mochaText
 import net.kyori.adventure.text.Component
@@ -27,7 +28,7 @@ class PaperExchangeService(override val lobby: ExchangeLobby) : AbstractPaperExc
         applyExchangeStatus(player)
         hidePlayer(player)
         player.sendMessage(EXCHANGE_START_SUCCEED)
-        player.member().save()
+        submitAsyncIO { player.member().save() }
     }
 
     override suspend fun endExchange(player: Player, goBack: Boolean) {
@@ -42,7 +43,7 @@ class PaperExchangeService(override val lobby: ExchangeLobby) : AbstractPaperExc
         restoreStatus(player, goBack)
         showPlayer(player)
         player.sendMessage(EXCHANGE_END_SUCCEED)
-        player.member().save()
+        submitAsyncIO { player.member().save() }
     }
 
     override suspend fun checkout(player: Player): Long {

@@ -102,7 +102,6 @@ fun fromJsonElement(element: JsonElement): BsonValue {
     }
 }
 
-
 val bsonDocumentAdapter = object : JsonTypeAdapter<BsonDocument> {
     override fun fromJson(
         json: JsonElement,

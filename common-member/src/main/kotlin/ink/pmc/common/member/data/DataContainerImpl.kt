@@ -278,6 +278,10 @@ class DataContainerImpl(override val owner: Member, override var storage: DataCo
     }
 
     override fun getLong(key: String): Long? {
+        if (get(key) is Int) {
+            return getInt(key)?.toLong()
+        }
+
         return get(key) as Long?
     }
 

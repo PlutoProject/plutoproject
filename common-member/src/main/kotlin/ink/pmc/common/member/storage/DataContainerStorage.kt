@@ -1,5 +1,6 @@
 package ink.pmc.common.member.storage
 
+import com.mongodb.client.model.Updates.set
 import ink.pmc.common.utils.storage.asBson
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.SerialName
@@ -37,6 +38,7 @@ data class DataContainerStorage(
                 "owner" -> owner = it.right as Long
                 "createdAt" -> createdAt = it.right as Long
                 "lastModifiedAt" -> lastModifiedAt = it.right as Long
+                "contents" -> contents = it.right as BsonDocument
             }
         }
 
