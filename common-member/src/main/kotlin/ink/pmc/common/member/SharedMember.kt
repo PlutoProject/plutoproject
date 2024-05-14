@@ -20,6 +20,7 @@ lateinit var config: FileConfig
 lateinit var mongoClient: MongoClient
 lateinit var database: MongoDatabase
 val javers = JaversBuilder.javers()
+    .registerValueTypeAdapter(bsonDocumentAdapter)
     .registerEntity(BedrockAccountStorage::class.java)
     .registerEntity(DataContainerStorage::class.java)
     .registerEntity(MemberStorage::class.java)

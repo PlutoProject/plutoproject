@@ -17,9 +17,11 @@ class DataContainerImpl(override val owner: Member, override var storage: DataCo
     override var contents: BsonDocument = storage.contents.clone() // 复制原 Document，不要引用 storage 里的 Document
 
     override fun reload(storage: DataContainerStorage) {
+        println("before reload: $contents")
         lastModifiedAt = Instant.ofEpochMilli(storage.lastModifiedAt)
         contents = storage.contents.clone()
         this.storage = storage
+        println("after reload: $contents")
     }
 
     override fun toStorage(): DataContainerStorage {
@@ -108,8 +110,11 @@ class DataContainerImpl(override val owner: Member, override var storage: DataCo
 
             val next = curr.computeIfAbsent(keys[i]) { BsonDocument() }
 
+            println(next)
+            println(next::class.java)
+
             if (next !is BsonDocument) {
-                throw IllegalStateException("Key ${keys.joinToString(".")} isn't BsonDocument")
+                throw IllegalStateException("Key ${keys.subList(0, i + 1).joinToString(".")} isn't BsonDocument")
             }
 
             curr = next
@@ -118,7 +123,7 @@ class DataContainerImpl(override val owner: Member, override var storage: DataCo
 
     private fun getNested(key: String): BsonValue? {
         throwIfIllegalNestedKey(key)
-        
+
         val keys = key.split('.')
         val range = keys.indices
         val last = range.last
@@ -131,8 +136,11 @@ class DataContainerImpl(override val owner: Member, override var storage: DataCo
 
             val next = curr[keys[i]] ?: return null
 
+            println(next)
+            println(next::class.java)
+
             if (next !is BsonDocument) {
-                return null
+                throw IllegalStateException("Key ${keys.subList(0, i + 1).joinToString(".")} isn't BsonDocument")
             }
 
             curr = next
@@ -141,16 +149,62 @@ class DataContainerImpl(override val owner: Member, override var storage: DataCo
         return null
     }
 
+
+    private fun removeNested(key: String) {
+        throwIfIllegalNestedKey(key)
+
+        val keys = key.split('.')
+        val range = keys.indices
+        val last = range.last
+        var curr = contents
+
+        for (i in range) {
+            if (i == last) {
+                curr.remove(keys[i])
+                break
+            }
+
+            val next = curr[keys[i]] ?: return
+
+            println(next)
+            println(next::class.java)
+
+            if (next !is BsonDocument) {
+                throw IllegalStateException("Key ${keys.subList(0, i + 1).joinToString(".")}} isn't BsonDocument")
+            }
+
+            curr = next
+        }
+    }
+
     private fun containsNested(key: String): Boolean {
         return getNested(key) != null
     }
 
     override fun set(key: String, value: Any) {
-        setBson(key, toBson(value))
+        try {
+            setBson(key, toBson(value))
+        } catch (e: Exception) {
+            serverLogger.log(
+                Level.SEVERE,
+                "Failed to set a value in UID ${owner.uid}'s data container (key=$key, value=$value)",
+                e
+            )
+        }
     }
 
     override fun get(key: String): Any? {
-        return fromBson(getNested(key))
+        try {
+            return fromBson(getBson(key))
+        } catch (e: Exception) {
+            serverLogger.log(
+                Level.SEVERE,
+                "Failed to get a value in UID ${owner.uid}'s data container (key=$key)",
+                e
+            )
+
+            return null
+        }
     }
 
     override fun setBson(key: String, value: BsonValue) {
@@ -159,6 +213,7 @@ class DataContainerImpl(override val owner: Member, override var storage: DataCo
 
             if (isNestedKey(key)) {
                 setNested(key, value)
+                return
             }
 
             contents[key] = value
@@ -190,7 +245,20 @@ class DataContainerImpl(override val owner: Member, override var storage: DataCo
     }
 
     override fun remove(key: String) {
-        contents.remove(key)
+        try {
+            if (isNestedKey(key)) {
+                removeNested(key)
+                return
+            }
+
+            contents.remove(key)
+        } catch (e: Exception) {
+            serverLogger.log(
+                Level.SEVERE,
+                "Failed to remove a value in UID ${owner.uid}'s data container (key=$key)",
+                e
+            )
+        }
     }
 
     override fun getString(key: String): String? {

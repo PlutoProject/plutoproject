@@ -1,36 +1,35 @@
 package ink.pmc.common.member
 
-import com.google.gson.Gson
-import ink.pmc.common.utils.json.gson
-import org.bson.BsonDocument
-import org.bson.BsonInt64
-import org.bson.BsonJavaScript
-import org.bson.BsonValue
-import org.javers.core.JaversBuilder
-import org.javers.core.diff.changetype.map.EntryAdded
-import org.javers.core.diff.changetype.map.MapChange
-
 fun main() {
-/*    val javers = JaversBuilder.javers()
+/*
+    val javers = JaversBuilder.javers().registerValueTypeAdapter(bsonDocumentAdapter)
         .build()
-    val old = Test()
-    val new = Test(1, 0, listOf("111"), BsonDocument("a", BsonInt64(1)))
+
+    val old = DataContainerStorage(
+        objectId = ObjectId(),
+        id = 1,
+        owner = 1,
+        createdAt = 1,
+        lastModifiedAt = 1,
+        contents = BsonDocument("a", BsonInt32(1))
+    )
+    val new = DataContainerStorage(
+        objectId = ObjectId(),
+        id = 1,
+        owner = 1,
+        createdAt = 1,
+        lastModifiedAt = 1,
+        contents = BsonDocument(listOf(BsonElement("1", BsonDocument("a", BsonInt64(123))), BsonElement("2", BsonBoolean(true))))
+    )
+
     val diff = javers.compare(old, new)
-    val doc = BsonDocument()
+    val json = javers.jsonConverter.toJson(diff)
+    val decodeDiff = javers.jsonConverter.fromJson(json, Diff::class.java)
 
-    diff.changes.filterIsInstance<MapChange<*>>().forEach { mapChange ->
-        mapChange.entryChanges.filterIsInstance<EntryAdded>().forEach {
-            doc[it.key as String] = it.value as BsonValue
-        }
-    }
+    println(decodeDiff.changes.filterIsInstance<ValueChange>().first().right)
 
-    println(doc)
-
-    println(javers.jsonConverter.toJson(diff))*/
-/*    val gson = Gson()
-    val str = gson.toJson(Test())
-    println(str)
-    println(gson.fromJson(str, Any::class.java) as Test)*/
+    val double = BsonDouble(1.0).value
+    println(double.toInt())*/
 }
 
 data class Test(val a: Int?, val b: Int?, val list: List<String>) {
