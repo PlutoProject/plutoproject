@@ -512,9 +512,9 @@ abstract class BaseMemberServiceImpl(
                     else -> {}
                 }
             }
-        }
 
-        serverLogger.info("Notify processed for UID ${notify.memberId}")
+            serverLogger.info("Notify processed for UID ${notify.memberId}")
+        }
     }
 
     override suspend fun save(member: Member) {

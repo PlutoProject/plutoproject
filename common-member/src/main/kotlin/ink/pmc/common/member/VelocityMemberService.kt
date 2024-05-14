@@ -6,6 +6,7 @@ import ink.pmc.common.member.proto.MemberRpcGrpcKt
 import ink.pmc.common.member.proto.MemberUpdateNotifyOuterClass.MemberUpdateNotify
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import java.util.*
 
 class VelocityMemberService(database: MongoDatabase) : BaseMemberServiceImpl(database) {
 
@@ -23,7 +24,12 @@ class VelocityMemberService(database: MongoDatabase) : BaseMemberServiceImpl(dat
     }
 
     override suspend fun notifyUpdate(notify: MemberUpdateNotify) {
-        serverLogger.info("Sending notify (serviceId=${notify.serviceId}) to servers behind proxy...")
+        if (UUID.fromString(notify.serviceId) == id) {
+            serverLogger.info("Sending notify (serviceId=${notify.serviceId}) to servers behind proxy...")
+        } else {
+            serverLogger.info("Forwarding notify (serviceId=${notify.serviceId}) to servers behind proxy...")
+        }
+
         monitorFlow.emit(notify)
     }
 
