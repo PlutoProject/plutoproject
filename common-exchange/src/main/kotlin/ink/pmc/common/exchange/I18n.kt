@@ -1,6 +1,9 @@
 package ink.pmc.common.exchange
 
-import ink.pmc.common.utils.visual.*
+import ink.pmc.common.utils.visual.mochaGreen
+import ink.pmc.common.utils.visual.mochaMaroon
+import ink.pmc.common.utils.visual.mochaPink
+import ink.pmc.common.utils.visual.mochaSubtext0
 import net.kyori.adventure.text.Component
 
 val MATERIAL_NOT_AVAILABLE_NAME

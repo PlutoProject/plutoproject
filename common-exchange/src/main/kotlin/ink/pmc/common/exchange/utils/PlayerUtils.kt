@@ -4,6 +4,9 @@ import ink.pmc.common.exchange.*
 import ink.pmc.common.exchange.paper.StatusSnapshot
 import ink.pmc.common.member.api.paper.member
 import ink.pmc.common.utils.chat.replace
+import ink.pmc.common.utils.concurrent.sync
+import ink.pmc.common.utils.json.toJsonString
+import ink.pmc.common.utils.json.toObject
 import ink.pmc.common.utils.platform.paper
 import ink.pmc.common.utils.platform.paperUtilsPlugin
 import ink.pmc.common.utils.visual.mochaFlamingo
@@ -60,14 +63,14 @@ fun getRemainingSpace(player: Player): Int {
     return remainingSpace
 }
 
-fun hasStatusSnapshot(player: Player): Boolean {
-    val member = player.member
+suspend fun hasStatusSnapshot(player: Player): Boolean {
+    val member = player.member()
     val dataContainer = member.dataContainer
     return dataContainer.contains(STATUS_SNAPSHOT_KEY)
 }
 
-fun snapshotStatus(player: Player) {
-    val member = player.member
+suspend fun snapshotStatus(player: Player) {
+    val member = player.member()
     val dataContainer = member.dataContainer
 
     if (hasStatusSnapshot(player)) {
@@ -75,20 +78,22 @@ fun snapshotStatus(player: Player) {
     }
 
     val snapshot = StatusSnapshot.create(player)
-    dataContainer[STATUS_SNAPSHOT_KEY] = snapshot
+    dataContainer[STATUS_SNAPSHOT_KEY] = snapshot.toJsonString()
 }
 
-fun restoreStatus(player: Player, restoreLocation: Boolean = true) {
-    val member = player.member
-    val dataContainer = member.dataContainer
+suspend fun restoreStatus(player: Player, restoreLocation: Boolean = true) {
+    player.sync {
+        val member = player.member()
+        val dataContainer = member.dataContainer
 
-    if (!hasStatusSnapshot(player)) {
-        return
+        if (!hasStatusSnapshot(player)) {
+            return@sync
+        }
+
+        val snapshot = dataContainer.getString(STATUS_SNAPSHOT_KEY)!!.toObject(StatusSnapshot::class.java)
+        snapshot.restore(player, restoreLocation)
+        dataContainer.remove(STATUS_SNAPSHOT_KEY)
     }
-
-    val snapshot = dataContainer[STATUS_SNAPSHOT_KEY, StatusSnapshot::class.java]!!
-    snapshot.restore(player, restoreLocation)
-    dataContainer.remove(STATUS_SNAPSHOT_KEY)
 }
 
 fun clearInventory(player: Player) {

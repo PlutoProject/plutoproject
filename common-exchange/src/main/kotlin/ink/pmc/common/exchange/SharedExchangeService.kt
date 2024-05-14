@@ -5,7 +5,7 @@ import ink.pmc.common.member.api.Member
 abstract class SharedExchangeService : AbstractExchangeService() {
 
     override fun tickets(member: Member): Long {
-        return member.dataContainer.getLong(TICKET_KEY) ?: run { println("null"); 0 }
+        return member.dataContainer.getLong(TICKET_KEY) ?: 0
     }
 
     override fun tickets(member: Member, amount: Long): Boolean {

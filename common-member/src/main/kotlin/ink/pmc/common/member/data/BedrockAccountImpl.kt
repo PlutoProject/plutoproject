@@ -1,16 +1,28 @@
 package ink.pmc.common.member.data
 
-import ink.pmc.common.member.AbstractMemberService
 import ink.pmc.common.member.api.Member
 import ink.pmc.common.member.storage.BedrockAccountStorage
-import kotlinx.coroutines.runBlocking
 
-class BedrockAccountImpl(private val service: AbstractMemberService, override val storage: BedrockAccountStorage) :
+class BedrockAccountImpl(override val linkedWith: Member, override var storage: BedrockAccountStorage) :
     AbstractBedrockAccount() {
 
     override val id: Long = storage.id
-    override val linkedWith: Member by lazy { runBlocking { service.lookup(storage.linkedWith)!! } }
     override val xuid: String = storage.xuid
     override var gamertag: String = storage.gamertag
+
+    override fun reload(storage: BedrockAccountStorage) {
+        gamertag = storage.gamertag
+        this.storage = storage
+    }
+
+    override fun toStorage(): BedrockAccountStorage {
+        return storage.copy(
+            id = this.id,
+            linkedWith = this.linkedWith.uid,
+            xuid = this.xuid,
+            gamertag = this.gamertag,
+            new = false
+        )
+    }
 
 }

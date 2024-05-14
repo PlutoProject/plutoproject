@@ -2,7 +2,6 @@ package ink.pmc.common.exchange.listeners
 
 import com.velocitypowered.api.event.Subscribe
 import com.velocitypowered.api.event.connection.PostLoginEvent
-import com.velocitypowered.api.proxy.Player
 import ink.pmc.common.exchange.initExchangeData
 import ink.pmc.common.exchange.utils.distributeTicket
 import ink.pmc.common.member.api.MemberService
@@ -20,10 +19,10 @@ object VelocityExchangeServiceListener {
             return
         }
 
-        val member = MemberService.lookup(uuid)!!.refresh()!!
+        val member = MemberService.lookup(uuid)!!
         initExchangeData(member)
-        distributeTicket(player.member)
-        member.update()
+        distributeTicket(player.member())
+        member.save()
     }
 
 }

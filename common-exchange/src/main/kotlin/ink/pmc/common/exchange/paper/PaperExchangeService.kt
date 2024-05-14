@@ -4,6 +4,7 @@ import ink.pmc.common.exchange.*
 import ink.pmc.common.exchange.utils.*
 import ink.pmc.common.member.api.paper.member
 import ink.pmc.common.utils.chat.replace
+import ink.pmc.common.utils.concurrent.submitAsyncIO
 import ink.pmc.common.utils.platform.threadSafeTeleport
 import ink.pmc.common.utils.visual.mochaText
 import net.kyori.adventure.text.Component
@@ -20,13 +21,14 @@ class PaperExchangeService(override val lobby: ExchangeLobby) : AbstractPaperExc
             return
         }
 
+        inExchange.add(player.uniqueId)
+        player.member()
         snapshotStatus(player)
         player.threadSafeTeleport(exchangeLobby.teleportLocation)
         applyExchangeStatus(player)
         hidePlayer(player)
-        inExchange.add(player.uniqueId)
         player.sendMessage(EXCHANGE_START_SUCCEED)
-        player.member.update()
+        submitAsyncIO { player.member().save() }
     }
 
     override suspend fun endExchange(player: Player, goBack: Boolean) {
@@ -35,12 +37,13 @@ class PaperExchangeService(override val lobby: ExchangeLobby) : AbstractPaperExc
             return
         }
 
+        inExchange.remove(player.uniqueId)
+        player.member()
         clearInventory(player)
         restoreStatus(player, goBack)
         showPlayer(player)
-        inExchange.remove(player.uniqueId)
         player.sendMessage(EXCHANGE_END_SUCCEED)
-        player.member.update()
+        submitAsyncIO { player.member().save() }
     }
 
     override suspend fun checkout(player: Player): Long {
@@ -48,11 +51,11 @@ class PaperExchangeService(override val lobby: ExchangeLobby) : AbstractPaperExc
             return 0
         }
 
-        val member = player.member.refresh()!!
+        val member = player.member()
         val cart = cart(player)
         val price = cart.size.toLong()
 
-        if (!noLessThan(player.member, price)) {
+        if (!noLessThan(player.member(), price)) {
             player.sendMessage(
                 CHECKOUT_FAILED_TICKETS_NOT_ENOUGH
                     .replace("<amount>", Component.text(price).color(mochaText))
@@ -65,16 +68,16 @@ class PaperExchangeService(override val lobby: ExchangeLobby) : AbstractPaperExc
             return 0
         }
 
+        inExchange.remove(player.uniqueId)
         clearInventory(player)
         restoreStatus(player)
         showPlayer(player)
-        inExchange.remove(player.uniqueId)
         player.sendMessage(
             CHECKOUT_SUCCEED
                 .replace("<amount>", Component.text(price).color(mochaText))
         )
         distributeItems(player, cart)
-        player.member.update()
+        player.member().save()
 
         return price
     }

@@ -2,10 +2,11 @@ package ink.pmc.common.member.data
 
 import ink.pmc.common.member.api.data.DataContainer
 import ink.pmc.common.member.storage.DataContainerStorage
+import ink.pmc.common.member.storage.Storable
 
-abstract class AbstractDataContainer : DataContainer {
+abstract class AbstractDataContainer : DataContainer, Storable<DataContainerStorage> {
 
-    abstract val storage: DataContainerStorage
+    abstract var storage: DataContainerStorage
 
     override fun equals(other: Any?): Boolean {
         if (other !is DataContainer) {

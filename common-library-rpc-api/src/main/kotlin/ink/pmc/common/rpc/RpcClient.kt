@@ -1,7 +1,6 @@
 package ink.pmc.common.rpc
 
-import io.grpc.kotlin.AbstractCoroutineStub
-import kotlin.reflect.KClass
+import io.grpc.Channel
 
 object RpcClient : IRpcClient by IRpcClient.instance
 
@@ -11,6 +10,6 @@ interface IRpcClient {
         lateinit var instance: IRpcClient
     }
 
-    fun <T : AbstractCoroutineStub<T>> stub(cls: KClass<T>): T
+    val channel: Channel
 
 }

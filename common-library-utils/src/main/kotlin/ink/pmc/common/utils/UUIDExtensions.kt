@@ -12,3 +12,7 @@ val UUID.player: Player?
 @Suppress("UNUSED")
 val UUID.entity: Entity?
     get() = Bukkit.getEntity(this)
+
+@Suppress("UNUSED")
+val UUID.trimmed: String
+    get() = this.toString().replace("-", "")

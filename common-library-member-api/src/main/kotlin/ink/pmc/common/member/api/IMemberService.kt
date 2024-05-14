@@ -25,17 +25,11 @@ interface IMemberService {
 
     suspend fun lookup(name: String, authType: AuthType = AuthType.OFFICIAL): Member?
 
-    operator fun get(uid: Long): Member?
-
     suspend fun exist(uid: Long): Boolean
 
     suspend fun exist(uuid: UUID): Boolean
 
     suspend fun exist(name: String, authType: AuthType = AuthType.OFFICIAL): Boolean
-
-    suspend fun existPunishment(id: Long): Boolean
-
-    suspend fun existComment(id: Long): Boolean
 
     suspend fun existDataContainer(id: Long): Boolean
 
@@ -49,16 +43,16 @@ interface IMemberService {
 
     suspend fun modifier(uuid: UUID, refresh: Boolean = false): MemberModifier?
 
-    suspend fun update(member: Member)
+    suspend fun save(member: Member)
 
-    suspend fun refresh(member: Member): Member?
+    suspend fun sync(member: Member): Member?
 
-    suspend fun update(uid: Long)
+    suspend fun save(uid: Long)
 
-    suspend fun refresh(uid: Long): Member?
+    suspend fun sync(uid: Long): Member?
 
-    suspend fun update(uuid: UUID)
+    suspend fun save(uuid: UUID)
 
-    suspend fun refresh(uuid: UUID): Member?
+    suspend fun sync(uuid: UUID): Member?
 
 }

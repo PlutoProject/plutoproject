@@ -43,7 +43,7 @@ object VelocityPlayerListener {
             return
         }
 
-        val member = memberService.lookup(uuid)!!.refresh()!!
+        val member = memberService.lookup(uuid)!!
 
         if (member.rawName != player.username) {
             member.modifier.name(player.username)
@@ -55,7 +55,7 @@ object VelocityPlayerListener {
         }
 
         member.modifier.lastJoinedAt(Instant.now())
-        member.update()
+        member.save()
     }
 
     @Subscribe
@@ -69,13 +69,20 @@ object VelocityPlayerListener {
             return
         }
 
-        val member = memberService.lookup(uuid)!!.refresh()!!
+        val member = memberService.lookup(uuid)!!
         member.modifier.lastQuitedAt(Instant.now())
-        memberService.update(uuid)
+        memberService.save(uuid)
 
         if (member.bedrockAccount != null) {
             removeFloodgatePlayer(member.bedrockAccount!!.xuid.uuid!!)
         }
+
+        // 清理缓存的 Member
+        if (memberService.loadedMembers.getIfPresent(member.uid) != null) {
+            return
+        }
+
+        memberService.loadedMembers.synchronous().invalidate(member.uid)
     }
 
     @Subscribe(order = PostOrder.FIRST)
@@ -88,7 +95,7 @@ object VelocityPlayerListener {
             return@io
         }
 
-        val member = memberService.lookup(uuid)!!.refresh()!!
+        val member = memberService.lookup(uuid)!!
 
         if (isFloodgatePlayer(originalId) && originalId != uuid) {
             BedrockAdapter.adapt(event)

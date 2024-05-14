@@ -8,3 +8,4 @@ softdepend:
 depend:
   - common-dependency-loader
   - common-utils
+  - common-rpc

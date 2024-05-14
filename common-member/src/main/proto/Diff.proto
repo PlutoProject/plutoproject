@@ -1,0 +1,14 @@
+syntax = "proto3";
+package ink.pmc.common.member.proto;
+
+enum DiffType {
+  ADD = 0;
+  MODIFY = 1;
+  REMOVE = 2;
+}
+
+message Diff {
+  DiffType type = 1;
+  optional string storage = 2;
+  optional string diff = 3;
+}

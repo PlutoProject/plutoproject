@@ -1,3 +1,4 @@
+import net.bytebuddy.implementation.Implementation
 import xyz.jpenilla.runpaper.task.RunServer
 
 plugins {
@@ -59,11 +60,12 @@ allprojects {
         dep(rootProject.libs.bundles.nightconfig)
         dep(rootProject.libs.bundles.protobuf)
         dep(rootProject.libs.bundles.grpc)
+        dep(rootProject.libs.bundles.javers)
+        dep(rootProject.libs.bundles.mongodb)
         dep(rootProject.libs.paper.api)
         dep(rootProject.libs.velocity.api)
         dep(rootProject.libs.okhttp)
         dep(rootProject.libs.gson)
-        dep(rootProject.libs.mongodb)
         dep(rootProject.libs.catppuccin)
         dep(rootProject.libs.netty)
         dep(rootProject.libs.jsoup)
