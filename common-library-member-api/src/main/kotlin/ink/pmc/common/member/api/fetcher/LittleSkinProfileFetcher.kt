@@ -2,6 +2,7 @@ package ink.pmc.common.member.api.fetcher
 
 import com.google.gson.JsonParser
 import ink.pmc.common.utils.player.shortUUIDToLong
+import ink.pmc.common.utils.trimmed
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaType
@@ -45,7 +46,7 @@ object LittleSkinProfileFetcher : AbstractProfileFetcher() {
 
     private suspend fun lookupName(uuid: UUID): String? = withContext(Dispatchers.IO) {
         val request = Request.Builder()
-            .url("${littleSkinApi}/sessionserver/session/minecraft/profile/$uuid")
+            .url("${littleSkinApi}sessionserver/session/minecraft/profile/${uuid.trimmed}")
             .build()
 
         val call = httpClient.newCall(request)
