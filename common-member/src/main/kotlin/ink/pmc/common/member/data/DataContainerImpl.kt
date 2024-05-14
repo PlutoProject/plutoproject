@@ -17,11 +17,9 @@ class DataContainerImpl(override val owner: Member, override var storage: DataCo
     override var contents: BsonDocument = storage.contents.clone() // 复制原 Document，不要引用 storage 里的 Document
 
     override fun reload(storage: DataContainerStorage) {
-        println("before reload: $contents")
         lastModifiedAt = Instant.ofEpochMilli(storage.lastModifiedAt)
         contents = storage.contents.clone()
         this.storage = storage
-        println("after reload: $contents")
     }
 
     override fun toStorage(): DataContainerStorage {
@@ -110,9 +108,6 @@ class DataContainerImpl(override val owner: Member, override var storage: DataCo
 
             val next = curr.computeIfAbsent(keys[i]) { BsonDocument() }
 
-            println(next)
-            println(next::class.java)
-
             if (next !is BsonDocument) {
                 throw IllegalStateException("Key ${keys.subList(0, i + 1).joinToString(".")} isn't BsonDocument")
             }
@@ -135,9 +130,6 @@ class DataContainerImpl(override val owner: Member, override var storage: DataCo
             }
 
             val next = curr[keys[i]] ?: return null
-
-            println(next)
-            println(next::class.java)
 
             if (next !is BsonDocument) {
                 throw IllegalStateException("Key ${keys.subList(0, i + 1).joinToString(".")} isn't BsonDocument")
@@ -165,9 +157,6 @@ class DataContainerImpl(override val owner: Member, override var storage: DataCo
             }
 
             val next = curr[keys[i]] ?: return
-
-            println(next)
-            println(next::class.java)
 
             if (next !is BsonDocument) {
                 throw IllegalStateException("Key ${keys.subList(0, i + 1).joinToString(".")}} isn't BsonDocument")

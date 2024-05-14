@@ -44,16 +44,10 @@ data class DataContainerStorage(
 
         diff.changes.filterIsInstance<MapChange<*>>().forEach { mapChange ->
             mapChange.entryChanges.filterIsInstance<EntryAdded>().forEach {
-                println("apply diff")
-                println(it.value)
-                println(it.value::class.java)
                 contents[it.key as String] = it.value.asBson
             }
 
             mapChange.entryChanges.filterIsInstance<EntryValueChange>().forEach {
-                println("apply diff")
-                println(it.rightValue)
-                println(it.rightValue::class.java)
                 contents.replace(it.key as String, it.rightValue.asBson)
             }
 
