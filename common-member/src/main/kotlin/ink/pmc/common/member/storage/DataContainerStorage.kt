@@ -1,13 +1,11 @@
 package ink.pmc.common.member.storage
 
-import com.mongodb.client.model.Updates.set
 import ink.pmc.common.utils.storage.asBson
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import org.bson.BsonDocument
-import org.bson.BsonValue
 import org.bson.types.ObjectId
 import org.javers.core.diff.Diff
 import org.javers.core.diff.changetype.ValueChange
@@ -18,6 +16,10 @@ import org.javers.core.diff.changetype.map.MapChange
 import org.javers.core.metamodel.annotation.DiffIgnore
 import org.javers.core.metamodel.annotation.Id
 import org.javers.core.metamodel.annotation.TypeName
+import kotlin.collections.filterIsInstance
+import kotlin.collections.forEach
+import kotlin.collections.remove
+import kotlin.collections.set
 
 @Serializable
 @TypeName("DataContainer")

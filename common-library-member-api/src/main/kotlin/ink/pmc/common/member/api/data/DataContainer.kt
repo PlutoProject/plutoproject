@@ -1,7 +1,6 @@
 package ink.pmc.common.member.api.data
 
 import ink.pmc.common.member.api.Member
-import org.bson.BsonArray
 import org.bson.BsonDocument
 import org.bson.BsonValue
 import java.time.Instant

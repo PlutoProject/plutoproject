@@ -44,9 +44,6 @@ import org.javers.core.diff.changetype.container.ElementValueChange
 import org.javers.core.diff.changetype.container.ListChange
 import org.javers.core.diff.changetype.container.ValueAdded
 import org.javers.core.diff.changetype.container.ValueRemoved
-import org.javers.core.diff.changetype.map.EntryAdded
-import org.javers.core.diff.changetype.map.EntryRemoved
-import org.javers.core.diff.changetype.map.EntryValueChange
 import org.javers.core.diff.changetype.map.MapChange
 import java.time.Duration
 import java.time.Instant
@@ -70,6 +67,7 @@ abstract class BaseMemberServiceImpl(
     private val cacheLoader =
         AsyncCacheLoader<Long, AbstractMember?> { key, _ -> submitAsyncIO<AbstractMember?> { loadMember(key) }.asCompletableFuture() }
     override val loadedMembers: AsyncLoadingCache<Long, AbstractMember?> = Caffeine.newBuilder()
+        .expireAfterWrite(Duration.ofMinutes(10))
         .refreshAfterWrite(Duration.ofMinutes(5))
         .buildAsync(cacheLoader)
     private lateinit var status: StatusStorage
@@ -450,13 +448,13 @@ abstract class BaseMemberServiceImpl(
                 return@withContext
             }
 
-            serverLogger.info("Received update notify from server (serviceId=${notify.serviceId}) for UID ${notify.memberId}, processing...")
-
             val memberId = notify.memberId
 
             if (loadedMembers.getIfPresent(memberId) == null) {
                 return@withContext
             }
+
+            serverLogger.info("Received update notify from server (serviceId=${notify.serviceId}) for UID ${notify.memberId}, processing...")
 
             val member = loadedMembers.get(memberId).get()!! as MemberImpl
 
