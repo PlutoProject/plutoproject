@@ -1,12 +1,12 @@
 package ink.pmc.common.member.data
 
 import ink.pmc.common.member.api.data.DataContainer
-import ink.pmc.common.member.storage.DataContainerStorage
+import ink.pmc.common.member.storage.DataContainerBean
 import ink.pmc.common.member.storage.Storable
 
-abstract class AbstractDataContainer : DataContainer, Storable<DataContainerStorage> {
+abstract class AbstractDataContainer : DataContainer, Storable<DataContainerBean> {
 
-    abstract var storage: DataContainerStorage
+    abstract var bean: DataContainerBean
 
     override fun equals(other: Any?): Boolean {
         if (other !is DataContainer) {
@@ -17,7 +17,7 @@ abstract class AbstractDataContainer : DataContainer, Storable<DataContainerStor
     }
 
     override fun hashCode(): Int {
-        return storage.hashCode()
+        return bean.hashCode()
     }
 
 }

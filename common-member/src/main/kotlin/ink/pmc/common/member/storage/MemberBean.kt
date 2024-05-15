@@ -16,12 +16,12 @@ import org.javers.core.metamodel.annotation.Id
 import org.javers.core.metamodel.annotation.TypeName
 import java.lang.reflect.Modifier
 
-private val cls = MemberStorage::class.java
+private val cls = MemberBean::class.java
 
 @Suppress("UNCHECKED_CAST")
 @Serializable
 @TypeName("Member")
-data class MemberStorage(
+data class MemberBean(
     @DiffIgnore @SerialName("_id") @Contextual val objectId: ObjectId,
     @Id var uid: Long,
     var id: String,
@@ -37,9 +37,9 @@ data class MemberStorage(
     var bio: String?,
     var isHidden: Boolean?,
     @Transient var new: Boolean = false
-) : Diffable<MemberStorage>() {
+) : Diffable<MemberBean>() {
 
-    override fun applyDiff(diff: Diff): Diffable<MemberStorage> {
+    override fun applyDiff(diff: Diff): Diffable<MemberBean> {
         diff.changes.filterIsInstance<ValueChange>().forEach {
             val field = cls.getDeclaredField(it.propertyName).apply {
                 isAccessible = true

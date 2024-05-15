@@ -23,7 +23,7 @@ import kotlin.collections.set
 
 @Serializable
 @TypeName("DataContainer")
-data class DataContainerStorage(
+data class DataContainerBean(
     @DiffIgnore @SerialName("_id") @Contextual val objectId: ObjectId,
     @Id var id: Long,
     var owner: Long,
@@ -31,9 +31,9 @@ data class DataContainerStorage(
     var lastModifiedAt: Long,
     @Contextual var contents: BsonDocument,
     @Transient var new: Boolean = false
-) : Diffable<DataContainerStorage>() {
+) : Diffable<DataContainerBean>() {
 
-    override fun applyDiff(diff: Diff): Diffable<DataContainerStorage> {
+    override fun applyDiff(diff: Diff): Diffable<DataContainerBean> {
         diff.changes.filterIsInstance<ValueChange>().forEach {
             when (it.propertyName) {
                 "id" -> id = it.right as Long

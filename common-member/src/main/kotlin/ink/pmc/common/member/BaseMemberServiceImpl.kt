@@ -20,10 +20,10 @@ import ink.pmc.common.member.proto.DiffOuterClass.DiffType
 import ink.pmc.common.member.proto.MemberUpdateNotifyOuterClass.MemberUpdateNotify
 import ink.pmc.common.member.proto.diff
 import ink.pmc.common.member.proto.memberUpdateNotify
-import ink.pmc.common.member.storage.BedrockAccountStorage
-import ink.pmc.common.member.storage.DataContainerStorage
-import ink.pmc.common.member.storage.MemberStorage
-import ink.pmc.common.member.storage.StatusStorage
+import ink.pmc.common.member.storage.BedrockAccountBean
+import ink.pmc.common.member.storage.DataContainerBean
+import ink.pmc.common.member.storage.MemberBean
+import ink.pmc.common.member.storage.StatusBean
 import ink.pmc.common.utils.bedrock.xuid
 import ink.pmc.common.utils.concurrent.io
 import ink.pmc.common.utils.concurrent.submitAsyncIO
@@ -58,11 +58,11 @@ abstract class BaseMemberServiceImpl(
 ) : AbstractMemberService() {
 
     private var closed = false
-    override val statusCollection: MongoCollection<StatusStorage> = database.getCollection("member_status")
-    override val members: MongoCollection<MemberStorage> = database.getCollection("member_members")
-    override val dataContainers: MongoCollection<DataContainerStorage> =
+    override val statusCollection: MongoCollection<StatusBean> = database.getCollection("member_status")
+    override val members: MongoCollection<MemberBean> = database.getCollection("member_members")
+    override val dataContainers: MongoCollection<DataContainerBean> =
         database.getCollection("member_data_containers")
-    override val bedrockAccounts: MongoCollection<BedrockAccountStorage> =
+    override val bedrockAccounts: MongoCollection<BedrockAccountBean> =
         database.getCollection("member_bedrock_accounts")
     private val cacheLoader =
         AsyncCacheLoader<Long, AbstractMember?> { key, _ -> submitAsyncIO<AbstractMember?> { loadMember(key) }.asCompletableFuture() }
@@ -70,19 +70,19 @@ abstract class BaseMemberServiceImpl(
         .expireAfterWrite(Duration.ofMinutes(10))
         .refreshAfterWrite(Duration.ofMinutes(5))
         .buildAsync(cacheLoader)
-    private lateinit var status: StatusStorage
-    override lateinit var currentStatus: StatusStorage
+    private lateinit var status: StatusBean
+    override lateinit var currentStatus: StatusBean
     private val updateOptions = UpdateOptions().upsert(true)
     private val replaceOptions = ReplaceOptions().upsert(true)
     private val monitorJob: Job
 
-    override suspend fun lookupBedrockAccountStorage(id: Long): BedrockAccountStorage? {
+    override suspend fun lookupBedrockAccountStorage(id: Long): BedrockAccountBean? {
         return withContext(Dispatchers.IO) {
             bedrockAccounts.find(eq("id", id)).firstOrNull()
         }
     }
 
-    override suspend fun lookupDataContainerStorage(id: Long): DataContainerStorage? {
+    override suspend fun lookupDataContainerStorage(id: Long): DataContainerBean? {
         return withContext(Dispatchers.IO) {
             dataContainers.find(eq("id", id)).firstOrNull()
         }
@@ -93,7 +93,7 @@ abstract class BaseMemberServiceImpl(
         return createMemberInstance(memberStorage) as AbstractMember
     }
 
-    private suspend fun createMemberInstance(storage: MemberStorage): Member {
+    private suspend fun createMemberInstance(storage: MemberBean): Member {
         val service = this
         return withContext(Dispatchers.IO) {
             MemberImpl(service, storage).apply {
@@ -119,11 +119,11 @@ abstract class BaseMemberServiceImpl(
 
     init {
         submitAsyncIO {
-            var lookupStatus: StatusStorage?
+            var lookupStatus: StatusBean?
             lookupStatus = statusCollection.find(exists("lastMember")).firstOrNull()
 
             if (lookupStatus == null) {
-                lookupStatus = StatusStorage(ObjectId(), -1, -1, -1, -1, -1)
+                lookupStatus = StatusBean(ObjectId(), -1, -1, -1, -1, -1)
                 statusCollection.insertOne(lookupStatus)
             }
 
@@ -156,7 +156,7 @@ abstract class BaseMemberServiceImpl(
         val nextDataContainer = currentStatus.nextDataContainer()
         val nextBedrockAccountId = currentStatus.nextBedrockAccount()
 
-        val dataContainerStorage = DataContainerStorage(
+        val dataContainerBean = DataContainerBean(
             ObjectId(),
             nextDataContainer,
             nextMember,
@@ -165,7 +165,7 @@ abstract class BaseMemberServiceImpl(
             BsonDocument(),
             true
         )
-        memberStorage = MemberStorage(
+        memberStorage = MemberBean(
             ObjectId(),
             nextMember,
             profile.uuid.toString(),
@@ -184,7 +184,7 @@ abstract class BaseMemberServiceImpl(
         )
 
         val member = MemberImpl(this, memberStorage)
-        member.dataContainer = DataContainerImpl(member, dataContainerStorage)
+        member.dataContainer = DataContainerImpl(member, dataContainerBean)
 
         loadedMembers.put(nextMember, CompletableFuture.completedFuture(member))
 
@@ -193,7 +193,7 @@ abstract class BaseMemberServiceImpl(
                 return null
             }
 
-            val bedrockStorage = BedrockAccountStorage(
+            val bedrockStorage = BedrockAccountBean(
                 ObjectId(),
                 nextBedrockAccountId,
                 nextMember,
@@ -305,7 +305,7 @@ abstract class BaseMemberServiceImpl(
         return member!!.modifier
     }
 
-    private suspend fun saveMember(old: MemberStorage?, new: MemberStorage): Diff {
+    private suspend fun saveMember(old: MemberBean?, new: MemberBean): Diff {
         if (old == null) {
             members.insertOne(new)
             return javers.compare(null, new)
@@ -344,7 +344,7 @@ abstract class BaseMemberServiceImpl(
         return diff
     }
 
-    private suspend fun saveBedrockAccount(old: BedrockAccountStorage?, new: BedrockAccountStorage?): Diff {
+    private suspend fun saveBedrockAccount(old: BedrockAccountBean?, new: BedrockAccountBean?): Diff {
         if (old == null && new == null) {
             return javers.compare(null, null)
         }
@@ -380,7 +380,7 @@ abstract class BaseMemberServiceImpl(
         return diff
     }
 
-    private suspend fun saveDataContainer(old: DataContainerStorage?, new: DataContainerStorage): Diff {
+    private suspend fun saveDataContainer(old: DataContainerBean?, new: DataContainerBean): Diff {
         if (old == null) {
             dataContainers.insertOne(new)
             return javers.compare(null, new)
@@ -414,7 +414,7 @@ abstract class BaseMemberServiceImpl(
         return diff
     }
 
-    private suspend fun saveStatus(old: StatusStorage, new: StatusStorage): Diff {
+    private suspend fun saveStatus(old: StatusBean, new: StatusBean): Diff {
         val bson = mutableListOf<Bson>()
         val diff = new.diff(old)
 
@@ -463,8 +463,8 @@ abstract class BaseMemberServiceImpl(
                 when (memberDiff.type) {
                     DiffType.MODIFY -> {
                         val diff = memberDiff.diff.toDiff()!!
-                        val diffedMemberStorage = member.storage.copy().applyDiff(diff)
-                        member.reload(diffedMemberStorage as MemberStorage)
+                        val diffedMemberStorage = member.bean.copy().applyDiff(diff)
+                        member.reload(diffedMemberStorage as MemberBean)
                     }
 
                     else -> {}
@@ -482,7 +482,7 @@ abstract class BaseMemberServiceImpl(
                 val bedrockAccountDiff = notify.bedrockAccountDiff
                 when (bedrockAccountDiff.type) {
                     DiffType.ADD -> {
-                        val storage = bedrockAccountDiff.storage.toObject(BedrockAccountStorage::class.java)
+                        val storage = bedrockAccountDiff.storage.toObject(BedrockAccountBean::class.java)
                         member.bedrockAccount = BedrockAccountImpl(member, storage)
                     }
 
@@ -492,8 +492,8 @@ abstract class BaseMemberServiceImpl(
 
                     DiffType.MODIFY -> {
                         val diff = bedrockAccountDiff.diff.toDiff()!!
-                        val diffedBedrockAccountStorage = member.bedrockAccount!!.storage.copy().applyDiff(diff)
-                        member.bedrockAccount!!.reload(diffedBedrockAccountStorage as BedrockAccountStorage)
+                        val diffedBedrockAccountStorage = member.bedrockAccount!!.bean.copy().applyDiff(diff)
+                        member.bedrockAccount!!.reload(diffedBedrockAccountStorage as BedrockAccountBean)
                     }
 
                     else -> {}
@@ -505,8 +505,8 @@ abstract class BaseMemberServiceImpl(
                 when (dataContainerDiff.type) {
                     DiffType.MODIFY -> {
                         val diff = dataContainerDiff.diff.toDiff()!!
-                        val diffedDataContainerStorage = member.dataContainer.storage.copy().applyDiff(diff)
-                        member.dataContainer.reload(diffedDataContainerStorage as DataContainerStorage)
+                        val diffedDataContainerStorage = member.dataContainer.bean.copy().applyDiff(diff)
+                        member.dataContainer.reload(diffedDataContainerStorage as DataContainerBean)
                     }
 
                     else -> {}
@@ -523,14 +523,14 @@ abstract class BaseMemberServiceImpl(
         }
 
         io {
-            val modifiedMemberStorage = member.toStorage()
-            val modifiedBedrockAccountStorage = member.bedrockAccount?.toStorage()
-            val modifiedDataContainerStorage = member.dataContainer.toStorage()
+            val modifiedMemberStorage = member.createBean()
+            val modifiedBedrockAccountStorage = member.bedrockAccount?.createBean()
+            val modifiedDataContainerStorage = member.dataContainer.createBean()
 
-            val oldMemberStorage = if (member.storage.new) null else member.storage
+            val oldMemberStorage = if (member.bean.new) null else member.bean
             val oldBedrockAccountStorage =
-                if (member.bedrockAccount?.storage?.new == true) null else member.bedrockAccount?.storage
-            val oldDataContainerStorage = if (member.dataContainer.storage.new) null else member.dataContainer.storage
+                if (member.bedrockAccount?.bean?.new == true) null else member.bedrockAccount?.bean
+            val oldDataContainerStorage = if (member.dataContainer.bean.new) null else member.dataContainer.bean
 
             val diffStatus = saveStatus(status, currentStatus)
             val diffMember = saveMember(oldMemberStorage, modifiedMemberStorage)
@@ -587,11 +587,11 @@ abstract class BaseMemberServiceImpl(
                 }
             }
 
-            member.storage = modifiedMemberStorage
+            member.bean = modifiedMemberStorage
             if (member.bedrockAccount != null && modifiedBedrockAccountStorage != null) {
-                member.bedrockAccount!!.storage = modifiedBedrockAccountStorage
+                member.bedrockAccount!!.bean = modifiedBedrockAccountStorage
             }
-            member.dataContainer.storage = modifiedDataContainerStorage
+            member.dataContainer.bean = modifiedDataContainerStorage
 
             notifyUpdate(notify)
         }

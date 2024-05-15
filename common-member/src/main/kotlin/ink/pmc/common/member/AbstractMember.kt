@@ -3,12 +3,12 @@ package ink.pmc.common.member
 import ink.pmc.common.member.api.Member
 import ink.pmc.common.member.data.AbstractBedrockAccount
 import ink.pmc.common.member.data.AbstractDataContainer
-import ink.pmc.common.member.storage.MemberStorage
+import ink.pmc.common.member.storage.MemberBean
 import ink.pmc.common.member.storage.Storable
 
-abstract class AbstractMember : Member, Storable<MemberStorage> {
+abstract class AbstractMember : Member, Storable<MemberBean> {
 
-    abstract var storage: MemberStorage
+    abstract var bean: MemberBean
     abstract override val bedrockAccount: AbstractBedrockAccount?
     abstract override val dataContainer: AbstractDataContainer
 
@@ -21,7 +21,7 @@ abstract class AbstractMember : Member, Storable<MemberStorage> {
     }
 
     override fun hashCode(): Int {
-        return storage.hashCode()
+        return bean.hashCode()
     }
 
 }

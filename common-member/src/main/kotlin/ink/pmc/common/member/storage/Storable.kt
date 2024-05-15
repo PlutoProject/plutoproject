@@ -4,6 +4,6 @@ interface Storable<T> {
 
     fun reload(storage: T)
 
-    fun toStorage(): T
+    fun createBean(): T
 
 }

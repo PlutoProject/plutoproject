@@ -1,22 +1,22 @@
 package ink.pmc.common.member.data
 
 import ink.pmc.common.member.api.Member
-import ink.pmc.common.member.storage.BedrockAccountStorage
+import ink.pmc.common.member.storage.BedrockAccountBean
 
-class BedrockAccountImpl(override val linkedWith: Member, override var storage: BedrockAccountStorage) :
+class BedrockAccountImpl(override val linkedWith: Member, override var bean: BedrockAccountBean) :
     AbstractBedrockAccount() {
 
-    override val id: Long = storage.id
-    override val xuid: String = storage.xuid
-    override var gamertag: String = storage.gamertag
+    override val id: Long = bean.id
+    override val xuid: String = bean.xuid
+    override var gamertag: String = bean.gamertag
 
-    override fun reload(storage: BedrockAccountStorage) {
+    override fun reload(storage: BedrockAccountBean) {
         gamertag = storage.gamertag
-        this.storage = storage
+        this.bean = storage
     }
 
-    override fun toStorage(): BedrockAccountStorage {
-        return storage.copy(
+    override fun createBean(): BedrockAccountBean {
+        return bean.copy(
             id = this.id,
             linkedWith = this.linkedWith.uid,
             xuid = this.xuid,

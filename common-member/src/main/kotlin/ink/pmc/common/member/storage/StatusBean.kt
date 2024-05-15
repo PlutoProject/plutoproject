@@ -16,20 +16,20 @@ import java.util.concurrent.locks.ReentrantLock
 
 @Serializable
 @TypeName("Status")
-data class StatusStorage(
+data class StatusBean(
     @Id @SerialName("_id") @Contextual val objectId: ObjectId,
     var lastMember: Long,
     var lastPunishment: Long,
     var lastComment: Long,
     var lastDataContainer: Long,
     var lastBedrockAccount: Long
-) : Diffable<StatusStorage>() {
+) : Diffable<StatusBean>() {
 
     @Transient
     @DiffIgnore
     private val accessLock = ReentrantLock()
 
-    override fun applyDiff(diff: Diff): Diffable<StatusStorage> {
+    override fun applyDiff(diff: Diff): Diffable<StatusBean> {
         diff.changes.filterIsInstance<ValueChange>().forEach {
             when (it.propertyName) {
                 "lastMember" -> lastMember = it.right as Long

@@ -10,8 +10,8 @@ import ink.pmc.common.member.data.AbstractBedrockAccount
 import ink.pmc.common.member.data.AbstractDataContainer
 import ink.pmc.common.member.data.BedrockAccountImpl
 import ink.pmc.common.member.data.MemberModifierImpl
-import ink.pmc.common.member.storage.BedrockAccountStorage
-import ink.pmc.common.member.storage.MemberStorage
+import ink.pmc.common.member.storage.BedrockAccountBean
+import ink.pmc.common.member.storage.MemberBean
 import kotlinx.coroutines.flow.firstOrNull
 import org.bson.types.ObjectId
 import java.time.Instant
@@ -19,26 +19,26 @@ import java.util.*
 
 class MemberImpl(
     private val service: AbstractMemberService,
-    override var storage: MemberStorage
+    override var bean: MemberBean
 ) : AbstractMember() {
 
-    override var uid: Long = storage.uid
-    override var id: UUID = UUID.fromString(storage.id)
-    override var name: String = storage.name
-    override var rawName: String = storage.rawName
-    override var whitelistStatus: WhitelistStatus = WhitelistStatus.valueOf(storage.whitelistStatus)
+    override var uid: Long = bean.uid
+    override var id: UUID = UUID.fromString(bean.id)
+    override var name: String = bean.name
+    override var rawName: String = bean.rawName
+    override var whitelistStatus: WhitelistStatus = WhitelistStatus.valueOf(bean.whitelistStatus)
     override val isWhitelisted: Boolean
         get() = whitelistStatus == WhitelistStatus.WHITELISTED
-    override var authType: AuthType = AuthType.valueOf(storage.authType)
-    override var createdAt: Instant = Instant.ofEpochMilli(storage.createdAt)
+    override var authType: AuthType = AuthType.valueOf(bean.authType)
+    override var createdAt: Instant = Instant.ofEpochMilli(bean.createdAt)
     override var lastJoinedAt: Instant? =
-        if (storage.lastJoinedAt != null) Instant.ofEpochMilli(storage.lastJoinedAt!!) else null
+        if (bean.lastJoinedAt != null) Instant.ofEpochMilli(bean.lastJoinedAt!!) else null
     override var lastQuitedAt: Instant? =
-        if (storage.lastQuitedAt != null) Instant.ofEpochMilli(storage.lastQuitedAt!!) else null
+        if (bean.lastQuitedAt != null) Instant.ofEpochMilli(bean.lastQuitedAt!!) else null
     override lateinit var dataContainer: AbstractDataContainer
     override var bedrockAccount: AbstractBedrockAccount? = null
-    override var bio: String? = storage.bio
-    override var isHidden: Boolean = storage.isHidden ?: false
+    override var bio: String? = bean.bio
+    override var isHidden: Boolean = bean.isHidden ?: false
     override val modifier: MemberModifier = MemberModifierImpl(this)
 
     override fun exemptWhitelist() {
@@ -67,7 +67,7 @@ class MemberImpl(
         }
 
         val id = service.currentStatus.nextBedrockAccount()
-        val storage = BedrockAccountStorage(
+        val storage = BedrockAccountBean(
             ObjectId(),
             id,
             uid,
@@ -99,7 +99,7 @@ class MemberImpl(
         return service.sync(this)
     }
 
-    override fun reload(storage: MemberStorage) {
+    override fun reload(storage: MemberBean) {
         uid = storage.uid
         id = UUID.fromString(storage.id)
         name = storage.name
@@ -117,20 +117,13 @@ class MemberImpl(
         } else {
             null
         }
-        /*
-        if (storage.bedrockAccount != null && bedrockAccount == null) {
-            bedrockAccount = BedrockAccountImpl(this, memberService.lookupBedrockAccountStorage(storage.bedrockAccount!!)!!)
-        }
-        if (storage.bedrockAccount == null && bedrockAccount != null) {
-            bedrockAccount = null
-        }*/
         bio = storage.bio
         isHidden = storage.isHidden ?: false
-        this.storage = storage
+        this.bean = storage
     }
 
-    override fun toStorage(): MemberStorage {
-        return storage.copy(
+    override fun createBean(): MemberBean {
+        return bean.copy(
             uid = this.uid,
             id = this.id.toString(),
             name = this.name,

@@ -13,16 +13,16 @@ import org.javers.core.metamodel.annotation.TypeName
 
 @Serializable
 @TypeName("BedrockAccount")
-data class BedrockAccountStorage(
+data class BedrockAccountBean(
     @DiffIgnore @SerialName("_id") @Contextual var objectId: ObjectId,
     @Id var id: Long,
     var linkedWith: Long,
     var xuid: String,
     var gamertag: String,
     @Transient var new: Boolean = false
-) : Diffable<BedrockAccountStorage>() {
+) : Diffable<BedrockAccountBean>() {
 
-    override fun applyDiff(diff: Diff): Diffable<BedrockAccountStorage> {
+    override fun applyDiff(diff: Diff): Diffable<BedrockAccountBean> {
         diff.changes.filterIsInstance<ValueChange>().forEach {
             when (it.propertyName) {
                 "id" -> id = it.right as Long

@@ -2,28 +2,28 @@ package ink.pmc.common.member.data
 
 import ink.pmc.common.member.api.Member
 import ink.pmc.common.member.serverLogger
-import ink.pmc.common.member.storage.DataContainerStorage
+import ink.pmc.common.member.storage.DataContainerBean
 import org.bson.*
 import java.time.Instant
 import java.util.logging.Level
 
 @Suppress("UNCHECKED_CAST")
-class DataContainerImpl(override val owner: Member, override var storage: DataContainerStorage) :
+class DataContainerImpl(override val owner: Member, override var bean: DataContainerBean) :
     AbstractDataContainer() {
 
-    override val id: Long = storage.id
-    override val createdAt: Instant = Instant.ofEpochMilli(storage.createdAt)
-    override var lastModifiedAt: Instant = Instant.ofEpochMilli(storage.lastModifiedAt)
-    override var contents: BsonDocument = storage.contents.clone() // 复制原 Document，不要引用 storage 里的 Document
+    override val id: Long = bean.id
+    override val createdAt: Instant = Instant.ofEpochMilli(bean.createdAt)
+    override var lastModifiedAt: Instant = Instant.ofEpochMilli(bean.lastModifiedAt)
+    override var contents: BsonDocument = bean.contents.clone() // 复制原 Document，不要引用 bean 里的 Document
 
-    override fun reload(storage: DataContainerStorage) {
+    override fun reload(storage: DataContainerBean) {
         lastModifiedAt = Instant.ofEpochMilli(storage.lastModifiedAt)
         contents = storage.contents.clone()
-        this.storage = storage
+        this.bean = storage
     }
 
-    override fun toStorage(): DataContainerStorage {
-        return storage.copy(
+    override fun createBean(): DataContainerBean {
+        return bean.copy(
             id = this.id,
             owner = this.owner.uid,
             createdAt = this.createdAt.toEpochMilli(),
