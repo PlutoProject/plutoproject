@@ -2,9 +2,20 @@ syntax = "proto3";
 package ink.pmc.common.exchange.proto;
 
 import "google/protobuf/empty.proto";
+import "player/Player.proto";
+import "operation/ResultMessage.proto";
 
-import "PlayerStatusUpdateNotify.proto";
+import "lobby2proxy/ItemDistributeNotify.proto";
+import "lobby2proxy/LobbyHealthCheckRsp.proto";
+import "proxy2server/ExchangeStatusCheckRsp.proto";
+import "proxy2lobby/LobbyHealthCheckReq.proto";
 
 service ExchangeRpc {
-  rpc monitorStatusUpdate(google.protobuf.Empty) returns (stream PlayerStatusUpdateNotify);
+  rpc StartExchange(common.utils.proto.player.Player) returns (common.utils.proto.operation.ResultMessage);
+  rpc EndExchange(common.utils.proto.player.Player) returns (common.utils.proto.operation.ResultMessage);
+  rpc IsInExchange(common.utils.proto.player.Player) returns (proxy2server.ExchangeStatusCheckRsp);
+  rpc NotifyItemDistribute(lobby2proxy.ItemDistributeNotify) returns (common.utils.proto.operation.ResultMessage);
+  rpc ResponseLobbyHealthCheck(lobby2proxy.LobbyHealthCheckRsp) returns (google.protobuf.Empty);
+  rpc MonitorItemDistribute(google.protobuf.Empty) returns (stream lobby2proxy.ItemDistributeNotify);
+  rpc MonitorLobbyHealthCheck(google.protobuf.Empty) returns (stream proxy2server.ExchangeStatusCheckRsp);
 }

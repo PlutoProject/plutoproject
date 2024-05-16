@@ -1,0 +1,8 @@
+syntax = "proto3";
+package ink.pmc.common.exchange.proto.lobby2proxy;
+
+message LobbyHealthCheckRsp {
+  string service_id = 1;
+  uint64 time = 2;
+  bool ok = 3;
+}

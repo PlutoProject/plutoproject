@@ -1,0 +1,8 @@
+syntax = "proto3";
+package ink.pmc.common.exchange.proto.proxy2server;
+
+import "ExchangeStatus.proto";
+
+message ExchangeStatusCheckRsp {
+  ExchangeStatus status = 1;
+}

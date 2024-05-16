@@ -1,0 +1,9 @@
+syntax = "proto3";
+package ink.pmc.common.exchange.proto.lobby2proxy;
+
+import "player/Player.proto";
+
+message ItemDistributeNotify {
+  common.utils.proto.player.Player player = 1;
+  repeated string item = 2;
+}
