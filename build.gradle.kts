@@ -86,6 +86,10 @@ allprojects {
         destinationDirectory.set(file("$rootDir/build-outputs"))
     }
 
+    tasks.compileJava {
+        options.encoding = "UTF-8"
+    }
+
     protobuf {
         protoc {
             artifact = rootProject.libs.protoc.asProvider().get().toString()
