@@ -1,0 +1,11 @@
+syntax = "proto3";
+package ink.pmc.common.exchange.proto;
+
+import "ExchangeStatus.proto";
+import "player/Player.proto";
+
+message PlayerStatusUpdateNotify {
+  string service_id = 1;
+  common.utils.proto.player.Player player = 2;
+  ExchangeStatus status = 3;
+}

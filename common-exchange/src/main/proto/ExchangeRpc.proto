@@ -1,0 +1,10 @@
+syntax = "proto3";
+package ink.pmc.common.exchange.proto;
+
+import "google/protobuf/empty.proto";
+
+import "PlayerStatusUpdateNotify.proto";
+
+service ExchangeRpc {
+  rpc monitorStatusUpdate(google.protobuf.Empty) returns (stream PlayerStatusUpdateNotify);
+}

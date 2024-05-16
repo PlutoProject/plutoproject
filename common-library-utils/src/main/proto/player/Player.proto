@@ -1,0 +1,7 @@
+syntax = "proto3";
+package ink.pmc.common.utils.proto.player;
+
+message Player {
+  string username = 1;
+  string uuid = 2;
+}

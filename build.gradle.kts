@@ -18,7 +18,6 @@ fun kotlin(s: String): String {
 val bukkitApiVersion by extra("1.20")
 
 allprojects {
-
     apply {
         plugin("java")
         plugin("java-library")
