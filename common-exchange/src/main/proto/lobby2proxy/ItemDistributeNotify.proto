@@ -4,6 +4,7 @@ package ink.pmc.common.exchange.proto.lobby2proxy;
 import "player/Player.proto";
 
 message ItemDistributeNotify {
-  common.utils.proto.player.Player player = 1;
-  repeated string item = 2;
+  string service_id = 1;
+  common.utils.proto.player.Player player = 2;
+  repeated string item = 3;
 }
