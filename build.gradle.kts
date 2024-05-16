@@ -15,7 +15,7 @@ plugins {
     alias(libs.plugins.resource.factory.velocity)
 }
 
-val paperDevBundleVer = "1.20.4-R0.1-SNAPSHOT"
+val paperDevBundleVer = "1.20.6-R0.1-SNAPSHOT"
 extra["paperDevBundleVer"] = paperDevBundleVer
 
 fun kotlin(s: String): String {
