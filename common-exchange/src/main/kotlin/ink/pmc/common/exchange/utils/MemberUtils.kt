@@ -1,8 +1,7 @@
 package ink.pmc.common.exchange.utils
 
-import ink.pmc.common.exchange.ExchangeConfig
 import ink.pmc.common.exchange.LAST_TICKET_DISTRIBUTE_KEY
-import ink.pmc.common.exchange.extensions.tickets
+import ink.pmc.common.exchange.TICKET_KEY
 import ink.pmc.common.member.api.Member
 import java.time.Instant
 import java.time.ZoneId
@@ -35,11 +34,21 @@ private fun markAsTicketed(member: Member) {
     member.dataContainer[LAST_TICKET_DISTRIBUTE_KEY] = System.currentTimeMillis()
 }
 
+fun initExchangeData(member: Member) {
+    val data = member.dataContainer
+
+    if (data.contains(TICKET_KEY)) {
+        return
+    }
+
+    data[TICKET_KEY] = 0L
+}
+
 fun distributeTicket(member: Member) {
     if (!shouldDistributeTicket(member)) {
         return
     }
 
-    member.tickets(ExchangeConfig.Tickets.daily)
+    // member.tickets(ExchangeConfig.Tickets.daily)
     markAsTicketed(member)
 }

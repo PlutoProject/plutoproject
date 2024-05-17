@@ -1,6 +1,5 @@
 package ink.pmc.common.exchange.paper
 
-import ink.pmc.common.exchange.ExchangeConfig
 import ink.pmc.common.utils.platform.paper
 import org.bukkit.World
 import org.bukkit.WorldCreator

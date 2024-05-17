@@ -1,7 +1,7 @@
 package ink.pmc.common.exchange.commands
 
 import ink.pmc.common.exchange.paperCommandManager
-import ink.pmc.common.exchange.paperExchangeService
+import ink.pmc.common.exchange.backendExchangeService
 import ink.pmc.common.utils.chat.NON_PLAYER
 import ink.pmc.common.utils.command.PaperCommand
 import ink.pmc.common.utils.concurrent.sync
@@ -19,11 +19,11 @@ object CheckoutCommand : PaperCommand() {
                 return@suspendingHandler
             }
 
-            if (!paperExchangeService.isInExchange(sender)) {
+            if (!backendExchangeService.isInExchange(sender)) {
                 return@suspendingHandler
             }
 
-            sender.sync { paperExchangeService.checkout(sender) }
+            sender.sync { backendExchangeService.checkout(sender) }
         }
 
     init {

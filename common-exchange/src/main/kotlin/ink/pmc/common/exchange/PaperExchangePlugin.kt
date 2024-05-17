@@ -1,35 +1,20 @@
 package ink.pmc.common.exchange
 
-import com.electronwill.nightconfig.core.Config
 import com.github.shynixn.mccoroutine.bukkit.SuspendingJavaPlugin
-import com.github.shynixn.mccoroutine.bukkit.registerSuspendingEvents
-import ink.pmc.common.exchange.commands.CheckoutCommand
-import ink.pmc.common.exchange.commands.ExchangeCommand
-import ink.pmc.common.exchange.listeners.PaperExchangeServiceListener
-import ink.pmc.common.exchange.paper.ExchangeLobbyImpl
-import ink.pmc.common.exchange.paper.ExchangeWorldLoader
 import ink.pmc.common.exchange.paper.BackendExchangeService
-import ink.pmc.common.exchange.serializers.*
-import ink.pmc.common.exchange.utils.disableGameRules
-import ink.pmc.common.utils.command.init
 import ink.pmc.common.utils.isInDebugMode
-import ink.pmc.common.utils.json.transformGson
-import org.bukkit.Location
-import org.bukkit.Material
+import org.bukkit.Bukkit
 import org.bukkit.World
+import org.bukkit.WorldCreator
 import org.bukkit.command.CommandSender
-import org.bukkit.inventory.Inventory
-import org.bukkit.potion.PotionEffect
 import org.incendo.cloud.execution.ExecutionCoordinator
 import org.incendo.cloud.paper.PaperCommandManager
 import java.io.File
+import java.util.logging.Level
 
-lateinit var paperExchangeService: BackendExchangeService
+lateinit var backendExchangeService: BackendExchangeService
 lateinit var paperCommandManager: PaperCommandManager<CommandSender>
-lateinit var worldFolder: File
-lateinit var worldLoader: ExchangeWorldLoader
 lateinit var world: World
-lateinit var exchangeLobby: ExchangeLobby
 
 @Suppress("UNUSED")
 class PaperExchangePlugin : SuspendingJavaPlugin() {
@@ -41,68 +26,25 @@ class PaperExchangePlugin : SuspendingJavaPlugin() {
 
         dataDir = dataFolder
         createDataDir()
-        configFile = File(dataDir, "config.toml")
+        configFile = File(dataDir, "config_backend.toml")
 
         if (!configFile.exists()) {
-            saveResource("config.toml", false)
+            saveResource("config_backend.toml", false)
         }
 
         loadConfig(configFile)
-        loadConfigPaper(fileConfig)
-        worldFolder = File("${ExchangeConfig.ExchangeLobby.worldName}/")
-
-        if (!worldFolder.exists() || !worldFolder.isDirectory) {
-            logger.severe("World folder '${ExchangeConfig.ExchangeLobby.worldName}' not existed or not a folder!")
-            return
-        }
-
-        try {
-            logger.info("Loading exchange lobby...")
-
-            worldLoader = ExchangeWorldLoader()
-            worldLoader.load()
-            world = worldLoader.world
-
-            exchangeLobby = ExchangeLobbyImpl(
-                world,
-                Location(
-                    world,
-                    ExchangeConfig.ExchangeLobby.TeleportLocation.x,
-                    ExchangeConfig.ExchangeLobby.TeleportLocation.y,
-                    ExchangeConfig.ExchangeLobby.TeleportLocation.z,
-                    ExchangeConfig.ExchangeLobby.TeleportLocation.yaw,
-                    ExchangeConfig.ExchangeLobby.TeleportLocation.pitch
-                )
-            )
-
-            disableGameRules(world)
-            logger.info("World loaded!")
-        } catch (e: Exception) {
-            logger.severe("Failed to load world!")
-            e.printStackTrace()
-            return
-        }
 
         paperCommandManager = PaperCommandManager.createNative(
             this,
             ExecutionCoordinator.asyncCoordinator()
         )
-
         paperCommandManager.registerBrigadier()
-        paperCommandManager.init(ExchangeCommand)
-        paperCommandManager.init(CheckoutCommand)
 
-        transformGson {
-            registerTypeAdapter(Location::class.java, LocationSerializer)
-            registerTypeAdapter(Location::class.java, LocationDeserializer)
-            registerTypeAdapter(PotionEffect::class.java, PotionEffectSerializer)
-            registerTypeAdapter(PotionEffect::class.java, PotionEffectDeserializer)
-            registerTypeAdapter(Inventory::class.java, InventorySerializer)
-            registerTypeAdapter(Inventory::class.java, InventoryDeserializer)
+        when (fileConfig.get<Boolean>("lobby-mode")) {
+            true -> initAsLobby()
+            false -> initAsNormal()
         }
 
-        initService(exchangeLobby)
-        server.pluginManager.registerSuspendingEvents(PaperExchangeServiceListener, this)
         disabled = false
     }
 
@@ -110,26 +52,27 @@ class PaperExchangePlugin : SuspendingJavaPlugin() {
         disabled = true
     }
 
-    private fun initService(exchangeLobby: ExchangeLobby) {
-        // paperExchangeService = BackendExchangeService(exchangeLobby)
-        exchangeService = paperExchangeService
-        IExchangeService.instance = exchangeService
+    private fun initAsNormal() {
+
     }
 
-    private fun loadConfigPaper(config: Config) {
-        ExchangeConfig.ExchangeLobby.worldName = config.get("exchange-lobby.world-name")
+    private fun initAsLobby() {
+        val name = fileConfig.get<String>("lobby-settings.world")
+        serverLogger.info("Loading lobby world: $name")
 
-        ExchangeConfig.ExchangeLobby.TeleportLocation.x = config.get("exchange-lobby.teleport-location.x")
-        ExchangeConfig.ExchangeLobby.TeleportLocation.y = config.get("exchange-lobby.teleport-location.y")
-        ExchangeConfig.ExchangeLobby.TeleportLocation.z = config.get("exchange-lobby.teleport-location.z")
-        ExchangeConfig.ExchangeLobby.TeleportLocation.yaw = config.get("exchange-lobby.teleport-location.yaw")
-        ExchangeConfig.ExchangeLobby.TeleportLocation.pitch = config.get("exchange-lobby.teleport-location.pitch")
+        val tempWorld = try {
+            Bukkit.createWorld(WorldCreator.name(name))
+        } catch (e: Exception) {
+            serverLogger.log(Level.SEVERE, "Failed to load lobby world!", e)
+            return
+        }
 
-        ExchangeConfig.AvailableItems.materials = processMaterials(config.get("available-items.materials"))
-    }
+        if (tempWorld == null) {
+            serverLogger.severe("World loaded without exception, but it's null")
+            return
+        }
 
-    private fun processMaterials(list: List<String>): List<Material> {
-        return list.map { Material.valueOf(it.uppercase()) }
+        world = tempWorld
     }
 
 }

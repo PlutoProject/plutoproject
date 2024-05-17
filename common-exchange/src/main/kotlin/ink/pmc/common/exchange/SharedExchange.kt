@@ -19,18 +19,10 @@ fun createDataDir() {
 }
 
 fun loadConfig(file: File) {
-    fileConfig = FileConfig.builder(file).sync().build()
+    fileConfig = FileConfig.builder(file)
+        .autosave()
+        .autoreload()
+        .sync()
+        .build()
     fileConfig.load()
-    ExchangeConfig.identity = fileConfig.get("server-identity")
-    ExchangeConfig.Tickets.daily = fileConfig.get("tickets.daily")
-}
-
-fun initExchangeData(member: Member) {
-    val data = member.dataContainer
-
-    if (data.contains(TICKET_KEY)) {
-        return
-    }
-
-    data[TICKET_KEY] = 0L
 }

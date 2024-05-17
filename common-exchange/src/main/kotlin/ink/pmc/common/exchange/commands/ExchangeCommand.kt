@@ -26,11 +26,11 @@ object ExchangeCommand : PaperCommand() {
                 return@suspendingHandler
             }
 
-            if (paperExchangeService.isInExchange(sender)) {
+            if (backendExchangeService.isInExchange(sender)) {
                 return@suspendingHandler
             }
 
-            sender.sync { paperExchangeService.startExchange(sender) }
+            sender.sync { backendExchangeService.startExchange(sender) }
         }
 
     private val exchangeAdminStart = paperCommandManager.commandBuilder("exchangeadmin")
@@ -46,7 +46,7 @@ object ExchangeCommand : PaperCommand() {
                 return@suspendingHandler
             }
 
-            if (paperExchangeService.isInExchange(player)) {
+            if (backendExchangeService.isInExchange(player)) {
                 sender.sendMessage(
                     EXCHANGE_ADMIN_START_FAILED_ALREADY_IN
                         .replace("<player>", Component.text(player.name).color(mochaYellow))
@@ -54,7 +54,7 @@ object ExchangeCommand : PaperCommand() {
                 return@suspendingHandler
             }
 
-            player.sync { paperExchangeService.startExchange(player) }
+            player.sync { backendExchangeService.startExchange(player) }
             sender.sendMessage(
                 EXCHANGE_ADMIN_START_SUCCEED
                     .replace("<player>", Component.text(player.name).color(mochaYellow))
@@ -74,7 +74,7 @@ object ExchangeCommand : PaperCommand() {
                 return@suspendingHandler
             }
 
-            if (!paperExchangeService.isInExchange(player)) {
+            if (!backendExchangeService.isInExchange(player)) {
                 sender.sendMessage(
                     EXCHANGE_ADMIN_END_FAILED_NOT_IN
                         .replace("<player>", Component.text(player.name).color(mochaYellow))
@@ -82,7 +82,7 @@ object ExchangeCommand : PaperCommand() {
                 return@suspendingHandler
             }
 
-            player.sync { paperExchangeService.endExchange(player) }
+            player.sync { backendExchangeService.endExchange(player) }
             sender.sendMessage(
                 EXCHANGE_ADMIN_END_SUCCEED
                     .replace("<player>", Component.text(player.name).color(mochaYellow))
@@ -102,7 +102,7 @@ object ExchangeCommand : PaperCommand() {
                 return@suspendingHandler
             }
 
-            if (!paperExchangeService.isInExchange(player)) {
+            if (!backendExchangeService.isInExchange(player)) {
                 sender.sendMessage(
                     EXCHANGE_ADMIN_END_FAILED_NOT_IN
                         .replace("<player>", Component.text(player.name).color(mochaYellow))
@@ -110,7 +110,7 @@ object ExchangeCommand : PaperCommand() {
                 return@suspendingHandler
             }
 
-            player.sync { paperExchangeService.checkout(player) }
+            player.sync { backendExchangeService.checkout(player) }
             sender.sendMessage(
                 EXCHANGE_ADMIN_CHECKOUT_SUCCEED
                     .replace("<player>", Component.text(player.name).color(mochaYellow))
@@ -128,7 +128,7 @@ object ExchangeCommand : PaperCommand() {
                 return@suspendingHandler
             }
 
-            if (!paperExchangeService.lobby.players.contains(sender)) {
+            if (!backendExchangeService.lobby.players.contains(sender)) {
                 sender.sendMessage(EXCHANGE_ADMIN_MARK_AS_CHECKOUT_SIGN_FAILED_NOT_IN_EXCHANGE)
                 return@suspendingHandler
             }
