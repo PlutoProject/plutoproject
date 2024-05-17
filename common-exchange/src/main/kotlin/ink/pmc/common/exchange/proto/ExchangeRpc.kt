@@ -17,22 +17,23 @@ import ink.pmc.common.exchange.proto.proxy2server.exchangeStartAck
 import ink.pmc.common.exchange.proto.server2lobby.ExchangeEndOuterClass.ExchangeEnd
 import ink.pmc.common.exchange.proto.server2lobby.ExchangeStartOuterClass.ExchangeStart
 import ink.pmc.common.exchange.serverLogger
+import ink.pmc.common.utils.platform.proxy
 import ink.pmc.common.utils.proto.operation.ResultMessageOuterClass.ResultMessage
 import ink.pmc.common.utils.proto.operation.ResultOuterClass
 import ink.pmc.common.utils.proto.operation.resultMessage
 import ink.pmc.common.utils.proto.player.PlayerOuterClass.Player
-import ink.pmc.common.utils.proto.velocity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import java.time.Instant
 import java.util.logging.Level
+import kotlin.jvm.optionals.getOrNull
 
 class ExchangeRpc(private val service: AbstractProxyExchangeService) : ExchangeRpcGrpcKt.ExchangeRpcCoroutineImplBase() {
 
     val itemDistributeFlow = MutableSharedFlow<ItemDistributeNotify>()
 
     override suspend fun startExchange(request: ExchangeStart): ExchangeStartAck {
-        val player = request.player.velocity ?: return exchangeStartAck {
+        val player = proxy.getPlayer(request.player.uuid).getOrNull() ?: return exchangeStartAck {
             serviceId = service.id.toString()
             result = ExchangeStartResult.START_FAILED_OFFLINE
         }
@@ -52,7 +53,7 @@ class ExchangeRpc(private val service: AbstractProxyExchangeService) : ExchangeR
     }
 
     override suspend fun endExchange(request: ExchangeEnd): ExchangeEndAckOuterClass.ExchangeEndAck {
-        val player = request.player.velocity ?: return exchangeEndAck {
+        val player = proxy.getPlayer(request.player.uuid).getOrNull() ?: return exchangeEndAck {
             serviceId = service.id.toString()
             result = ExchangeEndResult.END_FAILED_OFFLINE
         }
@@ -72,7 +73,7 @@ class ExchangeRpc(private val service: AbstractProxyExchangeService) : ExchangeR
     }
 
     override suspend fun isInExchange(request: Player): ExchangeCheckAck {
-        val player = request.velocity
+        val player = proxy.getPlayer(request.uuid).getOrNull()
         return exchangeCheckAck {
             serviceId = service.id.toString()
             status = if (player == null) {
