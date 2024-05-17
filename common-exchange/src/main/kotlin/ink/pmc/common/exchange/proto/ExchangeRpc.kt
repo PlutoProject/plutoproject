@@ -47,6 +47,7 @@ class ExchangeRpc(private val service: AbstractProxyExchangeService) :
         }
 
         service.startExchange(player)
+
         return exchangeStartAck {
             serviceId = service.id.toString()
             result = ExchangeStartResult.START_SUCCEED
@@ -66,7 +67,8 @@ class ExchangeRpc(private val service: AbstractProxyExchangeService) :
             }
         }
 
-        service.startExchange(player)
+        service.endExchange(player)
+
         return exchangeEndAck {
             serviceId = service.id.toString()
             result = ExchangeEndResult.END_SUCCEED

@@ -1,4 +1,4 @@
-package ink.pmc.common.exchange.utils
+package ink.pmc.common.utils.player
 
 import org.bukkit.Bukkit
 import org.bukkit.inventory.Inventory

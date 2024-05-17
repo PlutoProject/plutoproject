@@ -5,6 +5,5 @@ import "player/Player.proto";
 
 message ExchangeEnd {
   string service_id = 1;
-  string server = 2;
-  utils.proto.player.Player player = 3;
+  utils.proto.player.Player player = 2;
 }

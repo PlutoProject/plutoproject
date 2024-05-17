@@ -63,7 +63,6 @@ class BackendExchangeService : AbstractBackendExchangeService() {
     override suspend fun endExchange(player: Player) {
         stub.endExchange(exchangeEnd {
             serviceId = id.toString()
-            server = serverName
             this.player = player {
                 username = player.name
                 uuid = player.uniqueId.toString()
