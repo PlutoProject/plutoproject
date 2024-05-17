@@ -3,5 +3,5 @@ package ink.pmc.common.utils.proto.operation;
 
 enum Result {
   SUCCEED = 0;
-  FAIL = 2;
+  FAILED = 2;
 }

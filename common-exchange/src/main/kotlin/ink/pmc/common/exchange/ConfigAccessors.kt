@@ -1,4 +1,7 @@
 package ink.pmc.common.exchange
 
-class ConfigAccessors {
-}
+val dailyTickets: Long
+    get() = fileConfig.get("daily-tickets")
+
+val lobbyServerName: String
+    get() = fileConfig.get("lobby-server")

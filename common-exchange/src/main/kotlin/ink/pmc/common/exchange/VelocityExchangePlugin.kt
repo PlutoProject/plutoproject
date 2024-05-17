@@ -22,6 +22,7 @@ import java.nio.file.Path
 import java.util.logging.Logger
 
 lateinit var pluginContainer: PluginContainer
+lateinit var proxyExchangeService: ProxyExchangeService
 lateinit var velocityCommandManager: VelocityCommandManager<CommandSource>
 
 @Plugin(
@@ -46,11 +47,6 @@ class VelocityExchangePlugin @Inject constructor(suspendingPluginContainer: Susp
     fun exchangePluginVelocity(server: ProxyServer, logger: Logger, @DataDirectory dataDirectoryPath: Path) {
         serverLogger = logger
         dataDir = dataDirectoryPath.toFile()
-    }
-
-    @Subscribe
-    fun proxyInitializeEvent(event: ProxyInitializeEvent) {
-        pluginContainer = proxy.pluginManager.getPlugin("common-exchange").get()
 
         createDataDir()
         configFile = File(dataDir, "config_proxy.toml")
@@ -59,6 +55,13 @@ class VelocityExchangePlugin @Inject constructor(suspendingPluginContainer: Susp
             saveConfig(VelocityExchangePlugin::class.java, "config_proxy.toml", configFile)
         }
 
+        initService()
+    }
+
+    @Subscribe
+    fun proxyInitializeEvent(event: ProxyInitializeEvent) {
+        pluginContainer = proxy.pluginManager.getPlugin("common-exchange").get()
+
         velocityCommandManager = VelocityCommandManager(
             pluginContainer,
             proxy,
@@ -66,7 +69,6 @@ class VelocityExchangePlugin @Inject constructor(suspendingPluginContainer: Susp
             SenderMapper.identity()
         )
 
-        initService()
         disabled = false
     }
 
@@ -76,7 +78,8 @@ class VelocityExchangePlugin @Inject constructor(suspendingPluginContainer: Susp
     }
 
     private fun initService() {
-        // exchangeService = VelocityExchangeService()
+        proxyExchangeService = ProxyExchangeService()
+        exchangeService = proxyExchangeService
         IExchangeService.instance = exchangeService
     }
 

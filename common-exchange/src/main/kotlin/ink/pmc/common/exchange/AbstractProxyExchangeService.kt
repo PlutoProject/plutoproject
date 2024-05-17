@@ -6,6 +6,6 @@ import ink.pmc.common.exchange.proto.ExchangeRpc
 abstract class AbstractProxyExchangeService : BaseExchangeServiceImpl<Player>() {
 
     abstract val rpc: ExchangeRpc
-    val inExchange: List<Player> = mutableListOf()
+    val inExchange: MutableMap<Player, ExchangeSession> = mutableMapOf()
 
 }

@@ -1,4 +1,5 @@
 package ink.pmc.common.exchange
 
-class ExchangeSession {
-}
+data class ExchangeSession(
+    val originalServer: String
+)

@@ -3,7 +3,7 @@ package ink.pmc.common.exchange.proto.proxy2server;
 
 message ExchangeEndAck {
   string service_id = 1;
-  ExchangeEndAck result = 2;
+  ExchangeEndResult result = 2;
 }
 
 enum ExchangeEndResult {
