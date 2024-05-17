@@ -30,6 +30,7 @@ nightconfig-toml = { module = "com.electronwill.night-config:toml", version.ref 
 cloud-paper = { module = "org.incendo:cloud-paper", version = "2.0.0-beta.5" }
 cloud-velocity = { module = "org.incendo:cloud-velocity", version = "2.0.0-beta.2" }
 cloud-coroutines = { module = "org.incendo:cloud-kotlin-coroutines", version = "2.0.0-beta.4" }
+cloud-extensions = { module = "org.incendo:cloud-kotlin-extensions", version = "2.0.0-rc.1" }
 netty = { module = "io.netty:netty-all", version = "4.1.109.Final" }
 mccoroutine-bukkit-api = { module = "com.github.shynixn.mccoroutine:mccoroutine-bukkit-api", version.ref = "mccoroutine" }
 mccoroutine-bukkit-core = { module = "com.github.shynixn.mccoroutine:mccoroutine-bukkit-core", version.ref = "mccoroutine" }
@@ -54,7 +55,7 @@ javers-core = { module = "org.javers:javers-core", version.ref = "javers" }
 [bundles]
 kotlin = ["kotlin-stdlib", "kotlin-reflect", "kotlinx-coroutine-core", "kotlinx-serialization"]
 nightconfig = ["nightconfig-core", "nightconfig-toml"]
-cloud = ["cloud-paper", "cloud-velocity", "cloud-coroutines"]
+cloud = ["cloud-paper", "cloud-velocity", "cloud-coroutines", "cloud-extensions"]
 mccoroutine = ["mccoroutine-bukkit-api", "mccoroutine-bukkit-core", "mccoroutine-velocity-api", "mccoroutine-velocity-core"]
 bytebuddy = ["bytebuddy", "bytebuddy-agent"]
 protobuf = ["protobuf-kotlin"]

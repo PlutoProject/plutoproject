@@ -14,7 +14,10 @@ import com.velocitypowered.api.plugin.annotation.DataDirectory
 import com.velocitypowered.api.proxy.ProxyServer
 import ink.pmc.common.exchange.proxy.TicketDistributor
 import ink.pmc.common.exchange.proxy.ProxyExchangeService
+import ink.pmc.common.exchange.proxy.commands.ProxyExchangeCommand
+import ink.pmc.common.exchange.proxy.commands.ProxyTicketsCommand
 import ink.pmc.common.utils.PLUTO_VERSION
+import ink.pmc.common.utils.command.init
 import ink.pmc.common.utils.platform.proxy
 import ink.pmc.common.utils.platform.saveConfig
 import org.incendo.cloud.SenderMapper
@@ -71,6 +74,9 @@ class VelocityExchangePlugin @Inject constructor(suspendingPluginContainer: Susp
             ExecutionCoordinator.asyncCoordinator(),
             SenderMapper.identity()
         )
+
+        velocityCommandManager.init(ProxyExchangeCommand)
+        velocityCommandManager.init(ProxyTicketsCommand)
 
         proxy.eventManager.registerSuspend(this, TicketDistributor)
         disabled = false
