@@ -8,7 +8,7 @@ import ink.pmc.common.exchange.commands.ExchangeCommand
 import ink.pmc.common.exchange.listeners.PaperExchangeServiceListener
 import ink.pmc.common.exchange.paper.ExchangeLobbyImpl
 import ink.pmc.common.exchange.paper.ExchangeWorldLoader
-import ink.pmc.common.exchange.paper.PaperExchangeService
+import ink.pmc.common.exchange.paper.BackendExchangeService
 import ink.pmc.common.exchange.serializers.*
 import ink.pmc.common.exchange.utils.disableGameRules
 import ink.pmc.common.utils.command.init
@@ -24,7 +24,7 @@ import org.incendo.cloud.execution.ExecutionCoordinator
 import org.incendo.cloud.paper.PaperCommandManager
 import java.io.File
 
-lateinit var paperExchangeService: PaperExchangeService
+lateinit var paperExchangeService: BackendExchangeService
 lateinit var paperCommandManager: PaperCommandManager<CommandSender>
 lateinit var worldFolder: File
 lateinit var worldLoader: ExchangeWorldLoader
@@ -111,7 +111,7 @@ class PaperExchangePlugin : SuspendingJavaPlugin() {
     }
 
     private fun initService(exchangeLobby: ExchangeLobby) {
-        paperExchangeService = PaperExchangeService(exchangeLobby)
+        // paperExchangeService = BackendExchangeService(exchangeLobby)
         exchangeService = paperExchangeService
         IExchangeService.instance = exchangeService
     }

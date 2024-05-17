@@ -7,7 +7,7 @@ import java.util.logging.Logger
 
 var disabled = true
 lateinit var serverLogger: Logger
-lateinit var exchangeService: AbstractExchangeService
+lateinit var exchangeService: BaseExchangeServiceImpl<*>
 lateinit var dataDir: File
 lateinit var configFile: File
 lateinit var fileConfig: FileConfig

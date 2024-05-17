@@ -2,7 +2,7 @@ package ink.pmc.common.exchange
 
 import ink.pmc.common.member.api.Member
 
-abstract class SharedExchangeService : AbstractExchangeService() {
+abstract class BaseExchangeServiceImpl<T> : AbstractExchangeService<T>() {
 
     override fun tickets(member: Member): Long {
         return member.dataContainer.getLong(TICKET_KEY) ?: 0

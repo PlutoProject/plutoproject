@@ -9,11 +9,8 @@ import ink.pmc.common.utils.platform.threadSafeTeleport
 import ink.pmc.common.utils.visual.mochaText
 import net.kyori.adventure.text.Component
 import org.bukkit.entity.Player
-import java.util.*
 
-class PaperExchangeService(override val lobby: ExchangeLobby) : AbstractPaperExchangeService() {
-
-    override val inExchange: MutableList<UUID> = mutableListOf()
+class BackendExchangeService : AbstractBackendExchangeService() {
 
     override suspend fun startExchange(player: Player) {
         if (isInExchange(player)) {
@@ -21,7 +18,7 @@ class PaperExchangeService(override val lobby: ExchangeLobby) : AbstractPaperExc
             return
         }
 
-        inExchange.add(player.uniqueId)
+        // inExchange.add(player.uniqueId)
         player.member()
         snapshotStatus(player)
         player.threadSafeTeleport(exchangeLobby.teleportLocation)
@@ -31,22 +28,22 @@ class PaperExchangeService(override val lobby: ExchangeLobby) : AbstractPaperExc
         submitAsyncIO { player.member().save() }
     }
 
-    override suspend fun endExchange(player: Player, goBack: Boolean) {
+    override suspend fun endExchange(player: Player) {
         if (!isInExchange(player)) {
             player.sendMessage(EXCHANGE_END_FAILED_NOT_IN)
             return
         }
 
-        inExchange.remove(player.uniqueId)
+        // inExchange.remove(player.uniqueId)
         player.member()
         clearInventory(player)
-        restoreStatus(player, goBack)
+        // restoreStatus(player, goBack)
         showPlayer(player)
         player.sendMessage(EXCHANGE_END_SUCCEED)
         submitAsyncIO { player.member().save() }
     }
 
-    override suspend fun checkout(player: Player): Long {
+    suspend fun checkout(player: Player): Long {
         if (!isInExchange(player)) {
             return 0
         }
@@ -68,7 +65,7 @@ class PaperExchangeService(override val lobby: ExchangeLobby) : AbstractPaperExc
             return 0
         }
 
-        inExchange.remove(player.uniqueId)
+        // inExchange.remove(player.uniqueId)
         clearInventory(player)
         restoreStatus(player)
         showPlayer(player)
@@ -82,8 +79,8 @@ class PaperExchangeService(override val lobby: ExchangeLobby) : AbstractPaperExc
         return price
     }
 
-    override fun isInExchange(player: Player): Boolean {
-        return exchangeLobby.players.contains(player) && inExchange.contains(player.uniqueId)
+    override suspend fun isInExchange(player: Player): Boolean {
+        return exchangeLobby.players.contains(player) // inExchange.contains(player.uniqueId)
     }
 
 }
