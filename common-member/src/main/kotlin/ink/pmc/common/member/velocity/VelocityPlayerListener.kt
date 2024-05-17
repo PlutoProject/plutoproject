@@ -5,14 +5,12 @@ import com.velocitypowered.api.event.PostOrder
 import com.velocitypowered.api.event.Subscribe
 import com.velocitypowered.api.event.connection.DisconnectEvent
 import com.velocitypowered.api.event.connection.PostLoginEvent
+import com.velocitypowered.api.event.connection.PreLoginEvent
 import com.velocitypowered.api.event.player.GameProfileRequestEvent
-import ink.pmc.common.member.MEMBER_NAME_CHANGED
-import ink.pmc.common.member.MEMBER_NOT_WHITELISTED
-import ink.pmc.common.member.MEMBER_NOT_WHITELISTED_BE
+import ink.pmc.common.member.*
 import ink.pmc.common.member.adapter.BedrockAdapter
 import ink.pmc.common.member.api.AuthType
 import ink.pmc.common.member.bedrock.removeFloodgatePlayer
-import ink.pmc.common.member.memberService
 import ink.pmc.common.utils.bedrock.isFloodgatePlayer
 import ink.pmc.common.utils.bedrock.uuid
 import ink.pmc.common.utils.bedrock.xuid
@@ -31,6 +29,21 @@ object VelocityPlayerListener {
         MEMBER_NOT_WHITELISTED_BE
     } else {
         MEMBER_NOT_WHITELISTED
+    }
+
+    /*
+    * 临时使用。
+    * */
+    @Subscribe
+    fun preLoginEvent(event: PreLoginEvent) {
+        val connection = event.connection
+        val host = if (connection.virtualHost.isPresent) connection.virtualHost.get() else return
+
+        if (!host.hostString.lowercase().contains("hikaricraft")) {
+            return
+        }
+
+        event.result = PreLoginEvent.PreLoginComponentResult.denied(TEMP_HCS)
     }
 
     @Subscribe

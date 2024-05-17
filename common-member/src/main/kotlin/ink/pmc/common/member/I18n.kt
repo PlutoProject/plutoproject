@@ -161,3 +161,11 @@ val MEMBER_LOOKUP
         .append(Component.text("个性签名：").color(mochaText).append(Component.text("<bio>").color(mochaYellow)))
         .appendNewline()
         .append(Component.text("是否隐藏：").color(mochaText).append(Component.text("<isHidden>").color(mochaYellow)))
+
+val TEMP_HCS
+    get() = Component.text("您正在使用错误的 IP 进入服务器。").color(mochaMaroon)
+        .appendNewline()
+        .append(Component.text("欲进入 ").color(mochaText))
+        .append(Component.text("HikariCraft").color(mochaPink))
+        .append(Component.text("，请使用正确的端口：").color(mochaText))
+        .append(Component.text("40021").color(mochaPink))
