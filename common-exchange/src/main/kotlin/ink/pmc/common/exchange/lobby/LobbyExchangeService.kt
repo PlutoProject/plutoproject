@@ -1,13 +1,25 @@
 package ink.pmc.common.exchange.lobby
 
 import ink.pmc.common.exchange.backend.AbstractBackendExchangeService
+import ink.pmc.common.exchange.proto.lobby2proxy.lobbyHealthReport
+import ink.pmc.common.utils.concurrent.submitAsyncIO
+import ink.pmc.common.utils.platform.paper
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancelAndJoin
+import kotlinx.coroutines.delay
 import org.bukkit.GameRule
 import org.bukkit.World
 import org.bukkit.entity.Player
+import java.time.Instant
+
+lateinit var lobbyExchangeService: LobbyExchangeService
 
 class LobbyExchangeService(private val lobby: World) : AbstractBackendExchangeService() {
 
+    private lateinit var lobbyHealthReporter: Job
+
     init {
+        lobbyExchangeService = this
         initWorldEnvironment()
     }
 
@@ -22,11 +34,22 @@ class LobbyExchangeService(private val lobby: World) : AbstractBackendExchangeSe
     }
 
     override fun startBackGroundJobs() {
-        return
+        lobbyHealthReporter = reportLobbyHealth()
+    }
+
+    private fun reportLobbyHealth(): Job {
+        return submitAsyncIO {
+            stub.reportLobbyHealth(lobbyHealthReport {
+                serviceId = id.toString()
+                time = Instant.now().toEpochMilli()
+                playerCount = paper.onlinePlayers.size
+            })
+            delay(5000)
+        }
     }
 
     override suspend fun stopBackGroundJobs() {
-        return
+        lobbyHealthReporter.cancelAndJoin()
     }
 
     override suspend fun startExchange(player: Player) {

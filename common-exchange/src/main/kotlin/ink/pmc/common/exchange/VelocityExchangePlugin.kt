@@ -1,6 +1,7 @@
 package ink.pmc.common.exchange
 
 import com.github.shynixn.mccoroutine.velocity.SuspendingPluginContainer
+import com.github.shynixn.mccoroutine.velocity.registerSuspend
 import com.google.inject.Inject
 import com.velocitypowered.api.command.CommandSource
 import com.velocitypowered.api.event.Subscribe
@@ -11,6 +12,7 @@ import com.velocitypowered.api.plugin.Plugin
 import com.velocitypowered.api.plugin.PluginContainer
 import com.velocitypowered.api.plugin.annotation.DataDirectory
 import com.velocitypowered.api.proxy.ProxyServer
+import ink.pmc.common.exchange.proxy.TicketDistributor
 import ink.pmc.common.exchange.proxy.ProxyExchangeService
 import ink.pmc.common.utils.PLUTO_VERSION
 import ink.pmc.common.utils.platform.proxy
@@ -45,7 +47,7 @@ class VelocityExchangePlugin @Inject constructor(suspendingPluginContainer: Susp
     }
 
     @Inject
-    fun exchangePluginVelocity(server: ProxyServer, logger: Logger, @DataDirectory dataDirectoryPath: Path) {
+    fun velocityExchangePlugin(server: ProxyServer, logger: Logger, @DataDirectory dataDirectoryPath: Path) {
         serverLogger = logger
         dataDir = dataDirectoryPath.toFile()
 
@@ -70,6 +72,7 @@ class VelocityExchangePlugin @Inject constructor(suspendingPluginContainer: Susp
             SenderMapper.identity()
         )
 
+        proxy.eventManager.registerSuspend(this, TicketDistributor)
         disabled = false
     }
 

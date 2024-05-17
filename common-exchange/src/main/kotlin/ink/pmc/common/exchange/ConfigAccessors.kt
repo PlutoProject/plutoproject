@@ -12,7 +12,7 @@ val serverName: String
     get() = fileConfig.get("server-name")
 
 val lobbyWorldName: String
-    get() = fileConfig.get<String>("lobby-settings.world")
+    get() = fileConfig.get("lobby-settings.world")
 
 val lobbySpawnLocation: Location
     get() = Location(

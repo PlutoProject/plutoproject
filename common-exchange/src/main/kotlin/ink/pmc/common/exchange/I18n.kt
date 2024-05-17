@@ -1,9 +1,6 @@
 package ink.pmc.common.exchange
 
-import ink.pmc.common.utils.visual.mochaGreen
-import ink.pmc.common.utils.visual.mochaMaroon
-import ink.pmc.common.utils.visual.mochaPink
-import ink.pmc.common.utils.visual.mochaSubtext0
+import ink.pmc.common.utils.visual.*
 import net.kyori.adventure.text.Component
 
 val MATERIAL_NOT_AVAILABLE_NAME
@@ -29,6 +26,9 @@ val TICKETS_WITHDRAW_SUCCEED
 
 val TICKETS_WITHDRAW_FAILED_NOT_ENOUGH
     get() = Component.text("玩家 <player> 没有这么多兑换券").color(mochaMaroon)
+
+val TICKETS_DISTRIBUTE_SUCCEED
+    get() = Component.text("今天兑换券数量已重置，你现在拥有 <amount> 个兑换券").color(mochaText)
 
 val EXCHANGE_START_SUCCEED
     get() = Component.text("正在将你传送到兑换商店...").color(mochaGreen)
