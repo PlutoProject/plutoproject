@@ -7,6 +7,7 @@ import ink.pmc.common.exchange.backend.BackendExchangeService
 import ink.pmc.common.exchange.lobby.ExchangeHandler
 import ink.pmc.common.exchange.lobby.LobbyExchangeService
 import ink.pmc.common.exchange.lobby.LogicDisabler
+import ink.pmc.common.exchange.lobby.PlayerActionHandler
 import ink.pmc.common.utils.isInDebugMode
 import ink.pmc.common.utils.platform.paper
 import org.bukkit.Bukkit
@@ -83,6 +84,7 @@ class PaperExchangePlugin : SuspendingJavaPlugin() {
         initService(LobbyExchangeService(world))
         paper.pluginManager.registerSuspendingEvents(LogicDisabler, this)
         paper.pluginManager.registerSuspendingEvents(ExchangeHandler, this)
+        paper.pluginManager.registerSuspendingEvents(PlayerActionHandler, this)
     }
 
     private fun initService(service: AbstractBackendExchangeService) {

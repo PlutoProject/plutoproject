@@ -1,4 +1,4 @@
-package ink.pmc.common.exchange.lobby
+package ink.pmc.common.exchange.proxy
 
 data class ExchangeSession(
     val originalServer: String

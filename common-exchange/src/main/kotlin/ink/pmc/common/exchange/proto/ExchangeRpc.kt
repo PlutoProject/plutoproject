@@ -31,7 +31,7 @@ import kotlin.jvm.optionals.getOrNull
 class ExchangeRpc(private val service: AbstractProxyExchangeService) :
     ExchangeRpcGrpcKt.ExchangeRpcCoroutineImplBase() {
 
-    val itemDistributeFlow = MutableSharedFlow<ItemDistributeNotify>()
+    private val itemDistributeFlow = MutableSharedFlow<ItemDistributeNotify>()
 
     override suspend fun startExchange(request: ExchangeStart): ExchangeStartAck {
         val player = proxy.getPlayer(request.player.uuid).getOrNull() ?: return exchangeStartAck {
