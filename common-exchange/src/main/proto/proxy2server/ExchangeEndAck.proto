@@ -1,0 +1,14 @@
+syntax = "proto3";
+package ink.pmc.common.exchange.proto.proxy2server;
+
+message ExchangeEndAck {
+  string service_id = 1;
+  ExchangeEndAck result = 2;
+}
+
+enum ExchangeEndResult {
+  END_SUCCEED = 0;
+  END_FAILED_NOT_IN = 1;
+  END_FAILED_OFFLINE = 2;
+  END_FAILED_UNKOWN = 3;
+}

@@ -6,5 +6,6 @@ import "player/Player.proto";
 message ItemDistributeNotify {
   string service_id = 1;
   common.utils.proto.player.Player player = 2;
-  repeated string item = 3;
+  uint64 cost = 3;
+  repeated string item = 4;
 }

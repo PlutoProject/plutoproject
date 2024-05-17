@@ -1,0 +1,12 @@
+lobby-mode = false
+server-name = "name"
+
+[lobby-settings]
+world = "exchange-lobby"
+
+[lobby-settings.spawn-location]
+x = 0.0
+y = 128.0
+z = 128.0
+yaw = 0.0
+pitch = 0.0

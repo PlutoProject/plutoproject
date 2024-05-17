@@ -1,0 +1,10 @@
+syntax = "proto3";
+package ink.pmc.common.exchange.proto.server2lobby;
+
+import "player/Player.proto";
+
+message ExchangeStart {
+  string service_id = 1;
+  string server_name = 2;
+  common.utils.proto.player.Player player = 3;
+}
