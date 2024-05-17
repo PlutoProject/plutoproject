@@ -36,7 +36,8 @@ lateinit var velocityCommandManager: VelocityCommandManager<CommandSource>
     dependencies = [
         Dependency(id = "common-dependency-loader-velocity"),
         Dependency(id = "common-utils"),
-        Dependency(id = "common-member")
+        Dependency(id = "common-member"),
+        Dependency(id = "common-rpc")
     ]
 )
 @Suppress("UNUSED", "UNUSED_PARAMETER")
