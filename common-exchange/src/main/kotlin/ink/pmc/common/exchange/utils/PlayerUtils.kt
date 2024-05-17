@@ -15,9 +15,9 @@ import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 
-fun distributeItems(player: Player, items: List<ItemStack>) {
+fun Player.distributeItems(items: List<ItemStack>) {
     val mutable = items as MutableList
-    val remaining = getRemainingSpace(player)
+    val remaining = getRemainingSpace(this)
     val shouldDrop = mutableListOf<ItemStack>()
     val over = if (remaining < items.size) {
         val amount = items.size - remaining
@@ -28,17 +28,17 @@ fun distributeItems(player: Player, items: List<ItemStack>) {
     }
 
     mutable.removeAll(shouldDrop)
-    player.inventory.addItem(*mutable.toTypedArray())
+    this.inventory.addItem(*mutable.toTypedArray())
 
     if (shouldDrop.size <= 0) {
         return
     }
 
     shouldDrop.forEach {
-        player.world.dropItem(player.location, it)
+        this.world.dropItem(this.location, it)
     }
 
-    player.sendMessage(
+    this.sendMessage(
         CHECKOUT_OVER_SIZE
             .replace("<amount>", Component.text(over).color(mochaFlamingo))
     )

@@ -1,6 +1,8 @@
-package ink.pmc.common.exchange
+package ink.pmc.common.exchange.proxy
 
 import com.velocitypowered.api.proxy.Player
+import ink.pmc.common.exchange.lobby.ExchangeSession
+import ink.pmc.common.exchange.lobbyServerName
 import ink.pmc.common.exchange.proto.ExchangeRpc
 import ink.pmc.common.rpc.RpcServer
 import ink.pmc.common.utils.player.switchServer

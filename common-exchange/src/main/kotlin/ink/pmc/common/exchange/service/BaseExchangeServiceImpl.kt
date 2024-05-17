@@ -1,5 +1,6 @@
-package ink.pmc.common.exchange
+package ink.pmc.common.exchange.service
 
+import ink.pmc.common.exchange.TICKET_KEY
 import ink.pmc.common.member.api.Member
 
 abstract class BaseExchangeServiceImpl<T> : AbstractExchangeService<T>() {

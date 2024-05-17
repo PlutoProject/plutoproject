@@ -5,6 +5,6 @@ import "player/Player.proto";
 
 message ExchangeStart {
   string service_id = 1;
-  string server_name = 2;
+  string server = 2;
   utils.proto.player.Player player = 3;
 }

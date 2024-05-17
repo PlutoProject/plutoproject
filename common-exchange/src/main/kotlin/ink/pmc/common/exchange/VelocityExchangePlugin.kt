@@ -11,6 +11,7 @@ import com.velocitypowered.api.plugin.Plugin
 import com.velocitypowered.api.plugin.PluginContainer
 import com.velocitypowered.api.plugin.annotation.DataDirectory
 import com.velocitypowered.api.proxy.ProxyServer
+import ink.pmc.common.exchange.proxy.ProxyExchangeService
 import ink.pmc.common.utils.PLUTO_VERSION
 import ink.pmc.common.utils.platform.proxy
 import ink.pmc.common.utils.platform.saveConfig

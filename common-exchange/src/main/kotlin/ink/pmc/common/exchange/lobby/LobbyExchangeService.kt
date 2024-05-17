@@ -1,6 +1,6 @@
 package ink.pmc.common.exchange.lobby
 
-import ink.pmc.common.exchange.paper.AbstractBackendExchangeService
+import ink.pmc.common.exchange.backend.AbstractBackendExchangeService
 import org.bukkit.GameRule
 import org.bukkit.World
 import org.bukkit.entity.Player
@@ -19,6 +19,14 @@ class LobbyExchangeService(private val lobby: World) : AbstractBackendExchangeSe
         lobby.setGameRule(GameRule.DO_WEATHER_CYCLE, false)
         lobby.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false)
         lobby.time = 1000
+    }
+
+    override fun startBackGroundJobs() {
+        return
+    }
+
+    override suspend fun stopBackGroundJobs() {
+        return
     }
 
     override suspend fun startExchange(player: Player) {

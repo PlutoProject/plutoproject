@@ -1,7 +1,9 @@
 package ink.pmc.common.exchange
 
 import com.github.shynixn.mccoroutine.bukkit.SuspendingJavaPlugin
-import ink.pmc.common.exchange.paper.BackendExchangeService
+import ink.pmc.common.exchange.backend.AbstractBackendExchangeService
+import ink.pmc.common.exchange.backend.BackendExchangeService
+import ink.pmc.common.exchange.lobby.LobbyExchangeService
 import ink.pmc.common.utils.isInDebugMode
 import org.bukkit.Bukkit
 import org.bukkit.World
@@ -12,7 +14,7 @@ import org.incendo.cloud.paper.PaperCommandManager
 import java.io.File
 import java.util.logging.Level
 
-lateinit var backendExchangeService: BackendExchangeService
+lateinit var backendExchangeService: AbstractBackendExchangeService
 lateinit var paperCommandManager: PaperCommandManager<CommandSender>
 lateinit var world: World
 
@@ -49,21 +51,22 @@ class PaperExchangePlugin : SuspendingJavaPlugin() {
     }
 
     override suspend fun onDisableAsync() {
+        backendExchangeService.stopBackGroundJobs()
         disabled = true
     }
 
     private fun initAsNormal() {
-
+        initService(BackendExchangeService())
     }
 
     private fun initAsLobby() {
-        val name = fileConfig.get<String>("lobby-settings.world")
+        val name = lobbyWorldName
         serverLogger.info("Loading lobby world: $name")
 
         val tempWorld = try {
             Bukkit.createWorld(WorldCreator.name(name))
         } catch (e: Exception) {
-            serverLogger.log(Level.SEVERE, "Failed to load lobby world!", e)
+            serverLogger.log(Level.SEVERE, "Failed to load lobby world", e)
             return
         }
 
@@ -73,6 +76,13 @@ class PaperExchangePlugin : SuspendingJavaPlugin() {
         }
 
         world = tempWorld
+        initService(LobbyExchangeService(world))
+    }
+
+    private fun initService(service: AbstractBackendExchangeService) {
+        backendExchangeService = service
+        exchangeService = backendExchangeService
+        IExchangeService.instance = exchangeService
     }
 
 }

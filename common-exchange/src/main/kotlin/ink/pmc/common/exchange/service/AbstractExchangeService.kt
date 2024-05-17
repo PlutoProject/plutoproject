@@ -1,7 +1,8 @@
-package ink.pmc.common.exchange
+package ink.pmc.common.exchange.service
 
+import ink.pmc.common.exchange.IExchangeService
 import ink.pmc.common.member.api.Member
-import java.util.UUID
+import java.util.*
 
 abstract class AbstractExchangeService<T> : IExchangeService<T> {
 

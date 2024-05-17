@@ -1,7 +1,6 @@
 package ink.pmc.common.exchange.proto
 
 import com.google.protobuf.Empty
-import ink.pmc.common.exchange.AbstractProxyExchangeService
 import ink.pmc.common.exchange.proto.lobby2proxy.ItemDistributeNotifyOuterClass.ItemDistributeNotify
 import ink.pmc.common.exchange.proto.lobby2proxy.LobbyHealthReportOuterClass.LobbyHealthReport
 import ink.pmc.common.exchange.proto.proxy2lobby.LobbyHealthReportAckOuterClass.LobbyHealthReportAck
@@ -16,6 +15,7 @@ import ink.pmc.common.exchange.proto.proxy2server.exchangeEndAck
 import ink.pmc.common.exchange.proto.proxy2server.exchangeStartAck
 import ink.pmc.common.exchange.proto.server2lobby.ExchangeEndOuterClass.ExchangeEnd
 import ink.pmc.common.exchange.proto.server2lobby.ExchangeStartOuterClass.ExchangeStart
+import ink.pmc.common.exchange.proxy.AbstractProxyExchangeService
 import ink.pmc.common.exchange.serverLogger
 import ink.pmc.common.utils.platform.proxy
 import ink.pmc.common.utils.proto.operation.ResultMessageOuterClass.ResultMessage
@@ -28,7 +28,8 @@ import java.time.Instant
 import java.util.logging.Level
 import kotlin.jvm.optionals.getOrNull
 
-class ExchangeRpc(private val service: AbstractProxyExchangeService) : ExchangeRpcGrpcKt.ExchangeRpcCoroutineImplBase() {
+class ExchangeRpc(private val service: AbstractProxyExchangeService) :
+    ExchangeRpcGrpcKt.ExchangeRpcCoroutineImplBase() {
 
     val itemDistributeFlow = MutableSharedFlow<ItemDistributeNotify>()
 
