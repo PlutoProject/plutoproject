@@ -1,12 +1,7 @@
 package ink.pmc.common.exchange.utils
 
 import ink.pmc.common.exchange.*
-import ink.pmc.common.exchange.paper.StatusSnapshot
-import ink.pmc.common.member.api.paper.member
 import ink.pmc.common.utils.chat.replace
-import ink.pmc.common.utils.concurrent.sync
-import ink.pmc.common.utils.json.toJsonString
-import ink.pmc.common.utils.json.toObject
 import ink.pmc.common.utils.platform.paper
 import ink.pmc.common.utils.platform.paperUtilsPlugin
 import ink.pmc.common.utils.visual.mochaFlamingo
@@ -63,45 +58,15 @@ fun getRemainingSpace(player: Player): Int {
     return remainingSpace
 }
 
-suspend fun hasStatusSnapshot(player: Player): Boolean {
-    val member = player.member()
-    val dataContainer = member.dataContainer
-    return dataContainer.contains(STATUS_SNAPSHOT_KEY)
-}
-
-suspend fun snapshotStatus(player: Player) {
-    val member = player.member()
-    val dataContainer = member.dataContainer
-
-    if (hasStatusSnapshot(player)) {
-        return
-    }
-
-    val snapshot = StatusSnapshot.create(player)
-    dataContainer[STATUS_SNAPSHOT_KEY] = snapshot.toJsonString()
-}
-
-suspend fun restoreStatus(player: Player, restoreLocation: Boolean = true) {
-    player.sync {
-        val member = player.member()
-        val dataContainer = member.dataContainer
-
-        if (!hasStatusSnapshot(player)) {
-            return@sync
-        }
-
-        val snapshot = dataContainer.getString(STATUS_SNAPSHOT_KEY)!!.toObject(StatusSnapshot::class.java)
-        snapshot.restore(player, restoreLocation)
-        dataContainer.remove(STATUS_SNAPSHOT_KEY)
-    }
-}
-
 fun clearInventory(player: Player) {
     player.inventory.clear()
 }
 
+val availableMaterials
+    get() = fileConfig.get<List<String>>("available-materials").map { Material.valueOf(it.uppercase()) }
+
 fun isMaterialAvailable(material: Material): Boolean {
-    return ExchangeConfig.AvailableItems.materials.contains(material)
+    return availableMaterials.contains(material)
 }
 
 private val forbiddenItemDataKey = NamespacedKey(paperUtilsPlugin, "forbidden_item")

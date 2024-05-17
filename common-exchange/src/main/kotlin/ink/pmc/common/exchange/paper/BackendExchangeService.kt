@@ -5,7 +5,6 @@ import ink.pmc.common.exchange.utils.*
 import ink.pmc.common.member.api.paper.member
 import ink.pmc.common.utils.chat.replace
 import ink.pmc.common.utils.concurrent.submitAsyncIO
-import ink.pmc.common.utils.platform.threadSafeTeleport
 import ink.pmc.common.utils.visual.mochaText
 import net.kyori.adventure.text.Component
 import org.bukkit.entity.Player
@@ -20,8 +19,8 @@ class BackendExchangeService : AbstractBackendExchangeService() {
 
         // inExchange.add(player.uniqueId)
         player.member()
-        snapshotStatus(player)
-        player.threadSafeTeleport(exchangeLobby.teleportLocation)
+        // snapshotStatus(player)
+        // player.threadSafeTeleport(exchangeLobby.teleportLocation)
         applyExchangeStatus(player)
         hidePlayer(player)
         player.sendMessage(EXCHANGE_START_SUCCEED)
@@ -67,7 +66,7 @@ class BackendExchangeService : AbstractBackendExchangeService() {
 
         // inExchange.remove(player.uniqueId)
         clearInventory(player)
-        restoreStatus(player)
+        // restoreStatus(player)
         showPlayer(player)
         player.sendMessage(
             CHECKOUT_SUCCEED
@@ -80,7 +79,7 @@ class BackendExchangeService : AbstractBackendExchangeService() {
     }
 
     override suspend fun isInExchange(player: Player): Boolean {
-        return exchangeLobby.players.contains(player) // inExchange.contains(player.uniqueId)
+        TODO()
     }
 
 }

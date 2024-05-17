@@ -1,7 +1,6 @@
 package ink.pmc.common.exchange
 
 import com.github.shynixn.mccoroutine.velocity.SuspendingPluginContainer
-import com.github.shynixn.mccoroutine.velocity.registerSuspend
 import com.google.inject.Inject
 import com.velocitypowered.api.command.CommandSource
 import com.velocitypowered.api.event.Subscribe
@@ -12,12 +11,9 @@ import com.velocitypowered.api.plugin.Plugin
 import com.velocitypowered.api.plugin.PluginContainer
 import com.velocitypowered.api.plugin.annotation.DataDirectory
 import com.velocitypowered.api.proxy.ProxyServer
-import ink.pmc.common.exchange.commands.TicketsCommand
-import ink.pmc.common.exchange.listeners.VelocityExchangeServiceListener
 import ink.pmc.common.utils.PLUTO_VERSION
-import ink.pmc.common.utils.command.init
 import ink.pmc.common.utils.platform.proxy
-import ink.pmc.common.utils.platform.saveDefaultConfig
+import ink.pmc.common.utils.platform.saveConfig
 import org.incendo.cloud.SenderMapper
 import org.incendo.cloud.execution.ExecutionCoordinator
 import org.incendo.cloud.velocity.VelocityCommandManager
@@ -54,13 +50,13 @@ class VelocityExchangePlugin @Inject constructor(suspendingPluginContainer: Susp
 
     @Subscribe
     fun proxyInitializeEvent(event: ProxyInitializeEvent) {
-        pluginContainer = proxy.pluginManager.getPlugin("common-member").get()
+        pluginContainer = proxy.pluginManager.getPlugin("common-exchange").get()
 
         createDataDir()
-        configFile = File(dataDir, "config.toml")
+        configFile = File(dataDir, "config_proxy.toml")
 
         if (!configFile.exists()) {
-            saveDefaultConfig(VelocityExchangePlugin::class.java, configFile)
+            saveConfig(VelocityExchangePlugin::class.java, "config_proxy.toml", configFile)
         }
 
         velocityCommandManager = VelocityCommandManager(
@@ -71,8 +67,6 @@ class VelocityExchangePlugin @Inject constructor(suspendingPluginContainer: Susp
         )
 
         initService()
-        velocityCommandManager.init(TicketsCommand)
-        proxy.eventManager.registerSuspend(this, VelocityExchangeServiceListener)
         disabled = false
     }
 

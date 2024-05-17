@@ -1,7 +1,6 @@
 package ink.pmc.common.exchange
 
 import com.electronwill.nightconfig.core.file.FileConfig
-import ink.pmc.common.member.api.Member
 import java.io.File
 import java.util.logging.Logger
 
