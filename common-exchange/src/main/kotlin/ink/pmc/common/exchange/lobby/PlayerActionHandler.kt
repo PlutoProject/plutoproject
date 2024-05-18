@@ -1,18 +1,11 @@
 package ink.pmc.common.exchange.lobby
 
 import com.destroystokyo.paper.event.player.PlayerAdvancementCriterionGrantEvent
-import ink.pmc.common.exchange.*
-import ink.pmc.common.exchange.proto.lobby2proxy.itemDistributeNotify
-import ink.pmc.common.exchange.proto.proxy2server.ExchangeEndAckOuterClass
-import ink.pmc.common.exchange.proto.server2lobby.exchangeEnd
-import ink.pmc.common.exchange.utils.*
-import ink.pmc.common.member.api.paper.member
-import ink.pmc.common.utils.chat.replace
-import ink.pmc.common.utils.player.itemStackArrayToBase64
-import ink.pmc.common.utils.proto.player.player
-import ink.pmc.common.utils.visual.mochaMaroon
-import ink.pmc.common.utils.visual.mochaText
-import net.kyori.adventure.text.Component
+import ink.pmc.common.exchange.EXCHANGE_BYPASS_PERMISSION
+import ink.pmc.common.exchange.utils.getForbiddenItem
+import ink.pmc.common.exchange.utils.isCheckoutSign
+import ink.pmc.common.exchange.utils.isForbiddenItem
+import ink.pmc.common.exchange.utils.isMaterialAvailable
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.Cancellable
@@ -22,7 +15,10 @@ import org.bukkit.event.block.Action
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.inventory.InventoryCreativeEvent
-import org.bukkit.event.player.*
+import org.bukkit.event.player.PlayerDropItemEvent
+import org.bukkit.event.player.PlayerEvent
+import org.bukkit.event.player.PlayerInteractEvent
+import org.bukkit.event.player.PlayerRecipeDiscoverEvent
 import org.bukkit.inventory.EquipmentSlot
 
 @Suppress("UNUSED")
@@ -120,51 +116,7 @@ object PlayerActionHandler : Listener {
             && event.clickedBlock != null
             && isCheckoutSign(event.clickedBlock!!)
         ) {
-            val member = player.member()
-            val cart = cart(player)
-            val price = cart.size.toLong()
-
-            if (!exchangeService.noLessThan(member, price)) {
-                player.sendMessage(
-                    CHECKOUT_FAILED_TICKETS_NOT_ENOUGH.replace(
-                        "<amount>", Component.text(price).color(
-                            mochaMaroon
-                        )
-                    )
-                )
-                return
-            }
-
-            player.sendMessage(CHECKOUT_SUCCEED.replace("<amount>", Component.text(price).color(mochaText)))
-            clearInventory(player)
-
-            val ack = lobbyExchangeService.stub.endExchange(exchangeEnd {
-                serviceId = lobbyExchangeService.id.toString()
-                this.player = player {
-                    username = player.name
-                    uuid = player.uniqueId.toString()
-                }
-            })
-
-            when(ack.result) {
-                ExchangeEndAckOuterClass.ExchangeEndResult.END_FAILED_UNKOWN -> {
-                    player.sendMessage(EXCHANGE_END_FAILED_UNKOWN)
-                    serverLogger.severe("Failed to send player back: ${player.name}")
-                    return
-                }
-                else -> {}
-            }
-
-            lobbyExchangeService.stub.notifyItemDistribute(itemDistributeNotify {
-                serviceId = lobbyExchangeService.id.toString()
-                this.player = player {
-                    username = player.name
-                    uuid = player.uniqueId.toString()
-                }
-                cost = price
-                items = itemStackArrayToBase64(cart.toTypedArray())
-            })
-            println("notified dist")
+            checkout(player)
         }
     }
 

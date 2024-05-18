@@ -46,6 +46,8 @@ object TicketDistributor {
         val zonedNow = now.atZone(ZoneId.of(id))
         val between = ChronoUnit.DAYS.between(zonedInstant, zonedNow)
 
+        println(between)
+
         return between > 0
     }
 

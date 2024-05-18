@@ -64,11 +64,11 @@ val EXCHANGE_END_FAILED_UNKOWN
 val CHECKOUT_SUCCEED
     get() = Component.text("结账成功！此次购买花费了 <amount> 个兑换券").color(mochaGreen)
 
+val CHECKOUT_SUCCEED_EMPTY
+    get() = Component.text("你看起来什么都没买呢").color(mochaSubtext0)
+
 val CHECKOUT_OVER_SIZE
     get() = Component.text("<amount> 个物品由于没有足够的背包空间，被丢到了地上").color(mochaSubtext0)
-
-val CHECKOUT_FAILED_NOT_IN_EXCHANGE
-    get() = Component.text("你并不在兑换大厅中，无法结账").color(mochaMaroon)
 
 val CHECKOUT_FAILED_TICKETS_NOT_ENOUGH
     get() = Component.text("你的兑换券不足，需要 <amount> 个兑换券").color(mochaMaroon)

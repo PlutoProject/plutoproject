@@ -82,6 +82,7 @@ class VelocityExchangePlugin @Inject constructor(suspendingPluginContainer: Susp
 
         proxy.eventManager.registerSuspend(this, TicketDistributor)
         proxy.eventManager.registerSuspend(this, ProxyExchangeHandler)
+
         disabled = false
     }
 

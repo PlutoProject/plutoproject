@@ -2,6 +2,7 @@ package ink.pmc.common.exchange.utils
 
 import ink.pmc.common.exchange.*
 import ink.pmc.common.utils.chat.replace
+import ink.pmc.common.utils.concurrent.submitSync
 import ink.pmc.common.utils.platform.paper
 import ink.pmc.common.utils.platform.paperUtilsPlugin
 import ink.pmc.common.utils.visual.mochaFlamingo
@@ -16,6 +17,7 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 
 fun Player.distributeItems(items: List<ItemStack>) {
+    val player = this
     val mutable = items as MutableList
     val remaining = getRemainingSpace(this)
     val shouldDrop = mutableListOf<ItemStack>()
@@ -28,14 +30,18 @@ fun Player.distributeItems(items: List<ItemStack>) {
     }
 
     mutable.removeAll(shouldDrop)
-    this.inventory.addItem(*mutable.toTypedArray())
+    this.submitSync { player.inventory.addItem(*mutable.toTypedArray()) }
 
     if (shouldDrop.size <= 0) {
         return
     }
 
-    shouldDrop.forEach {
-        this.world.dropItem(this.location, it)
+    val location = this.location
+
+    this.location.submitSync {
+        shouldDrop.forEach {
+            location.world.dropItem(location, it)
+        }
     }
 
     this.sendMessage(
