@@ -12,8 +12,10 @@ import ink.pmc.common.utils.concurrent.submitAsyncIO
 import ink.pmc.common.utils.player.itemStackArrayFromBase64
 import ink.pmc.common.utils.proto.player.player
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancelAndJoin
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
+import java.util.*
 import java.util.logging.Level
 
 class BackendExchangeService : AbstractBackendExchangeService() {
@@ -29,13 +31,14 @@ class BackendExchangeService : AbstractBackendExchangeService() {
     }
 
     override suspend fun stopBackGroundJobs() {
-        itemDistributeNotifyHandler.cancel()
+        itemDistributeNotifyHandler.cancelAndJoin()
     }
 
     private fun monitorItemDistribute(): Job {
         return submitAsyncIO {
             try {
                 stub.monitorItemDistribute(Empty.getDefaultInstance()).collect {
+                    println("received dist msg")
                     handleItemDistribute(it)
                 }
             } catch (e: Exception) {
@@ -45,8 +48,10 @@ class BackendExchangeService : AbstractBackendExchangeService() {
     }
 
     private fun handleItemDistribute(notify: ItemDistributeNotify) {
-        val player = Bukkit.getPlayer(notify.player.uuid) ?: return
+        println("handle dist")
+        val player = Bukkit.getPlayer(UUID.fromString(notify.player.uuid)) ?: run { println("not online"); return }
         player.distributeItems(itemStackArrayFromBase64(notify.items).toList().filterNotNull())
+        println("disted")
     }
 
     override suspend fun startExchange(player: Player) {

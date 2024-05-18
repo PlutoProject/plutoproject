@@ -5,6 +5,11 @@ import ink.pmc.common.exchange.*
 import ink.pmc.common.exchange.utils.isInExchangeLobby
 
 suspend fun exchange(player: Player) {
+    if (!proxyExchangeService.isLobbyHealthy()) {
+        player.sendMessage(EXCHANGE_LOBBY_OFFLINE)
+        return
+    }
+
     if (proxyExchangeService.isInExchange(player) || player.isInExchangeLobby) {
         player.sendMessage(EXCHANGE_START_FAILED_ALREADY_IN)
         return
@@ -15,6 +20,11 @@ suspend fun exchange(player: Player) {
 }
 
 suspend fun back(player: Player) {
+    if (!proxyExchangeService.isLobbyHealthy()) {
+        player.sendMessage(EXCHANGE_LOBBY_OFFLINE)
+        return
+    }
+
     if (!proxyExchangeService.isInExchange(player) || !player.isInExchangeLobby) {
         player.sendMessage(EXCHANGE_END_FAILED_NOT_IN)
         return

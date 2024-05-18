@@ -107,9 +107,9 @@ object PlayerActionHandler : Listener {
     @EventHandler
     suspend fun playerInteractEvent(event: PlayerInteractEvent) {
         val player = event.player
-        val member = player.member()
 
         if (player.hasPermission(EXCHANGE_BYPASS_PERMISSION)) {
+            println("has perm")
             return
         }
 
@@ -120,6 +120,7 @@ object PlayerActionHandler : Listener {
             && event.clickedBlock != null
             && isCheckoutSign(event.clickedBlock!!)
         ) {
+            val member = player.member()
             val cart = cart(player)
             val price = cart.size.toLong()
 
@@ -163,6 +164,7 @@ object PlayerActionHandler : Listener {
                 cost = price
                 items = itemStackArrayToBase64(cart.toTypedArray())
             })
+            println("notified dist")
         }
     }
 

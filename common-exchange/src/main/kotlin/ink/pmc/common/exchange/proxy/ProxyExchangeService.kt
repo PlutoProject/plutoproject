@@ -42,6 +42,7 @@ class ProxyExchangeService : AbstractProxyExchangeService() {
 
         val originalServer = inExchange[player]!!.originalServer
         player.switchServer(originalServer)
+        println("switched")
         inExchange.remove(player)
     }
 

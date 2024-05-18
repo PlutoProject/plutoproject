@@ -25,6 +25,7 @@ import ink.pmc.common.utils.proto.player.PlayerOuterClass.Player
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import java.time.Instant
+import java.util.*
 import java.util.logging.Level
 import kotlin.jvm.optionals.getOrNull
 
@@ -34,7 +35,7 @@ class ExchangeRpc(private val service: AbstractProxyExchangeService) :
     private val itemDistributeFlow = MutableSharedFlow<ItemDistributeNotify>()
 
     override suspend fun startExchange(request: ExchangeStart): ExchangeStartAck {
-        val player = proxy.getPlayer(request.player.uuid).getOrNull() ?: return exchangeStartAck {
+        val player = proxy.getPlayer(UUID.fromString(request.player.uuid)).getOrNull() ?: return exchangeStartAck {
             serviceId = service.id.toString()
             result = ExchangeStartResult.START_FAILED_OFFLINE
         }
@@ -62,15 +63,17 @@ class ExchangeRpc(private val service: AbstractProxyExchangeService) :
     }
 
     override suspend fun endExchange(request: ExchangeEnd): ExchangeEndAckOuterClass.ExchangeEndAck {
-        val player = proxy.getPlayer(request.player.uuid).getOrNull() ?: return exchangeEndAck {
+        val player = proxy.getPlayer(UUID.fromString(request.player.uuid)).getOrNull() ?: return exchangeEndAck {
             serviceId = service.id.toString()
             result = ExchangeEndResult.END_FAILED_OFFLINE
+            println("player offline")
         }
 
         if (!service.isLobbyHealthy()) {
             return exchangeEndAck {
                 serviceId = service.id.toString()
                 result = ExchangeEndResult.END_FAILED_LOBBY_OFFLINE
+                println("lobby not healthy")
             }
         }
 
@@ -78,19 +81,22 @@ class ExchangeRpc(private val service: AbstractProxyExchangeService) :
             return exchangeEndAck {
                 serviceId = service.id.toString()
                 result = ExchangeEndResult.END_FAILED_NOT_IN
+                println("not in exchange")
             }
         }
 
         service.endExchange(player)
+        println("triggered")
 
         return exchangeEndAck {
             serviceId = service.id.toString()
             result = ExchangeEndResult.END_SUCCEED
+            println("end succeed")
         }
     }
 
     override suspend fun isInExchange(request: Player): ExchangeCheckAck {
-        val player = proxy.getPlayer(request.uuid).getOrNull()
+        val player = proxy.getPlayer(UUID.fromString(request.uuid)).getOrNull()
         return exchangeCheckAck {
             serviceId = service.id.toString()
             status = if (player == null) {
@@ -106,6 +112,7 @@ class ExchangeRpc(private val service: AbstractProxyExchangeService) :
     override suspend fun notifyItemDistribute(request: ItemDistributeNotify): ResultMessage {
         return try {
             itemDistributeFlow.emit(request)
+            println("forwarded dist")
             resultMessage { result = ResultOuterClass.Result.SUCCEED }
         } catch (e: Exception) {
             serverLogger.log(Level.SEVERE, "Failed to forward item distribute", e)

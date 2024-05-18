@@ -33,7 +33,7 @@ val TICKETS_DISTRIBUTE_SUCCEED
 val EXCHANGE_LOBBY_OFFLINE
     get() = Component.text("兑换大厅正处于离线状态").color(mochaMaroon)
         .appendNewline()
-        .append(Component.text("这可能是服务器内部发生了一些问题。").color(mochaSubtext0))
+        .append(Component.text("这可能是服务器内部发生了一些问题").color(mochaSubtext0))
         .appendNewline()
         .append(Component.text("请将问题报告给管理员，以便我们进行改进").color(mochaSubtext0))
 
