@@ -2,7 +2,6 @@ package ink.pmc.common.exchange.lobby
 
 import com.destroystokyo.paper.event.player.PlayerAdvancementCriterionGrantEvent
 import ink.pmc.common.exchange.EXCHANGE_BYPASS_PERMISSION
-import ink.pmc.common.exchange.exchangeService
 import ink.pmc.common.exchange.utils.getForbiddenItem
 import ink.pmc.common.exchange.utils.isCheckoutSign
 import ink.pmc.common.exchange.utils.isForbiddenItem

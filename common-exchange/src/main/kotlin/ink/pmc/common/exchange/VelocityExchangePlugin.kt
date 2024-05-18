@@ -13,8 +13,8 @@ import com.velocitypowered.api.plugin.PluginContainer
 import com.velocitypowered.api.plugin.annotation.DataDirectory
 import com.velocitypowered.api.proxy.ProxyServer
 import ink.pmc.common.exchange.proxy.ProxyExchangeHandler
-import ink.pmc.common.exchange.proxy.TicketDistributor
 import ink.pmc.common.exchange.proxy.ProxyExchangeService
+import ink.pmc.common.exchange.proxy.TicketDistributor
 import ink.pmc.common.exchange.proxy.commands.ProxyExchangeCommand
 import ink.pmc.common.exchange.proxy.commands.ProxyTicketsCommand
 import ink.pmc.common.utils.PLUTO_VERSION
