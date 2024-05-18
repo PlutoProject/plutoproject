@@ -7,3 +7,4 @@ depend:
   - common-dependency-loader
   - common-utils
   - common-member
+  - common-rpc

@@ -3,11 +3,17 @@ package ink.pmc.common.exchange
 import ink.pmc.common.member.api.Member
 
 @Suppress("UNUSED")
-interface IExchangeService {
+interface IExchangeService<T> {
 
     companion object {
-        lateinit var instance: IExchangeService
+        lateinit var instance: IExchangeService<*>
     }
+
+    suspend fun startExchange(player: T)
+
+    suspend fun endExchange(player: T)
+
+    suspend fun isInExchange(player: T): Boolean
 
     fun tickets(member: Member): Long
 

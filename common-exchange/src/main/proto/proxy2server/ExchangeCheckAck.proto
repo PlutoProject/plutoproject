@@ -1,0 +1,9 @@
+syntax = "proto3";
+package ink.pmc.common.exchange.proto.proxy2server;
+
+import "ExchangeStatus.proto";
+
+message ExchangeCheckAck {
+  string service_id = 1;
+  ExchangeStatus status = 2;
+}

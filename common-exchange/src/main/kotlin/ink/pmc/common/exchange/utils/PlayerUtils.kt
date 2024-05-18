@@ -1,12 +1,8 @@
 package ink.pmc.common.exchange.utils
 
 import ink.pmc.common.exchange.*
-import ink.pmc.common.exchange.paper.StatusSnapshot
-import ink.pmc.common.member.api.paper.member
 import ink.pmc.common.utils.chat.replace
-import ink.pmc.common.utils.concurrent.sync
-import ink.pmc.common.utils.json.toJsonString
-import ink.pmc.common.utils.json.toObject
+import ink.pmc.common.utils.concurrent.submitSync
 import ink.pmc.common.utils.platform.paper
 import ink.pmc.common.utils.platform.paperUtilsPlugin
 import ink.pmc.common.utils.visual.mochaFlamingo
@@ -20,9 +16,10 @@ import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 
-fun distributeItems(player: Player, items: List<ItemStack>) {
+fun Player.distributeItems(items: List<ItemStack>) {
+    val player = this
     val mutable = items as MutableList
-    val remaining = getRemainingSpace(player)
+    val remaining = getRemainingSpace(this)
     val shouldDrop = mutableListOf<ItemStack>()
     val over = if (remaining < items.size) {
         val amount = items.size - remaining
@@ -33,17 +30,21 @@ fun distributeItems(player: Player, items: List<ItemStack>) {
     }
 
     mutable.removeAll(shouldDrop)
-    player.inventory.addItem(*mutable.toTypedArray())
+    this.submitSync { player.inventory.addItem(*mutable.toTypedArray()) }
 
     if (shouldDrop.size <= 0) {
         return
     }
 
-    shouldDrop.forEach {
-        player.world.dropItem(player.location, it)
+    val location = this.location
+
+    this.location.submitSync {
+        shouldDrop.forEach {
+            location.world.dropItem(location, it)
+        }
     }
 
-    player.sendMessage(
+    this.sendMessage(
         CHECKOUT_OVER_SIZE
             .replace("<amount>", Component.text(over).color(mochaFlamingo))
     )
@@ -63,45 +64,15 @@ fun getRemainingSpace(player: Player): Int {
     return remainingSpace
 }
 
-suspend fun hasStatusSnapshot(player: Player): Boolean {
-    val member = player.member()
-    val dataContainer = member.dataContainer
-    return dataContainer.contains(STATUS_SNAPSHOT_KEY)
-}
-
-suspend fun snapshotStatus(player: Player) {
-    val member = player.member()
-    val dataContainer = member.dataContainer
-
-    if (hasStatusSnapshot(player)) {
-        return
-    }
-
-    val snapshot = StatusSnapshot.create(player)
-    dataContainer[STATUS_SNAPSHOT_KEY] = snapshot.toJsonString()
-}
-
-suspend fun restoreStatus(player: Player, restoreLocation: Boolean = true) {
-    player.sync {
-        val member = player.member()
-        val dataContainer = member.dataContainer
-
-        if (!hasStatusSnapshot(player)) {
-            return@sync
-        }
-
-        val snapshot = dataContainer.getString(STATUS_SNAPSHOT_KEY)!!.toObject(StatusSnapshot::class.java)
-        snapshot.restore(player, restoreLocation)
-        dataContainer.remove(STATUS_SNAPSHOT_KEY)
-    }
-}
-
 fun clearInventory(player: Player) {
     player.inventory.clear()
 }
 
+val availableMaterials
+    get() = fileConfig.get<List<String>>("available-materials").map { Material.valueOf(it.uppercase()) }
+
 fun isMaterialAvailable(material: Material): Boolean {
-    return ExchangeConfig.AvailableItems.materials.contains(material)
+    return availableMaterials.contains(material)
 }
 
 private val forbiddenItemDataKey = NamespacedKey(paperUtilsPlugin, "forbidden_item")
