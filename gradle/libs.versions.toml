@@ -1,6 +1,6 @@
 [versions]
 kotlin = "1.9.24"
-kotlinx-coroutine = "1.8.0"
+kotlinx-coroutine = "1.8.1"
 kotlinx-serialization = "1.6.3"
 mongodb = "5.1.0"
 nightconfig = "3.6.7"
