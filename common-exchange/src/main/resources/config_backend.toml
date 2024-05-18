@@ -1,5 +1,6 @@
 lobby-mode = false
 server-name = "name"
+available-materials = ["apple"]
 
 [lobby-settings]
 world = "exchange-lobby"
@@ -10,5 +11,3 @@ y = 128.0
 z = 128.0
 yaw = 0.0
 pitch = 0.0
-
-available-materials = ["apple"]

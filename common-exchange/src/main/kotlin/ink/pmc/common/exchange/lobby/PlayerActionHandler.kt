@@ -1,15 +1,14 @@
 package ink.pmc.common.exchange.lobby
 
 import com.destroystokyo.paper.event.player.PlayerAdvancementCriterionGrantEvent
-import ink.pmc.common.exchange.CHECKOUT_FAILED_TICKETS_NOT_ENOUGH
-import ink.pmc.common.exchange.CHECKOUT_SUCCEED
-import ink.pmc.common.exchange.EXCHANGE_BYPASS_PERMISSION
-import ink.pmc.common.exchange.exchangeService
+import ink.pmc.common.exchange.*
 import ink.pmc.common.exchange.proto.lobby2proxy.itemDistributeNotify
+import ink.pmc.common.exchange.proto.proxy2server.ExchangeEndAckOuterClass
 import ink.pmc.common.exchange.proto.server2lobby.exchangeEnd
 import ink.pmc.common.exchange.utils.*
 import ink.pmc.common.member.api.paper.member
 import ink.pmc.common.utils.chat.replace
+import ink.pmc.common.utils.player.itemStackArrayToBase64
 import ink.pmc.common.utils.proto.player.player
 import ink.pmc.common.utils.visual.mochaMaroon
 import ink.pmc.common.utils.visual.mochaText
@@ -41,11 +40,6 @@ object PlayerActionHandler : Listener {
         }
 
         event.isCancelled = true
-    }
-
-    @EventHandler
-    fun playerTeleportEvent(event: PlayerTeleportEvent) {
-        handleEvent(event)
     }
 
     @EventHandler
@@ -143,13 +137,22 @@ object PlayerActionHandler : Listener {
             player.sendMessage(CHECKOUT_SUCCEED.replace("<amount>", Component.text(price).color(mochaText)))
             clearInventory(player)
 
-            lobbyExchangeService.stub.endExchange(exchangeEnd {
+            val ack = lobbyExchangeService.stub.endExchange(exchangeEnd {
                 serviceId = lobbyExchangeService.id.toString()
                 this.player = player {
                     username = player.name
                     uuid = player.uniqueId.toString()
                 }
             })
+
+            when(ack.result) {
+                ExchangeEndAckOuterClass.ExchangeEndResult.END_FAILED_UNKOWN -> {
+                    player.sendMessage(EXCHANGE_END_FAILED_UNKOWN)
+                    serverLogger.severe("Failed to send player back: ${player.name}")
+                    return
+                }
+                else -> {}
+            }
 
             lobbyExchangeService.stub.notifyItemDistribute(itemDistributeNotify {
                 serviceId = lobbyExchangeService.id.toString()
@@ -158,7 +161,7 @@ object PlayerActionHandler : Listener {
                     uuid = player.uniqueId.toString()
                 }
                 cost = price
-                item.encodeItems(cart)
+                items = itemStackArrayToBase64(cart.toTypedArray())
             })
         }
     }

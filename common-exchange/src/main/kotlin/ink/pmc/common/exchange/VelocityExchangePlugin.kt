@@ -12,6 +12,7 @@ import com.velocitypowered.api.plugin.Plugin
 import com.velocitypowered.api.plugin.PluginContainer
 import com.velocitypowered.api.plugin.annotation.DataDirectory
 import com.velocitypowered.api.proxy.ProxyServer
+import ink.pmc.common.exchange.proxy.ProxyExchangeHandler
 import ink.pmc.common.exchange.proxy.TicketDistributor
 import ink.pmc.common.exchange.proxy.ProxyExchangeService
 import ink.pmc.common.exchange.proxy.commands.ProxyExchangeCommand
@@ -61,6 +62,7 @@ class VelocityExchangePlugin @Inject constructor(suspendingPluginContainer: Susp
             saveConfig(VelocityExchangePlugin::class.java, "config_proxy.toml", configFile)
         }
 
+        loadConfig(configFile)
         initService()
     }
 
@@ -79,6 +81,7 @@ class VelocityExchangePlugin @Inject constructor(suspendingPluginContainer: Susp
         velocityCommandManager.init(ProxyTicketsCommand)
 
         proxy.eventManager.registerSuspend(this, TicketDistributor)
+        proxy.eventManager.registerSuspend(this, ProxyExchangeHandler)
         disabled = false
     }
 

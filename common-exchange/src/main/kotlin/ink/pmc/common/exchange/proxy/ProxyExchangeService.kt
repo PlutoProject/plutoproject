@@ -5,10 +5,13 @@ import ink.pmc.common.exchange.lobbyServerName
 import ink.pmc.common.exchange.proto.ExchangeRpc
 import ink.pmc.common.rpc.RpcServer
 import ink.pmc.common.utils.player.switchServer
+import kotlinx.coroutines.flow.MutableStateFlow
+import java.time.Instant
 
 class ProxyExchangeService : AbstractProxyExchangeService() {
 
     override val rpc: ExchangeRpc = ExchangeRpc(this)
+    override val lastHealthReportTime: MutableStateFlow<Instant?> = MutableStateFlow(null)
 
     init {
         RpcServer.apply { addService(rpc) }
@@ -16,6 +19,10 @@ class ProxyExchangeService : AbstractProxyExchangeService() {
 
     override suspend fun startExchange(player: Player) {
         if (isInExchange(player)) {
+            return
+        }
+
+        if (!isLobbyHealthy()) {
             return
         }
 
@@ -29,6 +36,10 @@ class ProxyExchangeService : AbstractProxyExchangeService() {
             return
         }
 
+        if (!isLobbyHealthy()) {
+            return
+        }
+
         val originalServer = inExchange[player]!!.originalServer
         player.switchServer(originalServer)
         inExchange.remove(player)
@@ -36,6 +47,14 @@ class ProxyExchangeService : AbstractProxyExchangeService() {
 
     override suspend fun isInExchange(player: Player): Boolean {
         return inExchange.contains(player)
+    }
+
+    override fun isLobbyHealthy(): Boolean {
+        if (lastHealthReportTime.value == null) {
+            return false
+        }
+
+        return lastHealthReportTime.value!!.plusSeconds(5).isBefore(Instant.now())
     }
 
 }

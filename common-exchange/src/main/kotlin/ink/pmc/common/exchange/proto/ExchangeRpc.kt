@@ -39,6 +39,13 @@ class ExchangeRpc(private val service: AbstractProxyExchangeService) :
             result = ExchangeStartResult.START_FAILED_OFFLINE
         }
 
+        if (!service.isLobbyHealthy()) {
+            return exchangeStartAck {
+                serviceId = service.id.toString()
+                result = ExchangeStartResult.START_FAILED_LOBBY_OFFLINE
+            }
+        }
+
         if (service.isInExchange(player)) {
             return exchangeStartAck {
                 serviceId = service.id.toString()
@@ -58,6 +65,13 @@ class ExchangeRpc(private val service: AbstractProxyExchangeService) :
         val player = proxy.getPlayer(request.player.uuid).getOrNull() ?: return exchangeEndAck {
             serviceId = service.id.toString()
             result = ExchangeEndResult.END_FAILED_OFFLINE
+        }
+
+        if (!service.isLobbyHealthy()) {
+            return exchangeEndAck {
+                serviceId = service.id.toString()
+                result = ExchangeEndResult.END_FAILED_LOBBY_OFFLINE
+            }
         }
 
         if (!service.isInExchange(player)) {
@@ -100,6 +114,9 @@ class ExchangeRpc(private val service: AbstractProxyExchangeService) :
     }
 
     override suspend fun reportLobbyHealth(request: LobbyHealthReport): LobbyHealthReportAck {
+        val reqTime = Instant.ofEpochMilli(request.time)
+        service.lastHealthReportTime.emit(reqTime)
+
         return lobbyHealthReportAck {
             serviceId = service.id.toString()
             time = Instant.now().toEpochMilli()

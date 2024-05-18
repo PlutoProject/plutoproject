@@ -7,5 +7,5 @@ message ItemDistributeNotify {
   string service_id = 1;
   common.utils.proto.player.Player player = 2;
   uint64 cost = 3;
-  repeated string item = 4;
+  string items = 4;
 }

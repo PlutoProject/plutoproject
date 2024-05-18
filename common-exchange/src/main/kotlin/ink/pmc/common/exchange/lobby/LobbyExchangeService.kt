@@ -21,6 +21,7 @@ class LobbyExchangeService(private val lobby: World) : AbstractBackendExchangeSe
     init {
         lobbyExchangeService = this
         initWorldEnvironment()
+        startBackGroundJobs()
     }
 
     private fun initWorldEnvironment() {

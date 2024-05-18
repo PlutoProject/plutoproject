@@ -7,9 +7,9 @@ import ink.pmc.common.exchange.proto.server2lobby.exchangeEnd
 import ink.pmc.common.exchange.proto.server2lobby.exchangeStart
 import ink.pmc.common.exchange.serverLogger
 import ink.pmc.common.exchange.serverName
-import ink.pmc.common.exchange.utils.decodeItems
 import ink.pmc.common.exchange.utils.distributeItems
 import ink.pmc.common.utils.concurrent.submitAsyncIO
+import ink.pmc.common.utils.player.itemStackArrayFromBase64
 import ink.pmc.common.utils.proto.player.player
 import kotlinx.coroutines.Job
 import org.bukkit.Bukkit
@@ -46,7 +46,7 @@ class BackendExchangeService : AbstractBackendExchangeService() {
 
     private fun handleItemDistribute(notify: ItemDistributeNotify) {
         val player = Bukkit.getPlayer(notify.player.uuid) ?: return
-        player.distributeItems(notify.itemList.decodeItems())
+        player.distributeItems(itemStackArrayFromBase64(notify.items).toList().filterNotNull())
     }
 
     override suspend fun startExchange(player: Player) {

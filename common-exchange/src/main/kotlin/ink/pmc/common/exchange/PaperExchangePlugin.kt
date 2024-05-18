@@ -31,6 +31,7 @@ class PaperExchangePlugin : SuspendingJavaPlugin() {
             return
         }
 
+        serverLogger = logger
         dataDir = dataFolder
         createDataDir()
         configFile = File(dataDir, "config_backend.toml")
