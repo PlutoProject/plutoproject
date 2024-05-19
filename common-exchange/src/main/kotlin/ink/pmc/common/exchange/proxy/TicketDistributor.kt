@@ -2,9 +2,9 @@ package ink.pmc.common.exchange.proxy
 
 import com.velocitypowered.api.event.Subscribe
 import com.velocitypowered.api.event.player.ServerConnectedEvent
+import ink.pmc.common.exchange.DAILY_TICKETS
 import ink.pmc.common.exchange.LAST_TICKET_DISTRIBUTE_KEY
 import ink.pmc.common.exchange.TICKETS_DISTRIBUTE_SUCCEED
-import ink.pmc.common.exchange.dailyTickets
 import ink.pmc.common.exchange.exchangeService
 import ink.pmc.common.member.api.Member
 import ink.pmc.common.member.api.velocity.member
@@ -46,8 +46,6 @@ object TicketDistributor {
         val zonedNow = now.atZone(ZoneId.of(id))
         val between = ChronoUnit.DAYS.between(zonedInstant, zonedNow)
 
-        println(between)
-
         return between > 0
     }
 
@@ -60,11 +58,11 @@ object TicketDistributor {
             return
         }
 
-        exchangeService.tickets(member, dailyTickets)
+        exchangeService.tickets(member, DAILY_TICKETS)
         markAsTicketed(member)
         member.player!!.sendMessage(
             TICKETS_DISTRIBUTE_SUCCEED.replace(
-                "<amount>", Component.text(dailyTickets).color(
+                "<amount>", Component.text(DAILY_TICKETS).color(
                     mochaPink
                 )
             )

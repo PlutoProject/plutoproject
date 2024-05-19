@@ -38,7 +38,6 @@ class BackendExchangeService : AbstractBackendExchangeService() {
         return submitAsyncIO {
             try {
                 stub.monitorItemDistribute(Empty.getDefaultInstance()).collect {
-                    println("received dist msg")
                     handleItemDistribute(it)
                 }
             } catch (e: Exception) {
@@ -48,10 +47,8 @@ class BackendExchangeService : AbstractBackendExchangeService() {
     }
 
     private fun handleItemDistribute(notify: ItemDistributeNotify) {
-        println("handle dist")
-        val player = Bukkit.getPlayer(UUID.fromString(notify.player.uuid)) ?: run { println("not online"); return }
+        val player = Bukkit.getPlayer(UUID.fromString(notify.player.uuid)) ?: return
         player.distributeItems(itemStackArrayFromBase64(notify.items).toList().filterNotNull())
-        println("disted")
     }
 
     override suspend fun startExchange(player: Player) {

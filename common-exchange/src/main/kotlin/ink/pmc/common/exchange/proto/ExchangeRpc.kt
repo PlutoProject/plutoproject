@@ -66,14 +66,12 @@ class ExchangeRpc(private val service: AbstractProxyExchangeService) :
         val player = proxy.getPlayer(UUID.fromString(request.player.uuid)).getOrNull() ?: return exchangeEndAck {
             serviceId = service.id.toString()
             result = ExchangeEndResult.END_FAILED_OFFLINE
-            println("player offline")
         }
 
         if (!service.isLobbyHealthy()) {
             return exchangeEndAck {
                 serviceId = service.id.toString()
                 result = ExchangeEndResult.END_FAILED_LOBBY_OFFLINE
-                println("lobby not healthy")
             }
         }
 
@@ -81,17 +79,14 @@ class ExchangeRpc(private val service: AbstractProxyExchangeService) :
             return exchangeEndAck {
                 serviceId = service.id.toString()
                 result = ExchangeEndResult.END_FAILED_NOT_IN
-                println("not in exchange")
             }
         }
 
         service.endExchange(player)
-        println("triggered")
 
         return exchangeEndAck {
             serviceId = service.id.toString()
             result = ExchangeEndResult.END_SUCCEED
-            println("end succeed")
         }
     }
 
@@ -112,7 +107,6 @@ class ExchangeRpc(private val service: AbstractProxyExchangeService) :
     override suspend fun notifyItemDistribute(request: ItemDistributeNotify): ResultMessage {
         return try {
             itemDistributeFlow.emit(request)
-            println("forwarded dist")
             resultMessage { result = ResultOuterClass.Result.SUCCEED }
         } catch (e: Exception) {
             serverLogger.log(Level.SEVERE, "Failed to forward item distribute", e)

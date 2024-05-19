@@ -2,9 +2,6 @@ package ink.pmc.common.exchange
 
 import org.bukkit.Location
 
-val dailyTickets: Long
-    get() = fileConfig.get("daily-tickets")
-
 val lobbyServerName: String
     get() = fileConfig.get("lobby-server")
 

@@ -71,7 +71,6 @@ object ProxyTicketsCommand : VelocityCommand() {
 
             exchangeService.tickets(member, amount)
             member.save()
-            println("saved")
 
             sender.sendMessage(
                 TICKETS_SET_SUCCEED
@@ -99,7 +98,6 @@ object ProxyTicketsCommand : VelocityCommand() {
 
             val player = proxy.getPlayer(target).get()
             val member = player.member()
-            println("saved")
 
             exchangeService.deposit(member, amount)
             member.save()
@@ -141,7 +139,6 @@ object ProxyTicketsCommand : VelocityCommand() {
 
             exchangeService.withdraw(member, amount)
             member.save()
-            println("saved")
 
             sender.sendMessage(
                 TICKETS_WITHDRAW_SUCCEED

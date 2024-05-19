@@ -107,3 +107,6 @@ val EXCHANGE_ADMIN_MARK_AS_CHECKOUT_SIGN_NOT_FOUNT_IN_RANGE
 
 val EXCHANGE_ADMIN_MARK_AS_CHECKOUT_SIGN_FAILED_NOT_IN_EXCHANGE
     get() = Component.text("你不在兑换大厅中").color(mochaMaroon)
+
+val TICKETS_RANDOM_GOT
+    get() = Component.text("你幸运的获取了一个兑换券！").color(mochaFlamingo)

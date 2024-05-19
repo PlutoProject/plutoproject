@@ -4,6 +4,7 @@ import com.github.shynixn.mccoroutine.bukkit.SuspendingJavaPlugin
 import com.github.shynixn.mccoroutine.bukkit.registerSuspendingEvents
 import ink.pmc.common.exchange.backend.AbstractBackendExchangeService
 import ink.pmc.common.exchange.backend.BackendExchangeService
+import ink.pmc.common.exchange.backend.RandomTicketsManager
 import ink.pmc.common.exchange.lobby.ExchangeHandler
 import ink.pmc.common.exchange.lobby.LobbyExchangeService
 import ink.pmc.common.exchange.lobby.LogicDisabler
@@ -21,9 +22,11 @@ import org.incendo.cloud.paper.PaperCommandManager
 import java.io.File
 import java.util.logging.Level
 
+lateinit var paperExchangePlugin: PaperExchangePlugin
 lateinit var backendExchangeService: AbstractBackendExchangeService
 lateinit var paperCommandManager: PaperCommandManager<CommandSender>
 lateinit var world: World
+lateinit var randomTicketsManager: RandomTicketsManager
 
 @Suppress("UNUSED")
 class PaperExchangePlugin : SuspendingJavaPlugin() {
@@ -33,6 +36,7 @@ class PaperExchangePlugin : SuspendingJavaPlugin() {
             return
         }
 
+        paperExchangePlugin = this
         serverLogger = logger
         dataDir = dataFolder
         createDataDir()
@@ -65,6 +69,12 @@ class PaperExchangePlugin : SuspendingJavaPlugin() {
 
     private fun initAsNormal() {
         initService(BackendExchangeService())
+        initRandomTicketsManager()
+    }
+
+    private fun initRandomTicketsManager() {
+        randomTicketsManager = RandomTicketsManager()
+        paper.pluginManager.registerSuspendingEvents(randomTicketsManager, this)
     }
 
     private fun initAsLobby() {

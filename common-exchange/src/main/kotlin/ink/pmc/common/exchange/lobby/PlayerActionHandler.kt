@@ -111,7 +111,6 @@ object PlayerActionHandler : Listener {
         val player = event.player
 
         if (player.hasPermission(EXCHANGE_BYPASS_PERMISSION)) {
-            println("has perm")
             return
         }
 

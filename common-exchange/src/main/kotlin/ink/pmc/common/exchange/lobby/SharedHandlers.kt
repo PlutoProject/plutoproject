@@ -75,5 +75,4 @@ suspend fun checkout(player: Player) {
         cost = price
         items = itemStackArrayToBase64(cart.toTypedArray())
     })
-    println("notified dist")
 }

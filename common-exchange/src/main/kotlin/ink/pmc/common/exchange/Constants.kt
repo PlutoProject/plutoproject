@@ -1,5 +1,9 @@
 package ink.pmc.common.exchange
 
+const val TICKETS_LIMIT = 10L
+
+const val DAILY_TICKETS = 5L
+
 const val TICKET_KEY = "exchange.tickets"
 
 const val LAST_TICKET_DISTRIBUTE_KEY = "exchange.last_ticket_distribute"
