@@ -31,6 +31,7 @@ import java.util.logging.Logger
 lateinit var pluginContainer: PluginContainer
 lateinit var proxyExchangeService: ProxyExchangeService
 lateinit var velocityCommandManager: VelocityCommandManager<CommandSource>
+lateinit var ticketDistributor: TicketDistributor
 
 @Plugin(
     id = "common-exchange",
@@ -80,14 +81,17 @@ class VelocityExchangePlugin @Inject constructor(suspendingPluginContainer: Susp
         velocityCommandManager.init(ProxyExchangeCommand)
         velocityCommandManager.init(ProxyTicketsCommand)
 
-        proxy.eventManager.registerSuspend(this, TicketDistributor)
+        ticketDistributor = TicketDistributor()
+
+        proxy.eventManager.registerSuspend(this, ticketDistributor)
         proxy.eventManager.registerSuspend(this, ProxyExchangeHandler)
 
         disabled = false
     }
 
     @Subscribe
-    fun proxyShutdownEvent(event: ProxyShutdownEvent) {
+    suspend fun proxyShutdownEvent(event: ProxyShutdownEvent) {
+        ticketDistributor.stopDistJob()
         disabled = true
     }
 
