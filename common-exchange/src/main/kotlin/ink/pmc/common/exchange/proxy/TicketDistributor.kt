@@ -79,7 +79,7 @@ class TicketDistributor {
     }
 
     private fun markAsTicketed(member: Member) {
-        member.dataContainer[LAST_TICKET_DISTRIBUTE_KEY] = System.currentTimeMillis()
+        member.dataContainer[LAST_TICKET_DISTRIBUTE_KEY] = Instant.now().toEpochMilli()
     }
 
     private suspend fun distributeTicket(member: Member) {
