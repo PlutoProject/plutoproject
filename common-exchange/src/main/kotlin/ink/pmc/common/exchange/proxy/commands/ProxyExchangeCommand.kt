@@ -32,7 +32,9 @@ object ProxyExchangeCommand : VelocityCommand() {
         }
     }.commandBuilder
 
-    private val exchangeBack = velocityCommandManager.commandBuilder("back", aliases = arrayOf("quit")) {
+    private val exchangeBack = velocityCommandManager.commandBuilder("exchange") {
+        literal("back")
+
         suspendingHandler {
             val sender = it.sender()
 
