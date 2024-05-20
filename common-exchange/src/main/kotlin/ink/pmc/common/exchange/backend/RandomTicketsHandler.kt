@@ -23,13 +23,13 @@ import kotlin.random.Random
 
 private const val BLOCK_BREAKS_REQUIREMENT = 10
 private const val BLOCK_PLACE_REQUIREMENT = 5
-private const val ENEMY_KILLS_REQUIREMENT = 10
-private const val PLAYER_CONSUME_REQUIREMENT = 5
+private const val ENEMY_KILLS_REQUIREMENT = 50
+private const val PLAYER_CONSUME_REQUIREMENT = 10
 
-private const val BLOCK_BREAK_PRODUCE_BASE_CHANCE = 0.0858
-private const val BLOCK_PLACE_PRODUCE_BASE_CHANCE = 0.1055
-private const val BASE_ENEMY_KILLS_PRODUCE_CHANGE = 0.005
-private const val BASE_PLAYER_CONSUME_PRODUCE_CHANGE = 0.30
+private const val BLOCK_BREAK_PRODUCE_BASE_CHANCE = 0.003255
+private const val BLOCK_PLACE_PRODUCE_BASE_CHANCE = 0.005425
+private const val BASE_ENEMY_KILLS_PRODUCE_CHANGE = 0.30
+private const val BASE_PLAYER_CONSUME_PRODUCE_CHANGE = 0.05
 
 private const val POINT_LIMIT = 5.0
 
@@ -41,9 +41,10 @@ private const val COMMON_PRODUCE_MAX = 1.5
 private const val COMMON_DECREASE_MIN = 0.0
 private const val COMMON_DECREASE_MAX = 1.0
 private const val ENEMY_PRODUCE_MIN = 0.0
-private const val ENEMY_PRODUCE_MAX = 2.0
+private const val ENEMY_PRODUCE_MAX = 1.0
 private const val PLAYER_DAMAGE_DECREASE_MIN = 1.0
 private const val PLAYER_DAMAGE_DECREASE_MAX = 2.5
+private const val PLAYER_DEATH_RESET_CHANCE = 0.25
 
 @Suppress("UNUSED")
 class RandomTicketsHandler(player: Player, private val member: Member) : Listener {
@@ -86,7 +87,8 @@ class RandomTicketsHandler(player: Player, private val member: Member) : Listene
             }
         }
 
-        if (Math.random() >= chance) {
+        val random = Math.random()
+        if (random >= chance) {
             return
         }
 
@@ -236,6 +238,10 @@ class RandomTicketsHandler(player: Player, private val member: Member) : Listene
     @EventHandler
     fun playerDeathEvent(event: PlayerDeathEvent) {
         if (event.player != player) {
+            return
+        }
+
+        if (Math.random() >= PLAYER_DEATH_RESET_CHANCE) {
             return
         }
 
