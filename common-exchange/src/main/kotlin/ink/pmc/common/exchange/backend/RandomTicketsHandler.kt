@@ -21,13 +21,13 @@ import org.bukkit.event.entity.PlayerDeathEvent
 import org.bukkit.event.player.PlayerItemConsumeEvent
 import kotlin.random.Random
 
-private const val BLOCK_BREAKS_REQUIREMENT = 10
-private const val BLOCK_PLACE_REQUIREMENT = 5
+private const val BLOCK_BREAKS_REQUIREMENT = 5
+private const val BLOCK_PLACE_REQUIREMENT = 10
 private const val ENEMY_KILLS_REQUIREMENT = 50
 private const val PLAYER_CONSUME_REQUIREMENT = 10
 
-private const val BLOCK_BREAK_PRODUCE_BASE_CHANCE = 0.003255
-private const val BLOCK_PLACE_PRODUCE_BASE_CHANCE = 0.005425
+private const val BLOCK_BREAK_PRODUCE_BASE_CHANCE = 0.010255
+private const val BLOCK_PLACE_PRODUCE_BASE_CHANCE = 0.013425
 private const val BASE_ENEMY_KILLS_PRODUCE_CHANGE = 0.30
 private const val BASE_PLAYER_CONSUME_PRODUCE_CHANGE = 0.05
 

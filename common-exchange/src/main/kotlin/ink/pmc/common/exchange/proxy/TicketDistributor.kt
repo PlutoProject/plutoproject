@@ -74,8 +74,10 @@ class TicketDistributor {
         val id = "Asia/Shanghai"
         val zonedInstant = instant.atZone(ZoneId.of(id))
         val zonedNow = now.atZone(ZoneId.of(id))
+        val localInstant = zonedInstant.toLocalDate().plusDays(1).atStartOfDay()
+        val localNow = zonedNow.toLocalDateTime()
 
-        return zonedNow.dayOfYear > zonedInstant.dayOfYear
+        return localNow.isAfter(localInstant)
     }
 
     private fun markAsTicketed(member: Member) {
