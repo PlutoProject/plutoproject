@@ -31,10 +31,12 @@ class TicketDistributor {
                 val now = LocalDateTime.now()
                 val tomorrowMidnight = now.toLocalDate().plusDays(1).atStartOfDay()
                 val durationUntilMidnight = Duration.between(now, tomorrowMidnight).toMillis()
-
+                val bufferMillis = 1000L
+                
                 delay(durationUntilMidnight)
                 distAll()
                 serverLogger.info("Distributed tickets to all online player")
+                delay(bufferMillis)
             }
         }
     }
@@ -102,6 +104,7 @@ class TicketDistributor {
                 )
             )
         )
+
         member.save()
     }
 
