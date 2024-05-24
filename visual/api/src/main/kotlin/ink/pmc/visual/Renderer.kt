@@ -1,4 +1,4 @@
-package ink.pmc.common.visual
+package ink.pmc.visual
 
 interface Renderer<P, T> {
 

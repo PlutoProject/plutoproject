@@ -51,3 +51,6 @@ include("exchange:paper")
 include("exchange:shared")
 include("exchange:velocity")
 include("exchange:proto")
+
+include("visual")
+include("visual:api")

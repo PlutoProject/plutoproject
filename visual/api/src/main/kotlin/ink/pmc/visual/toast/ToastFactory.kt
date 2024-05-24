@@ -1,4 +1,4 @@
-package ink.pmc.common.visual.toast
+package ink.pmc.visual.toast
 
 import net.kyori.adventure.text.Component
 
@@ -12,6 +12,6 @@ interface IToastFactory {
         lateinit var instance: IToastFactory
     }
 
-    fun of(icon: String, title: Component, description: Component)
+    fun of(icon: String, title: Component, description: Component): Toast
 
 }

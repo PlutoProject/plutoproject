@@ -1,6 +1,6 @@
-package ink.pmc.common.visual.toast
+package ink.pmc.visual.toast
 
-import ink.pmc.common.visual.Renderer
+import ink.pmc.visual.Renderer
 
 @Suppress("UNUSED")
 abstract class ToastRenderer<P> : Renderer<P, Toast> {

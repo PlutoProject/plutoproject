@@ -1,4 +1,4 @@
-package ink.pmc.common.visual.toast
+package ink.pmc.visual.toast
 
 import com.velocitypowered.api.proxy.Player
 
