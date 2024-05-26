@@ -1,6 +1,6 @@
 package ink.pmc.common.member.delegations;
 
-import ink.pmc.common.member.bedrock.GeyserUtilsKt;
+import ink.pmc.member.bedrock.GeyserUtilsKt;
 import net.bytebuddy.asm.Advice;
 
 import java.util.UUID;

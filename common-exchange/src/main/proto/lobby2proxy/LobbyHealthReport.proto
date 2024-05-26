@@ -1,5 +1,5 @@
 syntax = "proto3";
-package ink.pmc.common.exchange.proto.lobby2proxy;
+package ink.pmc.exchange.proto.lobby2proxy;
 
 message LobbyHealthReport {
   string service_id = 1;

@@ -1,5 +1,5 @@
 syntax = "proto3";
-package ink.pmc.common.exchange.proto.server2lobby;
+package ink.pmc.exchange.proto.server2lobby;
 
 import "player/Player.proto";
 

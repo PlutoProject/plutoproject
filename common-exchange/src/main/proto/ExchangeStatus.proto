@@ -1,5 +1,5 @@
 syntax = "proto3";
-package ink.pmc.common.exchange.proto;
+package ink.pmc.exchange.proto;
 
 enum ExchangeStatus {
   IN_EXCHANGE = 0;

@@ -1,5 +1,5 @@
 syntax = "proto3";
-package ink.pmc.common.exchange.proto;
+package ink.pmc.exchange.proto;
 
 import "google/protobuf/empty.proto";
 import "player/Player.proto";
@@ -17,8 +17,8 @@ import "server2proxy/ExchangeEnd.proto";
 service ExchangeRpc {
   rpc StartExchange(server2lobby.ExchangeStart) returns (proxy2server.ExchangeStartAck);
   rpc EndExchange(server2lobby.ExchangeEnd) returns (proxy2server.ExchangeEndAck);
-  rpc IsInExchange(common.utils.proto.player.Player) returns (proxy2server.ExchangeCheckAck);
-  rpc NotifyItemDistribute(lobby2proxy.ItemDistributeNotify) returns (common.utils.proto.operation.ResultMessage);
+  rpc IsInExchange(utils.proto.player.Player) returns (proxy2server.ExchangeCheckAck);
+  rpc NotifyItemDistribute(lobby2proxy.ItemDistributeNotify) returns (utils.proto.operation.ResultMessage);
   rpc ReportLobbyHealth(lobby2proxy.LobbyHealthReport) returns (proxy2lobby.LobbyHealthReportAck);
   rpc MonitorItemDistribute(google.protobuf.Empty) returns (stream lobby2proxy.ItemDistributeNotify);
 }

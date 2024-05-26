@@ -1,5 +1,5 @@
 syntax = "proto3";
-package ink.pmc.common.member.proto;
+package ink.pmc.member.proto;
 
 enum DiffType {
   ADD = 0;
