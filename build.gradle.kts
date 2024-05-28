@@ -16,6 +16,98 @@ fun kotlin(s: String): String {
 }
 
 val bukkitApiVersion by extra("1.20")
+val root = project
+
+fun Project.ensureParent(): Boolean {
+    return this.parent == rootProject
+}
+
+fun Project.applyDevEnv() {
+    project.subprojects {
+        when(project.name) {
+            "paper" -> project.applyPaperDevEnv()
+            "velocity" -> project.applyVelocityDevEnv()
+            "proto" -> project.applyProtoDevEnv()
+        }
+    }
+
+    applyDeps()
+}
+
+fun Project.applyPaperDevEnv() {
+
+}
+
+fun Project.applyVelocityDevEnv() {
+
+}
+
+fun Project.applyProtoDevEnv() {
+    apply {
+        plugin("com.google.protobuf")
+    }
+
+    protobuf {
+        protoc {
+            artifact = root.libs.protoc.asProvider().get().toString()
+        }
+        plugins {
+            create("grpc") {
+                artifact = root.libs.protoc.gen.grpc.java.get().toString()
+            }
+            create("grpckt") {
+                artifact = root.libs.protoc.gen.grpc.kotlin.get().toString() + ":jdk8@jar"
+            }
+        }
+        generateProtoTasks {
+            all().forEach {
+                it.plugins {
+                    create("grpc")
+                    create("grpckt")
+                }
+                it.builtins {
+                    create("kotlin")
+                }
+            }
+        }
+    }
+}
+
+fun Project.applyDeps() {
+    val parent = this
+
+    dependencies {
+        subprojects {
+            if (extra.has("noAutoDep")) {
+                return@subprojects
+            }
+
+            implementation(project).apply {
+                println("impled: ${project.name} to ${parent.name}")
+            }
+        }
+    }
+}
+
+allprojects {
+    apply {
+        plugin("java")
+        plugin("java-library")
+        plugin(kotlin("jvm"))
+        plugin(kotlin("plugin.serialization"))
+        plugin(kotlin("kapt"))
+        plugin("com.github.johnrengelman.shadow")
+    }
+}
+
+subprojects {
+    if (!ensureParent()) {
+        println("${project.name} ensure not passed")
+        return@subprojects
+    }
+
+    applyDevEnv()
+}
 
 allprojects {
     apply {
