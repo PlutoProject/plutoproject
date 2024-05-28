@@ -12,10 +12,12 @@ import org.bukkit.command.CommandSender
 import org.bukkit.plugin.java.JavaPlugin
 import org.incendo.cloud.execution.ExecutionCoordinator
 import org.incendo.cloud.paper.PaperCommandManager
+import java.util.logging.Logger
 
 lateinit var commandManager: PaperCommandManager<CommandSender>
 lateinit var plugin: JavaPlugin
 lateinit var spark: Spark
+lateinit var serverLogger: Logger
 var disabled = true
 
 @Suppress("UNUSED")
@@ -24,6 +26,7 @@ class PaperHypervisorPlugin : JavaPlugin() {
     override fun onEnable() {
         plugin = this
         disabled = false
+        serverLogger = logger
 
         commandManager = PaperCommandManager.createNative(
             this,
@@ -37,6 +40,8 @@ class PaperHypervisorPlugin : JavaPlugin() {
         commandManager.init(StatusCommand)
         server.pluginManager.registerSuspendingEvents(PlayerListener, this)
         server.pluginManager.registerSuspendingEvents(EntityListener, this)
+        // Risky
+        // server.pluginManager.registerSuspendingEvents(DuplicatedUuidDetector, this)
     }
 
     override fun onDisable() {
