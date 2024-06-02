@@ -128,7 +128,7 @@ abstract class BaseMemberServiceImpl(
             }
 
             status = lookupStatus
-            currentStatus = lookupStatus
+            currentStatus = lookupStatus.copy()
         }
 
         monitorJob = submitAsyncIO { monitorUpdate() }
