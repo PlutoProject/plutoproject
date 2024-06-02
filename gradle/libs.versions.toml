@@ -9,7 +9,7 @@ bytebuddy = "1.14.15"
 protobuf = "3.25.3"
 grpc = "1.64.0"
 grpc-kotlin = "1.4.1"
-javers = "7.4.2"
+javers = "7.4.3"
 ktor = "2.3.11"
 
 [libraries]
