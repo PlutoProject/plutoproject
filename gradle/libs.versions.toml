@@ -31,7 +31,7 @@ nightconfig-toml = { module = "com.electronwill.night-config:toml", version.ref 
 nightconfig-hocon = { module = "com.electronwill.night-config:hocon", version.ref = "nightconfig" }
 cloud-paper = { module = "org.incendo:cloud-paper", version = "2.0.0-beta.7" }
 cloud-velocity = { module = "org.incendo:cloud-velocity", version = "2.0.0-beta.7" }
-cloud-coroutines = { module = "org.incendo:cloud-kotlin-coroutines", version = "2.0.0-rc.1" }
+cloud-coroutines = { module = "org.incendo:cloud-kotlin-coroutines", version = "2.0.0-rc.2" }
 cloud-extensions = { module = "org.incendo:cloud-kotlin-extensions", version = "2.0.0-rc.1" }
 netty = { module = "io.netty:netty-all", version = "4.1.109.Final" }
 mccoroutine-bukkit-api = { module = "com.github.shynixn.mccoroutine:mccoroutine-bukkit-api", version.ref = "mccoroutine" }
