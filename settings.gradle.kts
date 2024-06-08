@@ -21,14 +21,17 @@ include("common-library-exchange-api")
 
 // 功能 & 实现部分
 include("common-member")
-include("common-dependency-loader")
 include("common-misc")
 include("common-utils")
-include("common-dependency-loader-velocity")
 include("common-hypervisor")
 include("common-rpc")
 include("common-bedrock-adaptive")
 include("common-exchange")
+
 include("bedrock-adaptive")
 include("bedrock-adaptive:velocity")
 include("bedrock-adaptive:paper")
+
+include("dependency-loader")
+include("dependency-loader:paper")
+include("dependency-loader:velocity")

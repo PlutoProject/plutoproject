@@ -82,16 +82,19 @@ fun Project.packageName(): String {
 fun Project.configurePaperPlugin() {
     apply(plugin = "xyz.jpenilla.resource-factory-bukkit-convention")
 
-    bukkitPluginYaml {
-        main = "${packageName()}.PaperPlugin"
-        apiVersion = bukkitApiVersion
+    afterEvaluate {
+        bukkitPluginYaml {
+            main = "${parent?.group}.PaperPlugin"
+            name = parent?.name
+            apiVersion = bukkitApiVersion
 
-        if (!name.get().contains("dependency-loader")) {
-            depend.add("dependency-loader")
-        }
+            if (!name.get().contains("dependency-loader")) {
+                depend.add("dependency-loader")
+            }
 
-        if (!name.get().contains("utils")) {
-            depend.add("utils")
+            if (!name.get().contains("utils")) {
+                depend.add("utils")
+            }
         }
     }
 }
@@ -99,15 +102,18 @@ fun Project.configurePaperPlugin() {
 fun Project.configureVelocityPlugin() {
     apply(plugin = "xyz.jpenilla.resource-factory-velocity-convention")
 
-    velocityPluginJson {
-        main = "${packageName()}.VelocityPlugin"
+    afterEvaluate {
+        velocityPluginJson {
+            main = "${parent?.group}.VelocityPlugin"
+            name = parent?.name
 
-        if (!name.get().contains("dependency-loader-velocity")) {
-            dependency("dependency-loader-velocity")
-        }
+            if (!name.get().contains("dependency-loader-velocity")) {
+                dependency("dependency-loader-velocity")
+            }
 
-        if (!name.get().contains("utils")) {
-            dependency("utils")
+            if (!name.get().contains("utils")) {
+                dependency("utils")
+            }
         }
     }
 }
@@ -173,6 +179,7 @@ allprojects {
         plugin("com.google.protobuf")
     }
 
+    println("set group outer")
     this.group = packageName()
     this.version = "1.1.0"
 
@@ -216,6 +223,10 @@ allprojects {
     }
 
     tasks.shadowJar {
+        if (!ensureParent()) {
+            return@shadowJar
+        }
+
         clearOutputsDir()
         archiveClassifier = ""
         onlyIf { project != rootProject && !project.name.startsWith("common-library-") }
