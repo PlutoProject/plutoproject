@@ -1,9 +1,0 @@
-main: ink.pmc.common.misc.MiscPlugin
-name: common-misc
-version: ${version}
-api-version: ${api}
-folia-supported: true
-depend:
-  - common-dependency-loader
-  - common-utils
-  - common-member

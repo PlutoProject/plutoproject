@@ -1,7 +1,0 @@
-syntax = "proto3";
-package ink.pmc.common.utils.proto.operation;
-
-enum Result {
-  SUCCEED = 0;
-  FAILED = 2;
-}

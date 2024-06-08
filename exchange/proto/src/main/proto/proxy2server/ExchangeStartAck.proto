@@ -1,0 +1,15 @@
+syntax = "proto3";
+package ink.pmc.exchange.proto.proxy2server;
+
+message ExchangeStartAck {
+  string service_id = 1;
+  ExchangeStartResult result = 2;
+}
+
+enum ExchangeStartResult {
+  START_SUCCEED = 0;
+  START_FAILED_ALREADY_IN = 1;
+  START_FAILED_LOBBY_OFFLINE = 2;
+  START_FAILED_OFFLINE = 3;
+  START_FAILED_UNKOWN = 4;
+}

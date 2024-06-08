@@ -1,0 +1,10 @@
+syntax = "proto3";
+package ink.pmc.member.proto;
+
+import "google/protobuf/empty.proto";
+import "MemberUpdateNotify.proto";
+
+service MemberRpc {
+  rpc NotifyMemberUpdate(MemberUpdateNotify) returns (google.protobuf.Empty);
+  rpc MonitorMemberUpdate(google.protobuf.Empty) returns (stream MemberUpdateNotify);
+}

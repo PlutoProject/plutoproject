@@ -2,6 +2,7 @@ pluginManagement {
     repositories {
         mavenCentral()
         gradlePluginPortal()
+        maven("https://repo.papermc.io/repository/maven-public/")
     }
 }
 
@@ -9,22 +10,44 @@ plugins {
     id("org.gradle.toolchains.foojay-resolver-convention") version "0.8.0"
 }
 
-rootProject.name = "common"
+rootProject.name = "plutoproject"
 
-// API 部分
-include("common-library-member-api")
-include("common-library-utils")
-include("common-library-misc-api")
-include("common-library-rpc-api")
-include("common-library-exchange-api")
+include("bedrock-adaptive")
+include("bedrock-adaptive:velocity")
 
-// 功能 & 实现部分
-include("common-member")
-include("common-dependency-loader")
-include("common-misc")
-include("common-utils")
-include("common-dependency-loader-velocity")
-include("common-hypervisor")
-include("common-rpc")
-include("common-bedrock-adaptive")
-include("common-exchange")
+include("dependency-loader")
+include("dependency-loader:paper")
+include("dependency-loader:velocity")
+
+include("utils")
+include("utils:paper")
+include("utils:velocity")
+include("utils:api")
+include("utils:proto")
+
+include("member")
+include("member:paper")
+include("member:api")
+include("member:velocity")
+include("member:proto")
+include("member:shared")
+
+include("rpc")
+include("rpc:api")
+include("rpc:paper")
+include("rpc:velocity")
+include("rpc:shared")
+
+include("misc")
+include("misc:api")
+include("misc:paper")
+
+include("hypervisor")
+include("hypervisor:paper")
+
+include("exchange")
+include("exchange:api")
+include("exchange:paper")
+include("exchange:shared")
+include("exchange:velocity")
+include("exchange:proto")

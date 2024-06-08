@@ -1,0 +1,13 @@
+syntax = "proto3";
+package ink.pmc.member.proto;
+
+import "Diff.proto";
+
+message MemberUpdateNotify {
+  string service_id = 1;
+  uint64 member_id = 2;
+  optional Diff status_diff = 3;
+  optional Diff member_diff = 4;
+  optional Diff bedrock_account_diff = 5;
+  optional Diff data_container_diff = 6;
+}
