@@ -47,46 +47,75 @@ fun <T> tryOrNull(block: () -> T): T? {
     }
 }
 
-fun Project.configurePlatformModuleApiDep() {
-    val proj = this
+fun Project.dependOnOtherModule(name: String, impl: Boolean = false) {
     val par = parent?.name
-    val paper = tryOrNull { project(":$par:paper") }
-    val velocity = tryOrNull { project(":$par:velocity") }
+    val module = tryOrNull { project(":$par:$name") } ?: return
 
-    paper?.dependencies {
-        compileOnly(proj)
+    dependencies {
+        if (impl) {
+            println("impl ${module.name} to ${project.name}")
+            implementation(module)
+        } else {
+            println("comp ${module.name} to ${project.name}")
+            compileOnly(module)
+        }
     }
+}
 
-    velocity?.dependencies {
-        compileOnly(proj)
+fun Project.dependOnApi() {
+    dependOnOtherModule("api")
+}
+
+fun Project.dependOnProto() {
+    val par = parent?.name
+    val proto = tryOrNull { project(":$par:proto") } ?: return
+
+    dependencies {
+        protobuf(proto)
     }
+}
+
+fun Project.dependOnShared() {
+    dependOnOtherModule("shared")
 }
 
 fun Project.applyDevEnv() {
     dependencies {
         subprojects {
             when (project.name) {
+                "shared" -> {
+                    applySharedDevEnv()
+                    implementation(project)
+                    project.dependOnApi()
+                    project.dependOnProto()
+                }
+
                 "paper" -> {
-                    project.applyPaperDevEnv()
                     configurePaperPlugin()
                     implementation(project)
+                    project.applyPaperDevEnv()
+                    project.dependOnApi()
+                    project.dependOnProto()
+                    project.dependOnShared()
                 }
 
                 "velocity" -> {
-                    project.applyVelocityDevEnv()
                     configureVelocityPlugin()
                     implementation(project)
+                    project.applyVelocityDevEnv()
+                    project.dependOnApi()
+                    project.dependOnProto()
+                    project.dependOnShared()
                 }
 
                 "api" -> {
-                    project.applyApiDevEnv()
                     implementation(project)
-                    configurePlatformModuleApiDep()
+                    project.applyApiDevEnv()
                 }
 
                 "proto" -> {
-                    project.applyProtoDevEnv()
                     protobuf(project)
+                    project.applyProtoDevEnv()
                 }
             }
         }
@@ -140,6 +169,13 @@ fun Project.configureVelocityPlugin() {
                 dependency("utils")
             }
         }
+    }
+}
+
+fun Project.applySharedDevEnv() {
+    dependencies {
+        compileOnly(root.libs.velocity.api)
+        compileOnly(root.libs.paper.api)
     }
 }
 
@@ -242,8 +278,6 @@ allprojects {
         dep(rootProject.libs.catppuccin)
         dep(rootProject.libs.netty)
         dep(rootProject.libs.jsoup)
-        dep(rootProject.libs.paper.api)
-        dep(rootProject.libs.velocity.api)
     }
 
     tasks.shadowJar {
@@ -259,31 +293,6 @@ allprojects {
 
     tasks.compileJava {
         options.encoding = "UTF-8"
-    }
-
-    protobuf {
-        protoc {
-            artifact = root.libs.protoc.asProvider().get().toString()
-        }
-        plugins {
-            create("grpc") {
-                artifact = root.libs.protoc.gen.grpc.java.get().toString()
-            }
-            create("grpckt") {
-                artifact = root.libs.protoc.gen.grpc.kotlin.get().toString() + ":jdk8@jar"
-            }
-        }
-        generateProtoTasks {
-            all().forEach {
-                it.plugins {
-                    create("grpc")
-                    create("grpckt")
-                }
-                it.builtins {
-                    create("kotlin")
-                }
-            }
-        }
     }
 }
 

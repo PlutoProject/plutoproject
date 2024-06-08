@@ -33,10 +33,15 @@ include("bedrock-adaptive:velocity")
 include("dependency-loader")
 include("dependency-loader:paper")
 include("dependency-loader:velocity")
+
 include("utils")
 include("utils:paper")
-findProject(":utils:paper")?.name = "paper"
 include("utils:velocity")
-findProject(":utils:velocity")?.name = "velocity"
 include("utils:api")
-findProject(":utils:api")?.name = "api"
+
+include("member")
+include("member:paper")
+include("member:api")
+include("member:velocity")
+include("member:proto")
+include("member:shared")
