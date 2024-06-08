@@ -1,9 +1,0 @@
-main: ink.pmc.common.hypervisor.PaperHypervisorPlugin
-name: common-hypervisor
-version: ${version}
-api-version: ${api}
-folia-supported: true
-depend:
-  - common-dependency-loader
-  - common-utils
-  - spark

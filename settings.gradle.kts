@@ -55,3 +55,6 @@ include("rpc:shared")
 include("misc")
 include("misc:api")
 include("misc:paper")
+
+include("hypervisor")
+include("hypervisor:paper")
