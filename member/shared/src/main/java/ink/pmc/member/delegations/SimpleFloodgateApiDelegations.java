@@ -1,4 +1,4 @@
-package ink.pmc.common.member.delegations;
+package ink.pmc.member.delegations;
 
 import ink.pmc.member.bedrock.GeyserUtilsKt;
 import net.bytebuddy.asm.Advice;

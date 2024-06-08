@@ -1,4 +1,4 @@
-package ink.pmc.member.commands
+package ink.pmc.member.velocity.commands
 
 import com.mongodb.client.model.Filters.eq
 import com.velocitypowered.api.command.CommandSource

@@ -15,7 +15,7 @@ import com.velocitypowered.api.proxy.ProxyServer
 import ink.pmc.member.api.IMemberService
 import ink.pmc.member.bedrock.GeyserPlayerLinkReplacement
 import ink.pmc.member.bedrock.GeyserSimpleFloodgateApiReplacement
-import ink.pmc.member.commands.MemberCommand
+import ink.pmc.member.velocity.commands.MemberCommand
 import ink.pmc.member.*
 import ink.pmc.rpc.api.RpcServer
 import ink.pmc.utils.PLUTO_VERSION
@@ -48,7 +48,7 @@ class VelocityPlugin @Inject constructor(suspendingPluginContainer: SuspendingPl
         configFile = File(dataDir, "config.toml")
 
         if (!configFile.exists()) {
-            saveDefaultConfig(VelocityMemberPlugin::class.java, configFile)
+            saveDefaultConfig(VelocityPlugin::class.java, configFile)
         }
 
         initVelocityService()

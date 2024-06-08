@@ -283,6 +283,7 @@ allprojects {
         dep(rootProject.libs.catppuccin)
         dep(rootProject.libs.netty)
         dep(rootProject.libs.jsoup)
+        dep(rootProject.libs.caffeine)
     }
 
     tasks.shadowJar {
