@@ -2,6 +2,7 @@ package ink.pmc.exchange
 
 import com.github.shynixn.mccoroutine.bukkit.SuspendingJavaPlugin
 import com.github.shynixn.mccoroutine.bukkit.registerSuspendingEvents
+import ink.pmc.exchange.api.IExchangeService
 import ink.pmc.exchange.backend.AbstractBackendExchangeService
 import ink.pmc.exchange.backend.BackendExchangeService
 import ink.pmc.exchange.backend.RandomTicketsManager
@@ -10,11 +11,10 @@ import ink.pmc.exchange.lobby.LobbyExchangeService
 import ink.pmc.exchange.lobby.LogicDisabler
 import ink.pmc.exchange.lobby.PlayerActionHandler
 import ink.pmc.exchange.lobby.commands.LobbyCheckoutCommand
+import ink.pmc.exchange.paper.lobbyWorldName
 import ink.pmc.utils.command.init
 import ink.pmc.utils.isInDebugMode
 import ink.pmc.utils.platform.paper
-import ink.pmc.exchange.api.IExchangeService
-import ink.pmc.exchange.paper.lobbyWorldName
 import org.bukkit.Bukkit
 import org.bukkit.World
 import org.bukkit.WorldCreator

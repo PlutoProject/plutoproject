@@ -10,7 +10,6 @@ import com.velocitypowered.api.event.player.GameProfileRequestEvent
 import ink.pmc.member.adapter.BedrockAdapter
 import ink.pmc.member.api.AuthType
 import ink.pmc.member.bedrock.removeFloodgatePlayer
-import ink.pmc.member.*
 import ink.pmc.utils.bedrock.isFloodgatePlayer
 import ink.pmc.utils.bedrock.uuid
 import ink.pmc.utils.bedrock.xuid

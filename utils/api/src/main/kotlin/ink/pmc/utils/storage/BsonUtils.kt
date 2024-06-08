@@ -9,7 +9,7 @@ val Any?.asBson: BsonValue
             return BsonNull()
         }
 
-        return when(this) {
+        return when (this) {
             is Byte -> BsonInt32(this.toInt())
             is Short -> BsonInt32(this.toInt())
             is Int -> BsonInt32(this)

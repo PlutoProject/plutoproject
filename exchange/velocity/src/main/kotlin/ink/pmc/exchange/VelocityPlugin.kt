@@ -32,7 +32,7 @@ lateinit var velocityCommandManager: VelocityCommandManager<CommandSource>
 lateinit var ticketDistributor: TicketDistributor
 
 @Suppress("UNUSED", "UNUSED_PARAMETER")
-class VelocityPlugin@Inject constructor(suspendingPluginContainer: SuspendingPluginContainer) {
+class VelocityPlugin @Inject constructor(suspendingPluginContainer: SuspendingPluginContainer) {
 
     init {
         suspendingPluginContainer.initialize(this)

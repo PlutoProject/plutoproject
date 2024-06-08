@@ -9,10 +9,9 @@ import com.velocitypowered.api.event.proxy.ProxyShutdownEvent
 import com.velocitypowered.api.plugin.PluginContainer
 import com.velocitypowered.api.plugin.annotation.DataDirectory
 import com.velocitypowered.api.proxy.ProxyServer
-import ink.pmc.rpc.*
 import ink.pmc.rpc.api.IRpcServer
-import ink.pmc.rpc.impl.RpcServerImpl
 import ink.pmc.rpc.commands.RpcServerCommand
+import ink.pmc.rpc.impl.RpcServerImpl
 import ink.pmc.utils.command.init
 import ink.pmc.utils.platform.proxy
 import ink.pmc.utils.platform.saveConfig

@@ -2,12 +2,12 @@ package ink.pmc.exchange.proxy
 
 import com.velocitypowered.api.command.CommandSource
 import com.velocitypowered.api.proxy.Player
+import ink.pmc.exchange.*
 import ink.pmc.exchange.utils.isInExchangeLobby
 import ink.pmc.member.api.velocity.member
 import ink.pmc.utils.chat.replace
 import ink.pmc.utils.visual.mochaText
 import ink.pmc.utils.visual.mochaYellow
-import ink.pmc.exchange.*
 import net.kyori.adventure.text.Component
 
 suspend fun exchange(player: Player) {

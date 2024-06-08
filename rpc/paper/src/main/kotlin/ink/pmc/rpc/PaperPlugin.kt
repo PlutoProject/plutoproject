@@ -1,7 +1,6 @@
 package ink.pmc.rpc
 
 import com.github.shynixn.mccoroutine.bukkit.SuspendingJavaPlugin
-import ink.pmc.rpc.*
 import ink.pmc.rpc.api.IRpcClient
 import ink.pmc.rpc.api.event.RpcClientConnectEvent
 import ink.pmc.rpc.api.event.RpcClientDisconnectEvent

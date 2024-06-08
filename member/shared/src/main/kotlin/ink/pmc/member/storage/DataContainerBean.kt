@@ -16,9 +16,6 @@ import org.javers.core.diff.changetype.map.MapChange
 import org.javers.core.metamodel.annotation.DiffIgnore
 import org.javers.core.metamodel.annotation.Id
 import org.javers.core.metamodel.annotation.TypeName
-import kotlin.collections.filterIsInstance
-import kotlin.collections.forEach
-import kotlin.collections.remove
 import kotlin.collections.set
 
 @Serializable

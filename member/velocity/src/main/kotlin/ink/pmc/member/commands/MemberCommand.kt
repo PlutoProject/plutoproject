@@ -2,9 +2,8 @@ package ink.pmc.member.commands
 
 import com.mongodb.client.model.Filters.eq
 import com.velocitypowered.api.command.CommandSource
-import ink.pmc.member.api.AuthType
-import ink.pmc.member.commandManager
 import ink.pmc.member.*
+import ink.pmc.member.api.AuthType
 import ink.pmc.utils.bedrock.disconnect
 import ink.pmc.utils.bedrock.isFloodgatePlayer
 import ink.pmc.utils.bedrock.xuid

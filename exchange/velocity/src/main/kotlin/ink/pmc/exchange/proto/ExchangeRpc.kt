@@ -1,8 +1,6 @@
 package ink.pmc.exchange.proto
 
 import com.google.protobuf.Empty
-import ink.pmc.exchange.proto.ExchangeRpcGrpcKt
-import ink.pmc.exchange.proto.ExchangeStatusOuterClass
 import ink.pmc.exchange.proto.lobby2proxy.ItemDistributeNotifyOuterClass.ItemDistributeNotify
 import ink.pmc.exchange.proto.lobby2proxy.LobbyHealthReportOuterClass.LobbyHealthReport
 import ink.pmc.exchange.proto.proxy2lobby.LobbyHealthReportAckOuterClass.LobbyHealthReportAck

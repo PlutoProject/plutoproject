@@ -1,5 +1,6 @@
 package ink.pmc.exchange.lobby
 
+import ink.pmc.exchange.*
 import ink.pmc.exchange.proto.lobby2proxy.itemDistributeNotify
 import ink.pmc.exchange.proto.proxy2server.ExchangeEndAckOuterClass
 import ink.pmc.exchange.proto.server2lobby.exchangeEnd
@@ -11,7 +12,6 @@ import ink.pmc.utils.player.itemStackArrayToBase64
 import ink.pmc.utils.proto.player.player
 import ink.pmc.utils.visual.mochaText
 import ink.pmc.utils.visual.mochaYellow
-import ink.pmc.exchange.*
 import net.kyori.adventure.text.Component
 import org.bukkit.entity.Player
 

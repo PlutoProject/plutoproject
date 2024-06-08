@@ -1,11 +1,11 @@
 package ink.pmc.exchange.utils
 
+import ink.pmc.exchange.*
 import ink.pmc.utils.chat.replace
 import ink.pmc.utils.concurrent.submitSync
 import ink.pmc.utils.platform.paper
 import ink.pmc.utils.platform.paperUtilsPlugin
 import ink.pmc.utils.visual.mochaFlamingo
-import ink.pmc.exchange.*
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.GameMode

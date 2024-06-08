@@ -1,7 +1,6 @@
 package ink.pmc.member
 
 import ink.pmc.member.bedrock.removeFloodgatePlayer
-import ink.pmc.member.memberService
 import ink.pmc.utils.bedrock.uuid
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority

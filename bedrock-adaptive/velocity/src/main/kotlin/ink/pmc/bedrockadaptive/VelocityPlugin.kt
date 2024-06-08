@@ -4,7 +4,6 @@ import com.github.shynixn.mccoroutine.velocity.SuspendingPluginContainer
 import com.google.inject.Inject
 import com.velocitypowered.api.event.Subscribe
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent
-import com.velocitypowered.api.event.proxy.ProxyShutdownEvent
 import com.velocitypowered.api.network.ProtocolVersion
 import com.velocitypowered.api.plugin.PluginContainer
 import com.velocitypowered.api.plugin.annotation.DataDirectory
@@ -54,10 +53,6 @@ class VelocityPlugin @Inject constructor(suspendingPluginContainer: SuspendingPl
         * */
         // Protocolize.listenerProvider().registerListener(HeaderAndFooterPacketListener)
         Protocolize.listenerProvider().registerListener(BossBarPacketListener)
-    }
-
-    @Subscribe
-    fun proxyShutdownEvent(event: ProxyShutdownEvent) {
     }
 
 }
