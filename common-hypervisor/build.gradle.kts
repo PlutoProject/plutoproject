@@ -1,4 +1,4 @@
 dependencies {
-    compileOnly(project(":common-library-utils"))
+    compileOnly(project(":utils"))
     compileOnly(libs.spark.api)
 }

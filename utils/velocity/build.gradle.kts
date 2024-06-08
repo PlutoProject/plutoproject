@@ -1,0 +1,3 @@
+velocityPluginJson {
+    dependency("floodgate", true)
+}

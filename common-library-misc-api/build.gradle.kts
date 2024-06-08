@@ -1,3 +1,3 @@
 dependencies {
-    compileOnlyApi(project(":common-library-utils"))
+    compileOnlyApi(project(":utils"))
 }

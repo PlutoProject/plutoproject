@@ -39,6 +39,29 @@ fun Project.ensureParent(): Boolean {
     return this.parent == rootProject
 }
 
+fun <T> tryOrNull(block: () -> T): T? {
+    return try {
+        block()
+    } catch (e: Exception) {
+        null
+    }
+}
+
+fun Project.configurePlatformModuleApiDep() {
+    val proj = this
+    val par = parent?.name
+    val paper = tryOrNull { project(":$par:paper") }
+    val velocity = tryOrNull { project(":$par:velocity") }
+
+    paper?.dependencies {
+        compileOnly(proj)
+    }
+
+    velocity?.dependencies {
+        compileOnly(proj)
+    }
+}
+
 fun Project.applyDevEnv() {
     dependencies {
         subprojects {
@@ -58,6 +81,7 @@ fun Project.applyDevEnv() {
                 "api" -> {
                     project.applyApiDevEnv()
                     implementation(project)
+                    configurePlatformModuleApiDep()
                 }
 
                 "proto" -> {
@@ -105,10 +129,11 @@ fun Project.configureVelocityPlugin() {
     afterEvaluate {
         velocityPluginJson {
             main = "${parent?.group}.VelocityPlugin"
+            id = parent?.name
             name = parent?.name
 
-            if (!name.get().contains("dependency-loader-velocity")) {
-                dependency("dependency-loader-velocity")
+            if (!name.get().contains("dependency-loader")) {
+                dependency("dependency-loader")
             }
 
             if (!name.get().contains("utils")) {
@@ -135,8 +160,8 @@ fun Project.applyVelocityDevEnv() {
 
 fun Project.applyApiDevEnv() {
     dependencies {
-        compileOnly(libs.velocity.api)
-        compileOnly(libs.paper.api)
+        compileOnly(root.libs.velocity.api)
+        compileOnly(root.libs.paper.api)
     }
 }
 
@@ -179,7 +204,6 @@ allprojects {
         plugin("com.google.protobuf")
     }
 
-    println("set group outer")
     this.group = packageName()
     this.version = "1.1.0"
 

@@ -1,5 +1,0 @@
-main: ink.pmc.common.deploader.DepLoaderPlugin
-name: common-dependency-loader
-version: ${version}
-api-version: ${api}
-folia-supported: true

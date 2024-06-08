@@ -20,7 +20,7 @@ private fun checkFolia(): Boolean {
 }
 
 @Suppress("UNUSED")
-class PaperUtilsPlugin : JavaPlugin() {
+class PaperPlugin : JavaPlugin() {
 
     override fun onLoad() {
         byteBuddy // 初始化
