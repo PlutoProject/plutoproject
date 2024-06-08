@@ -52,3 +52,5 @@ include("rpc:paper")
 findProject(":rpc:paper")?.name = "paper"
 include("rpc:velocity")
 findProject(":rpc:velocity")?.name = "velocity"
+include("rpc:shared")
+findProject(":rpc:shared")?.name = "shared"

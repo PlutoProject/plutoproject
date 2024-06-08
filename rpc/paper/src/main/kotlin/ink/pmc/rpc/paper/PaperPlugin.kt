@@ -1,6 +1,7 @@
-package ink.pmc.rpc
+package ink.pmc.rpc.paper
 
 import com.github.shynixn.mccoroutine.bukkit.SuspendingJavaPlugin
+import ink.pmc.rpc.*
 import ink.pmc.rpc.api.IRpcClient
 import ink.pmc.rpc.api.event.RpcClientConnectEvent
 import ink.pmc.rpc.api.event.RpcClientDisconnectEvent
@@ -10,7 +11,7 @@ import java.io.File
 lateinit var rpcClient: RpcClientImpl
 
 @Suppress("UNUSED")
-class PaperRpcPlugin : SuspendingJavaPlugin() {
+class PaperPlugin : SuspendingJavaPlugin() {
 
     override suspend fun onLoadAsync() {
         serverLogger = logger

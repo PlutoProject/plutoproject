@@ -1,4 +1,4 @@
-package ink.pmc.rpc
+package ink.pmc.rpc.velocity
 
 import com.github.shynixn.mccoroutine.velocity.SuspendingPluginContainer
 import com.google.inject.Inject
@@ -6,15 +6,13 @@ import com.velocitypowered.api.command.CommandSource
 import com.velocitypowered.api.event.Subscribe
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent
 import com.velocitypowered.api.event.proxy.ProxyShutdownEvent
-import com.velocitypowered.api.plugin.Dependency
-import com.velocitypowered.api.plugin.Plugin
 import com.velocitypowered.api.plugin.PluginContainer
 import com.velocitypowered.api.plugin.annotation.DataDirectory
 import com.velocitypowered.api.proxy.ProxyServer
+import ink.pmc.rpc.*
 import ink.pmc.rpc.api.IRpcServer
-import ink.pmc.rpc.commands.RpcServerCommand
 import ink.pmc.rpc.impl.RpcServerImpl
-import ink.pmc.utils.PLUTO_VERSION
+import ink.pmc.rpc.velocity.commands.RpcServerCommand
 import ink.pmc.utils.command.init
 import ink.pmc.utils.platform.proxy
 import ink.pmc.utils.platform.saveConfig
@@ -30,17 +28,8 @@ lateinit var velocityCommandManager: VelocityCommandManager<CommandSource>
 
 lateinit var rpcServer: RpcServerImpl
 
-@Plugin(
-    id = "common-rpc",
-    name = "common-rpc",
-    version = PLUTO_VERSION,
-    dependencies = [
-        Dependency(id = "common-dependency-loader-velocity"),
-        Dependency(id = "common-utils")
-    ]
-)
 @Suppress("UNUSED", "UNUSED_PARAMETER")
-class VelocityRpcPlugin @Inject constructor(suspendingPluginContainer: SuspendingPluginContainer) {
+class VelocityPlugin @Inject constructor(suspendingPluginContainer: SuspendingPluginContainer) {
 
     init {
         suspendingPluginContainer.initialize(this)
@@ -85,7 +74,7 @@ class VelocityRpcPlugin @Inject constructor(suspendingPluginContainer: Suspendin
         configFile = File(dataDir, "config_server.toml")
 
         if (!configFile.exists()) {
-            saveConfig(VelocityRpcPlugin::class.java, "config_server.toml", configFile)
+            saveConfig(VelocityPlugin::class.java, "config_server.toml", configFile)
         }
 
         loadConfig(configFile)

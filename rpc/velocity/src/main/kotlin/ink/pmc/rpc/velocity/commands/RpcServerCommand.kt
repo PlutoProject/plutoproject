@@ -1,9 +1,11 @@
-package ink.pmc.rpc.commands
+package ink.pmc.rpc.velocity.commands
 
 import ink.pmc.utils.chat.replace
 import ink.pmc.utils.command.VelocityCommand
 import ink.pmc.utils.visual.mochaText
 import ink.pmc.rpc.*
+import ink.pmc.rpc.velocity.rpcServer
+import ink.pmc.rpc.velocity.velocityCommandManager
 import net.kyori.adventure.text.Component
 import org.incendo.cloud.kotlin.coroutines.extension.suspendingHandler
 
