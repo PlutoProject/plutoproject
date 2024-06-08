@@ -1,4 +1,3 @@
-import org.gradle.api.tasks.diagnostics.internal.ProjectDetails.ProjectDisplayNameAndDescription
 import xyz.jpenilla.runpaper.task.RunServer
 
 plugins {
@@ -54,10 +53,8 @@ fun Project.dependOnOtherModule(name: String, impl: Boolean = false) {
 
     dependencies {
         if (impl) {
-            println("impl ${module.name} to ${project.name}")
             implementation(module)
         } else {
-            println("comp ${module.name} to ${project.name}")
             compileOnly(module)
         }
     }
@@ -70,8 +67,6 @@ fun Project.dependOnApi() {
 fun Project.dependOnProto() {
     val par = parent?.name
     val proto = tryOrNull { project(":$par:proto") } ?: return
-
-    println("dep proto to $name")
 
     dependencies {
         protobuf(proto)
@@ -241,7 +236,7 @@ allprojects {
         plugin(kotlin("jvm"))
         plugin(kotlin("plugin.serialization"))
         plugin(kotlin("kapt"))
-        plugin("com.github.johnrengelman.shadow")
+        plugin("io.github.goooler.shadow")
         plugin("com.google.protobuf")
     }
 

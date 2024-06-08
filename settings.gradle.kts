@@ -23,6 +23,7 @@ include("utils")
 include("utils:paper")
 include("utils:velocity")
 include("utils:api")
+include("utils:proto")
 
 include("member")
 include("member:paper")
@@ -43,3 +44,10 @@ include("misc:paper")
 
 include("hypervisor")
 include("hypervisor:paper")
+
+include("exchange")
+include("exchange:api")
+include("exchange:paper")
+include("exchange:shared")
+include("exchange:velocity")
+include("exchange:proto")
