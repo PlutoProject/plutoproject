@@ -1,3 +1,4 @@
+import org.gradle.api.tasks.diagnostics.internal.ProjectDetails.ProjectDisplayNameAndDescription
 import xyz.jpenilla.runpaper.task.RunServer
 
 plugins {
@@ -70,6 +71,8 @@ fun Project.dependOnProto() {
     val par = parent?.name
     val proto = tryOrNull { project(":$par:proto") } ?: return
 
+    println("dep proto to $name")
+
     dependencies {
         protobuf(proto)
     }
@@ -115,7 +118,6 @@ fun Project.applyDevEnv() {
 
                 "proto" -> {
                     protobuf(project)
-                    project.applyProtoDevEnv()
                 }
             }
         }
@@ -129,6 +131,10 @@ fun Project.configurePaperweight() {
 }
 
 fun Project.packageName(): String {
+    if (!ensureParent() && parent != null) {
+        return "${parent!!.packageName()}.$name"
+    }
+
     return "ink.pmc.${name.lowercase().replace("-", "")}"
 }
 
@@ -201,8 +207,7 @@ fun Project.applyApiDevEnv() {
     }
 }
 
-fun Project.applyProtoDevEnv() {
-    apply(plugin = "com.google.protobuf")
+fun Project.applyProtobuf() {
     protobuf {
         protoc {
             artifact = root.libs.protoc.asProvider().get().toString()
@@ -294,6 +299,8 @@ allprojects {
     tasks.compileJava {
         options.encoding = "UTF-8"
     }
+
+    applyProtobuf()
 }
 
 subprojects {
