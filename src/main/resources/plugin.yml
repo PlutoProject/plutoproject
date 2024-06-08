@@ -1,7 +1,0 @@
-main: ink.pmc.common.CommonPlugin
-name: common
-version: ${version}
-api-version: ${api}
-folia-supported: true
-depend:
-  - common-dependency-loader

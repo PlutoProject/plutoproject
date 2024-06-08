@@ -9,7 +9,12 @@ plugins {
     alias(libs.plugins.shadow)
     alias(libs.plugins.runpaper)
     alias(libs.plugins.protobuf)
+    alias(libs.plugins.paperweight.userdev)
+    alias(libs.plugins.resource.factory.bukkit)
+    alias(libs.plugins.resource.factory.velocity)
 }
+
+val paperDevBundleVer = "1.20.4-R0.1-SNAPSHOT"
 
 fun kotlin(s: String): String {
     return "org.jetbrains.kotlin.$s"
@@ -18,35 +23,119 @@ fun kotlin(s: String): String {
 val bukkitApiVersion by extra("1.20")
 val root = project
 
+/*
+* 需要在 rootProject 中设置以下。
+* 否则下方拓展函数无法正常使用。
+* */
+applyPaperDevEnv()
+bukkitPluginYaml {
+    main = packageName()
+}
+velocityPluginJson {
+    main = packageName()
+}
+
 fun Project.ensureParent(): Boolean {
     return this.parent == rootProject
 }
 
 fun Project.applyDevEnv() {
-    project.subprojects {
-        when(project.name) {
-            "paper" -> project.applyPaperDevEnv()
-            "velocity" -> project.applyVelocityDevEnv()
-            "proto" -> project.applyProtoDevEnv()
+    dependencies {
+        subprojects {
+            when (project.name) {
+                "paper" -> {
+                    project.applyPaperDevEnv()
+                    configurePaperPlugin()
+                    implementation(project)
+                }
+
+                "velocity" -> {
+                    project.applyVelocityDevEnv()
+                    configureVelocityPlugin()
+                    implementation(project)
+                }
+
+                "api" -> {
+                    project.applyApiDevEnv()
+                    implementation(project)
+                }
+
+                "proto" -> {
+                    project.applyProtoDevEnv()
+                    protobuf(project)
+                }
+            }
         }
     }
+}
 
-    applyDeps()
+fun Project.configurePaperweight() {
+    apply {
+        plugin("io.papermc.paperweight.userdev")
+    }
+}
+
+fun Project.packageName(): String {
+    return "ink.pmc.${name.lowercase().replace("-", "")}"
+}
+
+fun Project.configurePaperPlugin() {
+    apply(plugin = "xyz.jpenilla.resource-factory-bukkit-convention")
+
+    bukkitPluginYaml {
+        main = "${packageName()}.PaperPlugin"
+        apiVersion = bukkitApiVersion
+
+        if (!name.get().contains("dependency-loader")) {
+            depend.add("dependency-loader")
+        }
+
+        if (!name.get().contains("utils")) {
+            depend.add("utils")
+        }
+    }
+}
+
+fun Project.configureVelocityPlugin() {
+    apply(plugin = "xyz.jpenilla.resource-factory-velocity-convention")
+
+    velocityPluginJson {
+        main = "${packageName()}.VelocityPlugin"
+
+        if (!name.get().contains("dependency-loader-velocity")) {
+            dependency("dependency-loader-velocity")
+        }
+
+        if (!name.get().contains("utils")) {
+            dependency("utils")
+        }
+    }
 }
 
 fun Project.applyPaperDevEnv() {
-
+    configurePaperweight()
+    dependencies {
+        paperweight.paperDevBundle(paperDevBundleVer)
+    }
 }
 
 fun Project.applyVelocityDevEnv() {
+    dependencies {
+        compileOnly(root.libs.velocity.api)
+        compileOnly(root.libs.velocity)
+        kapt(root.libs.velocity.api)
+    }
+}
 
+fun Project.applyApiDevEnv() {
+    dependencies {
+        compileOnly(libs.velocity.api)
+        compileOnly(libs.paper.api)
+    }
 }
 
 fun Project.applyProtoDevEnv() {
-    apply {
-        plugin("com.google.protobuf")
-    }
-
+    apply(plugin = "com.google.protobuf")
     protobuf {
         protoc {
             artifact = root.libs.protoc.asProvider().get().toString()
@@ -73,42 +162,6 @@ fun Project.applyProtoDevEnv() {
     }
 }
 
-fun Project.applyDeps() {
-    val parent = this
-
-    dependencies {
-        subprojects {
-            if (extra.has("noAutoDep")) {
-                return@subprojects
-            }
-
-            implementation(project).apply {
-                println("impled: ${project.name} to ${parent.name}")
-            }
-        }
-    }
-}
-
-allprojects {
-    apply {
-        plugin("java")
-        plugin("java-library")
-        plugin(kotlin("jvm"))
-        plugin(kotlin("plugin.serialization"))
-        plugin(kotlin("kapt"))
-        plugin("com.github.johnrengelman.shadow")
-    }
-}
-
-subprojects {
-    if (!ensureParent()) {
-        println("${project.name} ensure not passed")
-        return@subprojects
-    }
-
-    applyDevEnv()
-}
-
 allprojects {
     apply {
         plugin("java")
@@ -120,7 +173,7 @@ allprojects {
         plugin("com.google.protobuf")
     }
 
-    this.group = "ink.pmc.common"
+    this.group = packageName()
     this.version = "1.1.0"
 
     repositories {
@@ -153,22 +206,13 @@ allprojects {
         dep(rootProject.libs.bundles.javers)
         dep(rootProject.libs.bundles.mongodb)
         dep(rootProject.libs.bundles.ktor)
-        dep(rootProject.libs.paper.api)
-        dep(rootProject.libs.velocity.api)
         dep(rootProject.libs.okhttp)
         dep(rootProject.libs.gson)
         dep(rootProject.libs.catppuccin)
         dep(rootProject.libs.netty)
         dep(rootProject.libs.jsoup)
-    }
-
-    tasks.processResources {
-        inputs.property("version", rootProject.version)
-        inputs.property("api", bukkitApiVersion)
-
-        filesMatching("plugin.yml") {
-            expand("version" to version, "api" to bukkitApiVersion)
-        }
+        dep(rootProject.libs.paper.api)
+        dep(rootProject.libs.velocity.api)
     }
 
     tasks.shadowJar {
@@ -184,14 +228,14 @@ allprojects {
 
     protobuf {
         protoc {
-            artifact = rootProject.libs.protoc.asProvider().get().toString()
+            artifact = root.libs.protoc.asProvider().get().toString()
         }
         plugins {
             create("grpc") {
-                artifact = rootProject.libs.protoc.gen.grpc.java.get().toString()
+                artifact = root.libs.protoc.gen.grpc.java.get().toString()
             }
             create("grpckt") {
-                artifact = rootProject.libs.protoc.gen.grpc.kotlin.get().toString() + ":jdk8@jar"
+                artifact = root.libs.protoc.gen.grpc.kotlin.get().toString() + ":jdk8@jar"
             }
         }
         generateProtoTasks {
@@ -208,18 +252,24 @@ allprojects {
     }
 }
 
-fun trim(jarName: String): String {
-    return jarName.replace(
-        jarName.substring(
-            jarName.lastIndexOf('-'),
-            jarName.lastIndexOf('.')
-        ),
-        ""
-    )
+subprojects {
+    if (!ensureParent()) {
+        return@subprojects
+    }
+
+    applyDevEnv()
 }
 
 val String.trimmed: String
-    get() = trim(this)
+    get() {
+        return replace(
+            substring(
+                lastIndexOf('-'),
+                lastIndexOf('.')
+            ),
+            ""
+        )
+    }
 
 fun copyJars() {
     val outputsDir = file("$rootDir/build-outputs")

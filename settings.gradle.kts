@@ -2,6 +2,7 @@ pluginManagement {
     repositories {
         mavenCentral()
         gradlePluginPortal()
+        maven("https://repo.papermc.io/repository/maven-public/")
     }
 }
 
@@ -30,3 +31,4 @@ include("common-bedrock-adaptive")
 include("common-exchange")
 include("bedrock-adaptive")
 include("bedrock-adaptive:velocity")
+include("bedrock-adaptive:paper")
