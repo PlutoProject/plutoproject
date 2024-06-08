@@ -56,7 +56,7 @@ class VelocityPlugin @Inject constructor(suspendingPluginContainer: SuspendingPl
 
     @Subscribe
     fun proxyInitializeEvent(event: ProxyInitializeEvent) {
-        pluginContainer = proxy.pluginManager.getPlugin("common-member").get()
+        pluginContainer = proxy.pluginManager.getPlugin("member").get()
 
         GeyserPlayerLinkReplacement.init()
         GeyserSimpleFloodgateApiReplacement.init()

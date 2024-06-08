@@ -56,7 +56,7 @@ class VelocityPlugin @Inject constructor(suspendingPluginContainer: SuspendingPl
 
     @Subscribe
     fun proxyInitializeEvent(event: ProxyInitializeEvent) {
-        pluginContainer = proxy.pluginManager.getPlugin("common-exchange").get()
+        pluginContainer = proxy.pluginManager.getPlugin("exchange").get()
 
         velocityCommandManager = VelocityCommandManager(
             pluginContainer,

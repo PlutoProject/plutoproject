@@ -142,6 +142,10 @@ fun Project.configurePaperPlugin() {
             name = parent?.name
             apiVersion = bukkitApiVersion
 
+            if (name.get().contains("dependency-loader")) {
+                return@bukkitPluginYaml
+            }
+
             if (!name.get().contains("dependency-loader")) {
                 depend.add("dependency-loader")
             }
@@ -161,6 +165,10 @@ fun Project.configureVelocityPlugin() {
             main = "${parent?.group}.VelocityPlugin"
             id = parent?.name
             name = parent?.name
+
+            if (name.get().contains("dependency-loader")) {
+                return@velocityPluginJson
+            }
 
             if (!name.get().contains("dependency-loader")) {
                 dependency("dependency-loader")

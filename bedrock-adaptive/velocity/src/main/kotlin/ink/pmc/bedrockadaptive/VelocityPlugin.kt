@@ -41,7 +41,7 @@ class VelocityPlugin @Inject constructor(suspendingPluginContainer: SuspendingPl
 
     @Subscribe
     fun proxyInitializeEvent(event: ProxyInitializeEvent) {
-        pluginContainer = proxy.pluginManager.getPlugin("common-bedrock-adaptive").get()
+        pluginContainer = proxy.pluginManager.getPlugin("bedrock-adaptive").get()
 
         Protocolize.listenerProvider().registerListener(SystemChatPacketListener)
         Protocolize.listenerProvider().registerListener(TitleTextPacketListener)
