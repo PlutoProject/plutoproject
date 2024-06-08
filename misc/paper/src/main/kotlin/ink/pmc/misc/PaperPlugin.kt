@@ -27,7 +27,7 @@ lateinit var headManager: HeadManager
 var disabled = true
 
 @Suppress("UNUSED")
-class MiscPlugin : JavaPlugin() {
+class PaperPlugin : JavaPlugin() {
 
     override fun onEnable() {
         plugin = this

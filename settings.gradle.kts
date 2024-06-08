@@ -45,12 +45,13 @@ include("member:api")
 include("member:velocity")
 include("member:proto")
 include("member:shared")
+
 include("rpc")
 include("rpc:api")
-findProject(":rpc:api")?.name = "api"
 include("rpc:paper")
-findProject(":rpc:paper")?.name = "paper"
 include("rpc:velocity")
-findProject(":rpc:velocity")?.name = "velocity"
 include("rpc:shared")
-findProject(":rpc:shared")?.name = "shared"
+
+include("misc")
+include("misc:api")
+include("misc:paper")
