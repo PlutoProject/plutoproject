@@ -1,3 +1,4 @@
+import org.jetbrains.kotlin.gradle.plugin.extraProperties
 import xyz.jpenilla.runpaper.task.RunServer
 
 plugins {
@@ -15,6 +16,7 @@ plugins {
 }
 
 val paperDevBundleVer = "1.20.4-R0.1-SNAPSHOT"
+extra["paperDevBundleVer"] = paperDevBundleVer
 
 fun kotlin(s: String): String {
     return "org.jetbrains.kotlin.$s"
@@ -22,18 +24,6 @@ fun kotlin(s: String): String {
 
 val bukkitApiVersion by extra("1.20")
 val root = project
-
-/*
-* 需要在 rootProject 中设置以下。
-* 否则下方拓展函数无法正常使用。
-* */
-applyPaperDevEnv()
-bukkitPluginYaml {
-    main = packageName()
-}
-velocityPluginJson {
-    main = packageName()
-}
 
 fun Project.ensureParent(): Boolean {
     return this.parent == rootProject
@@ -77,38 +67,50 @@ fun Project.dependOnShared() {
     dependOnOtherModule("shared")
 }
 
-fun Project.applyDevEnv() {
+fun Project.initDevEnv() {
     dependencies {
         subprojects {
             when (project.name) {
-                "shared" -> {
+                "shared" -> afterEvaluate {
                     applySharedDevEnv()
-                    implementation(project)
-                    project.dependOnApi()
-                    project.dependOnProto()
+                    implementationWithEnv(project)
+                    project(project.path) {
+                        dependOnApi()
+                        dependOnProto()
+                    }
                 }
 
                 "paper" -> {
                     configurePaperPlugin()
-                    implementation(project)
-                    project.applyPaperDevEnv()
-                    project.dependOnApi()
-                    project.dependOnProto()
-                    project.dependOnShared()
+                    afterEvaluate {
+                        project(project.path) {
+                            enablePaperDevEnv()
+                            dependOnApi()
+                            dependOnProto()
+                            dependOnShared()
+                        }
+                        implementationWithEnv(project)
+                    }
                 }
 
                 "velocity" -> {
                     configureVelocityPlugin()
-                    implementation(project)
-                    project.applyVelocityDevEnv()
-                    project.dependOnApi()
-                    project.dependOnProto()
-                    project.dependOnShared()
+                    afterEvaluate {
+                        implementationWithEnv(project)
+                        project(project.path) {
+                            enableVelocityDevEnv()
+                            dependOnApi()
+                            dependOnProto()
+                            dependOnShared()
+                        }
+                    }
                 }
 
-                "api" -> {
-                    implementation(project)
-                    project.applyApiDevEnv()
+                "api" -> afterEvaluate {
+                    implementationWithEnv(project)
+                    project(project.path) {
+                        enableApiDevEnv()
+                    }
                 }
 
                 "proto" -> {
@@ -181,6 +183,14 @@ fun Project.configureVelocityPlugin() {
     }
 }
 
+fun Project.extraOrNull(key: String): Any? {
+    if (!this.extraProperties.has(key)) {
+        return null
+    }
+
+    return this.extra[key]
+}
+
 fun Project.applySharedDevEnv() {
     dependencies {
         compileOnly(root.libs.velocity.api)
@@ -188,14 +198,55 @@ fun Project.applySharedDevEnv() {
     }
 }
 
-fun Project.applyPaperDevEnv() {
+val paperDevEnvProp = "paperDevEnv"
+val velocityDevEnvProp = "velocityDevEnv"
+val apiDevEnvProp = "apiDevEnv"
+
+fun Project.enablePaperDevEnv() {
+    extra[paperDevEnvProp] = true
+}
+
+fun Project.enableVelocityDevEnv() {
+    extra[velocityDevEnvProp] = true
+}
+
+fun Project.enableApiDevEnv() {
+    extra[apiDevEnvProp] = true
+}
+
+fun Project.configurePaperDevEnv() {
+    if (extraOrNull(paperDevEnvProp) != true) {
+        return
+    }
+
     configurePaperweight()
+
+    configurations.create("obf").extendsFrom(
+        configurations.reobf.get(),
+        configurations.apiElements.get(),
+        configurations.runtimeElements.get()
+    )
+
     dependencies {
         paperweight.paperDevBundle(paperDevBundleVer)
     }
+
+    tasks.assemble {
+        dependsOn(tasks.reobfJar)
+    }
 }
 
-fun Project.applyVelocityDevEnv() {
+fun DependencyHandlerScope.implementationWithEnv(dep: Project) {
+    if (dep.extraOrNull(paperDevEnvProp) == true) {
+        implementation(project(path = dep.path, configuration = "obf"))
+    }
+}
+
+fun Project.configureVelocityDevEnv() {
+    if (extraOrNull(velocityDevEnvProp) != true) {
+        return
+    }
+
     dependencies {
         compileOnly(root.libs.velocity.api)
         compileOnly(root.libs.velocity)
@@ -203,7 +254,11 @@ fun Project.applyVelocityDevEnv() {
     }
 }
 
-fun Project.applyApiDevEnv() {
+fun Project.configureApiDevEnv() {
+    if (extraOrNull(apiDevEnvProp) != true) {
+        return
+    }
+
     dependencies {
         compileOnly(root.libs.velocity.api)
         compileOnly(root.libs.paper.api)
@@ -313,7 +368,38 @@ subprojects {
         return@subprojects
     }
 
-    applyDevEnv()
+    initDevEnv()
+}
+
+/*
+* 需要在 rootProject 中设置。
+* 否则下方拓展函数无法正常使用。
+* */
+project.enablePaperDevEnv()
+bukkitPluginYaml {
+    main = packageName()
+}
+velocityPluginJson {
+    main = packageName()
+}
+
+allprojects {
+    fun afterEvaluateIfNeeded(block: () -> Unit) {
+        if (project != rootProject) {
+            afterEvaluate {
+                block()
+            }
+            return
+        }
+
+        block()
+    }
+
+    afterEvaluateIfNeeded {
+        configurePaperDevEnv()
+        configureVelocityDevEnv()
+        configureApiDevEnv()
+    }
 }
 
 val String.trimmed: String

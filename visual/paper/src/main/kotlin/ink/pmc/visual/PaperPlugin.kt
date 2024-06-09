@@ -17,7 +17,7 @@ class PaperPlugin : SuspendingJavaPlugin() {
 
     override suspend fun onEnableAsync() {
         uaMain.enableInMemory()
-        uaApi = UltimateAdvancementAPI.getInstance(this);
+        uaApi = UltimateAdvancementAPI.getInstance(this)
     }
 
     override suspend fun onDisableAsync() {
