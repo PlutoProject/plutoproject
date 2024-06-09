@@ -6,7 +6,7 @@ import ink.pmc.visual.Renderer
 abstract class ToastRenderer<P> : Renderer<P, Toast> {
 
     companion object {
-        lateinit var defaultRenderer: Renderer<*, *>
+        lateinit var defaultRenderer: ToastRenderer<*>
     }
 
     abstract override fun render(player: P, obj: Toast)

@@ -260,6 +260,7 @@ allprojects {
         maven(uri("https://repo.opencollab.dev/main/"))
         maven(uri("https://repo.dmulloy2.net/repository/public/"))
         maven(uri("https://mvn.exceptionflug.de/repository/exceptionflug-public/"))
+        maven(uri("https://nexus.frengor.com/repository/public/"))
     }
 
     fun DependencyHandlerScope.dep(dep: Provider<*>) {

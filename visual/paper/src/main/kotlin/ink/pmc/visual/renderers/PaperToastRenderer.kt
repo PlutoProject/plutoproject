@@ -1,4 +1,4 @@
-package ink.pmc.visual.paper.renderers
+package ink.pmc.visual.renderers
 
 import ink.pmc.utils.jvm.constructor
 import ink.pmc.utils.jvm.field

@@ -8,7 +8,7 @@ import org.bukkit.entity.Player
 
 @Suppress("UNCHECKED_CAST")
 private fun paperRender(): Renderer<Player, Toast> {
-    return ToastRenderer.defaultRenderer as Renderer<Player, Toast>
+    return ToastRenderer.defaultRenderer as ToastRenderer<Player>
 }
 
 fun Player.showToast(toast: Toast) {
