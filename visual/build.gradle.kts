@@ -1,7 +1,7 @@
 subprojects {
     dependencies {
         compileOnly(project(":utils:api"))
-        compileOnly(parent!!.libs.ultimate.advancement)
+        implementation(parent!!.libs.ultimate.advancement)
     }
 }
 

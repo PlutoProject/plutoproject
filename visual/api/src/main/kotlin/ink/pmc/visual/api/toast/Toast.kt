@@ -1,4 +1,4 @@
-package ink.pmc.visual.toast
+package ink.pmc.visual.api.toast
 
 import net.kyori.adventure.text.Component
 

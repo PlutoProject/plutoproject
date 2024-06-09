@@ -1,7 +1,7 @@
-package ink.pmc.visual.toast.dsl
+package ink.pmc.visual.api.toast.dsl
 
-import ink.pmc.visual.toast.Toast
-import ink.pmc.visual.toast.ToastFactory
+import ink.pmc.visual.api.toast.Toast
+import ink.pmc.visual.api.toast.ToastFactory
 import net.kyori.adventure.text.Component
 
 @Suppress("UNUSED")

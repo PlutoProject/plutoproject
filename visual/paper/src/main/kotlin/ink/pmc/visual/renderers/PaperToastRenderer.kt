@@ -4,8 +4,8 @@ import ink.pmc.utils.jvm.constructor
 import ink.pmc.utils.jvm.field
 import ink.pmc.utils.jvm.method
 import ink.pmc.utils.jvm.reflect
-import ink.pmc.visual.toast.Toast
-import ink.pmc.visual.toast.ToastRenderer
+import ink.pmc.visual.api.toast.Toast
+import ink.pmc.visual.api.toast.ToastRenderer
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import org.bukkit.Bukkit

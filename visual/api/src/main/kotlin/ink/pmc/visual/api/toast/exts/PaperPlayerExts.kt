@@ -1,9 +1,9 @@
-package ink.pmc.visual.toast.exts
+package ink.pmc.visual.api.toast.exts
 
-import ink.pmc.visual.Renderer
-import ink.pmc.visual.toast.Toast
-import ink.pmc.visual.toast.ToastRenderer
-import ink.pmc.visual.toast.dsl.ToastDsl
+import ink.pmc.visual.api.Renderer
+import ink.pmc.visual.api.toast.Toast
+import ink.pmc.visual.api.toast.ToastRenderer
+import ink.pmc.visual.api.toast.dsl.ToastDsl
 import org.bukkit.entity.Player
 
 @Suppress("UNCHECKED_CAST")
