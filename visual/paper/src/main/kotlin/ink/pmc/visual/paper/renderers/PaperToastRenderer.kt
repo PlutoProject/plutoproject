@@ -1,4 +1,4 @@
-package ink.pmc.visual.toast.renderers
+package ink.pmc.visual.paper.renderers
 
 import ink.pmc.utils.jvm.constructor
 import ink.pmc.utils.jvm.field

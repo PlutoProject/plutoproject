@@ -54,3 +54,4 @@ include("exchange:proto")
 
 include("visual")
 include("visual:api")
+include("visual:paper")
