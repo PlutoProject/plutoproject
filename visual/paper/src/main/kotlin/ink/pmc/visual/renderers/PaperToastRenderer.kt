@@ -1,16 +1,18 @@
 package ink.pmc.visual.renderers
 
 import ink.pmc.utils.chat.nms
+import ink.pmc.utils.item.bukkit
 import ink.pmc.utils.player.sendPacket
 import ink.pmc.utils.structure.emptyOptional
 import ink.pmc.utils.structure.optional
 import ink.pmc.visual.api.toast.Toast
 import ink.pmc.visual.api.toast.ToastRenderer
+import ink.pmc.visual.api.toast.ToastType
+import net.kyori.adventure.text.Component
 import net.minecraft.advancements.*
 import net.minecraft.advancements.critereon.ImpossibleTrigger
 import net.minecraft.network.protocol.game.ClientboundUpdateAdvancementsPacket
 import net.minecraft.resources.ResourceLocation
-import org.bukkit.Material
 import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
@@ -29,19 +31,28 @@ object PaperToastRenderer : ToastRenderer<Player>() {
         getCriterion("for_free")?.grant()
     })
 
+    private val ToastType.nms: AdvancementType
+        get() {
+            return when (this) {
+                ToastType.TASK -> AdvancementType.TASK
+                ToastType.CHALLENGE -> AdvancementType.CHALLENGE
+                ToastType.GOAL -> AdvancementType.GOAL
+            }
+        }
+
     override fun render(player: Player, obj: Toast) {
-        val material = Material.getMaterial(obj.icon) ?: throw IllegalStateException("Invalid material: ${obj.icon}")
+        val material = obj.icon.bukkit
         val item = ItemStack(material, 1)
         val display = optional(
             DisplayInfo(
                 CraftItemStack.asNMSCopy(item),
-                obj.title.nms,
-                obj.description.nms,
-                adventureTexture,
-                AdvancementType.GOAL,
-                true,
+                obj.message.nms,
+                Component.text("PlutoProject Visual - Paper Toast Renderer").nms,
+                optional(ResourceLocation(obj.frame.texture)),
+                obj.type.nms,
                 true,
                 false,
+                true,
             )
         )
 
@@ -51,7 +62,12 @@ object PaperToastRenderer : ToastRenderer<Player>() {
         player.sendPacket(displayPacket)
 
         val removed = setOf(location.get())
-        val removePacket = ClientboundUpdateAdvancementsPacket(false, listOf(), removed, mapOf<ResourceLocation, AdvancementProgress>())
+        val removePacket = ClientboundUpdateAdvancementsPacket(
+            false,
+            listOf(),
+            removed,
+            mapOf<ResourceLocation, AdvancementProgress>()
+        )
         player.sendPacket(removePacket)
     }
 

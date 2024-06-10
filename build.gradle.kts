@@ -240,6 +240,8 @@ fun DependencyHandlerScope.implementationWithEnv(dep: Project) {
     if (dep.extraOrNull(paperDevEnvProp) == true) {
         implementation(project(path = dep.path, configuration = "obf"))
     }
+
+    implementation(dep)
 }
 
 fun Project.configureVelocityDevEnv() {
@@ -350,7 +352,6 @@ allprojects {
             return@shadowJar
         }
 
-        clearOutputsDir()
         archiveClassifier = ""
         onlyIf { project != rootProject && !project.name.startsWith("common-library-") }
         destinationDirectory.set(file("$rootDir/build-outputs"))
@@ -361,6 +362,10 @@ allprojects {
     }
 
     applyProtobuf()
+}
+
+tasks.shadowJar {
+    doFirst { clearOutputsDir() }
 }
 
 subprojects {

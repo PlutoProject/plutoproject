@@ -1,5 +1,6 @@
 package ink.pmc.visual.api.toast
 
+import ink.pmc.utils.item.KeyedMaterial
 import net.kyori.adventure.text.Component
 
 @Suppress("UNUSED")
@@ -12,6 +13,11 @@ interface IToastFactory {
         lateinit var instance: IToastFactory
     }
 
-    fun of(icon: String, title: Component, description: Component): Toast
+    fun of(
+        icon: KeyedMaterial,
+        message: Component,
+        type: ToastType,
+        frame: ToastFrame
+    ): Toast
 
 }
