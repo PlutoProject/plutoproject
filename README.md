@@ -6,20 +6,13 @@
 
 ## 📦 模块说明
 
-所有模块在本服务器的开发术语内都被称作为 “组件”。
-
-标有 * 的组件可以在 Bukkit 或 Velocity 平台作为插件加载。
-
-- `common-dependency-loader*`：在 Spigot 平台上通过自带的 Maven Dependency 功能下载外部依赖。
-- `common-dependency-loader-velocity*`：由于 Velocity 平台没有类似的功能，因此单独区分一个组件通过 `shadowJar` 加载所有的依赖库。
-- `common-library-member-api`：成员管理系统 API。
-- `common-library-misc-api`：杂项功能 API。
-- `common-library-server-api`：跨端操作框架。
-- `common-library-utils`：工具类集合。
-- `common-member*`：成员系统逻辑实现。
-- `common-misc*`：杂项功能逻辑实现。
-- `common-server*`：跨端操作框架逻辑实现。
-- `common-utils*`：用于初始化工具类中部分涉及到服务端平台的内容。
+- `dependency-loader`: 用于加载依赖库。
+- `member`: 成员管理框架。
+- `misc`: 杂项功能。
+- `rpc`: 跨端通信辅助，基于 gRPC。
+- `utils`: 工具类。
+- `hypervisor`: 服务端监测、调控工具。
+- `exchange`: 兑换系统。
 
 ## 🔧 构建
 
