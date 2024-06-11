@@ -344,6 +344,7 @@ allprojects {
         dep(rootProject.libs.netty)
         dep(rootProject.libs.jsoup)
         dep(rootProject.libs.caffeine)
+        dep(rootProject.libs.adventure.kt)
     }
 
     tasks.shadowJar {
