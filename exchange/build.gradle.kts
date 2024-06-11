@@ -3,6 +3,7 @@ subprojects {
         compileOnly(project(":utils:api"))
         compileOnly(project(":rpc:api"))
         compileOnly(project(":member:api"))
+        compileOnly(project(":visual:api"))
     }
 }
 

@@ -41,3 +41,7 @@ class ToastDsl {
     }
 
 }
+
+fun toast(content: ToastDsl.() -> Unit): Toast {
+    return ToastDsl().apply(content).create()
+}

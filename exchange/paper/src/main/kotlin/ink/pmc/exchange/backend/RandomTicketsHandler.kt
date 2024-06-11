@@ -1,11 +1,10 @@
 package ink.pmc.exchange.backend
 
-import ink.pmc.exchange.DAILY_TICKETS
-import ink.pmc.exchange.TICKETS_LIMIT
-import ink.pmc.exchange.TICKETS_RANDOM_GOT
-import ink.pmc.exchange.exchangeService
+import ink.pmc.exchange.*
 import ink.pmc.member.api.Member
+import ink.pmc.utils.bedrock.isBedrock
 import ink.pmc.utils.concurrent.submitAsyncIO
+import ink.pmc.visual.api.toast.exts.showToast
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.bukkit.Bukkit
 import org.bukkit.attribute.Attribute
@@ -112,7 +111,13 @@ class RandomTicketsHandler(player: Player, private val member: Member) : Listene
         submitAsyncIO { member.save() }
         points.value = 0.0
 
-        player?.sendMessage(TICKETS_RANDOM_GOT)
+        val toast = if (player?.isBedrock == false) {
+            member.ticketGrantToast()
+        } else {
+            member.ticketGrantToastBe()
+        }
+
+        player?.showToast(toast)
     }
 
     private fun decrease(chance: Double, min: Double = COMMON_DECREASE_MIN, max: Double = COMMON_DECREASE_MAX) {
