@@ -13,6 +13,7 @@
 - `exchange`: 兑换系统。
 - `visual`: 视觉相关 API。
 - `bedrock-adaptive`: 基岩版适配逻辑。
+- `teleport`: 支持跨服的传送系统。
 
 ## 🔧 构建
 
