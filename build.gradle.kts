@@ -322,6 +322,7 @@ allprojects {
     fun DependencyHandlerScope.dep(dep: Provider<*>) {
         if (project.name.contains("dependency-loader")) {
             implementation(dep)
+            return
         }
         compileOnly(dep)
     }
