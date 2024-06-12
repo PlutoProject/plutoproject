@@ -29,9 +29,9 @@ val SERVER_STATUS
         text("  - ") with mochaSubtext0
         text("自 5s, 1m, 5m 以来的 TPS：") with mochaText
         raw(sparkTPS5Secs.colorizedTPSComponent)
-        text(", ") with (mochaSubtext0)
+        text(", ") with mochaSubtext0
         raw(sparkTPS1Mins.colorizedTPSComponent)
-        text(", ") with (mochaSubtext0)
+        text(", ") with mochaSubtext0
         raw(sparkTPS5Mins.colorizedTPSComponent)
         newline()
 
@@ -87,7 +87,7 @@ val Double.colorizedTPSComponent: Component
     get() = component {
         text(this.toString()) with when {
             this@colorizedTPSComponent in 16.0..18.0 -> mochaYellow
-            (this@colorizedTPSComponent < 16.0) -> mochaMaroon
+            this@colorizedTPSComponent < 16.0 -> mochaMaroon
             else -> mochaGreen
         }
     }
