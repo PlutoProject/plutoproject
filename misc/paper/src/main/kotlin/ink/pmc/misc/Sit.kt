@@ -39,6 +39,7 @@ import org.bukkit.persistence.PersistentDataType
 import java.util.*
 import java.util.concurrent.CopyOnWriteArraySet
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 
 /*
 * 有时候在尝试坐下的时候会由于未知原因直接触发 EntityDismountEvent，导致无法坐下。
@@ -71,7 +72,7 @@ fun runSitCheckTask() {
                 }
             }
 
-            delay(Duration.parse("2s"))
+            delay(2.seconds)
         }
     }
 }
