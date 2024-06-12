@@ -230,27 +230,26 @@ fun handleSitDelay(event: EntityDismountEvent) {
 fun handleSitLocationBroke(event: Event) {
     val locations = mutableSetOf<Location>()
 
-    if (event is BlockEvent) {
-        locations.add(event.block.location.rawLocation)
-
-        if (event is BlockPistonExtendEvent) {
-            event.blocks.map { it.location.rawLocation }.toCollection(locations)
+    when (event) {
+        is BlockEvent -> {
+            locations.add(event.block.location.rawLocation)
+            when(event) {
+                is BlockPistonExtendEvent -> event.blocks.map { it.location.rawLocation }.toCollection(locations)
+                is BlockPistonRetractEvent -> event.blocks.map { it.location.rawLocation }.toCollection(locations)
+                is BlockExplodeEvent -> event.blockList().map { it.location.rawLocation }.toCollection(locations)
+            }
         }
 
-        if (event is BlockPistonRetractEvent) {
-            event.blocks.map { it.location.rawLocation }.toCollection(locations)
-        }
-
-        if (event is BlockExplodeEvent) {
+        is EntityExplodeEvent -> {
             event.blockList().map { it.location.rawLocation }.toCollection(locations)
         }
-    } else if (event is EntityExplodeEvent) {
-        event.blockList().map { it.location.rawLocation }.toCollection(locations)
-    } else if (event is EntitySpawnEvent) {
-        if (event.entity.type == EntityType.FALLING_BLOCK) {
-            val location = event.location.rawLocation
-            if (location.rawLocation.isSitLocation) {
-                locations.add(location)
+
+        is EntitySpawnEvent -> {
+            if (event.entity.type == EntityType.FALLING_BLOCK) {
+                val location = event.location.rawLocation
+                if (location.rawLocation.isSitLocation) {
+                    locations.add(location)
+                }
             }
         }
     }
@@ -264,7 +263,6 @@ fun handleSitLocationBroke(event: Event) {
         player.stand()
     }
 }
-
 
 fun handleArmorStandAction(event: Cancellable, needCancel: Boolean = true) {
     if (event !is EntityEvent) {
