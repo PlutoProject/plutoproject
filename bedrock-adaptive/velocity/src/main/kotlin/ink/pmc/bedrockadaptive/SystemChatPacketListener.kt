@@ -1,4 +1,4 @@
-package ink.pmc.bedrockadaptive.velocity
+package ink.pmc.bedrockadaptive
 
 import com.velocitypowered.proxy.protocol.packet.chat.ChatType
 import com.velocitypowered.proxy.protocol.packet.chat.SystemChatPacket

@@ -70,7 +70,7 @@ object PlayerActionHandler : Listener {
             return
         }
 
-        event.cursor = getForbiddenItem(material)
+        event.cursor = getForbiddenItem(material, player)
     }
 
     @EventHandler

@@ -1,6 +1,6 @@
-package ink.pmc.bedrockadaptive.velocity
+package ink.pmc.bedrockadaptive
 
-import com.velocitypowered.proxy.protocol.packet.title.TitleActionbarPacket
+import com.velocitypowered.proxy.protocol.packet.BossBarPacket
 import dev.simplix.protocolize.api.Direction
 import dev.simplix.protocolize.api.listener.AbstractPacketListener
 import dev.simplix.protocolize.api.listener.PacketReceiveEvent
@@ -9,21 +9,21 @@ import ink.pmc.bedrockadaptive.utils.replaceFallbackColor
 import ink.pmc.utils.bedrock.isFloodgatePlayer
 
 @Suppress("UNUSED")
-object TitleActionbarPacketListener : AbstractPacketListener<TitleActionbarPacket>(
-    TitleActionbarPacket::class.java,
+object BossBarPacketListener : AbstractPacketListener<BossBarPacket>(
+    BossBarPacket::class.java,
     Direction.UPSTREAM,
     0
 ) {
 
-    override fun packetReceive(event: PacketReceiveEvent<TitleActionbarPacket>) {
+    override fun packetReceive(event: PacketReceiveEvent<BossBarPacket>) {
     }
 
-    override fun packetSend(event: PacketSendEvent<TitleActionbarPacket>) {
+    override fun packetSend(event: PacketSendEvent<BossBarPacket>) {
         if (!isFloodgatePlayer(event.player().uniqueId())) {
             return
         }
 
-        replaceFallbackColor(event.packet())
+        replaceFallbackColor(event.packet(), "name")
     }
 
 }

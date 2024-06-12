@@ -1,4 +1,4 @@
-package ink.pmc.bedrockadaptive.velocity.replacements
+package ink.pmc.bedrockadaptive.replacements
 
 import com.velocitypowered.proxy.protocol.packet.chat.SystemChatPacket
 import ink.pmc.bedrockadaptive.delegations.SystemChatPacketDecodeDelegation

@@ -1,4 +1,4 @@
-package ink.pmc.bedrockadaptive.velocity.replacements
+package ink.pmc.bedrockadaptive.replacements
 
 import ink.pmc.bedrockadaptive.delegations.BedrockSerializerDelegation
 import ink.pmc.bedrockadaptive.utils.messageTranslatorClass

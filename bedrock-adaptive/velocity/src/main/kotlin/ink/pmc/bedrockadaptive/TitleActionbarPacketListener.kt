@@ -1,6 +1,6 @@
-package ink.pmc.bedrockadaptive.velocity
+package ink.pmc.bedrockadaptive
 
-import com.velocitypowered.proxy.protocol.packet.title.TitleSubtitlePacket
+import com.velocitypowered.proxy.protocol.packet.title.TitleActionbarPacket
 import dev.simplix.protocolize.api.Direction
 import dev.simplix.protocolize.api.listener.AbstractPacketListener
 import dev.simplix.protocolize.api.listener.PacketReceiveEvent
@@ -9,16 +9,16 @@ import ink.pmc.bedrockadaptive.utils.replaceFallbackColor
 import ink.pmc.utils.bedrock.isFloodgatePlayer
 
 @Suppress("UNUSED")
-object TitleSubtitlePacketListener : AbstractPacketListener<TitleSubtitlePacket>(
-    TitleSubtitlePacket::class.java,
+object TitleActionbarPacketListener : AbstractPacketListener<TitleActionbarPacket>(
+    TitleActionbarPacket::class.java,
     Direction.UPSTREAM,
     0
 ) {
 
-    override fun packetReceive(event: PacketReceiveEvent<TitleSubtitlePacket>) {
+    override fun packetReceive(event: PacketReceiveEvent<TitleActionbarPacket>) {
     }
 
-    override fun packetSend(event: PacketSendEvent<TitleSubtitlePacket>) {
+    override fun packetSend(event: PacketSendEvent<TitleActionbarPacket>) {
         if (!isFloodgatePlayer(event.player().uniqueId())) {
             return
         }

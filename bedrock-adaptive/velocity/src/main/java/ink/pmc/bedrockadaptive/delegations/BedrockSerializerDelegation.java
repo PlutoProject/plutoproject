@@ -1,6 +1,6 @@
 package ink.pmc.bedrockadaptive.delegations;
 
-import ink.pmc.bedrockadaptive.velocity.replacements.BedrockColorSerializerReplacementKt;
+import ink.pmc.bedrockadaptive.replacements.BedrockColorSerializerReplacementKt;
 import net.bytebuddy.asm.Advice;
 import net.kyori.adventure.text.Component;
 

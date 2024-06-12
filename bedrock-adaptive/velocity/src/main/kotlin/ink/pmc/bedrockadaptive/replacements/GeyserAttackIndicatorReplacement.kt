@@ -1,4 +1,4 @@
-package ink.pmc.bedrockadaptive.velocity.replacements
+package ink.pmc.bedrockadaptive.replacements
 
 import ink.pmc.bedrockadaptive.delegations.GeyserAttackIndicatorTitleDelegation
 import ink.pmc.bedrockadaptive.utils.cooldownUtilsClass

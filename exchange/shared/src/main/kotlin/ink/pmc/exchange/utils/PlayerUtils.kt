@@ -1,6 +1,8 @@
 package ink.pmc.exchange.utils
 
 import ink.pmc.exchange.*
+import ink.pmc.utils.bedrock.isBedrock
+import ink.pmc.utils.bedrock.useFallbackColors
 import ink.pmc.utils.chat.replace
 import ink.pmc.utils.concurrent.submitSync
 import ink.pmc.utils.platform.paper
@@ -85,15 +87,26 @@ fun isForbiddenItem(item: ItemStack): Boolean {
     return item.itemMeta.persistentDataContainer.has(forbiddenItemDataKey)
 }
 
-fun getForbiddenItem(material: Material): ItemStack {
+fun getForbiddenItem(material: Material, player: Player): ItemStack {
+    val name = if (!player.isBedrock) {
+        MATERIAL_NOT_AVAILABLE_NAME
+    } else {
+        MATERIAL_NOT_AVAILABLE_NAME.useFallbackColors()
+    }
+    val lore = if (!player.isBedrock) {
+        MATERIAL_NOT_AVAILABLE_LORE
+    } else {
+        MATERIAL_NOT_AVAILABLE_LORE.map { it.useFallbackColors() }
+    }
+
     return ItemStack(material, 1).apply {
         editMeta {
             it.displayName(
-                MATERIAL_NOT_AVAILABLE_NAME
+                name
                     .replace("<material>", Component.translatable(material).color(mochaFlamingo))
                     .decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE)
             )
-            it.lore(MATERIAL_NOT_AVAILABLE_LORE.map { component ->
+            it.lore(lore.map { component ->
                 component.decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE)
             })
             it.persistentDataContainer.set(forbiddenItemDataKey, PersistentDataType.STRING, material.toString())

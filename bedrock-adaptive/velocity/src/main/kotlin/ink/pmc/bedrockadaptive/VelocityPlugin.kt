@@ -9,11 +9,10 @@ import com.velocitypowered.api.plugin.PluginContainer
 import com.velocitypowered.api.plugin.annotation.DataDirectory
 import com.velocitypowered.api.proxy.ProxyServer
 import dev.simplix.protocolize.api.Protocolize
-import ink.pmc.bedrockadaptive.velocity.*
-import ink.pmc.bedrockadaptive.velocity.replacements.BedrockColorSerializerReplacement
-import ink.pmc.bedrockadaptive.velocity.replacements.GeyserAttackIndicatorReplacement
-import ink.pmc.bedrockadaptive.velocity.replacements.SystemChatPacketDecodeReplacement
-import ink.pmc.bedrockadaptive.velocity.replacements.TitlePacketDecodeReplacement
+import ink.pmc.bedrockadaptive.replacements.BedrockColorSerializerReplacement
+import ink.pmc.bedrockadaptive.replacements.GeyserAttackIndicatorReplacement
+import ink.pmc.bedrockadaptive.replacements.SystemChatPacketDecodeReplacement
+import ink.pmc.bedrockadaptive.replacements.TitlePacketDecodeReplacement
 import ink.pmc.utils.platform.proxy
 import java.nio.file.Path
 import java.util.logging.Logger
@@ -53,6 +52,7 @@ class VelocityPlugin @Inject constructor(suspendingPluginContainer: SuspendingPl
         * */
         // Protocolize.listenerProvider().registerListener(HeaderAndFooterPacketListener)
         Protocolize.listenerProvider().registerListener(BossBarPacketListener)
+        // Protocolize.listenerProvider().registerListener(InventoryItemPacketListener)
     }
 
 }

@@ -1,4 +1,4 @@
-package ink.pmc.bedrockadaptive.velocity.replacements
+package ink.pmc.bedrockadaptive.replacements
 
 import com.velocitypowered.proxy.protocol.packet.title.GenericTitlePacket
 import ink.pmc.bedrockadaptive.delegations.TitlePacketsDecodeDelegation
