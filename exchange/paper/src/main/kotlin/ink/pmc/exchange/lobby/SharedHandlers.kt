@@ -54,7 +54,7 @@ suspend fun checkout(player: Player) {
 
     when (ack.result) {
         ExchangeEndAckOuterClass.ExchangeEndResult.END_FAILED_UNKOWN -> {
-            player.sendMessage(EXCHANGE_END_FAILED_UNKOWN)
+            player.sendMessage(EXCHANGE_END_FAILED_UNKNOWN)
             serverLogger.severe("Failed to send player back: ${player.name}")
             return
         }
