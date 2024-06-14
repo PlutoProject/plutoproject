@@ -28,4 +28,8 @@ class ProviderServiceImpl(private val config: FileConfig) : IProviderService {
         return client to db
     }
 
+    override fun close() {
+        mongoClient.close()
+    }
+
 }

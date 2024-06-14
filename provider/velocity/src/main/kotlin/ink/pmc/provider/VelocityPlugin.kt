@@ -5,9 +5,12 @@ import com.github.shynixn.mccoroutine.velocity.SuspendingPluginContainer
 import com.google.inject.Inject
 import com.velocitypowered.api.event.Subscribe
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent
+import com.velocitypowered.api.event.proxy.ProxyShutdownEvent
 import com.velocitypowered.api.plugin.annotation.DataDirectory
 import com.velocitypowered.api.proxy.ProxyServer
 import ink.pmc.utils.platform.saveConfig
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.nio.file.Path
 import java.util.logging.Logger
@@ -46,4 +49,12 @@ class VelocityPlugin @Inject constructor(suspendingPluginContainer: SuspendingPl
         fileConfig.load()
         fileConfig.loadProviderService()
     }
+
+    @Subscribe
+    suspend fun proxyShutdownEvent(event: ProxyShutdownEvent) {
+        withContext(Dispatchers.IO) {
+            providerService.close()
+        }
+    }
+
 }
