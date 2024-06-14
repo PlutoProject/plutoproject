@@ -1,10 +1,10 @@
 package ink.pmc.provider
 
 import com.electronwill.nightconfig.core.file.FileConfig
+import com.electronwill.nightconfig.hocon.HoconFormat
 import com.github.shynixn.mccoroutine.velocity.SuspendingPluginContainer
 import com.google.inject.Inject
 import com.velocitypowered.api.event.Subscribe
-import com.velocitypowered.api.event.proxy.ProxyInitializeEvent
 import com.velocitypowered.api.event.proxy.ProxyShutdownEvent
 import com.velocitypowered.api.plugin.annotation.DataDirectory
 import com.velocitypowered.api.proxy.ProxyServer
@@ -37,17 +37,8 @@ class VelocityPlugin @Inject constructor(suspendingPluginContainer: SuspendingPl
         if (!configFile.exists()) {
             saveConfig(VelocityPlugin::class.java, "config.conf", configFile)
         }
-    }
 
-    @Subscribe
-    suspend fun proxyInitializationEvent(event: ProxyInitializeEvent) {
-        val fileConfig = FileConfig.builder(configFile)
-            .async()
-            .autoreload()
-            .build()
-
-        fileConfig.load()
-        fileConfig.loadProviderService()
+        configFile.loadProviderService()
     }
 
     @Subscribe

@@ -1,6 +1,5 @@
 package ink.pmc.provider
 
-import com.electronwill.nightconfig.core.file.FileConfig
 import com.github.shynixn.mccoroutine.bukkit.SuspendingJavaPlugin
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -16,13 +15,7 @@ class PaperPlugin : SuspendingJavaPlugin() {
             saveResource("config.conf", false)
         }
 
-        val fileConfig = FileConfig.builder(file)
-            .async()
-            .autoreload()
-            .build()
-
-        fileConfig.load()
-        fileConfig.loadProviderService()
+        config.loadProviderService()
     }
 
     override suspend fun onDisableAsync() {
