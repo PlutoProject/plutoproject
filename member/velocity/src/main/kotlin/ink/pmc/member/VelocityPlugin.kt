@@ -14,14 +14,13 @@ import ink.pmc.member.api.IMemberService
 import ink.pmc.member.bedrock.GeyserPlayerLinkReplacement
 import ink.pmc.member.bedrock.GeyserSimpleFloodgateApiReplacement
 import ink.pmc.member.commands.MemberCommand
+import ink.pmc.provider.ProviderService
 import ink.pmc.rpc.api.RpcServer
 import ink.pmc.utils.command.init
 import ink.pmc.utils.platform.proxy
-import ink.pmc.utils.platform.saveDefaultConfig
 import org.incendo.cloud.SenderMapper
 import org.incendo.cloud.execution.ExecutionCoordinator
 import org.incendo.cloud.velocity.VelocityCommandManager
-import java.io.File
 import java.nio.file.Path
 import java.util.logging.Logger
 
@@ -38,15 +37,6 @@ class VelocityPlugin @Inject constructor(suspendingPluginContainer: SuspendingPl
     @Inject
     fun memberPluginVelocity(server: ProxyServer, logger: Logger, @DataDirectory dataDirectoryPath: Path) {
         serverLogger = logger
-        dataDir = dataDirectoryPath.toFile()
-
-        createDataDir()
-        configFile = File(dataDir, "config.toml")
-
-        if (!configFile.exists()) {
-            saveDefaultConfig(VelocityPlugin::class.java, configFile)
-        }
-
         initVelocityService()
 
         RpcServer.apply {
@@ -80,8 +70,7 @@ class VelocityPlugin @Inject constructor(suspendingPluginContainer: SuspendingPl
     }
 
     private fun initVelocityService() {
-        initService()
-        memberService = VelocityMemberService(database)
+        memberService = VelocityMemberService(ProviderService.defaultMongoDatabase)
         IMemberService.instance = memberService
     }
 

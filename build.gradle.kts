@@ -67,6 +67,12 @@ fun Project.dependOnShared() {
     dependOnOtherModule("shared")
 }
 
+fun Project.configureRelocate() {
+    tasks.shadowJar {
+        relocate("com.electronwill.nightconfig", "ink.pmc.libs.nightconfig")
+    }
+}
+
 fun Project.initDevEnv() {
     dependencies {
         subprojects {
@@ -119,6 +125,8 @@ fun Project.initDevEnv() {
             }
         }
     }
+
+    configureRelocate()
 }
 
 fun Project.configurePaperweight() {
