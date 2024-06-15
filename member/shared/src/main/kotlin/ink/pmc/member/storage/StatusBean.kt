@@ -7,41 +7,20 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import org.bson.types.ObjectId
-import org.javers.core.diff.Diff
-import org.javers.core.diff.changetype.ValueChange
-import org.javers.core.metamodel.annotation.DiffIgnore
-import org.javers.core.metamodel.annotation.Id
-import org.javers.core.metamodel.annotation.TypeName
 import java.util.concurrent.locks.ReentrantLock
 
 @Serializable
-@TypeName("Status")
 data class StatusBean(
-    @Id @SerialName("_id") @Contextual val objectId: ObjectId,
+    @SerialName("_id") @Contextual val objectId: ObjectId,
     var lastMember: Long,
     var lastPunishment: Long,
     var lastComment: Long,
     var lastDataContainer: Long,
     var lastBedrockAccount: Long
-) : Diffable<StatusBean>() {
+) {
 
     @Transient
-    @DiffIgnore
     private val accessLock = ReentrantLock()
-
-    override fun applyDiff(diff: Diff): Diffable<StatusBean> {
-        diff.changes.filterIsInstance<ValueChange>().forEach {
-            when (it.propertyName) {
-                "lastMember" -> lastMember = it.right as Long
-                "lastPunishment" -> lastPunishment = it.right as Long
-                "lastComment" -> lastComment = it.right as Long
-                "lastDataContainer" -> lastDataContainer = it.right as Long
-                "lastBedrockAccount" -> lastBedrockAccount = it.right as Long
-            }
-        }
-
-        return this
-    }
 
     fun nextMember(): Long {
         if (lastMember == -1L) {

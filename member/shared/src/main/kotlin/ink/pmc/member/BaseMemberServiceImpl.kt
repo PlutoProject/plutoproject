@@ -4,10 +4,8 @@ import com.github.benmanes.caffeine.cache.AsyncCacheLoader
 import com.github.benmanes.caffeine.cache.AsyncLoadingCache
 import com.github.benmanes.caffeine.cache.Caffeine
 import com.mongodb.client.model.Filters.*
-import com.mongodb.client.model.PushOptions
 import com.mongodb.client.model.ReplaceOptions
 import com.mongodb.client.model.UpdateOptions
-import com.mongodb.client.model.Updates.*
 import com.mongodb.kotlin.client.coroutine.MongoCollection
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
 import ink.pmc.member.api.AuthType
@@ -16,9 +14,7 @@ import ink.pmc.member.api.WhitelistStatus
 import ink.pmc.member.api.data.MemberModifier
 import ink.pmc.member.data.BedrockAccountImpl
 import ink.pmc.member.data.DataContainerImpl
-import ink.pmc.member.proto.DiffOuterClass.DiffType
 import ink.pmc.member.proto.MemberUpdateNotifyOuterClass.MemberUpdateNotify
-import ink.pmc.member.proto.diff
 import ink.pmc.member.proto.memberUpdateNotify
 import ink.pmc.member.storage.BedrockAccountBean
 import ink.pmc.member.storage.DataContainerBean
@@ -27,8 +23,6 @@ import ink.pmc.member.storage.StatusBean
 import ink.pmc.utils.bedrock.xuid
 import ink.pmc.utils.concurrent.io
 import ink.pmc.utils.concurrent.submitAsyncIO
-import ink.pmc.utils.json.toJsonString
-import ink.pmc.utils.json.toObject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.firstOrNull
@@ -36,15 +30,7 @@ import kotlinx.coroutines.future.asCompletableFuture
 import kotlinx.coroutines.future.await
 import kotlinx.coroutines.withContext
 import org.bson.BsonDocument
-import org.bson.conversions.Bson
 import org.bson.types.ObjectId
-import org.javers.core.diff.Diff
-import org.javers.core.diff.changetype.ValueChange
-import org.javers.core.diff.changetype.container.ElementValueChange
-import org.javers.core.diff.changetype.container.ListChange
-import org.javers.core.diff.changetype.container.ValueAdded
-import org.javers.core.diff.changetype.container.ValueRemoved
-import org.javers.core.diff.changetype.map.MapChange
 import java.time.Duration
 import java.time.Instant
 import java.util.*
@@ -70,9 +56,7 @@ abstract class BaseMemberServiceImpl(
         .expireAfterWrite(Duration.ofMinutes(10))
         .refreshAfterWrite(Duration.ofMinutes(5))
         .buildAsync(cacheLoader)
-    private lateinit var status: StatusBean
     override lateinit var currentStatus: StatusBean
-    private val updateOptions = UpdateOptions().upsert(true)
     private val replaceOptions = ReplaceOptions().upsert(true)
     private val monitorJob: Job
 
@@ -127,8 +111,7 @@ abstract class BaseMemberServiceImpl(
                 statusCollection.insertOne(lookupStatus)
             }
 
-            status = lookupStatus
-            currentStatus = lookupStatus.copy()
+            currentStatus = lookupStatus
         }
 
         monitorJob = submitAsyncIO { monitorUpdate() }
@@ -163,7 +146,6 @@ abstract class BaseMemberServiceImpl(
             System.currentTimeMillis(),
             System.currentTimeMillis(),
             BsonDocument(),
-            true
         )
         memberStorage = MemberBean(
             ObjectId(),
@@ -180,7 +162,6 @@ abstract class BaseMemberServiceImpl(
             if (authType.isBedrock) nextBedrockAccountId else null,
             null,
             false,
-            new = true
         )
 
         val member = MemberImpl(this, memberStorage)
@@ -199,7 +180,6 @@ abstract class BaseMemberServiceImpl(
                 nextMember,
                 profile.uuid.xuid,
                 name,
-                true
             )
 
             member.bedrockAccount = BedrockAccountImpl(member, bedrockStorage)
@@ -305,137 +285,28 @@ abstract class BaseMemberServiceImpl(
         return member!!.modifier
     }
 
-    private suspend fun saveMember(old: MemberBean?, new: MemberBean): Diff {
-        if (old == null) {
-            members.insertOne(new)
-            return javers.compare(null, new)
-        }
-
-        val bson = mutableListOf<Bson>()
-        val diff = new.diff(old)
-
-        if (!diff.hasChanges()) {
-            return diff
-        }
-
-        diff.changes.filterIsInstance<ValueChange>().forEach {
-            bson.add(set(it.propertyName, it.right))
-        }
-
-        diff.changes.filterIsInstance<ListChange>().forEach { containerChange ->
-            val arrayName = containerChange.propertyName
-
-            containerChange.changes.filterIsInstance<ValueAdded>().forEach {
-                bson.add(pushEach(arrayName, listOf(it.value), PushOptions().position(it.index)))
-            }
-
-            containerChange.changes.filterIsInstance<ElementValueChange>().forEach {
-                bson.add(set("$arrayName.${it.index}", it.rightValue))
-            }
-
-            containerChange.changes.filterIsInstance<ValueRemoved>().forEach {
-                bson.add(unset("$arrayName.${it.index}"))
-                bson.add(pull(arrayName, null))
-            }
-        }
-
-        val updates = combine(bson)
-        members.updateOne(eq("uid", new.uid), updates, updateOptions)
-        return diff
+    private suspend fun saveMember(bean: MemberBean) {
+        members.replaceOne(eq("uid", bean.uid), bean, replaceOptions)
     }
 
-    private suspend fun saveBedrockAccount(old: BedrockAccountBean?, new: BedrockAccountBean?): Diff {
-        if (old == null && new == null) {
-            return javers.compare(null, null)
+    private suspend fun saveBedrockAccount(bean: BedrockAccountBean?) {
+        if (bean == null) {
+            return
         }
 
-        if (old == null && new != null) {
-            bedrockAccounts.insertOne(new)
-            return javers.compare(null, new)
+        bedrockAccounts.replaceOne(eq("id", bean.id), bean, replaceOptions)
+
+        removalBeAccounts.forEach {
+            bedrockAccounts.deleteOne(eq("id", it))
         }
-
-        if (old != null && new == null) {
-            bedrockAccounts.deleteOne(eq("id", old.id))
-            return javers.compare(old, null)
-        }
-
-        val bson = mutableListOf<Bson>()
-        val diff = new!!.diff(old)
-
-        if (!diff.hasChanges()) {
-            return diff
-        }
-
-        diff.changes.filterIsInstance<ValueChange>().forEach {
-            when (it.propertyName) {
-                "id" -> bson.add(set("id", it.right))
-                "linkedWith" -> bson.add(set("linkedWith", it.right))
-                "xuid" -> bson.add(set("xuid", it.right))
-                "gamertag" -> bson.add(set("gamertag", it.right))
-            }
-        }
-
-        val updates = combine(bson)
-        bedrockAccounts.updateOne(eq("id", new.id), updates, updateOptions)
-        return diff
     }
 
-    private suspend fun saveDataContainer(old: DataContainerBean?, new: DataContainerBean): Diff {
-        if (old == null) {
-            dataContainers.insertOne(new)
-            return javers.compare(null, new)
-        }
-
-        val bson = mutableListOf<Bson>()
-        val diff = new.diff(old)
-
-        if (!diff.hasChanges()) {
-            return diff
-        }
-
-        diff.changes.filterIsInstance<ValueChange>().forEach {
-            when (it.propertyName) {
-                "id" -> bson.add(set("id", it.right))
-                "owner" -> bson.add(set("owner", it.right))
-                "createdAt" -> bson.add(set("createdAt", it.right))
-                "lastModifiedAt" -> bson.add(set("lastModifiedAt", it.right))
-                "contents" -> bson.add(set("contents", it.right))
-            }
-        }
-
-        val mapChanged = diff.changes.filterIsInstance<MapChange<*>>().isNotEmpty()
-
-        if (mapChanged) {
-            bson.add(set("contents", new.contents))
-        }
-
-        val updates = combine(bson)
-        dataContainers.updateOne(eq("id", new.id), updates, updateOptions)
-        return diff
+    private suspend fun saveDataContainer(bean: DataContainerBean) {
+        dataContainers.replaceOne(eq("id", bean.id), bean, replaceOptions)
     }
 
-    private suspend fun saveStatus(old: StatusBean, new: StatusBean): Diff {
-        val bson = mutableListOf<Bson>()
-        val diff = new.diff(old)
-
-        if (!diff.hasChanges()) {
-            return diff
-        }
-
-        diff.changes.filterIsInstance<ValueChange>().forEach {
-            when (it.propertyName) {
-                "lastMember" -> bson.add(set("lastMember", it.right))
-                "lastPunishment" -> bson.add(set("lastPunishment", it.right))
-                "lastComment" -> bson.add(set("lastComment", it.right))
-                "lastDataContainer" -> bson.add(set("lastDataContainer", it.right))
-                "lastBedrockAccount" -> bson.add(set("lastBedrockAccount", it.right))
-            }
-        }
-
-        val updates = combine(bson)
-        dataContainers.updateOne(exists("lastMember"), updates, updateOptions)
-        status = currentStatus
-        return diff
+    private suspend fun saveStatus(bean: StatusBean) {
+        statusCollection.replaceOne(exists("lastMember"), bean, replaceOptions)
     }
 
     abstract suspend fun notifyUpdate(notify: MemberUpdateNotify)
@@ -455,63 +326,7 @@ abstract class BaseMemberServiceImpl(
             }
 
             serverLogger.info("Received update notify from server (serviceId=${notify.serviceId}) for UID ${notify.memberId}, processing...")
-
-            val member = loadedMembers.get(memberId).get()!! as MemberImpl
-
-            if (notify.hasMemberDiff()) {
-                val memberDiff = notify.memberDiff
-                when (memberDiff.type) {
-                    DiffType.MODIFY -> {
-                        val diff = memberDiff.diff.toDiff()!!
-                        val diffedMemberStorage = member.bean.copy().applyDiff(diff)
-                        member.reload(diffedMemberStorage as MemberBean)
-                    }
-
-                    else -> {}
-                }
-            }
-
-            if (notify.hasStatusDiff()) {
-                val statusDiff = notify.statusDiff
-                val diff = statusDiff.diff.toDiff()!!
-                currentStatus.applyDiff(diff)
-                status = currentStatus
-            }
-
-            if (notify.hasBedrockAccountDiff()) {
-                val bedrockAccountDiff = notify.bedrockAccountDiff
-                when (bedrockAccountDiff.type) {
-                    DiffType.ADD -> {
-                        val storage = bedrockAccountDiff.storage.toObject(BedrockAccountBean::class.java)
-                        member.bedrockAccount = BedrockAccountImpl(member, storage)
-                    }
-
-                    DiffType.REMOVE -> {
-                        member.bedrockAccount = null
-                    }
-
-                    DiffType.MODIFY -> {
-                        val diff = bedrockAccountDiff.diff.toDiff()!!
-                        val diffedBedrockAccountStorage = member.bedrockAccount!!.bean.copy().applyDiff(diff)
-                        member.bedrockAccount!!.reload(diffedBedrockAccountStorage as BedrockAccountBean)
-                    }
-
-                    else -> {}
-                }
-            }
-
-            if (notify.hasDataContainerDiff()) {
-                val dataContainerDiff = notify.dataContainerDiff
-                when (dataContainerDiff.type) {
-                    DiffType.MODIFY -> {
-                        val diff = dataContainerDiff.diff.toDiff()!!
-                        val diffedDataContainerStorage = member.dataContainer.bean.copy().applyDiff(diff)
-                        member.dataContainer.reload(diffedDataContainerStorage as DataContainerBean)
-                    }
-
-                    else -> {}
-                }
-            }
+            sync(memberId)
 
             serverLogger.info("Notify processed for UID ${notify.memberId}")
         }
@@ -523,75 +338,15 @@ abstract class BaseMemberServiceImpl(
         }
 
         io {
-            val modifiedMemberStorage = member.createBean()
-            val modifiedBedrockAccountStorage = member.bedrockAccount?.createBean()
-            val modifiedDataContainerStorage = member.dataContainer.createBean()
-
-            val oldMemberStorage = if (member.bean.new) null else member.bean
-            val oldBedrockAccountStorage =
-                if (member.bedrockAccount?.bean?.new == true) null else member.bedrockAccount?.bean
-            val oldDataContainerStorage = if (member.dataContainer.bean.new) null else member.dataContainer.bean
-
-            val diffStatus = saveStatus(status, currentStatus)
-            val diffMember = saveMember(oldMemberStorage, modifiedMemberStorage)
-            val diffBedrockAccount = saveBedrockAccount(oldBedrockAccountStorage, modifiedBedrockAccountStorage)
-            val diffDataContainer = saveDataContainer(oldDataContainerStorage, modifiedDataContainerStorage)
+            saveStatus(currentStatus)
+            saveMember(member.createBean())
+            saveBedrockAccount(member.bedrockAccount?.createBean())
+            saveDataContainer(member.dataContainer.createBean())
 
             val notify = memberUpdateNotify {
                 serviceId = id.toString()
                 memberId = member.uid
-
-                if (diffStatus.hasChanges()) {
-                    statusDiff = diff {
-                        type = DiffType.MODIFY
-                        diff = diffStatus.toJson()
-                    }
-                }
-
-                if (diffMember.hasChanges()) {
-                    memberDiff = diff {
-                        type = if (oldMemberStorage == null) {
-                            storage = modifiedMemberStorage.toJsonString()
-                            DiffType.ADD
-                        } else {
-                            diff = diffMember.toJson()
-                            DiffType.MODIFY
-                        }
-                    }
-                }
-
-                if (diffBedrockAccount.hasChanges()) {
-                    bedrockAccountDiff = diff {
-                        type = if (oldBedrockAccountStorage == null && modifiedBedrockAccountStorage != null) {
-                            storage = modifiedBedrockAccountStorage.toJsonString()
-                            DiffType.ADD
-                        } else if (modifiedBedrockAccountStorage == null) {
-                            DiffType.REMOVE
-                        } else {
-                            diff = diffBedrockAccount.toJson()
-                            DiffType.MODIFY
-                        }
-                    }
-                }
-
-                if (diffDataContainer.hasChanges()) {
-                    dataContainerDiff = diff {
-                        type = if (oldDataContainerStorage == null) {
-                            storage = modifiedDataContainerStorage.toJsonString()
-                            DiffType.ADD
-                        } else {
-                            diff = diffDataContainer.toJson()
-                            DiffType.MODIFY
-                        }
-                    }
-                }
             }
-
-            member.bean = modifiedMemberStorage
-            if (member.bedrockAccount != null && modifiedBedrockAccountStorage != null) {
-                member.bedrockAccount!!.bean = modifiedBedrockAccountStorage
-            }
-            member.dataContainer.bean = modifiedDataContainerStorage
 
             notifyUpdate(notify)
         }

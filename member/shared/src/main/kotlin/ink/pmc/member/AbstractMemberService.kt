@@ -19,6 +19,7 @@ abstract class AbstractMemberService : IMemberService, Closeable {
     abstract val bedrockAccounts: MongoCollection<BedrockAccountBean>
     abstract val loadedMembers: AsyncLoadingCache<Long, AbstractMember?>
     abstract val currentStatus: StatusBean
+    val removalBeAccounts = mutableListOf<Long>()
 
     abstract suspend fun lookupDataContainerStorage(id: Long): DataContainerBean?
 
