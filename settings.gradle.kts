@@ -66,3 +66,7 @@ include("provider:shared")
 
 include("transfer")
 include("transfer:api")
+include("transfer:paper")
+include("transfer:velocity")
+include("transfer:shared")
+include("transfer:proto")
