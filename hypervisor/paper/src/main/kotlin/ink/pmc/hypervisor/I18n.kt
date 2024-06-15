@@ -85,7 +85,7 @@ val WORLD_STATUS_ENTRIES: Component
 
 val Double.colorizedTPSComponent: Component
     get() = component {
-        text(this.toString()) with when {
+        text(this@colorizedTPSComponent) with when {
             this@colorizedTPSComponent in 16.0..18.0 -> mochaYellow
             this@colorizedTPSComponent < 16.0 -> mochaMaroon
             else -> mochaGreen
@@ -94,7 +94,7 @@ val Double.colorizedTPSComponent: Component
 
 val Double.colorizedMSPTComponent: Component
     get() = component {
-        text(this.toString()) with when {
+        text(this@colorizedMSPTComponent) with when {
             this@colorizedMSPTComponent in 0.0..35.0 -> mochaGreen
             this@colorizedMSPTComponent > 35.0 && this@colorizedMSPTComponent <= 50.0 -> mochaYellow
             else -> mochaMaroon
