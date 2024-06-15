@@ -46,7 +46,7 @@ class BackendExchangeService : AbstractBackendExchangeService() {
         }
     }
 
-    private fun handleItemDistribute(notify: ItemDistributeNotify) {
+    private suspend fun handleItemDistribute(notify: ItemDistributeNotify) {
         val player = Bukkit.getPlayer(UUID.fromString(notify.player.uuid)) ?: return
         player.distributeItems(itemStackArrayFromBase64(notify.items).toList().filterNotNull())
     }

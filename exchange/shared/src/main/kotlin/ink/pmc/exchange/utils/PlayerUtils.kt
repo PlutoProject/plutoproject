@@ -5,6 +5,7 @@ import ink.pmc.utils.bedrock.isBedrock
 import ink.pmc.utils.bedrock.useFallbackColors
 import ink.pmc.utils.chat.replace
 import ink.pmc.utils.concurrent.submitSync
+import ink.pmc.utils.concurrent.sync
 import ink.pmc.utils.platform.paper
 import ink.pmc.utils.platform.paperUtilsPlugin
 import ink.pmc.utils.visual.mochaFlamingo
@@ -18,23 +19,25 @@ import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 
-fun Player.distributeItems(items: List<ItemStack>) {
+suspend fun Player.distributeItems(items: List<ItemStack>) {
     val player = this
-    val mutable = items as MutableList
     val remaining = getRemainingSpace(this)
-    val shouldDrop = mutableListOf<ItemStack>()
-    val over = if (remaining < items.size) {
-        val amount = items.size - remaining
-        shouldDrop.addAll(mutable.subList(0, amount))
-        amount
-    } else {
-        0
+    val mutableList = items as? MutableList<ItemStack>
+    val shouldAdd = mutableList ?: return
+    val overflow = items.size - remaining.coerceAtMost(items.size)
+    val shouldDrop = mutableList.take(overflow)
+
+    // ItemStack 较为特殊，无法直接使用 removeAll，否则会将所有相同物品移除
+    for (i in 0..<overflow) {
+        shouldAdd.removeAt(i)
     }
 
-    mutable.removeAll(shouldDrop)
-    this.submitSync { player.inventory.addItem(*mutable.toTypedArray()) }
+    this.sync {
+        player.inventory.addItem(*shouldAdd.toTypedArray())
+        println("added items: $shouldAdd, ${shouldAdd.size}")
+    }
 
-    if (shouldDrop.size <= 0) {
+    if (shouldDrop.isEmpty()) {
         return
     }
 
@@ -48,7 +51,7 @@ fun Player.distributeItems(items: List<ItemStack>) {
 
     this.sendMessage(
         CHECKOUT_OVER_SIZE
-            .replace("<amount>", Component.text(over).color(mochaFlamingo))
+            .replace("<amount>", Component.text(overflow).color(mochaFlamingo))
     )
 }
 
