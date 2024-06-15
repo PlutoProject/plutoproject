@@ -5,7 +5,6 @@ import com.github.benmanes.caffeine.cache.AsyncLoadingCache
 import com.github.benmanes.caffeine.cache.Caffeine
 import com.mongodb.client.model.Filters.*
 import com.mongodb.client.model.ReplaceOptions
-import com.mongodb.client.model.UpdateOptions
 import com.mongodb.kotlin.client.coroutine.MongoCollection
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
 import ink.pmc.member.api.AuthType
