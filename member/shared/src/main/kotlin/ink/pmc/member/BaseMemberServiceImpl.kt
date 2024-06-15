@@ -106,7 +106,7 @@ abstract class BaseMemberServiceImpl(
             lookupStatus = statusCollection.find(exists("lastMember")).firstOrNull()
 
             if (lookupStatus == null) {
-                lookupStatus = StatusBean(ObjectId(), -1, -1, -1, -1, -1)
+                lookupStatus = StatusBean(ObjectId(), -1, -1, -1)
                 statusCollection.insertOne(lookupStatus)
             }
 
@@ -185,9 +185,9 @@ abstract class BaseMemberServiceImpl(
             currentStatus.increaseBedrockAccount()
         }
 
-        save(member)
         currentStatus.increaseDataContainer()
         currentStatus.increaseMember()
+        save(member)
 
         return member
     }
@@ -289,15 +289,17 @@ abstract class BaseMemberServiceImpl(
     }
 
     private suspend fun saveBedrockAccount(bean: BedrockAccountBean?) {
+        removalBeAccounts.forEach {
+            bedrockAccounts.deleteOne(eq("id", it))
+        }
+
+        removalBeAccounts.clear()
+
         if (bean == null) {
             return
         }
 
         bedrockAccounts.replaceOne(eq("id", bean.id), bean, replaceOptions)
-
-        removalBeAccounts.forEach {
-            bedrockAccounts.deleteOne(eq("id", it))
-        }
     }
 
     private suspend fun saveDataContainer(bean: DataContainerBean) {
