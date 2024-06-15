@@ -1,4 +1,4 @@
-package ink.pmc.utils.item
+package ink.pmc.utils.multiplaform.item
 
 data class KeyedMaterial(val namespace: String, val key: String) {
 

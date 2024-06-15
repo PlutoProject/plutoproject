@@ -2,7 +2,7 @@ package ink.pmc.visual.renderers
 
 import ink.pmc.utils.chat.nms
 import ink.pmc.utils.data.namespacedKey
-import ink.pmc.utils.item.bukkit
+import ink.pmc.utils.multiplaform.item.exts.bukkit
 import ink.pmc.utils.player.sendPacket
 import ink.pmc.utils.structure.emptyOptional
 import ink.pmc.utils.structure.optional
