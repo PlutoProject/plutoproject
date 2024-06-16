@@ -1,34 +1,23 @@
 package ink.pmc.transfer
 
 import ink.pmc.transfer.api.Category
-import ink.pmc.transfer.api.Destination
 import ink.pmc.transfer.api.DestinationStatus
 import ink.pmc.utils.multiplaform.item.KeyedMaterial
 import ink.pmc.utils.multiplaform.player.PlayerWrapper
 import net.kyori.adventure.text.Component
 
-class DestinationImpl : Destination {
-
-    override val id: String
-        get() = TODO("Not yet implemented")
-    override val icon: KeyedMaterial
-        get() = TODO("Not yet implemented")
-    override val name: Component
-        get() = TODO("Not yet implemented")
-    override val categories: Set<Category>
-        get() = TODO("Not yet implemented")
-    override val description: Component
-        get() = TODO("Not yet implemented")
-    override val status: DestinationStatus
-        get() = TODO("Not yet implemented")
-    override val playerCount: Int
-        get() = TODO("Not yet implemented")
-    override val maxPlayerCount: Int
-        get() = TODO("Not yet implemented")
-    override val hidden: Boolean
-        get() = TODO("Not yet implemented")
+class DestinationImpl(
+    override val id: String,
+    override val icon: KeyedMaterial,
+    override val name: Component,
+    override val categories: Set<Category>,
+    override val description: Component,
+    override val status: DestinationStatus,
+    override val playerCount: Int,
+    override val maxPlayerCount: Int,
+    override val hidden: Boolean,
     override val condition: (player: PlayerWrapper<*>) -> Boolean
-        get() = TODO("Not yet implemented")
+) : AbstractDestination() {
 
     override suspend fun transfer(player: PlayerWrapper<*>) {
         player.switchServer(id)
