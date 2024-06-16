@@ -3,6 +3,7 @@ package ink.pmc.utils.chat
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.TextReplacementConfig
 import net.kyori.adventure.text.format.TextColor
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 
 fun Component.replace(string: String, component: Component): Component {
     val replaceConfig = TextReplacementConfig.builder()
@@ -33,3 +34,10 @@ fun Component.replaceColor(targetColor: TextColor, newColor: TextColor): Compone
         comp.append(child.replaceColor(targetColor, newColor))
     }
 }
+
+private val serializer = GsonComponentSerializer.gson()
+
+val Component.json: String
+    get() {
+        return serializer.serialize(this)
+    }

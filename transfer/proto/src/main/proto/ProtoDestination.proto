@@ -1,7 +1,7 @@
 syntax = "proto3";
 package ink.pmc.transfer.proto;
 
-import "DestinationStatus.proto";
+import "ProtoDestinationStatus.proto";
 
 message ProtoDestination {
   string id = 1;

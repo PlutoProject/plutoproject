@@ -15,7 +15,7 @@ interface Destination {
     val status: DestinationStatus
     val playerCount: Int
     val maxPlayerCount: Int
-    val hidden: Boolean
+    val isHidden: Boolean
     val condition: (player: PlayerWrapper<*>) -> Boolean
 
     suspend fun transfer(player: PlayerWrapper<*>)

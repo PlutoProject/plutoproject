@@ -15,7 +15,7 @@ class DestinationImpl(
     override val status: DestinationStatus,
     override val playerCount: Int,
     override val maxPlayerCount: Int,
-    override val hidden: Boolean,
+    override val isHidden: Boolean,
     override val condition: (player: PlayerWrapper<*>) -> Boolean
 ) : AbstractDestination() {
 

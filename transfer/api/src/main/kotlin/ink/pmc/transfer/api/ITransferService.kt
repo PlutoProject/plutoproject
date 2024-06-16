@@ -22,6 +22,6 @@ interface ITransferService {
 
     fun hasCategory(id: String): Boolean
 
-    fun transferPlayer(player: PlayerWrapper<*>, id: String)
+    suspend fun transferPlayer(player: PlayerWrapper<*>, id: String)
 
 }
