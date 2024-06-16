@@ -11,6 +11,10 @@ import net.kyori.adventure.title.Title
 @Suppress("UNUSED")
 interface PlayerWrapper<T> : SenderWrapper<T> {
 
+    val name: String
+    val displayName: Component
+    val isBedrock: Boolean
+
     fun showTitle(content: Title)
 
     fun showTitle(content: TitleKt.() -> Unit)

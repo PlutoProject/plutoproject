@@ -1,5 +1,6 @@
-package ink.pmc.transfer
+package ink.pmc.transfer.api
 
+@Suppress("UNUSED")
 enum class DestinationStatus {
 
     ONLINE, OFFLINE, MAINTAINACE

@@ -1,4 +1,4 @@
-package ink.pmc.transfer
+package ink.pmc.transfer.api
 
 import ink.pmc.utils.multiplaform.item.KeyedMaterial
 import net.kyori.adventure.text.Component
@@ -10,6 +10,7 @@ interface Category {
     val icon: KeyedMaterial
     val name: Component
     val description: Component
-    val totalPlayers: Int
+    val playerCount: Int
+    val destinations: Set<Destination>
 
 }
