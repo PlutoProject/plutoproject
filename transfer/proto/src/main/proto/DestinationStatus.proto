@@ -1,0 +1,8 @@
+syntax = "proto3";
+package ink.pmc.transfer.proto;
+
+enum ProtoDestinationStatus {
+    ONLINE = 0;
+    OFFLINE = 1;
+    MAINTAINACE = 2;
+}

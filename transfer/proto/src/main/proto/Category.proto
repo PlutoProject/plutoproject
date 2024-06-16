@@ -1,0 +1,11 @@
+syntax = "proto3";
+package ink.pmc.transfer.proto;
+
+message ProtoCategory {
+  string id = 1;
+  string icon = 2;
+  string name = 3;
+  string description = 4;
+  int32 playerCount = 5;
+  repeated string destinations = 6;
+}

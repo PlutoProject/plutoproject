@@ -10,8 +10,8 @@ interface Destination {
     val id: String
     val icon: KeyedMaterial
     val name: Component
-    val categories: Set<Category>
     val description: Component
+    val categories: Set<Category>
     val status: DestinationStatus
     val playerCount: Int
     val maxPlayerCount: Int
