@@ -7,6 +7,6 @@ import ink.pmc.transfer.api.ITransferService
 abstract class AbstractTransferService : ITransferService {
 
     val categories = mutableSetOf<Category>()
-    val destinations = mutableSetOf<Destination>()
+    val destinations = mutableSetOf<AbstractDestination>()
 
 }

@@ -12,7 +12,7 @@ class DestinationImpl(
     override val name: Component,
     override val categories: Set<Category>,
     override val description: Component,
-    override val status: DestinationStatus,
+    override var status: DestinationStatus,
     override val playerCount: Int,
     override val maxPlayerCount: Int,
     override val isHidden: Boolean,
