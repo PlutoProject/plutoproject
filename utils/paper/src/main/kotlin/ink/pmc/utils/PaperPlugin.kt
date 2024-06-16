@@ -52,6 +52,8 @@ class PaperPlugin : SuspendingJavaPlugin() {
             floodgateApi = floodgateApiClass.getDeclaredMethod("getInstance").invoke(null)
             isFloodgatePlayer = floodgateApiClass.getDeclaredMethod("isFloodgatePlayer", UUID::class.java)
         }
+
+        this.server.messenger.registerOutgoingPluginChannel(this, "BungeeCord");
     }
 
 }

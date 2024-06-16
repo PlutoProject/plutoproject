@@ -18,6 +18,6 @@ interface Destination {
     val hidden: Boolean
     val condition: (player: PlayerWrapper<*>) -> Boolean
 
-    fun transfer(player: PlayerWrapper<*>)
+    suspend fun transfer(player: PlayerWrapper<*>)
 
 }

@@ -27,4 +27,6 @@ interface PlayerWrapper<T> : SenderWrapper<T> {
 
     fun playSound(sound: SoundKt.() -> Unit)
 
+    suspend fun switchServer(id: String)
+
 }

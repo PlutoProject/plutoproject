@@ -6,6 +6,7 @@ import ink.pmc.advkt.title.ComponentTitleKt
 import ink.pmc.advkt.title.TitleKt
 import ink.pmc.utils.bedrock.isBedrock
 import ink.pmc.utils.multiplaform.player.PlayerWrapper
+import ink.pmc.utils.player.switchServer
 import net.kyori.adventure.sound.Sound
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.title.Title
@@ -42,6 +43,10 @@ class PaperPlayerWrapper(private val player: Player) : PlayerWrapper<Player>, Pa
 
     override fun playSound(sound: SoundKt.() -> Unit) {
         playSound(SoundKt().apply(sound).build())
+    }
+
+    override suspend fun switchServer(id: String) {
+        player.switchServer(id)
     }
 
 }
