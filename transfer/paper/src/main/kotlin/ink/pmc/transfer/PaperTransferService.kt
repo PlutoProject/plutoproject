@@ -11,4 +11,8 @@ class PaperTransferService : BaseTransferServiceImpl() {
         player.switchServer(id)
     }
 
+    override fun close() {
+        TODO("Not yet implemented")
+    }
+
 }

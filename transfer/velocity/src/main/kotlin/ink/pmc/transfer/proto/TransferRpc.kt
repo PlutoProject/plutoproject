@@ -1,12 +1,12 @@
 package ink.pmc.transfer.proto
 
 import com.google.protobuf.Empty
-import com.google.protobuf.Value
 import com.velocitypowered.api.proxy.ProxyServer
 import ink.pmc.transfer.AbstractDestination
 import ink.pmc.transfer.AbstractProxyTransferService
 import ink.pmc.transfer.api.DestinationStatus
 import ink.pmc.transfer.proto
+import ink.pmc.transfer.proto.HealthyReportOuterClass.HealthyReport
 import ink.pmc.transfer.proto.ConditionVerify.*
 import ink.pmc.transfer.proto.SummaryOuterClass.Summary
 import ink.pmc.transfer.proto.TransferRpcGrpcKt.TransferRpcCoroutineImplBase
@@ -67,8 +67,9 @@ class TransferRpc(
         }
     }
 
-    override suspend fun reportHealthy(request: Value): Empty {
-        val id = request.stringValue
+    override suspend fun reportHealthy(request: HealthyReport): Empty {
+        val id = request.id
+        val playerCount = request.playerCount
 
         if (healthyDestinations.contains(id)) {
             return empty
@@ -81,7 +82,9 @@ class TransferRpc(
         }
 
         destination.status = DestinationStatus.ONLINE
+        destination.playerCount = playerCount
         healthyDestinations.add(id)
+
         return empty
     }
 

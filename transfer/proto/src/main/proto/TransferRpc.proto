@@ -10,11 +10,12 @@ import "Summary.proto";
 import "CategoryBundle.proto";
 import "DestinationBundle.proto";
 import "ConditionVerify.proto";
+import "HealthyReport.proto";
 
 service TransferRpc {
   rpc GetSummary(google.protobuf.Empty) returns (Summary);
   rpc RegisterDestination(ProtoDestination) returns (google.protobuf.Empty);
   rpc RegistryCategory(ProtoCategory) returns (google.protobuf.Empty);
   rpc VerifyCondition(ConditionVerifyReq) returns (ConditionVerifyRsp);
-  rpc ReportHealthy(google.protobuf.Value) returns (google.protobuf.Empty);
+  rpc ReportHealthy(HealthyReport) returns (google.protobuf.Empty);
 }
