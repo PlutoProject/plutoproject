@@ -9,8 +9,11 @@ import com.velocitypowered.api.event.proxy.ProxyShutdownEvent
 import com.velocitypowered.api.plugin.PluginContainer
 import com.velocitypowered.api.plugin.annotation.DataDirectory
 import com.velocitypowered.api.proxy.ProxyServer
+import ink.pmc.rpc.api.RpcServer
 import ink.pmc.utils.platform.proxy
 import ink.pmc.utils.platform.saveConfig
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.incendo.cloud.SenderMapper
 import org.incendo.cloud.execution.ExecutionCoordinator
 import org.incendo.cloud.velocity.VelocityCommandManager
@@ -20,12 +23,15 @@ import java.util.logging.Logger
 
 lateinit var pluginContainer: PluginContainer
 lateinit var velocityCommandManager: VelocityCommandManager<CommandSource>
+lateinit var proxyTransferService: AbstractProxyTransferService
 
 @Suppress("UNUSED", "UNUSED_PARAMETER")
 class VelocityPlugin @Inject constructor(suspendingPluginContainer: SuspendingPluginContainer) {
 
     init {
         suspendingPluginContainer.initialize(this)
+        proxyTransferService = ProxyTransferService(proxy, RpcServer)
+        transferService = proxyTransferService
     }
 
     @Inject
@@ -61,8 +67,11 @@ class VelocityPlugin @Inject constructor(suspendingPluginContainer: SuspendingPl
     }
 
     @Subscribe
-    fun proxyShutdownEvent(event: ProxyShutdownEvent) {
+    suspend fun proxyShutdownEvent(event: ProxyShutdownEvent) {
         disabled = true
+        withContext(Dispatchers.IO) {
+            transferService.close()
+        }
     }
 
 }
