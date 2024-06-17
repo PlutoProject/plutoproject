@@ -20,6 +20,9 @@ class DestinationImpl(
     override lateinit var category: Category
 
     override suspend fun transfer(player: PlayerWrapper<*>) {
+        player.playSound {
+
+        }
         player.switchServer(id)
     }
 
