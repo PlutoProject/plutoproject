@@ -21,7 +21,7 @@ val Destination.proto: ProtoDestination
             playerCount = this@proto.playerCount
             maxPlayerCount = this@proto.maxPlayerCount
             isHidden = this@proto.isHidden
-            categories.addAll(this@proto.categories.map { it.id })
+            category = this@proto.category.id
         }
     }
 

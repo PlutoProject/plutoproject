@@ -4,14 +4,13 @@ import com.google.protobuf.Empty
 import com.google.protobuf.Value
 import com.velocitypowered.api.proxy.ProxyServer
 import ink.pmc.transfer.AbstractDestination
-import ink.pmc.transfer.AbstractTransferService
+import ink.pmc.transfer.AbstractProxyTransferService
 import ink.pmc.transfer.api.DestinationStatus
 import ink.pmc.transfer.proto
 import ink.pmc.transfer.proto.ConditionVerify.*
 import ink.pmc.transfer.proto.SummaryOuterClass.Summary
 import ink.pmc.transfer.proto.TransferRpcGrpcKt.TransferRpcCoroutineImplBase
 import ink.pmc.utils.concurrent.submitAsync
-import ink.pmc.utils.multiplaform.player.velocity.wrapped
 import kotlinx.coroutines.delay
 import java.io.Closeable
 import kotlin.jvm.optionals.getOrNull
@@ -19,7 +18,7 @@ import kotlin.time.Duration.Companion.seconds
 
 class TransferRpc(
     private val proxyServer: ProxyServer,
-    private val service: AbstractTransferService
+    private val service: AbstractProxyTransferService
 ) : TransferRpcCoroutineImplBase(), Closeable {
 
     private var closed = false
@@ -60,7 +59,7 @@ class TransferRpc(
         }
 
         return conditionVerifyRsp {
-            result = if (!destination.condition.invoke(player.wrapped)) {
+            result = if (!service.conditionManager.verifyCondition(player, destination)) {
                 ConditionVerifyResult.VERIFY_FAILED
             } else {
                 ConditionVerifyResult.VERIFY_SUCCEED

@@ -10,14 +10,14 @@ class DestinationImpl(
     override val id: String,
     override val icon: KeyedMaterial,
     override val name: Component,
-    override val categories: Set<Category>,
     override val description: Component,
     override var status: DestinationStatus,
-    override val playerCount: Int,
+    override var playerCount: Int,
     override val maxPlayerCount: Int,
-    override val isHidden: Boolean,
-    override val condition: (player: PlayerWrapper<*>) -> Boolean
+    override val isHidden: Boolean
 ) : AbstractDestination() {
+
+    override lateinit var category: Category
 
     override suspend fun transfer(player: PlayerWrapper<*>) {
         player.switchServer(id)

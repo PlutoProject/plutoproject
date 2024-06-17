@@ -11,7 +11,7 @@ interface Destination {
     val icon: KeyedMaterial
     val name: Component
     val description: Component
-    val categories: Set<Category>
+    val category: Category
     val status: DestinationStatus
     val playerCount: Int
     val maxPlayerCount: Int
