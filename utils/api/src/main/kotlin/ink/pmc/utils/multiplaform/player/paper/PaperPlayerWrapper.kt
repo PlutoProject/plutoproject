@@ -45,6 +45,10 @@ class PaperPlayerWrapper(private val player: Player) : PlayerWrapper<Player>, Pa
         playSound(SoundKt().apply(sound).build())
     }
 
+    override fun hasPermission(permission: String): Boolean {
+        return player.hasPermission(permission)
+    }
+
     override suspend fun switchServer(id: String) {
         player.switchServer(id)
     }

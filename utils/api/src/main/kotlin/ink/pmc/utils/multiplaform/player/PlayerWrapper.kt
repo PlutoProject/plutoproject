@@ -27,6 +27,8 @@ interface PlayerWrapper<T> : SenderWrapper<T> {
 
     fun playSound(sound: SoundKt.() -> Unit)
 
+    fun hasPermission(permission: String): Boolean
+
     suspend fun switchServer(id: String)
 
 }
