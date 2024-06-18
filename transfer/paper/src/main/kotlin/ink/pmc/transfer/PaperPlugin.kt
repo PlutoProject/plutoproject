@@ -11,6 +11,7 @@ import java.io.File
 
 lateinit var plugin: JavaPlugin
 lateinit var paperTransferService: AbstractTransferService
+lateinit var transferLobby: TransferLobby
 
 @Suppress("UNUSED")
 class PaperPlugin : SuspendingJavaPlugin() {
@@ -27,6 +28,7 @@ class PaperPlugin : SuspendingJavaPlugin() {
 
         paperTransferService = BackendTransferService(paper, TransferRpcCoroutineStub(RpcClient.channel), fileConfig)
         transferService = paperTransferService
+        transferLobby = TransferLobby(paper, this, fileConfig.get("lobby-settings"))
 
         disabled = false
     }
