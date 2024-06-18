@@ -12,6 +12,8 @@ grpc-kotlin = "1.4.1"
 javers = "7.4.6"
 ktor = "2.3.11"
 resource-factory = "1.1.1"
+cloud = "2.0.0-rc.2"
+cloud-minecraft = "2.0.0-beta.8"
 
 [libraries]
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
@@ -30,10 +32,10 @@ catppuccin = { module = "com.catppuccin:catppuccin-palette", version = "1.0.0" }
 nightconfig-core = { module = "com.electronwill.night-config:core", version.ref = "nightconfig" }
 nightconfig-toml = { module = "com.electronwill.night-config:toml", version.ref = "nightconfig" }
 nightconfig-hocon = { module = "com.electronwill.night-config:hocon", version.ref = "nightconfig" }
-cloud-paper = { module = "org.incendo:cloud-paper", version = "2.0.0-beta.7" }
-cloud-velocity = { module = "org.incendo:cloud-velocity", version = "2.0.0-beta.7" }
-cloud-coroutines = { module = "org.incendo:cloud-kotlin-coroutines", version = "2.0.0-rc.1" }
-cloud-extensions = { module = "org.incendo:cloud-kotlin-extensions", version = "2.0.0-rc.1" }
+cloud-paper = { module = "org.incendo:cloud-paper", version.ref = "cloud-minecraft" }
+cloud-velocity = { module = "org.incendo:cloud-velocity", version.ref = "cloud-minecraft" }
+cloud-coroutines = { module = "org.incendo:cloud-kotlin-coroutines", version.ref = "cloud" }
+cloud-extensions = { module = "org.incendo:cloud-kotlin-extensions", version.ref = "cloud" }
 netty = { module = "io.netty:netty-all", version = "4.1.111.Final" }
 mccoroutine-bukkit-api = { module = "com.github.shynixn.mccoroutine:mccoroutine-bukkit-api", version.ref = "mccoroutine" }
 mccoroutine-bukkit-core = { module = "com.github.shynixn.mccoroutine:mccoroutine-bukkit-core", version.ref = "mccoroutine" }
