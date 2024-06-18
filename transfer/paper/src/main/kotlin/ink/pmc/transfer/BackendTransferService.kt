@@ -2,6 +2,7 @@ package ink.pmc.transfer
 
 import com.electronwill.nightconfig.core.Config
 import com.electronwill.nightconfig.core.file.FileConfig
+import ink.pmc.transfer.api.Destination
 import ink.pmc.transfer.api.DestinationStatus
 import ink.pmc.transfer.proto.ConditionVerify.ConditionVerifyResult
 import ink.pmc.transfer.proto.TransferRpcGrpcKt.TransferRpcCoroutineStub
@@ -31,6 +32,10 @@ class BackendTransferService(
                 playerCount = server.onlinePlayers.size
             })
         }
+    }
+
+    override fun setMaintainace(destination: Destination, enabled: Boolean) {
+        throw UnsupportedOperationException("Maintainace can only be toggled on proxy")
     }
 
     override suspend fun transferPlayer(player: PlayerWrapper<*>, id: String) {

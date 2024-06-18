@@ -9,6 +9,7 @@ import com.velocitypowered.api.event.proxy.ProxyShutdownEvent
 import com.velocitypowered.api.plugin.PluginContainer
 import com.velocitypowered.api.plugin.annotation.DataDirectory
 import com.velocitypowered.api.proxy.ProxyServer
+import ink.pmc.provider.ProviderService
 import ink.pmc.rpc.api.RpcServer
 import ink.pmc.utils.platform.proxy
 import ink.pmc.utils.platform.saveConfig
@@ -49,7 +50,7 @@ class VelocityPlugin @Inject constructor(suspendingPluginContainer: SuspendingPl
 
         config.loadConfig()
 
-        proxyTransferService = ProxyTransferService(proxy, RpcServer, fileConfig)
+        proxyTransferService = ProxyTransferService(proxy, RpcServer, fileConfig, ProviderService.defaultMongoDatabase)
         transferService = proxyTransferService
     }
 

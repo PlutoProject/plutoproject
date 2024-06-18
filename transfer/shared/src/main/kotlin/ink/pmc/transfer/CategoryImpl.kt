@@ -9,5 +9,4 @@ class CategoryImpl(
     override val icon: KeyedMaterial,
     override val name: Component,
     override val description: Component
-) : AbstractCategory() {
-}
+) : AbstractCategory()

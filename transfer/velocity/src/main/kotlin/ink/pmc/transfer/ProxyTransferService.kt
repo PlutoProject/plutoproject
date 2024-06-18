@@ -2,28 +2,35 @@ package ink.pmc.transfer
 
 import com.electronwill.nightconfig.core.Config
 import com.electronwill.nightconfig.core.file.FileConfig
+import com.mongodb.client.model.Filters.eq
+import com.mongodb.kotlin.client.coroutine.MongoDatabase
 import com.velocitypowered.api.proxy.ProxyServer
 import ink.pmc.advkt.component.component
 import ink.pmc.advkt.component.miniMessage
 import ink.pmc.rpc.api.IRpcServer
 import ink.pmc.transfer.api.ConditionManager
+import ink.pmc.transfer.api.Destination
 import ink.pmc.transfer.api.DestinationStatus
 import ink.pmc.transfer.proto.TransferRpc
+import ink.pmc.utils.concurrent.submitAsyncIO
 import ink.pmc.utils.multiplaform.item.KeyedMaterial
 import ink.pmc.utils.multiplaform.player.PlayerWrapper
 import ink.pmc.utils.multiplaform.player.velocity.velocity
 import ink.pmc.utils.visual.mochaSubtext0
 import ink.pmc.utils.visual.mochaText
 import java.io.File
+import java.time.Instant
 
 class ProxyTransferService(
     proxyServer: ProxyServer,
     rpc: IRpcServer,
-    config: FileConfig
+    config: FileConfig,
+    database: MongoDatabase
 ) : AbstractProxyTransferService() {
 
     override val protocol: TransferRpc = TransferRpc(proxyServer, this)
     override val conditionManager: ConditionManager = ConditionManagerImpl(this)
+    private val dataCollection = database.getCollection<MaintenanceEntry>("transfer_maintenance_data")
     private val proxySettings = config.get<Config>("proxy-settings")
     private val proxyScriptFile = File(dataDir, proxySettings.get("proxy-script"))
     private val configDestinations = proxySettings.get<List<Map<String, Any>>>("proxy-settings.destinations")
@@ -96,6 +103,37 @@ class ProxyTransferService(
         }
 
         player.switchServer(id)
+    }
+
+    private suspend fun addMaintenanceEntry(destination: Destination) {
+        dataCollection.insertOne(MaintenanceEntry(destination.id, Instant.now().toEpochMilli()))
+    }
+
+    private suspend fun removeMaintenanceEntry(destination: Destination) {
+        dataCollection.deleteOne(eq("id", destination.id))
+    }
+
+    override fun setMaintainace(destination: Destination, enabled: Boolean) {
+        destination as AbstractDestination
+        destination.status = when (enabled) {
+            true -> {
+                if (destination.status == DestinationStatus.MAINTENANCE) {
+                    return
+                }
+
+                submitAsyncIO { addMaintenanceEntry(destination) }
+                DestinationStatus.MAINTENANCE
+            }
+
+            false -> {
+                if (destination.status != DestinationStatus.MAINTENANCE) {
+                    return
+                }
+
+                submitAsyncIO { removeMaintenanceEntry(destination) }
+                DestinationStatus.OFFLINE
+            }
+        }
     }
 
     override fun close() {

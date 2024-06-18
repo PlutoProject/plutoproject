@@ -43,6 +43,6 @@ val DestinationStatus.proto: ProtoDestinationStatus
         return when (this) {
             DestinationStatus.ONLINE -> ProtoDestinationStatus.STATUS_ONLINE
             DestinationStatus.OFFLINE -> ProtoDestinationStatus.STATUS_OFFLINE
-            DestinationStatus.MAINTAINACE -> ProtoDestinationStatus.STATUS_MAINTAINACE
+            DestinationStatus.MAINTENANCE -> ProtoDestinationStatus.STATUS_MAINTAINACE
         }
     }
