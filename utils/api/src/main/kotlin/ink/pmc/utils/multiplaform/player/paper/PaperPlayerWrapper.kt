@@ -11,9 +11,12 @@ import net.kyori.adventure.sound.Sound
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.title.Title
 import org.bukkit.entity.Player
+import java.util.*
 
 class PaperPlayerWrapper(private val player: Player) : PlayerWrapper<Player>, PaperSenderWrapper<Player>(player) {
 
+    override val uuid: UUID
+        get() = player.uniqueId
     override val name: String
         get() = player.name
     override val displayName: Component

@@ -1,13 +1,16 @@
 package ink.pmc.transfer
 
 import com.github.shynixn.mccoroutine.bukkit.SuspendingJavaPlugin
+import ink.pmc.rpc.api.RpcClient
+import ink.pmc.transfer.proto.TransferRpcGrpcKt.TransferRpcCoroutineStub
+import ink.pmc.utils.platform.paper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.bukkit.plugin.java.JavaPlugin
 import java.io.File
 
 lateinit var plugin: JavaPlugin
-lateinit var paperTransferService: PaperTransferService
+lateinit var paperTransferService: AbstractTransferService
 
 @Suppress("UNUSED")
 class PaperPlugin : SuspendingJavaPlugin() {
@@ -22,7 +25,7 @@ class PaperPlugin : SuspendingJavaPlugin() {
 
         config.loadConfig()
 
-        paperTransferService = PaperTransferService()
+        paperTransferService = BackendTransferService(paper, TransferRpcCoroutineStub(RpcClient.channel), fileConfig)
         transferService = paperTransferService
 
         disabled = false

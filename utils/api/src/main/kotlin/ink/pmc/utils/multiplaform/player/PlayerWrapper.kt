@@ -7,10 +7,12 @@ import ink.pmc.utils.multiplaform.SenderWrapper
 import net.kyori.adventure.sound.Sound
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.title.Title
+import java.util.UUID
 
 @Suppress("UNUSED")
 interface PlayerWrapper<T> : SenderWrapper<T> {
 
+    val uuid: UUID
     val name: String
     val displayName: Component
     val isBedrock: Boolean

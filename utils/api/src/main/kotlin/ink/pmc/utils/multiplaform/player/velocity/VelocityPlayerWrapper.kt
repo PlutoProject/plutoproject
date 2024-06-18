@@ -11,9 +11,12 @@ import ink.pmc.utils.player.switchServer
 import net.kyori.adventure.sound.Sound
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.title.Title
+import java.util.*
 
 class VelocityPlayerWrapper(private val player: Player) : PlayerWrapper<Player>, VelocitySenderWrapper<Player>(player) {
 
+    override val uuid: UUID
+        get() = player.uniqueId
     override val name: String
         get() = player.username
     override val displayName: Component

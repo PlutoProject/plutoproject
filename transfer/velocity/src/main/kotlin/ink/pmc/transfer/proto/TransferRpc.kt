@@ -10,6 +10,7 @@ import ink.pmc.transfer.proto.HealthyReportOuterClass.HealthyReport
 import ink.pmc.transfer.proto.ConditionVerify.*
 import ink.pmc.transfer.proto.SummaryOuterClass.Summary
 import ink.pmc.transfer.proto.TransferRpcGrpcKt.TransferRpcCoroutineImplBase
+import ink.pmc.utils.bedrock.uuid
 import ink.pmc.utils.concurrent.submitAsync
 import kotlinx.coroutines.delay
 import java.io.Closeable
@@ -50,7 +51,7 @@ class TransferRpc(
     }
 
     override suspend fun verifyCondition(request: ConditionVerifyReq): ConditionVerifyRsp {
-        val player = proxyServer.getPlayer(request.uuid).getOrNull() ?: return conditionVerifyRsp {
+        val player = proxyServer.getPlayer(request.uuid.uuid).getOrNull() ?: return conditionVerifyRsp {
             result = ConditionVerifyResult.VERIFY_OFFLINE
         }
 
