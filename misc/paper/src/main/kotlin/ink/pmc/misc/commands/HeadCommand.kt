@@ -15,11 +15,11 @@ object HeadCommand : PaperCommand() {
     private val head = commandManager.commandBuilder("head")
         .argument(paperRequiredOnlinePlayersArgument())
         .suspendingHandler {
-            val sender = it.sender()
+            val sender = it.sender().sender
             val name = it.get<String>("name")
 
             if (sender !is Player) {
-                sender.sender.sendMessage(NON_PLAYER)
+                sender.sendMessage(NON_PLAYER)
                 return@suspendingHandler
             }
 

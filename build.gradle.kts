@@ -133,7 +133,6 @@ fun Project.configurePaperweight() {
     apply {
         plugin("io.papermc.paperweight.userdev")
     }
-    paperweight.reobfArtifactConfiguration = io.papermc.paperweight.userdev.ReobfArtifactConfiguration.MOJANG_PRODUCTION
 }
 
 fun Project.packageName(): String {
@@ -240,9 +239,7 @@ fun Project.configurePaperDevEnv() {
         paperweight.paperDevBundle(paperDevBundleVer)
     }
 
-    tasks.assemble {
-        dependsOn(tasks.reobfJar)
-    }
+    paperweight.reobfArtifactConfiguration = io.papermc.paperweight.userdev.ReobfArtifactConfiguration.MOJANG_PRODUCTION
 }
 
 fun DependencyHandlerScope.implementationWithEnv(dep: Project) {
