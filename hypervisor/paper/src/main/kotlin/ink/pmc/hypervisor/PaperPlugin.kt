@@ -6,15 +6,15 @@ import ink.pmc.hypervisor.commands.StatusCommand
 import ink.pmc.hypervisor.listeners.EntityListener
 import ink.pmc.hypervisor.listeners.PlayerListener
 import ink.pmc.utils.command.init
+import io.papermc.paper.command.brigadier.CommandSourceStack
 import me.lucko.spark.api.Spark
 import me.lucko.spark.api.SparkProvider
-import org.bukkit.command.CommandSender
 import org.bukkit.plugin.java.JavaPlugin
 import org.incendo.cloud.execution.ExecutionCoordinator
 import org.incendo.cloud.paper.PaperCommandManager
 import java.util.logging.Logger
 
-lateinit var commandManager: PaperCommandManager<CommandSender>
+lateinit var commandManager: PaperCommandManager<CommandSourceStack>
 lateinit var plugin: JavaPlugin
 lateinit var spark: Spark
 lateinit var serverLogger: Logger
@@ -28,14 +28,13 @@ class PaperPlugin : JavaPlugin() {
         disabled = false
         serverLogger = logger
 
-        commandManager = PaperCommandManager.createNative(
-            this,
-            ExecutionCoordinator.asyncCoordinator()
-        )
+        commandManager = PaperCommandManager.builder()
+            .executionCoordinator(ExecutionCoordinator.asyncCoordinator())
+            .buildOnEnable(this)
 
         spark = SparkProvider.get()
 
-        commandManager.registerBrigadier()
+        // commandManager.registerBrigadier()
         commandManager.init(HypervisorCommand)
         commandManager.init(StatusCommand)
         server.pluginManager.registerSuspendingEvents(PlayerListener, this)

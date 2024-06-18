@@ -14,12 +14,13 @@ import ink.pmc.misc.impl.elevator.builders.IronElevatorBuilder
 import ink.pmc.misc.impl.head.HeadManagerImpl
 import ink.pmc.misc.impl.sit.SitManagerImpl
 import ink.pmc.utils.command.init
+import io.papermc.paper.command.brigadier.CommandSourceStack
 import org.bukkit.command.CommandSender
 import org.bukkit.plugin.java.JavaPlugin
 import org.incendo.cloud.execution.ExecutionCoordinator
 import org.incendo.cloud.paper.PaperCommandManager
 
-lateinit var commandManager: PaperCommandManager<CommandSender>
+lateinit var commandManager: PaperCommandManager<CommandSourceStack>
 lateinit var plugin: JavaPlugin
 lateinit var sitManager: SitManager
 lateinit var elevatorManager: ElevatorManager
@@ -33,10 +34,9 @@ class PaperPlugin : JavaPlugin() {
         plugin = this
         disabled = false
 
-        commandManager = PaperCommandManager.createNative(
-            this,
-            ExecutionCoordinator.asyncCoordinator()
-        )
+        commandManager = PaperCommandManager.builder()
+            .executionCoordinator(ExecutionCoordinator.asyncCoordinator())
+            .buildOnEnable(this)
 
         sitManager = SitManagerImpl()
         elevatorManager = ElevatorManagerImpl()
@@ -49,7 +49,7 @@ class PaperPlugin : JavaPlugin() {
 
         elevatorManager.registerBuilder(IronElevatorBuilder)
 
-        commandManager.registerBrigadier()
+        // commandManager.registerBrigadier()
         commandManager.init(SuicideCommand)
         commandManager.init(SitCommand)
         commandManager.init(HeadCommand)

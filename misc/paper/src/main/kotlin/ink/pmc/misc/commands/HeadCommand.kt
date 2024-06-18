@@ -19,7 +19,7 @@ object HeadCommand : PaperCommand() {
             val name = it.get<String>("name")
 
             if (sender !is Player) {
-                sender.sendMessage(NON_PLAYER)
+                sender.sender.sendMessage(NON_PLAYER)
                 return@suspendingHandler
             }
 

@@ -13,7 +13,7 @@ object LobbyCheckoutCommand : PaperCommand() {
 
     private val checkout = paperCommandManager.commandBuilder("checkout", aliases = arrayOf("buy")) {
         suspendingHandler {
-            val sender = it.sender()
+            val sender = it.sender().sender
 
             if (sender !is Player) {
                 sender.sendMessage(NON_PLAYER)
