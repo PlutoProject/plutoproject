@@ -133,6 +133,7 @@ fun Project.configurePaperweight() {
     apply {
         plugin("io.papermc.paperweight.userdev")
     }
+    paperweight.reobfArtifactConfiguration = io.papermc.paperweight.userdev.ReobfArtifactConfiguration.MOJANG_PRODUCTION
 }
 
 fun Project.packageName(): String {
