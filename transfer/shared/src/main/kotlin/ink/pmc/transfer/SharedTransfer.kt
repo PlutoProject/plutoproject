@@ -7,6 +7,7 @@ import java.util.logging.Logger
 var disabled = false
 lateinit var transferService: AbstractTransferService
 lateinit var serverLogger: Logger
+lateinit var dataDir: File
 lateinit var fileConfig: FileConfig
 
 fun File.loadConfig() {

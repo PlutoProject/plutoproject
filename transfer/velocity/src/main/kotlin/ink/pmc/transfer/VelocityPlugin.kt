@@ -30,14 +30,12 @@ class VelocityPlugin @Inject constructor(suspendingPluginContainer: SuspendingPl
 
     init {
         suspendingPluginContainer.initialize(this)
-        proxyTransferService = ProxyTransferService(proxy, RpcServer)
-        transferService = proxyTransferService
     }
 
     @Inject
     fun velocityTransfer(server: ProxyServer, logger: Logger, @DataDirectory dataDirectoryPath: Path) {
         serverLogger = logger
-        val dataDir = dataDirectoryPath.toFile()
+        dataDir = dataDirectoryPath.toFile()
 
         if (!dataDir.exists()) {
             dataDir.mkdirs()
@@ -50,6 +48,9 @@ class VelocityPlugin @Inject constructor(suspendingPluginContainer: SuspendingPl
         }
 
         config.loadConfig()
+
+        proxyTransferService = ProxyTransferService(proxy, RpcServer, fileConfig)
+        transferService = proxyTransferService
     }
 
     @Subscribe
