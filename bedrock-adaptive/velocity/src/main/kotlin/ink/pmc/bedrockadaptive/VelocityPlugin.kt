@@ -30,7 +30,7 @@ class VelocityPlugin @Inject constructor(suspendingPluginContainer: SuspendingPl
         TitlePacketDecodeReplacement.init()
         SystemChatPacketDecodeReplacement.init()
         GeyserAttackIndicatorReplacement.init()
-        BedrockColorSerializerReplacement.init()
+        // BedrockColorSerializerReplacement.init()
     }
 
     @Inject
