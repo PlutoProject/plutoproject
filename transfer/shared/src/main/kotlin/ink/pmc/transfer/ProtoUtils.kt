@@ -46,3 +46,13 @@ val DestinationStatus.proto: ProtoDestinationStatus
             DestinationStatus.MAINTENANCE -> ProtoDestinationStatus.STATUS_MAINTAINACE
         }
     }
+
+val ProtoDestinationStatus.original: DestinationStatus
+    get() {
+        return when (this) {
+            ProtoDestinationStatus.STATUS_ONLINE -> DestinationStatus.ONLINE
+            ProtoDestinationStatus.STATUS_OFFLINE -> DestinationStatus.OFFLINE
+            ProtoDestinationStatus.STATUS_MAINTAINACE -> DestinationStatus.MAINTENANCE
+            else -> DestinationStatus.OFFLINE
+        }
+    }

@@ -11,7 +11,7 @@ class DestinationImpl(
     override val icon: KeyedMaterial,
     override val name: Component,
     override val description: Component,
-    override var category: Category?,
+    override val category: Category?,
     override var status: DestinationStatus,
     override var playerCount: Int,
     override val maxPlayerCount: Int,

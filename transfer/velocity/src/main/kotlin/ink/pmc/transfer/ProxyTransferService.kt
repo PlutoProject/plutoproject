@@ -64,7 +64,11 @@ class ProxyTransferService(
             configDestinations.filter {
                 val id = it["id"] as String?
                 val category = it["category"] as String?
-                id != null && if (category != null) categories.any { c -> c.id == category } else true
+                (id != null && if (category != null) categories.any { c -> c.id == category } else true).also { bool ->
+                    if (!bool && id != null) {
+                        serverLogger.warning("Destination $id failed to load!")
+                    }
+                }
             }.map {
                 val id = it["id"] as String
                 val icon = KeyedMaterial(it["icon"] as String? ?: "minecraft:paper")
@@ -92,10 +96,10 @@ class ProxyTransferService(
     }
 
     override suspend fun transferPlayer(player: PlayerWrapper<*>, id: String) {
-        val destination = getDestination(id) ?: throw IllegalStateException("Destination named $id not existed")
+        val destination = getDestination(id) ?: throw IllegalStateException("Destination $id not existed")
 
         if (destination.status != DestinationStatus.ONLINE) {
-            throw IllegalStateException("Destination named $id not online")
+            throw IllegalStateException("Destination $id not online")
         }
 
         if (!conditionManager.verifyCondition(player.velocity, destination)) {
