@@ -2,10 +2,7 @@ package ink.pmc.transfer
 
 import ink.pmc.advkt.component.component
 import ink.pmc.advkt.component.text
-import ink.pmc.utils.visual.mochaFlamingo
-import ink.pmc.utils.visual.mochaMaroon
-import ink.pmc.utils.visual.mochaSubtext0
-import ink.pmc.utils.visual.mochaText
+import ink.pmc.utils.visual.*
 
 val DESTINATION_NOT_EXISTED = component {
     text("无法传送，ID 为 ") with mochaMaroon
@@ -30,6 +27,14 @@ val TRANSFER_FAILED_SERVER_OFFLINE = component {
 
 val TRANSFER_SUCCEED = component {
     text("正在将你传送至 ") with mochaText
+    text("<name>") with mochaFlamingo
+    text("...") with mochaText
+}
+
+val TRANSFER_OTHER_SUCCEED = component {
+    text("正在将 ") with mochaText
+    text("<player> ") with mochaYellow
+    text("传送至 ") with mochaText
     text("<name>") with mochaFlamingo
     text("...") with mochaText
 }
