@@ -36,13 +36,11 @@ class ProxyTransferService(
     private val proxyScriptFile = File(dataDir, proxySettings.get("proxy-script"))
     private val configDestinations = proxySettings.get<List<Map<String, Any>>>("proxy-settings.destinations")
     private val configCategories = proxySettings.get<List<Map<String, Any>>>("proxy-settings.categories")
-    override var globalMaintenance: Boolean = false
 
     init {
         rpc.apply { addService(protocol) }
         loadCategories()
         loadDestinations()
-        submitAsyncIO { updateMaintenanceStatus() }
     }
 
     private fun loadCategories() {
@@ -98,41 +96,6 @@ class ProxyTransferService(
         )
     }
 
-    private suspend fun updateMaintenanceStatus() {
-        dataCollection.find(eq("globalMaintenance", true)).firstOrNull() ?: return
-        globalMaintenance = true
-    }
-
-    private suspend fun enableGlobalMaintenance() {
-        dataCollection.insertOne(MaintenanceEntry("_global", Instant.now().toEpochMilli(), true))
-        globalMaintenance = true
-    }
-
-    private suspend fun disableGlobalMaintenance() {
-        dataCollection.deleteOne(eq("globalMaintenance", true))
-        globalMaintenance = false
-    }
-
-    override fun setGlobalMaintenance(enabled: Boolean) {
-        when(enabled) {
-            true -> {
-                if (globalMaintenance) {
-                    return
-                }
-
-                submitAsyncIO { enableGlobalMaintenance() }
-            }
-
-            false -> {
-                if (!globalMaintenance) {
-                    return
-                }
-
-                submitAsyncIO { disableGlobalMaintenance() }
-            }
-        }
-    }
-
     override suspend fun transferPlayer(player: PlayerWrapper<*>, id: String) {
         val destination = getDestination(id) ?: throw IllegalStateException("Destination $id not existed")
 
@@ -157,25 +120,23 @@ class ProxyTransferService(
 
     override fun setMaintainace(destination: Destination, enabled: Boolean) {
         destination as AbstractDestination
-        destination.status = when (enabled) {
-            true -> {
-                if (destination.status == DestinationStatus.MAINTENANCE) {
-                    return
-                }
 
-                submitAsyncIO { addMaintenanceEntry(destination) }
-                DestinationStatus.MAINTENANCE
-            }
-
-            false -> {
-                if (destination.status != DestinationStatus.MAINTENANCE) {
-                    return
-                }
-
-                submitAsyncIO { removeMaintenanceEntry(destination) }
-                DestinationStatus.OFFLINE
-            }
+        if (enabled && destination.status == DestinationStatus.MAINTENANCE) {
+            return
         }
+
+        if (enabled) {
+            submitAsyncIO { addMaintenanceEntry(destination) }
+            destination.status = DestinationStatus.MAINTENANCE
+            return
+        }
+
+        if (destination.status != DestinationStatus.MAINTENANCE) {
+            return
+        }
+
+        submitAsyncIO { removeMaintenanceEntry(destination) }
+        destination.status = DestinationStatus.OFFLINE
     }
 
     override fun close() {

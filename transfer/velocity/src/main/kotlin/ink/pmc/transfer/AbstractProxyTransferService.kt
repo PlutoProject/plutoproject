@@ -7,8 +7,5 @@ abstract class AbstractProxyTransferService : BaseTransferServiceImpl() {
 
     abstract val protocol: TransferRpc
     abstract val conditionManager: ConditionManager
-    abstract val globalMaintenance: Boolean
-
-    abstract fun setGlobalMaintenance(enabled: Boolean)
 
 }
