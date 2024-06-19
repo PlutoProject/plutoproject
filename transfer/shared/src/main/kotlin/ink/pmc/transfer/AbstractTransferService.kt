@@ -5,7 +5,7 @@ import java.io.Closeable
 
 abstract class AbstractTransferService : ITransferService, Closeable {
 
-    val categories = mutableSetOf<AbstractCategory>()
-    val destinations = mutableSetOf<AbstractDestination>()
+    override val categories = mutableSetOf<AbstractCategory>()
+    override val destinations = mutableSetOf<AbstractDestination>()
 
 }

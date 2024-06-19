@@ -13,6 +13,8 @@ interface ITransferService {
     }
 
     val playerCount: Int
+    val destinations: Set<Destination>
+    val categories: Set<Category>
 
     fun getDestination(id: String): Destination?
 
@@ -22,7 +24,7 @@ interface ITransferService {
 
     fun hasCategory(id: String): Boolean
 
-    fun setMaintainace(destination: Destination, enabled: Boolean)
+    fun setMaintenance(destination: Destination, enabled: Boolean)
 
     suspend fun transferPlayer(player: PlayerWrapper<*>, id: String)
 

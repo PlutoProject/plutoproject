@@ -18,7 +18,6 @@ import ink.pmc.utils.multiplaform.player.PlayerWrapper
 import ink.pmc.utils.multiplaform.player.velocity.velocity
 import ink.pmc.utils.visual.mochaSubtext0
 import ink.pmc.utils.visual.mochaText
-import kotlinx.coroutines.flow.firstOrNull
 import java.io.File
 import java.time.Instant
 
@@ -118,7 +117,7 @@ class ProxyTransferService(
         dataCollection.deleteOne(eq("id", destination.id))
     }
 
-    override fun setMaintainace(destination: Destination, enabled: Boolean) {
+    override fun setMaintenance(destination: Destination, enabled: Boolean) {
         destination as AbstractDestination
 
         if (enabled && destination.status == DestinationStatus.MAINTENANCE) {

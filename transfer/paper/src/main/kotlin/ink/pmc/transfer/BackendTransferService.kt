@@ -113,7 +113,7 @@ class BackendTransferService(
         }
     }
 
-    override fun setMaintainace(destination: Destination, enabled: Boolean) {
+    override fun setMaintenance(destination: Destination, enabled: Boolean) {
         throw UnsupportedOperationException("Maintainace can only be toggled on proxy")
     }
 

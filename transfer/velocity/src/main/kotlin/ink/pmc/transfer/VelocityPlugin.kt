@@ -11,6 +11,8 @@ import com.velocitypowered.api.plugin.annotation.DataDirectory
 import com.velocitypowered.api.proxy.ProxyServer
 import ink.pmc.provider.ProviderService
 import ink.pmc.rpc.api.RpcServer
+import ink.pmc.transfer.commands.TransferCommand
+import ink.pmc.utils.command.init
 import ink.pmc.utils.platform.proxy
 import ink.pmc.utils.platform.saveConfig
 import kotlinx.coroutines.Dispatchers
@@ -65,6 +67,7 @@ class VelocityPlugin @Inject constructor(suspendingPluginContainer: SuspendingPl
             SenderMapper.identity()
         )
 
+        velocityCommandManager.init(TransferCommand(proxyTransferService))
         disabled = false
     }
 
