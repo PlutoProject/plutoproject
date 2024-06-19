@@ -5,13 +5,12 @@ import com.electronwill.nightconfig.core.file.FileConfig
 import com.google.protobuf.Empty
 import ink.pmc.advkt.component.component
 import ink.pmc.advkt.component.miniMessage
+import ink.pmc.transfer.api.ConditionManager
 import ink.pmc.transfer.api.Destination
 import ink.pmc.transfer.api.DestinationStatus
 import ink.pmc.transfer.proto.CategoryBundleOuterClass.CategoryBundle
-import ink.pmc.transfer.proto.ConditionVerify.ConditionVerifyResult
 import ink.pmc.transfer.proto.DestinationBundleOuterClass.DestinationBundle
 import ink.pmc.transfer.proto.TransferRpcGrpcKt.TransferRpcCoroutineStub
-import ink.pmc.transfer.proto.conditionVerifyReq
 import ink.pmc.transfer.proto.healthyReport
 import ink.pmc.utils.concurrent.submitAsyncIO
 import ink.pmc.utils.multiplaform.item.KeyedMaterial
@@ -28,6 +27,7 @@ class BackendTransferService(
 
     private var closed = false
     private val backendSettings = config.get<Config>("backend-settings")
+    override val conditionManager: ConditionManager = BackendConditionManager(stub)
     private val id = backendSettings.get<String>("id")
     private val summaryRefresh = submitAsyncIO {
         while (!closed) {
@@ -114,7 +114,7 @@ class BackendTransferService(
     }
 
     override fun setMaintenance(destination: Destination, enabled: Boolean) {
-        throw UnsupportedOperationException("Maintainace can only be toggled on proxy")
+        throw UnsupportedOperationException("Maintenance can only be toggled on proxy")
     }
 
     override suspend fun transferPlayer(player: PlayerWrapper<*>, id: String) {
@@ -124,12 +124,7 @@ class BackendTransferService(
             throw IllegalStateException("Destination named $id not online")
         }
 
-        val condition = stub.verifyCondition(conditionVerifyReq {
-            uuid = player.uuid.toString()
-            this.destination = id
-        })
-
-        if (condition.result != ConditionVerifyResult.VERIFY_SUCCEED) {
+        if (!conditionManager.verifyCondition(player, destination)) {
             return
         }
 

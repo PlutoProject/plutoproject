@@ -12,6 +12,7 @@ import ink.pmc.transfer.proto.SummaryOuterClass.Summary
 import ink.pmc.transfer.proto.TransferRpcGrpcKt.TransferRpcCoroutineImplBase
 import ink.pmc.utils.bedrock.uuid
 import ink.pmc.utils.concurrent.submitAsync
+import ink.pmc.utils.multiplaform.player.velocity.wrapped
 import kotlinx.coroutines.delay
 import java.io.Closeable
 import kotlin.jvm.optionals.getOrNull
@@ -60,7 +61,7 @@ class TransferRpc(
         }
 
         return conditionVerifyRsp {
-            result = if (!service.conditionManager.verifyCondition(player, destination)) {
+            result = if (!service.conditionManager.verifyCondition(player.wrapped, destination)) {
                 ConditionVerifyResult.VERIFY_FAILED
             } else {
                 ConditionVerifyResult.VERIFY_SUCCEED

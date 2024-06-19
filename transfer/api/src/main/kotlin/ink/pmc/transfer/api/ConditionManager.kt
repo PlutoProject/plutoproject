@@ -1,9 +1,9 @@
 package ink.pmc.transfer.api
 
-import com.velocitypowered.api.proxy.Player
+import ink.pmc.utils.multiplaform.player.PlayerWrapper
 
 interface ConditionManager {
 
-    fun verifyCondition(player: Player, destination: Destination): Boolean
+    suspend fun verifyCondition(player: PlayerWrapper<*>, destination: Destination): Boolean
 
 }

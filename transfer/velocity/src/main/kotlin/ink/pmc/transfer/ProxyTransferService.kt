@@ -29,7 +29,7 @@ class ProxyTransferService(
 ) : AbstractProxyTransferService() {
 
     override val protocol: TransferRpc = TransferRpc(proxyServer, this)
-    override val conditionManager: ConditionManager = ConditionManagerImpl(this)
+    override val conditionManager: ConditionManager = ProxyConditionManager(this)
     private val dataCollection = database.getCollection<MaintenanceEntry>("transfer_maintenance_data")
     private val proxySettings = config.get<Config>("proxy-settings")
     private val proxyScriptFile = File(dataDir, proxySettings.get("proxy-script"))
@@ -102,7 +102,7 @@ class ProxyTransferService(
             throw IllegalStateException("Destination $id not online")
         }
 
-        if (!conditionManager.verifyCondition(player.velocity, destination)) {
+        if (!conditionManager.verifyCondition(player, destination)) {
             return
         }
 

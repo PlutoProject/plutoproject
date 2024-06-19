@@ -12,6 +12,7 @@ interface ITransferService {
         lateinit var instance: ITransferService
     }
 
+    val conditionManager: ConditionManager
     val playerCount: Int
     val destinations: Set<Destination>
     val categories: Set<Category>

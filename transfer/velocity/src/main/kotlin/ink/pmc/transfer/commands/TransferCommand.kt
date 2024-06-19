@@ -2,12 +2,13 @@ package ink.pmc.transfer.commands
 
 import com.velocitypowered.api.command.CommandSource
 import com.velocitypowered.api.proxy.Player
-import ink.pmc.transfer.AbstractProxyTransferService
-import ink.pmc.transfer.DESTINATION_NOT_EXISTED
-import ink.pmc.transfer.velocityCommandManager
+import ink.pmc.transfer.*
+import ink.pmc.transfer.api.DestinationStatus
 import ink.pmc.utils.chat.NON_PLAYER
 import ink.pmc.utils.chat.replace
 import ink.pmc.utils.command.VelocityCommand
+import ink.pmc.utils.multiplaform.player.velocity.wrapped
+import ink.pmc.utils.visual.mochaFlamingo
 import net.kyori.adventure.text.Component
 import org.incendo.cloud.component.CommandComponent
 import org.incendo.cloud.kotlin.coroutines.extension.suspendingHandler
@@ -46,11 +47,33 @@ class TransferCommand(private val service: AbstractProxyTransferService) : Veloc
             if (destination == null) {
                 sender.sendMessage(
                     DESTINATION_NOT_EXISTED
-                        .replace("<name>", Component.text(dest))
+                        .replace("<id>", Component.text(dest))
                 )
                 return@suspendingHandler
             }
 
+            if (destination.status == DestinationStatus.MAINTENANCE) {
+                sender.sendMessage(TRANSFER_FAILED_SERVER_MAINTENACE)
+                return@suspendingHandler
+            }
+
+            if (destination.status == DestinationStatus.OFFLINE) {
+                sender.sendMessage(TRANSFER_FAILED_SERVER_OFFLINE)
+                return@suspendingHandler
+            }
+
+            val condition = service.conditionManager.verifyCondition(sender.wrapped, destination)
+
+            if (!condition) {
+                sender.sendMessage(TRANSFER_FAILED_CONDITIONAL)
+                return@suspendingHandler
+            }
+
+            service.transferPlayer(sender.wrapped, destination.id)
+            sender.sendMessage(
+                TRANSFER_SUCCEED
+                    .replace("<name>", destination.name.color(mochaFlamingo))
+            )
         }
     }.commandBuilder
 
