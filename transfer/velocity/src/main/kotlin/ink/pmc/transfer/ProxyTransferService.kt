@@ -18,6 +18,7 @@ import ink.pmc.utils.multiplaform.player.PlayerWrapper
 import ink.pmc.utils.multiplaform.player.velocity.velocity
 import ink.pmc.utils.visual.mochaSubtext0
 import ink.pmc.utils.visual.mochaText
+import kotlinx.coroutines.flow.firstOrNull
 import java.io.File
 import java.time.Instant
 
@@ -35,11 +36,13 @@ class ProxyTransferService(
     private val proxyScriptFile = File(dataDir, proxySettings.get("proxy-script"))
     private val configDestinations = proxySettings.get<List<Map<String, Any>>>("proxy-settings.destinations")
     private val configCategories = proxySettings.get<List<Map<String, Any>>>("proxy-settings.categories")
+    override var globalMaintenance: Boolean = false
 
     init {
         rpc.apply { addService(protocol) }
         loadCategories()
         loadDestinations()
+        submitAsyncIO { updateMaintenanceStatus() }
     }
 
     private fun loadCategories() {
@@ -93,6 +96,41 @@ class ProxyTransferService(
                 destination
             }
         )
+    }
+
+    private suspend fun updateMaintenanceStatus() {
+        dataCollection.find(eq("globalMaintenance", true)).firstOrNull() ?: return
+        globalMaintenance = true
+    }
+
+    private suspend fun enableGlobalMaintenance() {
+        dataCollection.insertOne(MaintenanceEntry("_global", Instant.now().toEpochMilli(), true))
+        globalMaintenance = true
+    }
+
+    private suspend fun disableGlobalMaintenance() {
+        dataCollection.deleteOne(eq("globalMaintenance", true))
+        globalMaintenance = false
+    }
+
+    override fun setGlobalMaintenance(enabled: Boolean) {
+        when(enabled) {
+            true -> {
+                if (globalMaintenance) {
+                    return
+                }
+
+                submitAsyncIO { enableGlobalMaintenance() }
+            }
+
+            false -> {
+                if (!globalMaintenance) {
+                    return
+                }
+
+                submitAsyncIO { disableGlobalMaintenance() }
+            }
+        }
     }
 
     override suspend fun transferPlayer(player: PlayerWrapper<*>, id: String) {
