@@ -73,6 +73,7 @@ class MemberImpl(
             uid,
             xuid,
             gamertag,
+            true
         )
 
         service.currentStatus.increaseBedrockAccount()
@@ -87,7 +88,6 @@ class MemberImpl(
             return
         }
 
-        service.removalBeAccounts.add(bedrockAccount!!.id)
         bedrockAccount = null
     }
 
@@ -137,6 +137,7 @@ class MemberImpl(
             bedrockAccount = this.bedrockAccount?.id,
             bio = this.bio,
             isHidden = this.isHidden,
+            new = false
         )
     }
 
