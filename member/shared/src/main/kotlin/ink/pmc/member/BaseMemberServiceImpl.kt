@@ -206,9 +206,9 @@ abstract class BaseMemberServiceImpl(
             currentStatus.increaseBedrockAccount()
         }
 
-        save(member)
         currentStatus.increaseDataContainer()
         currentStatus.increaseMember()
+        save(member)
 
         return member
     }
