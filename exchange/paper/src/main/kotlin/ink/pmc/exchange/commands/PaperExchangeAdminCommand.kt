@@ -15,7 +15,7 @@ object PaperExchangeAdminCommand : PaperCommand() {
         .permission(EXCHANGE_ADMIN_PERMISSION)
         .literal("marksign")
         .suspendingHandler {
-            val sender = it.sender()
+            val sender = it.sender().sender
 
             if (sender !is Player) {
                 sender.sendMessage(NON_PLAYER)
