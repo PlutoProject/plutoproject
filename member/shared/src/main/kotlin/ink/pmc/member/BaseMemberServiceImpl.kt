@@ -123,7 +123,7 @@ abstract class BaseMemberServiceImpl(
             lookupStatus = statusCollection.find(exists("lastMember")).firstOrNull()
 
             if (lookupStatus == null) {
-                lookupStatus = StatusBean(ObjectId(), -1, -1, -1, -1, -1)
+                lookupStatus = StatusBean(ObjectId(), -1, -1, -1)
                 statusCollection.insertOne(lookupStatus)
             }
 

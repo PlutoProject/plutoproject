@@ -19,8 +19,6 @@ import java.util.concurrent.locks.ReentrantLock
 data class StatusBean(
     @Id @SerialName("_id") @Contextual val objectId: ObjectId,
     var lastMember: Long,
-    var lastPunishment: Long,
-    var lastComment: Long,
     var lastDataContainer: Long,
     var lastBedrockAccount: Long
 ) : Diffable<StatusBean>() {
@@ -33,8 +31,6 @@ data class StatusBean(
         diff.changes.filterIsInstance<ValueChange>().forEach {
             when (it.propertyName) {
                 "lastMember" -> lastMember = it.right as Long
-                "lastPunishment" -> lastPunishment = it.right as Long
-                "lastComment" -> lastComment = it.right as Long
                 "lastDataContainer" -> lastDataContainer = it.right as Long
                 "lastBedrockAccount" -> lastBedrockAccount = it.right as Long
             }
@@ -59,34 +55,6 @@ data class StatusBean(
             }
 
             lastMember += 1
-        }
-    }
-
-    fun nextPunishment(): Long {
-        if (lastPunishment == -1L) {
-            return 0
-        }
-
-        return lastPunishment + 1
-    }
-
-    fun increasePunishment() {
-        accessLock.withLock {
-            lastPunishment += 1
-        }
-    }
-
-    fun nextComment(): Long {
-        if (lastComment == -1L) {
-            return 0
-        }
-
-        return lastComment + 1
-    }
-
-    fun increaseComment() {
-        accessLock.withLock {
-            lastComment += 1
         }
     }
 

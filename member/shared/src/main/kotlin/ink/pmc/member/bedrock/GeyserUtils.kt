@@ -1,25 +1,23 @@
 package ink.pmc.member.bedrock
 
 import ink.pmc.utils.bedrock.floodgateApi
+import org.geysermc.floodgate.api.link.PlayerLink
+import org.geysermc.floodgate.util.LinkedPlayer
 import java.util.*
 
-val playerLinkClass: Class<*> = Class.forName("org.geysermc.floodgate.api.link.PlayerLink")
 val simpleFloodgateApiClass: Class<*> = Class.forName("org.geysermc.floodgate.api.SimpleFloodgateApi")
-private val linkedPlayerClass = Class.forName("org.geysermc.floodgate.util.LinkedPlayer")
 private val floodgatePlayerClass = Class.forName("org.geysermc.floodgate.api.player.FloodgatePlayer")
 private val instanceHolderApiClass = Class.forName("org.geysermc.floodgate.api.InstanceHolder")
-private val linkedPlayerOfMethod =
-    linkedPlayerClass.getDeclaredMethod("of", String::class.java, UUID::class.java, UUID::class.java)
 private val correctUniqueIdMethod = floodgatePlayerClass.getDeclaredMethod("getCorrectUniqueId")
 private val playerLinkField = instanceHolderApiClass.getDeclaredField("playerLink").apply { isAccessible = true }
 private val floodgatePlayersField = simpleFloodgateApiClass.getDeclaredField("players").apply { isAccessible = true }
 
-fun replacePlayerLink(playerLink: Any) {
+fun replacePlayerLinkInstance(playerLink: PlayerLink) {
     playerLinkField.set(null, playerLink)
 }
 
-fun newLinkedPlayer(javaUsername: String, javaUniqueId: UUID, bedrockId: UUID): Any {
-    return linkedPlayerOfMethod.invoke(null, javaUsername, javaUniqueId, bedrockId)
+fun newLinkedPlayerInstance(javaUsername: String, javaUniqueId: UUID, bedrockId: UUID): LinkedPlayer {
+    return LinkedPlayer.of(javaUsername, javaUniqueId, bedrockId)
 }
 
 @Suppress("UNCHECKED_CAST")

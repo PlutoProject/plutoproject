@@ -1,28 +1,25 @@
-package ink.pmc.member.delegations
+package ink.pmc.member
 
 import com.mongodb.client.model.Filters.eq
 import ink.pmc.member.api.AuthType
-import ink.pmc.member.bedrock.newLinkedPlayer
-import ink.pmc.member.memberService
-import ink.pmc.member.serverLogger
+import ink.pmc.member.bedrock.newLinkedPlayerInstance
 import ink.pmc.utils.bedrock.xuid
 import ink.pmc.utils.concurrent.submitAsync
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.future.asCompletableFuture
-import net.bytebuddy.implementation.bind.annotation.Argument
+import org.geysermc.floodgate.api.link.LinkRequestResult
+import org.geysermc.floodgate.api.link.PlayerLink
+import org.geysermc.floodgate.util.LinkedPlayer
 import java.util.*
 import java.util.concurrent.CompletableFuture
 
-@Suppress("UNUSED", "UNUSED_PARAMETER")
-object MemberPlayerLinkDelegations {
+object MemberPlayerLink : PlayerLink {
 
-    @JvmStatic
-    fun load() {
+    override fun load() {
         serverLogger.info("MemberPlayerLink loaded.")
     }
 
-    @JvmStatic
-    fun getLinkedPlayer(@Argument(0) bedrockId: UUID): CompletableFuture<Any?> = submitAsync<Any?> {
+    override fun getLinkedPlayer(bedrockId: UUID) = submitAsync<LinkedPlayer?> {
         val xuid = bedrockId.xuid
         val bedrockAccountStorage = memberService.bedrockAccounts.find(eq("xuid", xuid)).firstOrNull()
             ?: return@submitAsync null
@@ -33,11 +30,10 @@ object MemberPlayerLinkDelegations {
         }
 
         serverLogger.info("MemberPlayerLink - Get a linked player: ${member.rawName}, ${member.id}, $bedrockId")
-        newLinkedPlayer(member.rawName, member.id, bedrockId)
+        newLinkedPlayerInstance(member.rawName, member.id, bedrockId)
     }.asCompletableFuture()
 
-    @JvmStatic
-    fun isLinkedPlayer(@Argument(0) playerId: UUID): CompletableFuture<Boolean> = submitAsync<Boolean> {
+    override fun isLinkedPlayer(playerId: UUID) = submitAsync<Boolean> {
         val xuid = playerId.xuid
         val member = memberService.lookup(playerId)
         val bedrockAccountStorage = memberService.bedrockAccounts.find(eq("xuid", xuid)).firstOrNull()
@@ -60,56 +56,48 @@ object MemberPlayerLinkDelegations {
         return@submitAsync false
     }.asCompletableFuture()
 
-    @JvmStatic
-    fun linkPlayer(
-        @Argument(0) bedrockId: UUID,
-        @Argument(1) javaId: UUID,
-        @Argument(2) username: String
-    ): CompletableFuture<Void>? {
-        return null
+    override fun linkPlayer(
+        bedrockId: UUID,
+        javaId: UUID,
+        username: String
+    ): CompletableFuture<Void> {
+        return CompletableFuture.completedFuture(null)
     }
 
-    @JvmStatic
-    fun createLinkRequest(
-        @Argument(0) javaId: UUID?,
-        @Argument(1) javaUsername: String?,
-        @Argument(2) bedrockUsername: String?
-    ): CompletableFuture<*>? {
-        return null
+    override fun unlinkPlayer(javaId: UUID): CompletableFuture<Void> {
+        return CompletableFuture.completedFuture(null)
     }
 
-    @JvmStatic
-    fun verifyLinkRequest(
-        @Argument(0) bedrockId: UUID?,
-        @Argument(1) javaUsername: String?,
-        @Argument(2) bedrockUsername: String?,
-        @Argument(3) code: String?
-    ): CompletableFuture<Any>? {
-        return null
+    override fun createLinkRequest(javaId: UUID, javaUsername: String, bedrockUsername: String): CompletableFuture<*> {
+        return CompletableFuture.completedFuture(null)
     }
 
-    @JvmStatic
-    fun getName(): String {
+    override fun verifyLinkRequest(
+        bedrockId: UUID,
+        javaUsername: String,
+        bedrockUsername: String,
+        code: String
+    ): CompletableFuture<LinkRequestResult> {
+        return CompletableFuture.completedFuture(null)
+    }
+
+    override fun getName(): String {
         return "MemberPlayerLink"
     }
 
-    @JvmStatic
-    fun isEnabled(): Boolean {
+    override fun isEnabled(): Boolean {
         return true
     }
 
-    @JvmStatic
-    fun getVerifyLinkTimeout(): Long {
+    override fun getVerifyLinkTimeout(): Long {
         return 0
     }
 
-    @JvmStatic
-    fun isAllowLinking(): Boolean {
+    override fun isAllowLinking(): Boolean {
         return false
     }
 
-    @JvmStatic
-    fun stop() {
+    override fun stop() {
         serverLogger.info("MemberPlayerLink stopped.")
     }
 

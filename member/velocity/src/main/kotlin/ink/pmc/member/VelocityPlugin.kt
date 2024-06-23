@@ -11,8 +11,8 @@ import com.velocitypowered.api.plugin.PluginContainer
 import com.velocitypowered.api.plugin.annotation.DataDirectory
 import com.velocitypowered.api.proxy.ProxyServer
 import ink.pmc.member.api.IMemberService
-import ink.pmc.member.bedrock.GeyserPlayerLinkReplacement
 import ink.pmc.member.bedrock.GeyserSimpleFloodgateApiReplacement
+import ink.pmc.member.bedrock.replacePlayerLinkInstance
 import ink.pmc.member.commands.MemberCommand
 import ink.pmc.provider.ProviderService
 import ink.pmc.rpc.api.RpcServer
@@ -48,7 +48,8 @@ class VelocityPlugin @Inject constructor(suspendingPluginContainer: SuspendingPl
     fun proxyInitializeEvent(event: ProxyInitializeEvent) {
         pluginContainer = proxy.pluginManager.getPlugin("member").get()
 
-        GeyserPlayerLinkReplacement.init()
+        // GeyserPlayerLinkReplacement.init()
+        replacePlayerLinkInstance(MemberPlayerLink)
         GeyserSimpleFloodgateApiReplacement.init()
 
         commandManager = VelocityCommandManager(
