@@ -1,8 +1,7 @@
-package ink.pmc.exchange.proxy
+package ink.pmc.exchange
 
 import com.velocitypowered.api.event.Subscribe
 import com.velocitypowered.api.event.connection.DisconnectEvent
-import ink.pmc.exchange.proxyExchangeService
 
 @Suppress("UNUSED")
 object ProxyExchangeHandler {

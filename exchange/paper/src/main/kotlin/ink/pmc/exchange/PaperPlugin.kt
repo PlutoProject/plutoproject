@@ -6,6 +6,7 @@ import ink.pmc.exchange.api.IExchangeService
 import ink.pmc.exchange.backend.AbstractBackendExchangeService
 import ink.pmc.exchange.backend.BackendExchangeService
 import ink.pmc.exchange.backend.RandomTicketsManager
+import ink.pmc.exchange.commands.PaperExchangeAdminCommand
 import ink.pmc.exchange.lobby.ExchangeHandler
 import ink.pmc.exchange.lobby.LobbyExchangeService
 import ink.pmc.exchange.lobby.LogicDisabler
@@ -55,6 +56,7 @@ class PaperPlugin : SuspendingJavaPlugin() {
             ExecutionCoordinator.asyncCoordinator()
         )
         paperCommandManager.registerBrigadier()
+        paperCommandManager.init(PaperExchangeAdminCommand)
 
         when (fileConfig.get<Boolean>("lobby-mode")) {
             true -> initAsLobby()

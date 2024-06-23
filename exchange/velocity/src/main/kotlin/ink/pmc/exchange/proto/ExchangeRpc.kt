@@ -15,7 +15,7 @@ import ink.pmc.exchange.proto.proxy2server.exchangeEndAck
 import ink.pmc.exchange.proto.proxy2server.exchangeStartAck
 import ink.pmc.exchange.proto.server2lobby.ExchangeEndOuterClass.ExchangeEnd
 import ink.pmc.exchange.proto.server2lobby.ExchangeStartOuterClass.ExchangeStart
-import ink.pmc.exchange.proxy.AbstractProxyExchangeService
+import ink.pmc.exchange.AbstractProxyExchangeService
 import ink.pmc.exchange.serverLogger
 import ink.pmc.utils.platform.proxy
 import ink.pmc.utils.proto.operation.ResultMessageOuterClass.ResultMessage

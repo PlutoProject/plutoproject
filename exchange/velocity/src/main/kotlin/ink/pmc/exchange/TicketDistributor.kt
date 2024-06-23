@@ -1,8 +1,7 @@
-package ink.pmc.exchange.proxy
+package ink.pmc.exchange
 
 import com.velocitypowered.api.event.Subscribe
 import com.velocitypowered.api.event.player.ServerConnectedEvent
-import ink.pmc.exchange.*
 import ink.pmc.member.api.Member
 import ink.pmc.member.api.velocity.member
 import ink.pmc.member.api.velocity.player
