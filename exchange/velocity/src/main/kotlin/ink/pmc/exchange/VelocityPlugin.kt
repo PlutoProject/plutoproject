@@ -11,11 +11,8 @@ import com.velocitypowered.api.plugin.PluginContainer
 import com.velocitypowered.api.plugin.annotation.DataDirectory
 import com.velocitypowered.api.proxy.ProxyServer
 import ink.pmc.exchange.api.IExchangeService
-import ink.pmc.exchange.proxy.ProxyExchangeHandler
-import ink.pmc.exchange.proxy.ProxyExchangeService
-import ink.pmc.exchange.proxy.TicketDistributor
-import ink.pmc.exchange.proxy.commands.ProxyExchangeCommand
-import ink.pmc.exchange.proxy.commands.ProxyTicketsCommand
+import ink.pmc.exchange.commands.ProxyExchangeCommand
+import ink.pmc.exchange.commands.ProxyTicketsCommand
 import ink.pmc.utils.command.init
 import ink.pmc.utils.platform.proxy
 import ink.pmc.utils.platform.saveConfig

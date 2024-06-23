@@ -349,6 +349,7 @@ allprojects {
         dep(rootProject.libs.bundles.nightconfig)
         dep(rootProject.libs.bundles.protobuf)
         dep(rootProject.libs.bundles.grpc)
+        dep(rootProject.libs.bundles.javers)
         dep(rootProject.libs.bundles.mongodb)
         dep(rootProject.libs.bundles.ktor)
         dep(rootProject.libs.okhttp)

@@ -21,6 +21,7 @@ class BedrockAccountImpl(override val linkedWith: Member, override var bean: Bed
             linkedWith = this.linkedWith.uid,
             xuid = this.xuid,
             gamertag = this.gamertag,
+            new = false
         )
     }
 

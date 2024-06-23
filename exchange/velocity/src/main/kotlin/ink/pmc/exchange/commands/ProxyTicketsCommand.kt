@@ -1,8 +1,8 @@
-package ink.pmc.exchange.proxy.commands
+package ink.pmc.exchange.commands
 
 import com.velocitypowered.api.proxy.Player
 import ink.pmc.exchange.*
-import ink.pmc.exchange.proxy.tickets
+import ink.pmc.exchange.tickets
 import ink.pmc.member.api.velocity.member
 import ink.pmc.utils.chat.NON_PLAYER
 import ink.pmc.utils.chat.PLAYER_NOT_ONLINE

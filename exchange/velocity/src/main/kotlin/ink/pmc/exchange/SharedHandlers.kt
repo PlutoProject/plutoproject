@@ -1,8 +1,7 @@
-package ink.pmc.exchange.proxy
+package ink.pmc.exchange
 
 import com.velocitypowered.api.command.CommandSource
 import com.velocitypowered.api.proxy.Player
-import ink.pmc.exchange.*
 import ink.pmc.exchange.utils.isInExchangeLobby
 import ink.pmc.member.api.velocity.member
 import ink.pmc.utils.chat.replace

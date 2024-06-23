@@ -308,10 +308,8 @@ object MemberCommand : VelocityCommand() {
                 player.disconnect(MEMBER_MODIFY_UNLINK_BE_KICK)
             }
 
-            sender.sendMessage(
-                MEMBER_MODIFY_UNLINK_BE_SUCCEED
-                    .replace("<player>", Component.text(member.rawName).color(mochaYellow))
-            )
+            sender.sendMessage(MEMBER_MODIFY_UNLINK_BE_SUCCEED
+                .replace("<player>", Component.text(member.rawName).color(mochaYellow)))
         }
 
     private val memberModifyHide = commandManager.commandBuilder("member")

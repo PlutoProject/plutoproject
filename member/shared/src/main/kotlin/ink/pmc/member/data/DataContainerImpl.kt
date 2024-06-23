@@ -29,6 +29,7 @@ class DataContainerImpl(override val owner: Member, override var bean: DataConta
             createdAt = this.createdAt.toEpochMilli(),
             lastModifiedAt = this.lastModifiedAt.toEpochMilli(),
             contents = this.contents.clone(),
+            new = false
         )
     }
 

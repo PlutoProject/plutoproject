@@ -1,9 +1,9 @@
-package ink.pmc.exchange.proxy.commands
+package ink.pmc.exchange.commands
 
 import com.velocitypowered.api.proxy.Player
 import ink.pmc.exchange.*
-import ink.pmc.exchange.proxy.back
-import ink.pmc.exchange.proxy.exchange
+import ink.pmc.exchange.back
+import ink.pmc.exchange.exchange
 import ink.pmc.exchange.utils.isInExchangeLobby
 import ink.pmc.utils.chat.NON_PLAYER
 import ink.pmc.utils.chat.PLAYER_NOT_ONLINE
