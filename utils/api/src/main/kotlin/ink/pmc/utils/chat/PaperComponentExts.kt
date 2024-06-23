@@ -2,6 +2,7 @@ package ink.pmc.utils.chat
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
+import net.minecraft.core.RegistryAccess
 
 typealias NmsComponent = net.minecraft.network.chat.Component
 typealias NmsComponentSerializer = net.minecraft.network.chat.Component.Serializer
@@ -9,5 +10,5 @@ typealias NmsComponentSerializer = net.minecraft.network.chat.Component.Serializ
 val Component.nms: NmsComponent
     get() {
         val json = GsonComponentSerializer.gson().serialize(this)
-        return NmsComponentSerializer.fromJson(json) as NmsComponent
+        return NmsComponentSerializer.fromJson(json, RegistryAccess.EMPTY) as NmsComponent
     }

@@ -10,21 +10,21 @@ object HypervisorCommand : PaperCommand() {
         .permission("hypervisor.status")
         .literal("status")
         .suspendingHandler {
-            status(it.sender())
+            status(it.sender().sender)
         }
 
     private val hypervisorServerStatus = commandManager.commandBuilder("hypervisor", "hv")
         .permission("hypervisor.status")
         .literal("serverstatus")
         .suspendingHandler {
-            serverStatus(it.sender())
+            serverStatus(it.sender().sender)
         }
 
     private val hypervisorWorldStatus = commandManager.commandBuilder("hypervisor", "hv")
         .permission("hypervisor.status")
         .literal("worldstatus")
         .suspendingHandler {
-            worldStatus(it.sender())
+            worldStatus(it.sender().sender)
         }
 
     init {

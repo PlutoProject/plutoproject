@@ -3,24 +3,26 @@ kotlin = "2.0.0"
 kotlinx-coroutine = "1.8.1"
 kotlinx-serialization = "1.7.0"
 mongodb = "5.1.1"
-nightconfig = "3.7.2"
+nightconfig = "3.7.3"
 mccoroutine = "2.16.0"
 bytebuddy = "1.14.17"
 protobuf = "3.25.3"
 grpc = "1.64.0"
 grpc-kotlin = "1.4.1"
 javers = "7.4.6"
-ktor = "2.3.11"
+ktor = "2.3.12"
 resource-factory = "1.1.1"
+cloud = "2.0.0-rc.2"
+cloud-minecraft = "2.0.0-SNAPSHOT"
 
 [libraries]
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
 kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
 kotlinx-coroutine-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutine" }
 kotlinx-serialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
-paper-api = { module = "io.papermc.paper:paper-api", version = "1.20.4-R0.1-SNAPSHOT" }
+paper-api = { module = "io.papermc.paper:paper-api", version = "1.21-R0.1-SNAPSHOT" }
 velocity-api = { module = "com.velocitypowered:velocity-api", version = "3.3.0-SNAPSHOT" }
-velocity = { module = "com.velocitypowered:velocity", version = "3.3.0-379" }
+velocity = { module = "com.velocitypowered:velocity", version = "3.3.0-398" }
 okhttp = { module = "com.squareup.okhttp3:okhttp", version = "5.0.0-alpha.12" }
 gson = { module = "com.google.code.gson:gson", version = "2.11.0" }
 mongodb-kotlin = { module = "org.mongodb:mongodb-driver-kotlin-coroutine", version.ref = "mongodb" }
@@ -30,10 +32,10 @@ catppuccin = { module = "com.catppuccin:catppuccin-palette", version = "1.0.0" }
 nightconfig-core = { module = "com.electronwill.night-config:core", version.ref = "nightconfig" }
 nightconfig-toml = { module = "com.electronwill.night-config:toml", version.ref = "nightconfig" }
 nightconfig-hocon = { module = "com.electronwill.night-config:hocon", version.ref = "nightconfig" }
-cloud-paper = { module = "org.incendo:cloud-paper", version = "2.0.0-beta.7" }
-cloud-velocity = { module = "org.incendo:cloud-velocity", version = "2.0.0-beta.7" }
-cloud-coroutines = { module = "org.incendo:cloud-kotlin-coroutines", version = "2.0.0-rc.1" }
-cloud-extensions = { module = "org.incendo:cloud-kotlin-extensions", version = "2.0.0-rc.1" }
+cloud-paper = { module = "org.incendo:cloud-paper", version.ref = "cloud-minecraft" }
+cloud-velocity = { module = "org.incendo:cloud-velocity", version.ref = "cloud-minecraft" }
+cloud-coroutines = { module = "org.incendo:cloud-kotlin-coroutines", version.ref = "cloud" }
+cloud-extensions = { module = "org.incendo:cloud-kotlin-extensions", version.ref = "cloud" }
 netty = { module = "io.netty:netty-all", version = "4.1.111.Final" }
 mccoroutine-bukkit-api = { module = "com.github.shynixn.mccoroutine:mccoroutine-bukkit-api", version.ref = "mccoroutine" }
 mccoroutine-bukkit-core = { module = "com.github.shynixn.mccoroutine:mccoroutine-bukkit-core", version.ref = "mccoroutine" }

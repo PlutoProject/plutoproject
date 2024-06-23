@@ -19,7 +19,7 @@ import java.util.logging.Logger
 
 lateinit var serverLogger: Logger
 lateinit var pluginContainer: PluginContainer
-val protocolVersion = ProtocolVersion.MINECRAFT_1_20_3
+val protocolVersion = ProtocolVersion.MINECRAFT_1_21
 
 @Suppress("UNUSED", "UNUSED_PARAMETER")
 class VelocityPlugin @Inject constructor(suspendingPluginContainer: SuspendingPluginContainer) {
@@ -30,7 +30,7 @@ class VelocityPlugin @Inject constructor(suspendingPluginContainer: SuspendingPl
         TitlePacketDecodeReplacement.init()
         SystemChatPacketDecodeReplacement.init()
         GeyserAttackIndicatorReplacement.init()
-        BedrockColorSerializerReplacement.init()
+        // BedrockColorSerializerReplacement.init()
     }
 
     @Inject

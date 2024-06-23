@@ -15,7 +15,7 @@ plugins {
     alias(libs.plugins.resource.factory.velocity)
 }
 
-val paperDevBundleVer = "1.20.4-R0.1-SNAPSHOT"
+val paperDevBundleVer = "1.21-R0.1-SNAPSHOT"
 extra["paperDevBundleVer"] = paperDevBundleVer
 
 fun kotlin(s: String): String {
@@ -239,9 +239,7 @@ fun Project.configurePaperDevEnv() {
         paperweight.paperDevBundle(paperDevBundleVer)
     }
 
-    tasks.assemble {
-        dependsOn(tasks.reobfJar)
-    }
+    paperweight.reobfArtifactConfiguration = io.papermc.paperweight.userdev.ReobfArtifactConfiguration.MOJANG_PRODUCTION
 }
 
 fun DependencyHandlerScope.implementationWithEnv(dep: Project) {
@@ -315,6 +313,14 @@ allprojects {
 
     this.group = packageName()
     this.version = "1.1.0"
+
+    java {
+        toolchain.languageVersion.set(JavaLanguageVersion.of(21))
+    }
+
+    kotlin {
+        jvmToolchain(21)
+    }
 
     repositories {
         mavenCentral()

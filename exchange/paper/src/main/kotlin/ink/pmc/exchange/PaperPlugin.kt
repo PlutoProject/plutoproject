@@ -16,6 +16,7 @@ import ink.pmc.exchange.paper.lobbyWorldName
 import ink.pmc.utils.command.init
 import ink.pmc.utils.isInDebugMode
 import ink.pmc.utils.platform.paper
+import io.papermc.paper.command.brigadier.CommandSourceStack
 import org.bukkit.Bukkit
 import org.bukkit.World
 import org.bukkit.WorldCreator
@@ -27,7 +28,7 @@ import java.util.logging.Level
 
 lateinit var paperExchangePlugin: PaperPlugin
 lateinit var backendExchangeService: AbstractBackendExchangeService
-lateinit var paperCommandManager: PaperCommandManager<CommandSender>
+lateinit var paperCommandManager: PaperCommandManager<CommandSourceStack>
 lateinit var world: World
 lateinit var randomTicketsManager: RandomTicketsManager
 
@@ -51,11 +52,11 @@ class PaperPlugin : SuspendingJavaPlugin() {
 
         loadConfig(configFile)
 
-        paperCommandManager = PaperCommandManager.createNative(
-            this,
-            ExecutionCoordinator.asyncCoordinator()
-        )
-        paperCommandManager.registerBrigadier()
+        paperCommandManager = PaperCommandManager.builder()
+            .executionCoordinator(ExecutionCoordinator.asyncCoordinator())
+            .buildOnEnable(this)
+        
+        // paperCommandManager.registerBrigadier()
         paperCommandManager.init(PaperExchangeAdminCommand)
 
         when (fileConfig.get<Boolean>("lobby-mode")) {
