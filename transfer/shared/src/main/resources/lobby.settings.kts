@@ -20,7 +20,7 @@ fun archiveCategoryClose(category: Category, player: PlayerWrapper<*>) {
     }
 }
 
-menu {
+menuSettings {
     env {
         destinationButton {
             icon = destination.icon
@@ -39,8 +39,19 @@ menu {
         categoryOpen(::archiveCategoryOpen)
         categoryClose(::archiveCategoryClose)
     }
+}
 
-    TODO("编写 UI 示例")
+menuContent {
+    structure (
+        "X########",
+        "###S#A###",
+        "#########"
+    )
+
+    ingredient('X', closeButton())
+    ingredient('#', placeholder())
+    ingredient('S', getDestinationButton("survival"))
+    ingredient('A', getCategoryButton("archive"))
 }
 
 form {

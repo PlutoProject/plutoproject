@@ -331,6 +331,7 @@ allprojects {
         maven(uri("https://repo.opencollab.dev/main/"))
         maven(uri("https://repo.dmulloy2.net/repository/public/"))
         maven(uri("https://mvn.exceptionflug.de/repository/exceptionflug-public/"))
+        maven(uri("https://repo.xenondevs.xyz/releases"))
     }
 
     fun DependencyHandlerScope.dep(dep: Provider<*>) {
@@ -359,6 +360,7 @@ allprojects {
         dep(rootProject.libs.jsoup)
         dep(rootProject.libs.caffeine)
         dep(rootProject.libs.adventure.kt)
+        dep(rootProject.libs.invui)
     }
 
     tasks.shadowJar {
