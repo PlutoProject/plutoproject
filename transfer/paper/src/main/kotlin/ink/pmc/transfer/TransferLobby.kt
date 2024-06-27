@@ -1,26 +1,20 @@
 package ink.pmc.transfer
 
 import com.electronwill.nightconfig.core.Config
-import com.github.shynixn.mccoroutine.bukkit.registerSuspendingEvents
-import org.bukkit.*
+import ink.pmc.transfer.lobby.PortalManager
+import org.bukkit.Bukkit
+import org.bukkit.GameRule
+import org.bukkit.World
+import org.bukkit.WorldCreator
 import org.bukkit.event.Listener
-import org.bukkit.plugin.java.JavaPlugin
 
-class TransferLobby(
-    server: Server,
-    plugin: JavaPlugin,
-    private val config: Config
-) {
+class TransferLobby(private val config: Config) {
 
     private val worldName = config.get<String>("world")
     private val world = loadWorld(worldName).apply { initWorldEnvironment(this) }
-
-    init {
-        server.pluginManager.registerSuspendingEvents(Listeners, plugin)
-    }
+    val portalManager = PortalManager(config.get("portal"), world)
 
     object Listeners : Listener {
-
     }
 
     private fun initWorldEnvironment(world: World) {
@@ -34,7 +28,8 @@ class TransferLobby(
     }
 
     private fun loadWorld(name: String): World {
-        return Bukkit.createWorld(WorldCreator.name(name)) ?: throw IllegalStateException("Failed to load transfer world!")
+        return Bukkit.createWorld(WorldCreator.name(name))
+            ?: throw IllegalStateException("Failed to load transfer world!")
     }
 
 }

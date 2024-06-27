@@ -1,6 +1,7 @@
 package ink.pmc.transfer
 
 import com.github.shynixn.mccoroutine.bukkit.SuspendingJavaPlugin
+import com.github.shynixn.mccoroutine.bukkit.registerSuspendingEvents
 import ink.pmc.rpc.api.RpcClient
 import ink.pmc.transfer.proto.TransferRpcGrpcKt.TransferRpcCoroutineStub
 import ink.pmc.utils.platform.paper
@@ -28,7 +29,7 @@ class PaperPlugin : SuspendingJavaPlugin() {
 
         paperTransferService = BackendTransferService(paper, TransferRpcCoroutineStub(RpcClient.channel), fileConfig)
         transferService = paperTransferService
-        transferLobby = TransferLobby(paper, this, fileConfig.get("lobby-settings"))
+        initLobby()
 
         disabled = false
     }
@@ -38,6 +39,16 @@ class PaperPlugin : SuspendingJavaPlugin() {
         withContext(Dispatchers.IO) {
             transferService.close()
         }
+    }
+
+    private fun initLobby() {
+        if (fileConfig.get<String>("work-mode") != "lobby") {
+            return
+        }
+
+        transferLobby = TransferLobby(fileConfig.get("lobby-settings"))
+        server.pluginManager.registerSuspendingEvents(TransferLobby.Listeners, this)
+        server.pluginManager.registerSuspendingEvents(transferLobby.portalManager.bounding.listener, this)
     }
 
 }
