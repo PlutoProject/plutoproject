@@ -6,7 +6,6 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerMoveEvent
 import org.bukkit.util.Vector
-import java.util.*
 
 typealias Handler = (player: Player) -> Unit
 typealias TypedHandler = Pair<PortalBounding.HandlerType, Handler>
@@ -27,7 +26,7 @@ class PortalBounding(private val a: Location, private val b: Location) {
 
     class BoundingListener(private val bounding: PortalBounding) : Listener {
 
-        private val inBounding = mutableSetOf<UUID>()
+        private val inBounding = mutableSetOf<Player>()
         private val vecA = bounding.a.toVector()
         private val vecB = bounding.b.toVector()
         private val world = bounding.a.world
@@ -40,28 +39,27 @@ class PortalBounding(private val a: Location, private val b: Location) {
                 return
             }
 
-            val uuid = player.uniqueId
             val min = Vector.getMinimum(vecA, vecB)
             val max = Vector.getMaximum(vecA, vecB)
             val playerVec = player.location.toVector()
             val isInAABB = playerVec.isInAABB(min, max)
 
-            if (isInAABB && inBounding.contains(uuid)) {
+            if (isInAABB && inBounding.contains(player)) {
                 return
             }
 
-            if (isInAABB && !inBounding.contains(uuid)) {
-                inBounding.add(uuid)
+            if (isInAABB && !inBounding.contains(player)) {
+                inBounding.add(player)
                 bounding.handlers.filter { it.first == HandlerType.ENTER }.forEach { it.second(player) }
                 return
             }
 
-            if (!isInAABB && !inBounding.contains(uuid)) {
+            if (!isInAABB && !inBounding.contains(player)) {
                 return
             }
 
-            if (!isInAABB && inBounding.contains(uuid)) {
-                inBounding.remove(uuid)
+            if (!isInAABB && inBounding.contains(player)) {
+                inBounding.remove(player)
                 bounding.handlers.filter { it.first == HandlerType.EXIT }.forEach { it.second(player) }
                 return
             }
