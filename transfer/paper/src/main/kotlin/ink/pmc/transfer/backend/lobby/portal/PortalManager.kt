@@ -60,14 +60,20 @@ class PortalManager(private val config: Config, private val world: World) {
         return views.containsKey(player)
     }
 
-    fun createView(player: Player) {
+    fun getView(player: Player): PortalView? {
+        return views[player]
+    }
+
+    fun createView(player: Player): PortalView {
         if (hasView(player)) {
-            return
+            return getView(player)!!
         }
 
         val view = PortalView(player, meta)
         view.update()
         views[player] = view
+
+        return view
     }
 
     fun destroyView(player: Player) {

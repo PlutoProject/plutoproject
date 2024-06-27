@@ -13,7 +13,7 @@ import org.bukkit.entity.Player
 
 class PortalView(val player: Player, private val meta: PortalMeta) {
 
-    private var state = State.ON
+    private var state = State.OFF
     private val portalArea = getPortalArea()
     private val portalDestroySound = sound {
         key(Key.key("block.glass.break"))
