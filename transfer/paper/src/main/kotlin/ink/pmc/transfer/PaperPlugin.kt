@@ -1,5 +1,6 @@
 package ink.pmc.transfer
 
+import com.electronwill.nightconfig.core.Config
 import com.github.shynixn.mccoroutine.bukkit.SuspendingJavaPlugin
 import com.github.shynixn.mccoroutine.bukkit.registerSuspendingEvents
 import ink.pmc.rpc.api.RpcClient
@@ -12,6 +13,7 @@ import java.io.File
 
 lateinit var plugin: JavaPlugin
 lateinit var paperTransferService: AbstractTransferService
+lateinit var backendSettings: Config
 lateinit var transferLobby: TransferLobby
 
 @Suppress("UNUSED")
@@ -27,7 +29,8 @@ class PaperPlugin : SuspendingJavaPlugin() {
 
         config.loadConfig()
 
-        paperTransferService = BackendTransferService(paper, TransferRpcCoroutineStub(RpcClient.channel), fileConfig)
+        backendSettings = fileConfig.get("backend-settings")
+        paperTransferService = BackendTransferService(paper, TransferRpcCoroutineStub(RpcClient.channel), backendSettings)
         transferService = paperTransferService
         initLobby()
 
@@ -42,12 +45,12 @@ class PaperPlugin : SuspendingJavaPlugin() {
     }
 
     private fun initLobby() {
-        if (fileConfig.get<String>("work-mode") != "lobby") {
+        if (backendSettings.get<String>("id") != "_transfer") {
             return
         }
 
         transferLobby = TransferLobby(fileConfig.get("lobby-settings"))
-        server.pluginManager.registerSuspendingEvents(TransferLobby.Listeners, this)
+        server.pluginManager.registerSuspendingEvents(transferLobby.listener, this)
         server.pluginManager.registerSuspendingEvents(transferLobby.portalManager.bounding.listener, this)
     }
 

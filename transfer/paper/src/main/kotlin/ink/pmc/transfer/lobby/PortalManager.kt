@@ -4,7 +4,6 @@ import com.electronwill.nightconfig.core.Config
 import org.bukkit.Axis
 import org.bukkit.Location
 import org.bukkit.World
-import org.bukkit.block.BlockFace
 import org.bukkit.entity.Player
 
 class PortalManager(private val config: Config, private val world: World) {

@@ -1,21 +1,27 @@
 package ink.pmc.transfer
 
 import com.electronwill.nightconfig.core.Config
-import ink.pmc.transfer.lobby.PortalManager
+import ink.pmc.member.api.Member
+import ink.pmc.member.api.MemberService
+import ink.pmc.member.api.paper.memberOrNull
+import ink.pmc.transfer.lobby.*
+import ink.pmc.utils.concurrent.submitAsyncIO
 import org.bukkit.Bukkit
 import org.bukkit.GameRule
 import org.bukkit.World
 import org.bukkit.WorldCreator
+import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
+import org.bukkit.event.player.PlayerJoinEvent
+import org.bukkit.event.player.PlayerQuitEvent
 
-class TransferLobby(private val config: Config) {
+@Suppress("UNUSED")
+class TransferLobby(config: Config) {
 
     private val worldName = config.get<String>("world")
     private val world = loadWorld(worldName).apply { initWorldEnvironment(this) }
     val portalManager = PortalManager(config.get("portal"), world)
-
-    object Listeners : Listener {
-    }
+    val listener = LobbyListener(this)
 
     private fun initWorldEnvironment(world: World) {
         world.setGameRule(GameRule.DO_MOB_SPAWNING, false)
@@ -30,6 +36,43 @@ class TransferLobby(private val config: Config) {
     private fun loadWorld(name: String): World {
         return Bukkit.createWorld(WorldCreator.name(name))
             ?: throw IllegalStateException("Failed to load transfer world!")
+    }
+
+    class LobbyListener(private val lobby: TransferLobby) : Listener {
+
+        @EventHandler
+        suspend fun playerJoinEvent(event: PlayerJoinEvent) {
+            event.joinMessage(null)
+
+            val player = event.player
+            val member = player.memberOrNull()
+
+            val title = if (!MemberService.isWhitelisted(player.uniqueId)) {
+                PLAYER_JOIN_NOT_WHITELISTED
+            } else if (isFirstJoin(member!!)) {
+                setJoined(member)
+                PLAYER_JOIN_WHITELISTED_FIRST
+            } else {
+                PLAYER_JOIN_WHITELISTED
+            }
+
+            player.showTitle(title)
+        }
+
+        private fun isFirstJoin(member: Member): Boolean {
+            return !member.dataContainer.getBoolean(MEMBER_PLAYED_ONCE_DATA_KEY)
+        }
+
+        private fun setJoined(member: Member) {
+            member.dataContainer[MEMBER_PLAYED_ONCE_DATA_KEY] = true
+            submitAsyncIO { member.save() }
+        }
+
+        @EventHandler
+        fun playerQuitEvent(event: PlayerQuitEvent) {
+            event.quitMessage(null)
+        }
+
     }
 
 }

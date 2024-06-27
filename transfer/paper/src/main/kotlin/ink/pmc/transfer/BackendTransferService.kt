@@ -22,13 +22,12 @@ import kotlin.time.Duration.Companion.seconds
 class BackendTransferService(
     private val server: Server,
     private val stub: TransferRpcCoroutineStub,
-    config: FileConfig
+    config: Config
 ) : BaseTransferServiceImpl() {
 
     private var closed = false
-    private val backendSettings = config.get<Config>("backend-settings")
     override val conditionManager: ConditionManager = BackendConditionManager(stub)
-    private val id = backendSettings.get<String>("id")
+    private val id = config.get<String>("id")
     private val summaryRefresh = submitAsyncIO {
         while (!closed) {
             delay(5.seconds)

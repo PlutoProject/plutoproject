@@ -12,3 +12,7 @@ val Member.player: OfflinePlayer
 suspend fun OfflinePlayer.member(): Member {
     return MemberService.lookup(uniqueId)!!
 }
+
+suspend fun OfflinePlayer.memberOrNull(): Member? {
+    return MemberService.lookup(uniqueId)
+}
