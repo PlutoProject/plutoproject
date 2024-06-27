@@ -11,7 +11,9 @@ import com.velocitypowered.api.plugin.annotation.DataDirectory
 import com.velocitypowered.api.proxy.ProxyServer
 import ink.pmc.provider.ProviderService
 import ink.pmc.rpc.api.RpcServer
-import ink.pmc.transfer.commands.TransferCommand
+import ink.pmc.transfer.proxy.commands.TransferCommand
+import ink.pmc.transfer.proxy.AbstractProxyTransferService
+import ink.pmc.transfer.proxy.ProxyTransferService
 import ink.pmc.utils.command.init
 import ink.pmc.utils.platform.proxy
 import ink.pmc.utils.platform.saveConfig

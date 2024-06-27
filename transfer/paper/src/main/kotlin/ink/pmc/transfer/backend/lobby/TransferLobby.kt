@@ -1,10 +1,10 @@
-package ink.pmc.transfer
+package ink.pmc.transfer.backend.lobby
 
 import com.electronwill.nightconfig.core.Config
 import ink.pmc.member.api.Member
 import ink.pmc.member.api.MemberService
 import ink.pmc.member.api.paper.memberOrNull
-import ink.pmc.transfer.lobby.*
+import ink.pmc.transfer.backend.lobby.portal.PortalManager
 import ink.pmc.utils.concurrent.submitAsyncIO
 import org.bukkit.Bukkit
 import org.bukkit.GameRule

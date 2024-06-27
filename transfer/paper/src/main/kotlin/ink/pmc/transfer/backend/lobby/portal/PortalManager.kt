@@ -1,4 +1,4 @@
-package ink.pmc.transfer.lobby
+package ink.pmc.transfer.backend.lobby.portal
 
 import com.electronwill.nightconfig.core.Config
 import org.bukkit.Axis

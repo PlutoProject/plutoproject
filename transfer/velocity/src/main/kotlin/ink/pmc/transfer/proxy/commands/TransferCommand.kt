@@ -1,9 +1,10 @@
-package ink.pmc.transfer.commands
+package ink.pmc.transfer.proxy.commands
 
 import com.velocitypowered.api.command.CommandSource
 import com.velocitypowered.api.proxy.Player
 import ink.pmc.transfer.*
 import ink.pmc.transfer.api.DestinationStatus
+import ink.pmc.transfer.proxy.AbstractProxyTransferService
 import ink.pmc.utils.chat.NON_PLAYER
 import ink.pmc.utils.chat.PLAYER_NOT_ONLINE
 import ink.pmc.utils.chat.replace

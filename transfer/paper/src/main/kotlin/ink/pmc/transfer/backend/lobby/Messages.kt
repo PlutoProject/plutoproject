@@ -1,4 +1,4 @@
-package ink.pmc.transfer.lobby
+package ink.pmc.transfer.backend.lobby
 
 import ink.pmc.advkt.component.text
 import ink.pmc.advkt.title.mainTitle

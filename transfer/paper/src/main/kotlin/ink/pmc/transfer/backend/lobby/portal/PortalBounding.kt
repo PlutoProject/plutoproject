@@ -1,4 +1,4 @@
-package ink.pmc.transfer.lobby
+package ink.pmc.transfer.backend.lobby.portal
 
 import org.bukkit.Location
 import org.bukkit.entity.Player

@@ -1,4 +1,4 @@
-package ink.pmc.transfer
+package ink.pmc.transfer.backend
 
 import ink.pmc.transfer.api.ConditionManager
 import ink.pmc.transfer.api.Destination

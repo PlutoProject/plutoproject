@@ -1,4 +1,4 @@
-package ink.pmc.transfer
+package ink.pmc.transfer.proxy
 
 import com.electronwill.nightconfig.core.Config
 import com.electronwill.nightconfig.core.file.FileConfig
@@ -8,6 +8,7 @@ import com.velocitypowered.api.proxy.ProxyServer
 import ink.pmc.advkt.component.component
 import ink.pmc.advkt.component.miniMessage
 import ink.pmc.rpc.api.IRpcServer
+import ink.pmc.transfer.*
 import ink.pmc.transfer.api.ConditionManager
 import ink.pmc.transfer.api.Destination
 import ink.pmc.transfer.api.DestinationStatus

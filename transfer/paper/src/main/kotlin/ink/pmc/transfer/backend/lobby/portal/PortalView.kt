@@ -1,4 +1,4 @@
-package ink.pmc.transfer.lobby
+package ink.pmc.transfer.backend.lobby.portal
 
 import ink.pmc.advkt.sound.*
 import ink.pmc.utils.world.maxLocation
