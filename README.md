@@ -1,7 +1,5 @@
 # common
 
-[![CodeFactor](https://www.codefactor.io/repository/github/plutoproject/common/badge)](https://www.codefactor.io/repository/github/plutoproject/common)
-
 ✨ 星社 Project 服务器的通用组件。
 
 ## 📦 模块说明
