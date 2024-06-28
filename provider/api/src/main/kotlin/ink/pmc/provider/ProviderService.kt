@@ -14,5 +14,4 @@ interface IProviderService : Closeable {
 
     val mongoClient: MongoClient
     val defaultMongoDatabase: MongoDatabase
-
 }

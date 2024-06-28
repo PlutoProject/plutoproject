@@ -64,5 +64,4 @@ class PaperPlugin : JavaPlugin() {
         sitManager.standAll()
         disabled = true
     }
-
 }

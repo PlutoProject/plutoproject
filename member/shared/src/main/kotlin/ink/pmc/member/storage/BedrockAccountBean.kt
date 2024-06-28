@@ -34,5 +34,4 @@ data class BedrockAccountBean(
 
         return this
     }
-
 }

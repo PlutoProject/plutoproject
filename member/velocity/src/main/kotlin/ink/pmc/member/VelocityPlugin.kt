@@ -74,5 +74,4 @@ class VelocityPlugin @Inject constructor(suspendingPluginContainer: SuspendingPl
         memberService = VelocityMemberService(ProviderService.defaultMongoDatabase)
         IMemberService.instance = memberService
     }
-
 }

@@ -47,5 +47,4 @@ object PaperPlayerListener : Listener {
 
         memberService.loadedMembers.synchronous().invalidate(member.uid)
     }
-
 }

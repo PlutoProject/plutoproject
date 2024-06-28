@@ -12,5 +12,4 @@ interface ElevatorBuilder {
     suspend fun findLocations(startPoint: Location): List<Location>
 
     suspend fun teleportLocations(startPoint: Location): List<Location>
-
 }

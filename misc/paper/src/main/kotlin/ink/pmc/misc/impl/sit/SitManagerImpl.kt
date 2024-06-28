@@ -132,5 +132,4 @@ class SitManagerImpl : SitManager {
 
         playerToSeatMap.entries.removeIf { it.value == uuid }
     }
-
 }

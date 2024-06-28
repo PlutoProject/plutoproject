@@ -15,5 +15,4 @@ class PaperPlugin : SuspendingJavaPlugin(), Listener {
         ToastRenderer.defaultRenderer = PaperToastRenderers.nmsRenderer
         IToastFactory.instance = ToastFactoryImpl
     }
-
 }

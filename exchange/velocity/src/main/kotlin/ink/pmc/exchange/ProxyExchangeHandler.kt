@@ -11,5 +11,4 @@ object ProxyExchangeHandler {
         val player = event.player
         proxyExchangeService.inExchange.remove(player)
     }
-
 }

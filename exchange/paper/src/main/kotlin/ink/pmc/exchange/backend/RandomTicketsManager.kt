@@ -50,5 +50,4 @@ class RandomTicketsManager : Listener {
     fun playerQuitEvent(event: PlayerQuitEvent) {
         unmanage(event.player)
     }
-
 }

@@ -54,5 +54,4 @@ interface IMemberService {
     suspend fun save(uuid: UUID)
 
     suspend fun sync(uuid: UUID): Member?
-
 }

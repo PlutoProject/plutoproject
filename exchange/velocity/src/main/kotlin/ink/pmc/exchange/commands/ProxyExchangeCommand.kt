@@ -131,5 +131,4 @@ object ProxyExchangeCommand : VelocityCommand() {
         command(exchangeAdminStart)
         command(exchangeAdminEnd)
     }
-
 }

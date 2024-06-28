@@ -27,5 +27,4 @@ object LobbyCheckoutCommand : PaperCommand() {
     init {
         command(checkout)
     }
-
 }

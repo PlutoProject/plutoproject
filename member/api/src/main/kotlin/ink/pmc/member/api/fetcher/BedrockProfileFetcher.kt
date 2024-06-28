@@ -144,5 +144,4 @@ object BedrockProfileFetcher : AbstractProfileFetcher() {
             dataMap
         }
     }
-
 }

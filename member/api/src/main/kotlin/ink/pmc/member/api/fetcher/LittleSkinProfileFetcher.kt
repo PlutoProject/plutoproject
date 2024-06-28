@@ -57,5 +57,4 @@ object LittleSkinProfileFetcher : AbstractProfileFetcher() {
 
         jsonObject.get("name").asString ?: return@withContext null
     }
-
 }

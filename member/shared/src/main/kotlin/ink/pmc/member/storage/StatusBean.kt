@@ -85,5 +85,4 @@ data class StatusBean(
             lastBedrockAccount += 1
         }
     }
-
 }

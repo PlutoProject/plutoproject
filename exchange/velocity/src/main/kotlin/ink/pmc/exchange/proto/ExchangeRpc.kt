@@ -127,5 +127,4 @@ class ExchangeRpc(private val service: AbstractProxyExchangeService) :
     override fun monitorItemDistribute(request: Empty): Flow<ItemDistributeNotify> {
         return itemDistributeFlow
     }
-
 }

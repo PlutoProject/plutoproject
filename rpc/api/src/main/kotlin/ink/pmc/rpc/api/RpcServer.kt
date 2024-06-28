@@ -11,5 +11,4 @@ interface IRpcServer {
     }
 
     fun apply(block: ServerBuilder<*>.() -> Unit)
-
 }

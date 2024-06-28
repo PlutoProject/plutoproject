@@ -21,5 +21,4 @@ interface ElevatorChain {
     fun getCurrentFloor(player: Player): Int
 
     fun totalFloorCount(): Int
-
 }

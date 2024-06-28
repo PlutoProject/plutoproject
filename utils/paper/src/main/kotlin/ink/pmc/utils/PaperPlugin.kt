@@ -52,5 +52,4 @@ class PaperPlugin : JavaPlugin() {
             isFloodgatePlayer = floodgateApiClass.getDeclaredMethod("isFloodgatePlayer", UUID::class.java)
         }
     }
-
 }

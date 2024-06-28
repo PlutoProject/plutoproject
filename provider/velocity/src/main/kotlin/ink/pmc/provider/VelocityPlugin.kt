@@ -47,5 +47,4 @@ class VelocityPlugin @Inject constructor(suspendingPluginContainer: SuspendingPl
             providerService.close()
         }
     }
-
 }

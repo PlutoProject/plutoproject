@@ -155,5 +155,4 @@ object ProxyTicketsCommand : VelocityCommand() {
         command(ticketsDeposit)
         command(ticketsWithdraw)
     }
-
 }

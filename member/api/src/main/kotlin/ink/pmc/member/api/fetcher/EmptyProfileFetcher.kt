@@ -9,5 +9,4 @@ object EmptyProfileFetcher : AbstractProfileFetcher() {
         val uuid = UUID.nameUUIDFromBytes("OfflinePlayer:${name.lowercase()}".toByteArray(Charsets.UTF_8))
         return ProfileData(uuid, name)
     }
-
 }

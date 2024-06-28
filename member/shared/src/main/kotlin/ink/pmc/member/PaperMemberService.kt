@@ -24,5 +24,4 @@ class PaperMemberService(database: MongoDatabase) : BaseMemberServiceImpl(databa
             handleUpdate(it)
         }
     }
-
 }

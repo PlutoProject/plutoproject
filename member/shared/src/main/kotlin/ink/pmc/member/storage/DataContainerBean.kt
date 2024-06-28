@@ -57,5 +57,4 @@ data class DataContainerBean(
 
         return this
     }
-
 }

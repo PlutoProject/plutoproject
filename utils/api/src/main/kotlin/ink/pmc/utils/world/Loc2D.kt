@@ -32,5 +32,4 @@ data class Loc2D(var world: World, var x: Double, var z: Double) : Cloneable {
     override fun clone(): Loc2D {
         return Loc2D(this.world, this.x, this.z)
     }
-
 }

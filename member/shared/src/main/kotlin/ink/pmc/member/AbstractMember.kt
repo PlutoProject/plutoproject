@@ -23,5 +23,4 @@ abstract class AbstractMember : Member, Storable<MemberBean> {
     override fun hashCode(): Int {
         return bean.hashCode()
     }
-
 }

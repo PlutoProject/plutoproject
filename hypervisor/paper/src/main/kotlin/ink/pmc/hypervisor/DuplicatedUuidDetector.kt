@@ -26,5 +26,4 @@ object DuplicatedUuidDetector : Listener {
 
         serverLogger.warning("Removed duplicated uuid entity")
     }
-
 }

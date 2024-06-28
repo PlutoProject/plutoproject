@@ -11,5 +11,4 @@ interface ElevatorManager {
     fun registerBuilder(builder: ElevatorBuilder)
 
     suspend fun getChainAt(loc: Location): ElevatorChain?
-
 }

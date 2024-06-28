@@ -113,5 +113,4 @@ class PaperPlugin : SuspendingJavaPlugin() {
         exchangeService = backendExchangeService
         IExchangeService.instance = exchangeService
     }
-
 }

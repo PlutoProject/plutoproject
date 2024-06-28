@@ -481,5 +481,4 @@ object MemberCommand : VelocityCommand() {
         command(memberModifyHide)
         command(memberModifyUnHide)
     }
-
 }

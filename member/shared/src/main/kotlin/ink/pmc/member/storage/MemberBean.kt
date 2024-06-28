@@ -75,5 +75,4 @@ data class MemberBean(
 
         return this
     }
-
 }

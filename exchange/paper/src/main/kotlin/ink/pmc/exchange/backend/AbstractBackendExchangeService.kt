@@ -12,5 +12,4 @@ abstract class AbstractBackendExchangeService : BaseExchangeServiceImpl<Player>(
     abstract fun startBackGroundJobs()
 
     abstract suspend fun stopBackGroundJobs()
-
 }

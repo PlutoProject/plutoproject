@@ -9,5 +9,4 @@ interface ExchangeLobby {
     val world: World
     val teleportLocation: Location
     val players: List<Player>
-
 }

@@ -124,5 +124,4 @@ object Listeners : Listener {
     suspend fun playerSneakEvent(event: PlayerToggleSneakEvent) {
         handlePlayerSneakFloorDown(event)
     }
-
 }

@@ -28,5 +28,4 @@ object SuicideCommand : PaperCommand() {
     init {
         command(suicide)
     }
-
 }

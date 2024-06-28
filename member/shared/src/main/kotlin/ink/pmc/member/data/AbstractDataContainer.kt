@@ -19,5 +19,4 @@ abstract class AbstractDataContainer : DataContainer, Storable<DataContainerBean
     override fun hashCode(): Int {
         return bean.hashCode()
     }
-
 }

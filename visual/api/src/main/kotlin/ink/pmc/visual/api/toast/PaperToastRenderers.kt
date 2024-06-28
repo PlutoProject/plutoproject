@@ -10,5 +10,4 @@ fun NmsToastRenderer(): ToastRenderer<Player> {
 object PaperToastRenderers {
 
     lateinit var nmsRenderer: ToastRenderer<Player>
-
 }

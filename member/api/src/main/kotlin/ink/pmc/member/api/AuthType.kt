@@ -19,5 +19,4 @@ enum class AuthType(val display: Component, val fetcher: ProfileFetcher) {
 
     val hasAuth
         get() = this != NONE
-
 }

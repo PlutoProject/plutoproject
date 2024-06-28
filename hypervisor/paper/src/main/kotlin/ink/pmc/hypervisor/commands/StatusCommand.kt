@@ -15,5 +15,4 @@ object StatusCommand : PaperCommand() {
     init {
         command(status)
     }
-
 }

@@ -80,5 +80,4 @@ class BackendExchangeService : AbstractBackendExchangeService() {
 
         return ack.status == ExchangeStatus.IN_EXCHANGE
     }
-
 }

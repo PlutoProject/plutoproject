@@ -25,5 +25,4 @@ object TitleSubtitlePacketListener : AbstractPacketListener<TitleSubtitlePacket>
 
         replaceFallbackColor(event.packet())
     }
-
 }

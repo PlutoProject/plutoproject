@@ -71,5 +71,4 @@ object PaperToastRenderer : ToastRenderer<Player>() {
         )
         player.sendPacket(removePacket)
     }
-
 }

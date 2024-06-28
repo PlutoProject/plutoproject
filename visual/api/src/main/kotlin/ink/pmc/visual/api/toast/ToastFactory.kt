@@ -19,5 +19,4 @@ interface IToastFactory {
         type: ToastType,
         frame: ToastFrame
     ): Toast
-
 }

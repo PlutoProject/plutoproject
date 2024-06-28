@@ -36,5 +36,4 @@ object OfficialProfileFetcher : AbstractProfileFetcher() {
 
         ProfileData(uuid, resultName)
     }
-
 }

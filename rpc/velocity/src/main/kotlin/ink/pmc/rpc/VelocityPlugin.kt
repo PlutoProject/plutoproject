@@ -78,5 +78,4 @@ class VelocityPlugin @Inject constructor(suspendingPluginContainer: SuspendingPl
 
         loadConfig(configFile)
     }
-
 }

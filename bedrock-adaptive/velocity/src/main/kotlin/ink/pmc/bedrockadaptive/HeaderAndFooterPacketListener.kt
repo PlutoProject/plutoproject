@@ -26,5 +26,4 @@ object HeaderAndFooterPacketListener : AbstractPacketListener<HeaderAndFooterPac
         replaceFallbackColor(event.packet(), "header")
         replaceFallbackColor(event.packet(), "footer")
     }
-
 }

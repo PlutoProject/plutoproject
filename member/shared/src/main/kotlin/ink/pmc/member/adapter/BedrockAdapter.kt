@@ -20,5 +20,4 @@ object BedrockAdapter : AuthAdapter {
         event.gameProfile = newProfile
         serverLogger.info("Adapted bedrock profile for $uuid")
     }
-
 }

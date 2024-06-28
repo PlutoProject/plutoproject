@@ -12,5 +12,4 @@ class RpcClientDisconnectEvent : Event() {
     override fun getHandlers(): HandlerList {
         return Companion.handlers
     }
-
 }

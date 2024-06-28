@@ -12,5 +12,4 @@ object PlayerListener : Listener {
     fun blockPlaceEvent(event: BlockPlaceEvent) {
         handlePlayerPlaceBlock(event)
     }
-
 }

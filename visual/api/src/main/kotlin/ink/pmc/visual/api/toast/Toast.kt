@@ -10,5 +10,4 @@ interface Toast {
     val message: Component
     val type: ToastType
     val frame: ToastFrame
-
 }

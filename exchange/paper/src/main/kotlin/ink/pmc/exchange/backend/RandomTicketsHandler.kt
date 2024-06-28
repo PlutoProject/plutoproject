@@ -252,5 +252,4 @@ class RandomTicketsHandler(player: Player, private val member: Member) : Listene
 
         reset()
     }
-
 }

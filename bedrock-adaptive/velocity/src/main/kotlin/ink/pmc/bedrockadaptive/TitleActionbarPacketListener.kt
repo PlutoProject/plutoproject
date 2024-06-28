@@ -25,5 +25,4 @@ object TitleActionbarPacketListener : AbstractPacketListener<TitleActionbarPacke
 
         replaceFallbackColor(event.packet())
     }
-
 }

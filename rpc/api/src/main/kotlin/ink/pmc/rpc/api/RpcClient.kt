@@ -11,5 +11,4 @@ interface IRpcClient {
     }
 
     val channel: Channel
-
 }

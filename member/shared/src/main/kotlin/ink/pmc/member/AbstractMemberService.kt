@@ -23,5 +23,4 @@ abstract class AbstractMemberService : IMemberService, Closeable {
     abstract suspend fun lookupDataContainerStorage(id: Long): DataContainerBean?
 
     abstract suspend fun lookupBedrockAccountStorage(id: Long): BedrockAccountBean?
-
 }

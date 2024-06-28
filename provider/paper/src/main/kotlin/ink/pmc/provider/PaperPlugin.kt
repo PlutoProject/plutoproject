@@ -23,5 +23,4 @@ class PaperPlugin : SuspendingJavaPlugin() {
             providerService.close()
         }
     }
-
 }

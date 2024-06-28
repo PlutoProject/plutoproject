@@ -10,5 +10,4 @@ object LittleSkinAdapter : AuthAdapter {
         val newProfile = GameProfile(profile.id, profile.name, profile.properties)
         event.gameProfile = newProfile
     }
-
 }

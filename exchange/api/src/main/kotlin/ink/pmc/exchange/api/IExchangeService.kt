@@ -28,5 +28,4 @@ interface IExchangeService<T> {
     fun noLessThan(member: Member, amount: Long): Boolean
 
     fun noMoreThan(member: Member, amount: Long): Boolean
-
 }

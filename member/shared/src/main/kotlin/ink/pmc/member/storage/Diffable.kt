@@ -10,5 +10,4 @@ abstract class Diffable<T> {
     }
 
     abstract fun applyDiff(diff: Diff): Diffable<T>
-
 }

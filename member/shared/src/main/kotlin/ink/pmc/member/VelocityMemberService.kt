@@ -36,5 +36,4 @@ class VelocityMemberService(database: MongoDatabase) : BaseMemberServiceImpl(dat
     override suspend fun monitorUpdate() {
         return
     }
-
 }

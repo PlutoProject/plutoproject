@@ -24,5 +24,4 @@ class BedrockAccountImpl(override val linkedWith: Member, override var bean: Bed
             new = false
         )
     }
-
 }

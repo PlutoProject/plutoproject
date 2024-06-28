@@ -29,5 +29,4 @@ enum class ToastFrame(val texture: String) {
     SEA_LANTERN("minecraft:textures/block/sea_lantern.png"),
     SNOW("minecraft:textures/block/snow.png"),
     STONE_BLOCK("minecraft:textures/block/stone.png"),
-
 }

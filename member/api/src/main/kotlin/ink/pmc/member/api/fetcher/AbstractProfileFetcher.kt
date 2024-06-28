@@ -14,5 +14,4 @@ abstract class AbstractProfileFetcher : ProfileFetcher {
     }
 
     override suspend fun validate(name: String, uuid: String): Boolean = validate(name, UUID.fromString(uuid))
-
 }

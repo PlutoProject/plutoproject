@@ -84,5 +84,4 @@ class VelocityPlugin @Inject constructor(suspendingPluginContainer: SuspendingPl
         exchangeService = proxyExchangeService
         IExchangeService.instance = exchangeService
     }
-
 }

@@ -25,5 +25,4 @@ object BossBarPacketListener : AbstractPacketListener<BossBarPacket>(
 
         replaceFallbackColor(event.packet(), "name")
     }
-
 }

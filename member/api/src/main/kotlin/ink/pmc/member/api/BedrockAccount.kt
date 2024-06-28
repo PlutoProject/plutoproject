@@ -7,5 +7,4 @@ interface BedrockAccount {
     val linkedWith: Member
     val xuid: String
     val gamertag: String
-
 }

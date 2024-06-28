@@ -28,5 +28,4 @@ interface SitManager {
     fun isSitLocation(location: Location): Boolean
 
     fun standAll()
-
 }

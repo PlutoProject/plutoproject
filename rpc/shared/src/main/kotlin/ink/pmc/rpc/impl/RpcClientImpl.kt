@@ -40,5 +40,4 @@ class RpcClientImpl(private val host: String, private val port: Int) : IRpcClien
         channel.shutdown()
         closed = true
     }
-
 }

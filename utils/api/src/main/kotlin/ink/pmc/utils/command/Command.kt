@@ -18,5 +18,4 @@ abstract class Command<C> {
     fun command(builder: Command.Builder<C>) {
         commands.add(builder)
     }
-
 }

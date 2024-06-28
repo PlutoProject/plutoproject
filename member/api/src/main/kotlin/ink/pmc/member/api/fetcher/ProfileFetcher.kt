@@ -10,5 +10,4 @@ interface ProfileFetcher {
     suspend fun validate(name: String, uuid: UUID): Boolean
 
     suspend fun validate(name: String, uuid: String): Boolean
-
 }

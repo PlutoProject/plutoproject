@@ -44,7 +44,6 @@ class ToastDsl {
             if (!::frameVar.isInitialized) ToastFrame.ADVENTURE else frameVar
         )
     }
-
 }
 
 fun toast(content: ToastDsl.() -> Unit): Toast {

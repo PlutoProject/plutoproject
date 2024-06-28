@@ -54,5 +54,4 @@ class VelocityPlugin @Inject constructor(suspendingPluginContainer: SuspendingPl
         Protocolize.listenerProvider().registerListener(BossBarPacketListener)
         // Protocolize.listenerProvider().registerListener(InventoryItemPacketListener)
     }
-
 }

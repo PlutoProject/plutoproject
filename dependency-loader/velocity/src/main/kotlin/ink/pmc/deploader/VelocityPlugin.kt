@@ -11,5 +11,4 @@ class VelocityPlugin {
     fun depLoaderVelocity(server: ProxyServer, logger: Logger) {
         // 什么也不做
     }
-
 }

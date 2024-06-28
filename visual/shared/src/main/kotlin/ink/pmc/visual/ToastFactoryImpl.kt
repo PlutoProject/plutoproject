@@ -12,5 +12,4 @@ object ToastFactoryImpl : IToastFactory {
     override fun of(icon: KeyedMaterial, message: Component, type: ToastType, frame: ToastFrame): Toast {
         return ToastImpl(icon, message, type, frame)
     }
-
 }

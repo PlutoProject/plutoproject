@@ -38,5 +38,4 @@ object BedrockColorSerializerReplacement {
             .make()
             .load(messageTranslatorClass.classLoader, ClassReloadingStrategy.fromInstalledAgent())
     }
-
 }

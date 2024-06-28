@@ -58,5 +58,4 @@ object InventoryItemPacketListener : AbstractPacketListener<WindowItems>(
 
         item.lore(lore)
     }
-
 }

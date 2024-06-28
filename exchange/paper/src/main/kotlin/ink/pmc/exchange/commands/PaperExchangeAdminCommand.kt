@@ -46,5 +46,4 @@ object PaperExchangeAdminCommand : PaperCommand() {
     init {
         command(exchangeAdminMarkAsCheckoutSign)
     }
-
 }

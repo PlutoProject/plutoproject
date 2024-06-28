@@ -12,5 +12,4 @@ class RpcClientConnectEvent : Event() {
     override fun getHandlers(): HandlerList {
         return Companion.handlers
     }
-
 }

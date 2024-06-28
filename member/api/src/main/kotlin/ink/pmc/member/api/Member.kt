@@ -37,5 +37,4 @@ interface Member {
     suspend fun save()
 
     suspend fun sync(): Member?
-
 }

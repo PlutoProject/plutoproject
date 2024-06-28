@@ -6,5 +6,4 @@ import ink.pmc.member.api.data.MemberModifier
 abstract class AbstractMemberModifier : MemberModifier {
 
     abstract val member: AbstractMember
-
 }

@@ -64,5 +64,4 @@ class LobbyExchangeService(private val lobby: World) : AbstractBackendExchangeSe
     override suspend fun isInExchange(player: Player): Boolean {
         return player.isOnline
     }
-
 }

@@ -34,5 +34,4 @@ object RpcServerCommand : VelocityCommand() {
     init {
         command(rpcServerServices)
     }
-
 }

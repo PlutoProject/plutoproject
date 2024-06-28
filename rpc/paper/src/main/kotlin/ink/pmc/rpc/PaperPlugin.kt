@@ -44,5 +44,4 @@ class PaperPlugin : SuspendingJavaPlugin() {
 
         loadConfig(configFile)
     }
-
 }

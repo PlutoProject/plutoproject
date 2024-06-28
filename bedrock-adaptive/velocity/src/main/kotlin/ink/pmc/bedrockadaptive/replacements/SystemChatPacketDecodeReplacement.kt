@@ -22,5 +22,4 @@ object SystemChatPacketDecodeReplacement {
             .make()
             .load(SystemChatPacket::class.java.classLoader, ClassReloadingStrategy.fromInstalledAgent())
     }
-
 }

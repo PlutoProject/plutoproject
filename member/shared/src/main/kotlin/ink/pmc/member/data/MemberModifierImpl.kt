@@ -32,5 +32,4 @@ class MemberModifierImpl(override val member: AbstractMember) : AbstractMemberMo
     override fun hide(new: Boolean) {
         impl.isHidden = new
     }
-
 }

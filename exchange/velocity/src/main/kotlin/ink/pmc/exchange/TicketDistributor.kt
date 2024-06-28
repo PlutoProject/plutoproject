@@ -109,5 +109,4 @@ class TicketDistributor {
 
         member.save()
     }
-
 }

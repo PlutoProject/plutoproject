@@ -38,5 +38,4 @@ class VelocityPlugin {
             isFloodgatePlayer = floodgateApiClass.getDeclaredMethod("isFloodgatePlayer", UUID::class.java)
         }
     }
-
 }

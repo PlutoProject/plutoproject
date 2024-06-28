@@ -33,5 +33,4 @@ object SystemChatPacketListener : AbstractPacketListener<SystemChatPacket>(
 
         replaceFallbackColor(packet)
     }
-
 }

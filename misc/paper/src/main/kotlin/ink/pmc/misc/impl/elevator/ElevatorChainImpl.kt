@@ -77,5 +77,4 @@ class ElevatorChainImpl(override val floors: List<Location>, private val tpLocs:
     override fun totalFloorCount(): Int {
         return floors.size
     }
-
 }

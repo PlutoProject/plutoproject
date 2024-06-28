@@ -47,5 +47,4 @@ interface DataContainer {
     fun <T> getMap(key: String): Map<String, *>?
 
     fun contains(key: String): Boolean
-
 }

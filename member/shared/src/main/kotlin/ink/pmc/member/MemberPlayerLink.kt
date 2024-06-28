@@ -100,5 +100,4 @@ object MemberPlayerLink : PlayerLink {
     override fun stop() {
         serverLogger.info("MemberPlayerLink stopped.")
     }
-
 }

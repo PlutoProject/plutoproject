@@ -16,5 +16,4 @@ object GeyserAttackIndicatorReplacement {
             .make()
             .load(cooldownUtilsClass.classLoader, ClassReloadingStrategy.fromInstalledAgent())
     }
-
 }

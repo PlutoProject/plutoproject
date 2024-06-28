@@ -40,5 +40,4 @@ class PaperPlugin : JavaPlugin() {
         memberService = PaperMemberService(ProviderService.defaultMongoDatabase)
         IMemberService.instance = memberService
     }
-
 }

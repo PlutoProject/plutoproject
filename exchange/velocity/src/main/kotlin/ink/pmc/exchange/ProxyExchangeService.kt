@@ -55,5 +55,4 @@ class ProxyExchangeService : AbstractProxyExchangeService() {
 
         return lastHealthReportTime.value!!.plusSeconds(8).isBefore(Instant.now())
     }
-
 }

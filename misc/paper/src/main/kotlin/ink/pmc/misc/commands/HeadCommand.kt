@@ -48,5 +48,4 @@ object HeadCommand : PaperCommand() {
     init {
         command(head)
     }
-
 }

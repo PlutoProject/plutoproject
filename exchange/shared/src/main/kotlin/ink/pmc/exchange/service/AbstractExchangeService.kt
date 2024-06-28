@@ -15,5 +15,4 @@ abstract class AbstractExchangeService<T> : IExchangeService<T> {
     override fun noMoreThan(member: Member, amount: Long): Boolean {
         return match(member) { it <= amount }
     }
-
 }

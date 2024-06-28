@@ -124,5 +124,4 @@ object PlayerActionHandler : Listener {
             checkout(player)
         }
     }
-
 }

@@ -16,5 +16,4 @@ object GeyserSimpleFloodgateApiReplacement {
             .make()
             .load(simpleFloodgateApiClass.classLoader, ClassReloadingStrategy.fromInstalledAgent())
     }
-
 }

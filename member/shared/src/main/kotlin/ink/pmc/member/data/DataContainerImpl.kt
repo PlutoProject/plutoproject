@@ -325,5 +325,4 @@ class DataContainerImpl(override val owner: Member, override var bean: DataConta
 
         return contents.containsKey(key)
     }
-
 }

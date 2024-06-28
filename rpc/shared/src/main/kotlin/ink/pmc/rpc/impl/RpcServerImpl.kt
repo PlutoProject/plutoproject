@@ -47,5 +47,4 @@ class RpcServerImpl(private val port: Int) : IRpcServer, Closeable {
         server.shutdown()
         closed = true
     }
-
 }

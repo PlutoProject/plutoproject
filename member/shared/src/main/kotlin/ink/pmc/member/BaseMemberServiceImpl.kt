@@ -637,5 +637,4 @@ abstract class BaseMemberServiceImpl(
         loadedMembers.synchronous().invalidate(member!!.uid)
         return lookup(uuid)
     }
-
 }

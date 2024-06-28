@@ -13,5 +13,4 @@ abstract class AbstractProxyExchangeService : BaseExchangeServiceImpl<Player>() 
     val inExchange: MutableMap<Player, ExchangeSession> = mutableMapOf()
 
     abstract fun isLobbyHealthy(): Boolean
-
 }

@@ -32,5 +32,4 @@ object HypervisorCommand : PaperCommand() {
         command(hypervisorServerStatus)
         command(hypervisorWorldStatus)
     }
-
 }

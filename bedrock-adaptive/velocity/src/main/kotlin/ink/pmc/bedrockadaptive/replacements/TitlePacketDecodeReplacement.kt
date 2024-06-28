@@ -23,5 +23,4 @@ object TitlePacketDecodeReplacement {
             .make()
             .load(GenericTitlePacket::class.java.classLoader, ClassReloadingStrategy.fromInstalledAgent())/**/
     }
-
 }

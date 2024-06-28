@@ -29,5 +29,4 @@ object MiscChatRender : ChatRenderer {
             .replace("<player>", Component.text(source.displayName))
             .replace("<message>", message)
     }
-
 }

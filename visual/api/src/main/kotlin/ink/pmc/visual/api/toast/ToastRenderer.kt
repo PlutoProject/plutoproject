@@ -10,5 +10,4 @@ abstract class ToastRenderer<P> : Renderer<P, Toast> {
     }
 
     abstract override fun render(player: P, obj: Toast)
-
 }

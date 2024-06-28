@@ -11,5 +11,4 @@ object LogicDisabler : Listener {
     fun entitySpawnEvent(event: EntitySpawnEvent) {
         event.isCancelled = true
     }
-
 }

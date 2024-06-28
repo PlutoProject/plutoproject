@@ -42,5 +42,4 @@ abstract class BaseExchangeServiceImpl<T> : AbstractExchangeService<T>() {
     override fun match(member: Member, condition: (Long) -> Boolean): Boolean {
         return condition.invoke(tickets(member))
     }
-
 }

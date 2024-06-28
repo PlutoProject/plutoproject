@@ -47,28 +47,24 @@ val MULTI_SITTERS_SOUND = sound {
     source(Sound.Source.BLOCK)
     volume(1f)
     pitch(1f)
-
 }
 
 val CHAT_FORMAT = component {
     text("<player>") with mochaYellow
     text(": ") with mochaSubtext0
     text("<message>") with mochaText
-
 }
 
 val JOIN_FORMAT = component {
     text("[+] ") with mochaGreen
     text("<player> ") with mochaYellow
     text("加入了游戏") with mochaText
-
 }
 
 val QUIT_FORMAT = component {
     text("[-] ") with mochaRed
     text("<player> ") with mochaYellow
     text("退出了游戏") with mochaText
-
 }
 
 fun elevatorGoUpTitle(curr: Int, total: Int): Title {
@@ -134,21 +130,18 @@ val ELEVATOR_WORK_SOUND = sound {
 
 val HEAD_GET_LOAD_DATA = component {
     text("请稍等，正在获取数据") with mochaFlamingo
-
 }
 
 val HEAD_GET_SUCCEED = component {
     text("已成功获取正版玩家 <player> 的头颅") with mochaGreen
     newline()
     text("此功能目前正处于测试阶段，请不要滥用") with mochaSubtext0
-
 }
 
 val HEAD_GET_FAILED = component {
     text("查询失败，请检查你输入的玩家名是否正确") with mochaMaroon
     newline()
     text("若输入的玩家名无误，则可能是因为查询接口限额或无法访问，请等一会儿再试") with mochaSubtext0
-
 }
 
 val HEAD_GET_FAILED_INV_FULL = component {

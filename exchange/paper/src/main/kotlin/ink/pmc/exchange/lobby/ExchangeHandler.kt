@@ -16,5 +16,4 @@ object ExchangeHandler : Listener {
         applyExchangeStatus(player)
         player.threadSafeTeleport(lobbySpawnLocation)
     }
-
 }

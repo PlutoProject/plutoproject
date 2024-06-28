@@ -12,5 +12,4 @@ object EntityListener : Listener {
     fun entityChangeBlockEvent(event: EntityChangeBlockEvent) {
         handleEndermanPlaceBlock(event)
     }
-
 }

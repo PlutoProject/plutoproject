@@ -34,5 +34,4 @@ class ProviderServiceImpl(private val config: FileConfig) : IProviderService {
     override fun close() {
         mongoClient.close()
     }
-
 }

@@ -51,6 +51,4 @@ class HeadManagerImpl : HeadManager {
     override fun isHeadCached(uuid: UUID): Boolean {
         return cachedHeads.containsKey(uuid)
     }
-
-
 }

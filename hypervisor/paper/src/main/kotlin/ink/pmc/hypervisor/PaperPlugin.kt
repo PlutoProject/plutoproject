@@ -46,5 +46,4 @@ class PaperPlugin : JavaPlugin() {
     override fun onDisable() {
         disabled = true
     }
-
 }

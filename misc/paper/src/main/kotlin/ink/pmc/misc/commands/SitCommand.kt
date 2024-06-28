@@ -27,5 +27,4 @@ object SitCommand : PaperCommand() {
     init {
         command(sit)
     }
-
 }

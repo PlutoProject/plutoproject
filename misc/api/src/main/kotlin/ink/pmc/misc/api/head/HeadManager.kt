@@ -13,5 +13,4 @@ interface HeadManager {
     fun isNameCached(name: String): Boolean
 
     fun isHeadCached(uuid: UUID): Boolean
-
 }

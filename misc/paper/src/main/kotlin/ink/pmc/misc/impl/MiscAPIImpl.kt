@@ -35,5 +35,4 @@ object MiscAPIImpl : MiscAPI {
 
             return internalHeadManager
         }
-
 }

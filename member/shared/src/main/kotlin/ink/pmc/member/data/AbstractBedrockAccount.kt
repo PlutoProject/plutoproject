@@ -19,5 +19,4 @@ abstract class AbstractBedrockAccount : BedrockAccount, Storable<BedrockAccountB
     override fun hashCode(): Int {
         return id.hashCode()
     }
-
 }

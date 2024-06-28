@@ -16,5 +16,4 @@ interface MiscAPI {
     val sitManager: SitManager
     val elevatorManager: ElevatorManager
     val headManager: HeadManager
-
 }

@@ -36,5 +36,4 @@ class ElevatorManagerImpl : ElevatorManager {
         val chain = ElevatorChainImpl(builder.findLocations(loc), builder.teleportLocations(loc))
         return chain
     }
-
 }
