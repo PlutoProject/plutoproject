@@ -22,20 +22,29 @@ fun ResultWithDiagnostics<*>.printEvalLogs() {
     }
 }
 
-fun evalBaseScript(source: SourceCode, vararg args: Any?): ResultWithDiagnostics<EvaluationResult> {
-    return scriptHost.evalWithTemplate<BaseScript>(source, evaluation = {
-        constructorArgs(args)
-    }).apply { printEvalLogs() }
+fun evalBaseScript(
+    source: SourceCode,
+    compilation: ScriptCompilationConfiguration.Builder.() -> Unit = {},
+    evaluation: ScriptEvaluationConfiguration.Builder.() -> Unit = {}
+): ResultWithDiagnostics<EvaluationResult> {
+    return scriptHost.evalWithTemplate<BaseScript>(source, evaluation = evaluation, compilation = compilation)
+        .apply { printEvalLogs() }
 }
 
-fun evalBukkitScript(source: SourceCode, vararg args: Any?): ResultWithDiagnostics<EvaluationResult> {
-    return scriptHost.evalWithTemplate<BukkitScript>(source, evaluation = {
-        constructorArgs(args)
-    }).apply { printEvalLogs() }
+fun evalPaperScript(
+    source: SourceCode,
+    compilation: ScriptCompilationConfiguration.Builder.() -> Unit = {},
+    evaluation: ScriptEvaluationConfiguration.Builder.() -> Unit = {}
+): ResultWithDiagnostics<EvaluationResult> {
+    return scriptHost.evalWithTemplate<PaperScript>(source, evaluation = evaluation, compilation = compilation)
+        .apply { printEvalLogs() }
 }
 
-inline fun <reified T : Any> evalCustomScript(source: SourceCode, vararg args: Any?): ResultWithDiagnostics<EvaluationResult> {
-    return scriptHost.evalWithTemplate<T>(source, evaluation = {
-        constructorArgs(args)
-    }).apply { printEvalLogs() }
+inline fun <reified T : Any> evalCustomScript(
+    source: SourceCode,
+    noinline compilation: ScriptCompilationConfiguration.Builder.() -> Unit = {},
+    noinline evaluation: ScriptEvaluationConfiguration.Builder.() -> Unit = {}
+): ResultWithDiagnostics<EvaluationResult> {
+    return scriptHost.evalWithTemplate<T>(source, evaluation = evaluation, compilation = compilation)
+        .apply { printEvalLogs() }
 }

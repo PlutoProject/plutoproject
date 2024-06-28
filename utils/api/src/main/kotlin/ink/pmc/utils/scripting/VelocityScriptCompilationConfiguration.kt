@@ -49,6 +49,8 @@ object VelocityScriptCompilationConfiguration : ScriptCompilationConfiguration({
         )
     }
 
+    compilerOptions.append("-Xadd-modules=ALL-MODULE-PATH")
+
     ide {
         acceptedLocations(ScriptAcceptedLocation.Everywhere)
     }

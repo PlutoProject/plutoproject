@@ -51,19 +51,21 @@ private val bukkitImports = arrayOf(
 
 @KotlinScript(
     displayName = "Bukkit script",
-    fileExtension = "bukkit.kts",
-    compilationConfiguration = BukkitScriptingCompilationConfiguration::class
+    fileExtension = "paper.kts",
+    compilationConfiguration = PaperScriptCompilationConfiguration::class
 )
-abstract class BukkitScript
+abstract class PaperScript
 
-object BukkitScriptingCompilationConfiguration : ScriptCompilationConfiguration({
+object PaperScriptCompilationConfiguration : ScriptCompilationConfiguration({
 
     jvm {
         dependenciesFromClassContext(
-            BukkitScriptingCompilationConfiguration::class,
+            PaperScriptCompilationConfiguration::class,
             wholeClasspath = true
         )
     }
+
+    compilerOptions.append("-Xadd-modules=ALL-MODULE-PATH")
 
     ide {
         acceptedLocations(ScriptAcceptedLocation.Everywhere)
