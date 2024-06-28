@@ -31,6 +31,7 @@ class PaperPlugin : JavaPlugin() {
         paperThread = Thread.currentThread()
         paper = server
         paperUtilsPlugin = this
+        utilsLogger = logger
 
         // Folia 上复写了 EventLoop 的 tell 方法，尝试直接提交任务会丢出 UnsupportedOperationException。
         if (!isFolia) {
