@@ -5,6 +5,7 @@ import ink.pmc.utils.structure.Builder
 import net.kyori.adventure.text.Component
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
+import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 
@@ -67,4 +68,16 @@ class ItemStackDsl(private var material: Material, private val amount: Int) : Bu
 
 fun itemStack(material: Material, amount: Int = 1, block: ItemStackDsl.() -> Unit): ItemStack {
     return ItemStackDsl(material, amount).apply(block).build()
+}
+
+fun itemStack(material: Material, amount: Int = 1): ItemStack {
+    return ItemStackDsl(material, amount).build()
+}
+
+fun Inventory.addItem(material: Material, amount: Int = 1, block: ItemStackDsl.() -> Unit) {
+    addItem(itemStack(material, amount, block))
+}
+
+fun Inventory.addItem(material: Material, amount: Int = 1) {
+    addItem(itemStack(material, amount))
 }

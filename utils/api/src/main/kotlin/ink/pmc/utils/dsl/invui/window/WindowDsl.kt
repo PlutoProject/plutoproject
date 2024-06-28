@@ -1,5 +1,6 @@
 package ink.pmc.utils.dsl.invui.window
 
+import ink.pmc.advkt.component.RootComponentKt
 import ink.pmc.utils.structure.Builder
 import net.kyori.adventure.text.Component
 import org.bukkit.entity.Player
@@ -19,6 +20,10 @@ abstract class WindowDsl<T : Window> : Builder<Window> {
     protected var openHandlers = mutableSetOf<WindowHandler>()
     protected var closeHandlers = mutableSetOf<WindowHandler>()
     protected var outsideClickHandlers = mutableSetOf<WindowClickHandler>()
+
+    fun title(component: RootComponentKt.() -> Unit) {
+        title = RootComponentKt().apply(component).build()
+    }
 
     fun gui(gui: Gui) {
         this.gui = gui
