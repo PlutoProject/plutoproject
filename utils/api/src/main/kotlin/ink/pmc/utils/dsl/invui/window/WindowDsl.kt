@@ -8,7 +8,7 @@ import xyz.xenondevs.invui.gui.Gui
 import xyz.xenondevs.invui.window.Window
 
 typealias WindowHandler = (player: Player) -> Unit
-typealias WindowClickHandler = (Player, InventoryClickEvent) -> Unit
+typealias WindowClickHandler = (player: Player, event: InventoryClickEvent) -> Unit
 
 abstract class WindowDsl<T : Window> : Builder<Window> {
 

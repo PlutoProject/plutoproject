@@ -12,7 +12,7 @@ import xyz.xenondevs.invui.item.Item
 import xyz.xenondevs.invui.item.ItemProvider
 import xyz.xenondevs.invui.item.builder.ItemBuilder
 
-typealias GuiModifier = (Gui) -> Unit
+typealias GuiModifier = (gui: Gui) -> Unit
 
 abstract class GuiDsl<T : Gui> : Builder<T> {
 
