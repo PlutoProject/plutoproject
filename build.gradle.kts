@@ -378,6 +378,13 @@ allprojects {
     tasks.jar {
         manifest {
             attributes["paperweight-mappings-namespace"] = "mojang+yarn"
+
+        }
+    }
+
+    configurations.all {
+        resolutionStrategy {
+            force("com.google.inject:guice:4.2.2")
         }
     }
 
