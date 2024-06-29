@@ -1,5 +1,6 @@
 package ink.pmc.utils
 
+import com.github.shynixn.mccoroutine.velocity.SuspendingPluginContainer
 import com.google.inject.Inject
 import com.velocitypowered.api.event.Subscribe
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent
@@ -19,7 +20,11 @@ import java.util.logging.Logger
 lateinit var proxyServer: ProxyServer
 
 @Suppress("UNUSED", "UNUSED_PARAMETER")
-class VelocityPlugin {
+class VelocityPlugin @Inject constructor(suspendingPluginContainer: SuspendingPluginContainer) {
+
+    init {
+        suspendingPluginContainer.initialize(this)
+    }
 
     @Inject
     fun velocityUtils(server: ProxyServer, logger: Logger) {

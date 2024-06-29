@@ -25,26 +25,59 @@ fun ResultWithDiagnostics<*>.printEvalLogs() {
 fun evalBaseScript(
     source: SourceCode,
     compilation: ScriptCompilationConfiguration.Builder.() -> Unit = {},
-    evaluation: ScriptEvaluationConfiguration.Builder.() -> Unit = {}
+    evaluation: ScriptEvaluationConfiguration.Builder.() -> Unit = {},
+    classLoader: ClassLoader = Thread.currentThread().contextClassLoader
 ): ResultWithDiagnostics<EvaluationResult> {
+    val saveClassLoader = Thread.currentThread().contextClassLoader
+    Thread.currentThread().contextClassLoader = classLoader
     return scriptHost.evalWithTemplate<BaseScript>(source, evaluation = evaluation, compilation = compilation)
-        .apply { printEvalLogs() }
+        .apply {
+            Thread.currentThread().contextClassLoader = saveClassLoader
+            printEvalLogs()
+        }
 }
 
 fun evalPaperScript(
     source: SourceCode,
     compilation: ScriptCompilationConfiguration.Builder.() -> Unit = {},
-    evaluation: ScriptEvaluationConfiguration.Builder.() -> Unit = {}
+    evaluation: ScriptEvaluationConfiguration.Builder.() -> Unit = {},
+    classLoader: ClassLoader = Thread.currentThread().contextClassLoader
 ): ResultWithDiagnostics<EvaluationResult> {
+    val saveClassLoader = Thread.currentThread().contextClassLoader
+    Thread.currentThread().contextClassLoader = classLoader
     return scriptHost.evalWithTemplate<PaperScript>(source, evaluation = evaluation, compilation = compilation)
-        .apply { printEvalLogs() }
+        .apply {
+            Thread.currentThread().contextClassLoader = saveClassLoader
+            printEvalLogs()
+        }
+}
+
+fun evalVelocityScript(
+    source: SourceCode,
+    compilation: ScriptCompilationConfiguration.Builder.() -> Unit = {},
+    evaluation: ScriptEvaluationConfiguration.Builder.() -> Unit = {},
+    classLoader: ClassLoader = Thread.currentThread().contextClassLoader
+): ResultWithDiagnostics<EvaluationResult> {
+    val saveClassLoader = Thread.currentThread().contextClassLoader
+    Thread.currentThread().contextClassLoader = classLoader
+    return scriptHost.evalWithTemplate<VelocityScript>(source, evaluation = evaluation, compilation = compilation)
+        .apply {
+            Thread.currentThread().contextClassLoader = saveClassLoader
+            printEvalLogs()
+        }
 }
 
 inline fun <reified T : Any> evalCustomScript(
     source: SourceCode,
     noinline compilation: ScriptCompilationConfiguration.Builder.() -> Unit = {},
-    noinline evaluation: ScriptEvaluationConfiguration.Builder.() -> Unit = {}
+    noinline evaluation: ScriptEvaluationConfiguration.Builder.() -> Unit = {},
+    classLoader: ClassLoader = Thread.currentThread().contextClassLoader
 ): ResultWithDiagnostics<EvaluationResult> {
+    val saveClassLoader = Thread.currentThread().contextClassLoader
+    Thread.currentThread().contextClassLoader = classLoader
     return scriptHost.evalWithTemplate<T>(source, evaluation = evaluation, compilation = compilation)
-        .apply { printEvalLogs() }
+        .apply {
+            Thread.currentThread().contextClassLoader = saveClassLoader
+            printEvalLogs()
+        }
 }
