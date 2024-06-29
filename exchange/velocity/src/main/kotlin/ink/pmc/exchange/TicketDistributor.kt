@@ -94,6 +94,7 @@ class TicketDistributor {
         }
 
         if (exchangeService.tickets(member) > DAILY_TICKETS) {
+            markAsTicketed(member)
             return
         }
 
