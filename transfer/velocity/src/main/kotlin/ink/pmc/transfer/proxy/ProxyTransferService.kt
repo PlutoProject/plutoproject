@@ -21,6 +21,7 @@ import ink.pmc.utils.visual.mochaText
 import java.io.File
 import java.time.Instant
 
+@Suppress("UNCHECKED_CAST")
 class ProxyTransferService(
     proxyServer: ProxyServer,
     rpc: IRpcServer,
@@ -29,7 +30,7 @@ class ProxyTransferService(
 ) : AbstractProxyTransferService() {
 
     override val protocol: TransferRpc = TransferRpc(proxyServer, this)
-    override val conditionManager: ConditionManager = ProxyConditionManager(this)
+    override val conditionManager: ConditionManager = TODO()
     private val dataCollection = database.getCollection<MaintenanceEntry>("transfer_maintenance_data")
     private val proxySettings = config.get<Config>("proxy-settings")
     private val proxyScriptFile = File(dataDir, proxySettings.get("proxy-script"))
@@ -47,8 +48,8 @@ class ProxyTransferService(
             val id = it["id"] as String
             val icon = KeyedMaterial(it["icon"] as String? ?: "minecraft:barrel")
             val name = component { miniMessage(it["name"] as String? ?: id) with mochaText }
-            val description =
-                component { miniMessage(it["description"] as String? ?: "Category $id") with mochaSubtext0 }
+            val description = (it["description"] as List<String>?
+                ?: listOf()).map { component { miniMessage(it) with mochaSubtext0 } }
             CategoryImpl(
                 id,
                 0,
@@ -73,8 +74,8 @@ class ProxyTransferService(
                 val id = it["id"] as String
                 val icon = KeyedMaterial(it["icon"] as String? ?: "minecraft:paper")
                 val name = component { miniMessage(it["name"] as String? ?: id) with mochaText }
-                val description =
-                    component { miniMessage(it["description"] as String? ?: "Server $id") with mochaSubtext0 }
+                val description = (it["description"] as List<String>?
+                    ?: listOf()).map { component { miniMessage(it) with mochaSubtext0 } }
                 val category = categories.firstOrNull { c -> c.id == it["category"] as String? }
                 val isHidden = it["isHidden"] as Boolean? ?: false
                 val destination = DestinationImpl(

@@ -10,7 +10,7 @@ import kotlin.script.experimental.api.defaultImports
 
 @KotlinScript(
     displayName = "Transfer proxy configure script",
-    fileExtension = "velocity.kts",
+    fileExtension = "proxy.kts",
     compilationConfiguration = VelocityScriptCompilationConfiguration::class
 )
 abstract class ProxyConfigureScript(scope: ProxyConfigureScope) : ProxyConfigureScope by scope
