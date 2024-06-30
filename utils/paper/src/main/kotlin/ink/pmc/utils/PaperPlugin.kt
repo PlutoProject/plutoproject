@@ -1,12 +1,12 @@
 package ink.pmc.utils
 
+import com.github.shynixn.mccoroutine.bukkit.SuspendingJavaPlugin
 import ink.pmc.utils.bedrock.floodgateApi
 import ink.pmc.utils.bedrock.floodgateApiClass
 import ink.pmc.utils.bedrock.floodgateSupport
 import ink.pmc.utils.bedrock.isFloodgatePlayer
 import ink.pmc.utils.jvm.byteBuddy
 import ink.pmc.utils.platform.*
-import org.bukkit.plugin.java.JavaPlugin
 import java.util.*
 import java.util.concurrent.Executor
 
@@ -20,17 +20,18 @@ private fun checkFolia(): Boolean {
 }
 
 @Suppress("UNUSED")
-class PaperPlugin : JavaPlugin() {
+class PaperPlugin : SuspendingJavaPlugin() {
 
     override fun onLoad() {
         byteBuddy // 初始化
     }
 
-    override fun onEnable() {
+    override suspend fun onEnableAsync() {
         isFolia = checkFolia()
         paperThread = Thread.currentThread()
         paper = server
         paperUtilsPlugin = this
+        utilsLogger = logger
 
         // Folia 上复写了 EventLoop 的 tell 方法，尝试直接提交任务会丢出 UnsupportedOperationException。
         if (!isFolia) {
