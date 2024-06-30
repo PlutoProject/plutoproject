@@ -5,6 +5,7 @@ import kotlin.script.experimental.api.*
 import kotlin.script.experimental.dependencies.DependsOn
 import kotlin.script.experimental.dependencies.Repository
 import kotlin.script.experimental.jvm.dependenciesFromClassContext
+import kotlin.script.experimental.jvm.dependenciesFromCurrentContext
 import kotlin.script.experimental.jvm.jvm
 
 private val bukkitImports = arrayOf(
@@ -59,8 +60,7 @@ abstract class PaperScript
 object PaperScriptCompilationConfiguration : ScriptCompilationConfiguration({
 
     jvm {
-        dependenciesFromClassContext(
-            PaperScriptCompilationConfiguration::class,
+        dependenciesFromCurrentContext(
             wholeClasspath = true
         )
     }

@@ -7,6 +7,7 @@ import kotlin.script.experimental.dependencies.*
 import kotlin.script.experimental.dependencies.maven.MavenDependenciesResolver
 import kotlin.script.experimental.jvm.JvmDependency
 import kotlin.script.experimental.jvm.dependenciesFromClassContext
+import kotlin.script.experimental.jvm.dependenciesFromCurrentContext
 import kotlin.script.experimental.jvm.jvm
 
 val baseImports = listOf(
@@ -69,8 +70,7 @@ abstract class BaseScript
 object BaseScriptCompilationConfiguration : ScriptCompilationConfiguration({
 
     jvm {
-        dependenciesFromClassContext(
-            BaseScriptCompilationConfiguration::class,
+        dependenciesFromCurrentContext(
             wholeClasspath = true
         )
     }

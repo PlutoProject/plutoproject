@@ -5,6 +5,7 @@ import kotlin.script.experimental.api.*
 import kotlin.script.experimental.dependencies.DependsOn
 import kotlin.script.experimental.dependencies.Repository
 import kotlin.script.experimental.jvm.dependenciesFromClassContext
+import kotlin.script.experimental.jvm.dependenciesFromCurrentContext
 import kotlin.script.experimental.jvm.jvm
 
 private val velocityImports = listOf(
@@ -43,8 +44,7 @@ abstract class VelocityScript
 object VelocityScriptCompilationConfiguration : ScriptCompilationConfiguration({
 
     jvm {
-        dependenciesFromClassContext(
-            VelocityScriptCompilationConfiguration::class,
+        dependenciesFromCurrentContext(
             wholeClasspath = true
         )
     }
