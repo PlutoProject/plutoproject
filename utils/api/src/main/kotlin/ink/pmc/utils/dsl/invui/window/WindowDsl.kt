@@ -5,6 +5,7 @@ import ink.pmc.utils.structure.Builder
 import net.kyori.adventure.text.Component
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.InventoryClickEvent
+import xyz.xenondevs.inventoryaccess.component.AdventureComponentWrapper
 import xyz.xenondevs.invui.gui.Gui
 import xyz.xenondevs.invui.window.Window
 
@@ -17,6 +18,7 @@ abstract class WindowDsl<T : Window> : Builder<Window> {
     var title: Component = Component.empty()
     var viewer: Player? = null
     var gui: Gui? = null
+    private var dirtyGui = false
     protected var openHandlers = mutableSetOf<WindowHandler>()
     protected var closeHandlers = mutableSetOf<WindowHandler>()
     protected var outsideClickHandlers = mutableSetOf<WindowClickHandler>()
@@ -25,20 +27,53 @@ abstract class WindowDsl<T : Window> : Builder<Window> {
         title = RootComponentKt().apply(component).build()
     }
 
+    fun changeTitle(component: RootComponentKt.() -> Unit) {
+        window.changeTitle(AdventureComponentWrapper(RootComponentKt().apply(component).build()))
+    }
+
     fun gui(gui: Gui) {
-        this.gui = gui
+        if (this.gui == null || dirtyGui) {
+            this.gui = gui
+            return
+        }
+        updateGui(gui)
+    }
+
+    private fun updateGui(gui: Gui) {
+        dirtyGui = true
+        gui(gui)
+        build().open()
+        dirtyGui = false
     }
 
     fun onOpen(block: (Player) -> Unit) {
-        openHandlers.add(block)
+        openHandlers.add {
+            if (dirtyGui) {
+                return@add
+            }
+
+            block(it)
+        }
     }
 
     fun onClose(block: (Player) -> Unit) {
-        closeHandlers.add(block)
+        closeHandlers.add {
+            if (dirtyGui) {
+                return@add
+            }
+
+            block(it)
+        }
     }
 
     fun onOutsideClick(block: (Player, InventoryClickEvent) -> Unit) {
-        outsideClickHandlers.add(block)
+        outsideClickHandlers.add { player, event ->
+            if (dirtyGui) {
+                return@add
+            }
+
+            block(player, event)
+        }
     }
 
     fun openWindow() {

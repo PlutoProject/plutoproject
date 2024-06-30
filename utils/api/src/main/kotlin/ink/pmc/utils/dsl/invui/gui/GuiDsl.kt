@@ -16,6 +16,7 @@ typealias GuiModifier = (gui: Gui) -> Unit
 
 abstract class GuiDsl<T : Gui> : Builder<T> {
 
+    lateinit var gui: Gui
     protected val structure = mutableListOf<String>()
     protected val modifiers = mutableListOf<GuiModifier>()
     protected var background: ItemProvider = ItemProvider.EMPTY
@@ -45,7 +46,7 @@ abstract class GuiDsl<T : Gui> : Builder<T> {
     }
 
     fun ingredient(char: Char, item: Item) {
-        providerIngredients[char] = item.itemProvider
+        itemIngredients[char] = item
     }
 
     fun ingredient(char: Char, itemProvider: ItemProvider) {

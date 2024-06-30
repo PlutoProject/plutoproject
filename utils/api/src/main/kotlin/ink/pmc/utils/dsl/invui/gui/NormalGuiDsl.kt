@@ -22,14 +22,15 @@ class NormalGuiDsl : GuiDsl<Gui>() {
                 inventoryIngredients.forEach { (char, item) -> addIngredient(char, item) }
             }
             .build()
+            .apply { gui = this }
     }
 
 }
 
-fun normalGui(block: NormalGuiDsl.() -> Unit): Gui {
+inline fun normalGui(block: NormalGuiDsl.() -> Unit): Gui {
     return NormalGuiDsl().apply(block).build()
 }
 
-fun WindowDsl<*>.gui(block: NormalGuiDsl.() -> Unit) {
-    gui = normalGui(block)
+inline fun WindowDsl<*>.gui(block: NormalGuiDsl.() -> Unit) {
+    gui(normalGui(block))
 }

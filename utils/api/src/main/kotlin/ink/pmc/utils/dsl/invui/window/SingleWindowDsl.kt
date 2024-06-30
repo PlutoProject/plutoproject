@@ -22,6 +22,6 @@ class SingleWindowDsl : WindowDsl<AbstractSingleWindow>() {
 
 }
 
-fun singleWindow(window: SingleWindowDsl.() -> Unit): Window {
+inline fun singleWindow(window: SingleWindowDsl.() -> Unit): Window {
     return SingleWindowDsl().apply(window).build()
 }
