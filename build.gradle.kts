@@ -133,6 +133,8 @@ fun Project.configurePaperweight() {
     apply {
         plugin("io.papermc.paperweight.userdev")
     }
+
+    paperweight.reobfArtifactConfiguration = io.papermc.paperweight.userdev.ReobfArtifactConfiguration.MOJANG_PRODUCTION
 }
 
 fun Project.packageName(): String {
@@ -230,7 +232,7 @@ fun Project.configurePaperDevEnv() {
     configurePaperweight()
 
     configurations.create("obf").extendsFrom(
-        configurations.reobf.get(),
+        // configurations.reobf.get(),
         configurations.apiElements.get(),
         configurations.runtimeElements.get()
     )
@@ -238,8 +240,6 @@ fun Project.configurePaperDevEnv() {
     dependencies {
         paperweight.paperDevBundle(paperDevBundleVer)
     }
-
-    paperweight.reobfArtifactConfiguration = io.papermc.paperweight.userdev.ReobfArtifactConfiguration.MOJANG_PRODUCTION
 }
 
 fun DependencyHandlerScope.implementationWithEnv(dep: Project) {
@@ -373,6 +373,12 @@ allprojects {
 
     tasks.compileJava {
         options.encoding = "UTF-8"
+    }
+
+    tasks.jar {
+        manifest {
+            attributes["paperweight-mappings-namespace"] = "mojang+yarn"
+        }
     }
 
     applyProtobuf()
