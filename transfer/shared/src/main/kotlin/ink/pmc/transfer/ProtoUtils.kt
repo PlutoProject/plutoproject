@@ -16,7 +16,7 @@ val Destination.proto: ProtoDestination
             id = this@proto.id
             icon = this@proto.icon.namespacedKey
             name = this@proto.name.json
-            description = this@proto.description.json
+            description.addAll(this@proto.description.map { it.json })
             status = this@proto.status.proto
             playerCount = this@proto.playerCount
             maxPlayerCount = this@proto.maxPlayerCount
@@ -32,7 +32,7 @@ val Category.proto: ProtoCategory
         return protoCategory {
             id = this@proto.id
             name = this@proto.name.json
-            description = this@proto.description.json
+            description.addAll(this@proto.description.map { it.json })
             playerCount = this@proto.playerCount
             destinations.addAll(this@proto.destinations.map { it.id })
         }

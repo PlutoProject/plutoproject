@@ -8,5 +8,5 @@ class CategoryImpl(
     override var playerCount: Int,
     override val icon: KeyedMaterial,
     override val name: Component,
-    override val description: Component
+    override val description: List<Component>
 ) : AbstractCategory()

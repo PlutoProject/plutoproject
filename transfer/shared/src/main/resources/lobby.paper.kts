@@ -1,59 +1,41 @@
-fun archiveCategoryOpen(category: Category, player: PlayerWrapper<*>) {
-    if (category.id != "archived") {
-        return
+menu {
+    main {
+        structure(
+            "X########",
+            "###S#A###",
+            "########S"
+        )
+
+        background('#')
+        closeButton('X')
+        destination("survival", 'S')
+        category("archive", 'A')
+        settings('S')
     }
 
-    player.playSound {
-        key = Key.key("block.barrel.open")
-        source = Source.BLOCK
-    }
-}
+    category("archive") {
+        structure(
+            "XB#######",
+            "###1#2###",
+            "#########"
+        )
 
-fun archiveCategoryClose(category: Category, player: PlayerWrapper<*>) {
-    if (category.id != "archived") {
-        return
-    }
+        background('#')
+        closeButton('X')
+        backButton('B')
+        destination("plutomc_1", '1')
+        destination("plutomc_2", '2')
 
-    player.playSound {
-        key = Key.key("block.barrel.close")
-        source = Source.BLOCK
-    }
-}
-
-menuSettings {
-    env {
-        destinationButton {
-            icon = destination.icon
-            name = destination.name
-            description = destination.description
+        onOpen {
+            it.playSound {
+                key(Key.key("block.barrel.open"))
+            }
         }
 
-        categoryButton {
-            icon = category.icon
-            name = category.name
-            description = category.name
+        onClose {
+            it.playSound {
+                key(Key.key("block.barrel.open"))
+            }
         }
     }
-
-    hooks {
-        categoryOpen(::archiveCategoryOpen)
-        categoryClose(::archiveCategoryClose)
-    }
-}
-
-menuContent {
-    structure (
-        "X########",
-        "###S#A###",
-        "#########"
-    )
-
-    ingredient('X', closeButton())
-    ingredient('#', placeholder())
-    ingredient('S', getDestinationButton("survival"))
-    ingredient('A', getCategoryButton("archive"))
-}
-
-form {
-    // For bedrock players
 }

@@ -52,7 +52,7 @@ class BackendTransferService(
             val playerCount = it.playerCount
             val icon = KeyedMaterial(it.icon)
             val name = component { miniMessage(it.name) }
-            val description = component { miniMessage(it.description) }
+            val description = it.descriptionList.map { component { miniMessage(it) } }
 
             getCategory(id)?.let { c ->
                 c as AbstractCategory
@@ -77,7 +77,7 @@ class BackendTransferService(
             val id = it.id
             val icon = KeyedMaterial(it.icon)
             val name = component { miniMessage(it.name) }
-            val description = component { miniMessage(it.description) }
+            val description = it.descriptionList.map { component { miniMessage(it) } }
             val category = getCategory(it.category)
             val status = it.status.original
             val playerCount = it.playerCount

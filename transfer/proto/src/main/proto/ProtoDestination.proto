@@ -7,7 +7,7 @@ message ProtoDestination {
   string id = 1;
   string icon = 2;
   string name = 3;
-  string description = 4;
+  repeated string description = 4;
   ProtoDestinationStatus status = 5;
   int32 playerCount = 6;
   int32 maxPlayerCount = 7;

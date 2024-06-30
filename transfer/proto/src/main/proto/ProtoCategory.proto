@@ -5,7 +5,7 @@ message ProtoCategory {
   string id = 1;
   string icon = 2;
   string name = 3;
-  string description = 4;
+  repeated string description = 4;
   int32 playerCount = 5;
   repeated string destinations = 6;
 }
