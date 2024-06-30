@@ -77,18 +77,8 @@ fun elevatorGoUpTitle(curr: Int, total: Int): Title {
             text(" ")
         }
         subTitle {
-            replacements {
-                replacement {
-                    match("<curr>")
-                    replacement(curr.toString())
-                }
-                replacement {
-                    match("<total>")
-                    replacement(total.toString())
-                }
-            }
             text("电梯上行 ") with mochaYellow
-            text("(<curr>/<total>)") with mochaSubtext0
+            text("($curr/$total)") with mochaSubtext0
         }
         times {
             fadeIn(0.seconds)
@@ -104,18 +94,8 @@ fun elevatorGoDownTitle(curr: Int, total: Int): Title {
             text(" ")
         }
         subTitle {
-            replacements {
-                replacement {
-                    match("<curr>")
-                    replacement(curr.toString())
-                }
-                replacement {
-                    match("<total>")
-                    replacement(total.toString())
-                }
-            }
             text("电梯下行 ") with mochaYellow
-            text("(<curr>/<total>)") with mochaSubtext0
+            text("($curr/$total)") with mochaSubtext0
         }
         times {
             fadeIn(0.seconds)
