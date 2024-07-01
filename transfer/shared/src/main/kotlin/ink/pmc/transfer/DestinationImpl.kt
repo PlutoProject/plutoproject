@@ -14,7 +14,7 @@ class DestinationImpl(
     override val category: Category?,
     override var status: DestinationStatus,
     override var playerCount: Int,
-    override val maxPlayerCount: Int,
+    override var maxPlayerCount: Int,
     override val isHidden: Boolean
 ) : AbstractDestination() {
 

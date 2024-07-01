@@ -11,7 +11,9 @@ import ink.pmc.transfer.api.DestinationStatus
 import ink.pmc.transfer.proto.CategoryBundleOuterClass.CategoryBundle
 import ink.pmc.transfer.proto.DestinationBundleOuterClass.DestinationBundle
 import ink.pmc.transfer.proto.TransferRpcGrpcKt.TransferRpcCoroutineStub
+import ink.pmc.transfer.proto.TransferRspOuterClass.TransferResult
 import ink.pmc.transfer.proto.healthyReport
+import ink.pmc.transfer.proto.transferReq
 import ink.pmc.utils.concurrent.submitAsyncIO
 import ink.pmc.utils.multiplaform.item.KeyedMaterial
 import ink.pmc.utils.multiplaform.player.PlayerWrapper
@@ -42,6 +44,7 @@ class BackendTransferService(
             stub.reportHealthy(healthyReport {
                 id = this@BackendTransferService.id
                 playerCount = server.onlinePlayers.size
+                maxPlayerCount = server.maxPlayers
             })
         }
     }
@@ -88,6 +91,7 @@ class BackendTransferService(
                 d as AbstractDestination
                 d.status = status
                 d.playerCount = playerCount
+                d.maxPlayerCount = maxPlayerCount
                 return@forEach
             }
 
@@ -117,17 +121,17 @@ class BackendTransferService(
     }
 
     override suspend fun transferPlayer(player: PlayerWrapper<*>, id: String) {
-        val destination = getDestination(id) ?: throw IllegalStateException("Destination named $id not existed")
+        val result = stub.transferPlayer(transferReq {
+            uuid = player.uuid.toString()
+            destination = id
+        })
 
-        if (destination.status != DestinationStatus.ONLINE) {
-            throw IllegalStateException("Destination named $id not online")
+        when(result.result) {
+            TransferResult.TRANSFER_FAILED_DEST_NOT_EXISTED -> throw IllegalStateException("Destination named $id not existed")
+            TransferResult.TRANSFER_FAILED_DEST_OFFLINE -> throw IllegalStateException("Destination named $id not existed")
+            TransferResult.TRANSFER_FAILED_PLAYER_OFFLINE -> throw IllegalStateException("Player ${player.name} offline")
+            else -> {}
         }
-
-        if (!conditionManager.verifyCondition(player, destination)) {
-            return
-        }
-
-        player.switchServer(id)
     }
 
     override fun close() {

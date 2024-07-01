@@ -3,20 +3,20 @@ package ink.pmc.transfer.proto
 import com.google.protobuf.Empty
 import com.velocitypowered.api.proxy.ProxyServer
 import ink.pmc.transfer.AbstractDestination
-import ink.pmc.transfer.proxy.AbstractProxyTransferService
 import ink.pmc.transfer.api.DestinationStatus
 import ink.pmc.transfer.proto
-import ink.pmc.transfer.proto.HealthyReportOuterClass.HealthyReport
 import ink.pmc.transfer.proto.ConditionVerify.*
+import ink.pmc.transfer.proto.HealthyReportOuterClass.HealthyReport
 import ink.pmc.transfer.proto.SummaryOuterClass.Summary
+import ink.pmc.transfer.proto.TransferReqOuterClass.TransferReq
 import ink.pmc.transfer.proto.TransferRpcGrpcKt.TransferRpcCoroutineImplBase
-import ink.pmc.transfer.proto.categoryBundle
-import ink.pmc.transfer.proto.conditionVerifyRsp
-import ink.pmc.transfer.proto.destinationBundle
-import ink.pmc.transfer.proto.summary
+import ink.pmc.transfer.proto.TransferRspOuterClass.TransferRsp
+import ink.pmc.transfer.proto.TransferRspOuterClass.TransferResult
+import ink.pmc.transfer.proxy.AbstractProxyTransferService
 import ink.pmc.utils.bedrock.uuid
 import ink.pmc.utils.concurrent.submitAsync
 import ink.pmc.utils.multiplaform.player.velocity.wrapped
+import ink.pmc.utils.platform.proxy
 import kotlinx.coroutines.delay
 import java.io.Closeable
 import kotlin.jvm.optionals.getOrNull
@@ -73,9 +73,38 @@ class TransferRpc(
         }
     }
 
+    override suspend fun transferPlayer(request: TransferReq): TransferRsp {
+        val player = proxy.getPlayer(request.uuid).getOrNull() ?: return transferRsp {
+            result = TransferResult.TRANSFER_FAILED_PLAYER_OFFLINE
+        }
+        val destination = service.getDestination(request.destination) ?: return transferRsp {
+            result = TransferResult.TRANSFER_FAILED_DEST_NOT_EXISTED
+        }
+
+        if (destination.status != DestinationStatus.ONLINE) {
+            return transferRsp {
+                result = TransferResult.TRANSFER_FAILED_DEST_OFFLINE
+            }
+        }
+
+        val condition = service.conditionManager.verifyCondition(player.wrapped, destination)
+
+        if (!condition) {
+            return transferRsp {
+                result = TransferResult.TRANSFER_FAILED_CONDITION
+            }
+        }
+
+        destination.transfer(player.wrapped)
+        return transferRsp {
+            result = TransferResult.TRANSFER_SUCCEED
+        }
+    }
+
     override suspend fun reportHealthy(request: HealthyReport): Empty {
         val id = request.id
         val playerCount = request.playerCount
+        val maxPlayerCount = request.maxPlayerCount
 
         if (healthyDestinations.contains(id)) {
             return empty
@@ -89,6 +118,7 @@ class TransferRpc(
 
         destination.status = DestinationStatus.ONLINE
         destination.playerCount = playerCount
+        destination.maxPlayerCount = maxPlayerCount
         healthyDestinations.add(id)
 
         return empty

@@ -6,6 +6,8 @@ import "google/protobuf/struct.proto";
 
 import "ProtoCategory.proto";
 import "ProtoDestination.proto";
+import "TransferReq.proto";
+import "TransferRsp.proto";
 import "Summary.proto";
 import "CategoryBundle.proto";
 import "DestinationBundle.proto";
@@ -16,6 +18,7 @@ service TransferRpc {
   rpc GetSummary(google.protobuf.Empty) returns (Summary);
   rpc RegisterDestination(ProtoDestination) returns (google.protobuf.Empty);
   rpc RegistryCategory(ProtoCategory) returns (google.protobuf.Empty);
+  rpc TransferPlayer(TransferReq) returns (TransferRsp);
   rpc VerifyCondition(ConditionVerifyReq) returns (ConditionVerifyRsp);
   rpc ReportHealthy(HealthyReport) returns (google.protobuf.Empty);
 }

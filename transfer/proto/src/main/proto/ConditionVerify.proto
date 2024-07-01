@@ -14,4 +14,5 @@ enum ConditionVerifyResult {
 
 message ConditionVerifyRsp {
   ConditionVerifyResult result = 1;
+  optional string errorMessage = 2;
 }
