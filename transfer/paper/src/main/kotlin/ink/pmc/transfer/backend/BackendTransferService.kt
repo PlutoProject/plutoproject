@@ -7,7 +7,6 @@ import ink.pmc.advkt.component.miniMessage
 import ink.pmc.transfer.*
 import ink.pmc.transfer.api.ConditionManager
 import ink.pmc.transfer.api.Destination
-import ink.pmc.transfer.api.DestinationStatus
 import ink.pmc.transfer.proto.CategoryBundleOuterClass.CategoryBundle
 import ink.pmc.transfer.proto.DestinationBundleOuterClass.DestinationBundle
 import ink.pmc.transfer.proto.TransferRpcGrpcKt.TransferRpcCoroutineStub

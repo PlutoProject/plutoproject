@@ -11,9 +11,9 @@ import com.velocitypowered.api.plugin.annotation.DataDirectory
 import com.velocitypowered.api.proxy.ProxyServer
 import ink.pmc.provider.ProviderService
 import ink.pmc.rpc.api.RpcServer
-import ink.pmc.transfer.proxy.commands.TransferCommand
 import ink.pmc.transfer.proxy.AbstractProxyTransferService
 import ink.pmc.transfer.proxy.ProxyTransferService
+import ink.pmc.transfer.proxy.commands.TransferCommand
 import ink.pmc.utils.command.init
 import ink.pmc.utils.platform.proxy
 import ink.pmc.utils.platform.saveConfig
@@ -25,6 +25,8 @@ import org.incendo.cloud.velocity.VelocityCommandManager
 import java.io.File
 import java.nio.file.Path
 import java.util.logging.Logger
+import kotlin.script.experimental.api.SourceCode
+import kotlin.script.experimental.host.toScriptSource
 
 lateinit var pluginContainer: PluginContainer
 lateinit var velocityCommandManager: VelocityCommandManager<CommandSource>
@@ -54,7 +56,13 @@ class VelocityPlugin @Inject constructor(suspendingPluginContainer: SuspendingPl
 
         config.loadConfig()
 
-        proxyTransferService = ProxyTransferService(proxy, RpcServer, fileConfig, ProviderService.defaultMongoDatabase)
+        proxyTransferService = ProxyTransferService(
+            proxy,
+            RpcServer,
+            fileConfig,
+            ProviderService.defaultMongoDatabase,
+            loadScript()
+        )
         transferService = proxyTransferService
     }
 
@@ -79,6 +87,16 @@ class VelocityPlugin @Inject constructor(suspendingPluginContainer: SuspendingPl
         withContext(Dispatchers.IO) {
             transferService.close()
         }
+    }
+
+    private fun loadScript(): SourceCode {
+        val file = File(dataDir, "config.proxy.kts")
+
+        if (!file.exists()) {
+            saveConfig(VelocityPlugin::class.java, "config.proxy.kts", file)
+        }
+
+        return file.toScriptSource()
     }
 
 }

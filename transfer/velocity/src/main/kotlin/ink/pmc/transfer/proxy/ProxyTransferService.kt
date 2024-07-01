@@ -13,27 +13,29 @@ import ink.pmc.transfer.api.ConditionManager
 import ink.pmc.transfer.api.Destination
 import ink.pmc.transfer.api.DestinationStatus
 import ink.pmc.transfer.proto.TransferRpc
+import ink.pmc.transfer.scripting.ProxyConfigureScopeImpl
+import ink.pmc.transfer.scripting.evalProxyConfigureScript
 import ink.pmc.utils.concurrent.submitAsyncIO
 import ink.pmc.utils.multiplaform.item.KeyedMaterial
 import ink.pmc.utils.multiplaform.player.PlayerWrapper
 import ink.pmc.utils.visual.mochaSubtext0
 import ink.pmc.utils.visual.mochaText
-import java.io.File
 import java.time.Instant
+import kotlin.script.experimental.api.SourceCode
 
 @Suppress("UNCHECKED_CAST")
 class ProxyTransferService(
     proxyServer: ProxyServer,
     rpc: IRpcServer,
     config: FileConfig,
-    database: MongoDatabase
+    database: MongoDatabase,
+    source: SourceCode
 ) : AbstractProxyTransferService() {
 
     override val protocol: TransferRpc = TransferRpc(proxyServer, this)
-    override val conditionManager: ConditionManager = TODO()
+    override val conditionManager: ConditionManager = initConditionManager(source)
     private val dataCollection = database.getCollection<MaintenanceEntry>("transfer_maintenance_data")
     private val proxySettings = config.get<Config>("proxy-settings")
-    private val proxyScriptFile = File(dataDir, proxySettings.get("proxy-script"))
     private val configDestinations = proxySettings.get<List<Map<String, Any>>>("proxy-settings.destinations")
     private val configCategories = proxySettings.get<List<Map<String, Any>>>("proxy-settings.categories")
 
@@ -41,6 +43,14 @@ class ProxyTransferService(
         rpc.apply { addService(protocol) }
         loadCategories()
         loadDestinations()
+    }
+
+    private fun initConditionManager(source: SourceCode): ConditionManager {
+        serverLogger.info("Evaluating proxy configure script...")
+        val scope = ProxyConfigureScopeImpl()
+        evalProxyConfigureScript(source, scope)
+        serverLogger.info("Done!")
+        return ProxyConditionManager(scope.conditions)
     }
 
     private fun loadCategories() {
