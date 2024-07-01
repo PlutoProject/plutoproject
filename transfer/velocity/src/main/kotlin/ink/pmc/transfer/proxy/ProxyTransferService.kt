@@ -89,6 +89,7 @@ class ProxyTransferService(
                 val category = categories.firstOrNull { c -> c.id == it["category"] as String? }
                 val isHidden = it["isHidden"] as Boolean? ?: false
                 val destination = DestinationImpl(
+                    this,
                     id,
                     icon,
                     name,
@@ -113,7 +114,7 @@ class ProxyTransferService(
             throw IllegalStateException("Destination $id not online")
         }
 
-        if (!conditionManager.verifyCondition(player, destination)) {
+        if (!conditionManager.verifyCondition(player, destination).first) {
             return
         }
 

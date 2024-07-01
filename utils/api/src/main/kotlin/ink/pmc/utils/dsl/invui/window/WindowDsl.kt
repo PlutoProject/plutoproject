@@ -27,8 +27,12 @@ abstract class WindowDsl<T : Window> : Builder<Window> {
         title = RootComponentKt().apply(component).build()
     }
 
+    fun changeTitle(component: Component) {
+        window.changeTitle(AdventureComponentWrapper(component))
+    }
+
     fun changeTitle(component: RootComponentKt.() -> Unit) {
-        window.changeTitle(AdventureComponentWrapper(RootComponentKt().apply(component).build()))
+        changeTitle(RootComponentKt().apply(component).build())
     }
 
     fun gui(gui: Gui) {

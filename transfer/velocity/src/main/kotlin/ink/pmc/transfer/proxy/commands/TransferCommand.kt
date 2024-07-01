@@ -67,7 +67,7 @@ class TransferCommand(private val service: AbstractProxyTransferService) : Veloc
                 return@suspendingHandler
             }
 
-            val condition = service.conditionManager.verifyCondition(sender.wrapped, destination)
+            val condition = service.conditionManager.verifyCondition(sender.wrapped, destination).first
 
             if (!condition) {
                 sender.sendMessage(TRANSFER_FAILED_CONDITIONAL)
@@ -114,7 +114,7 @@ class TransferCommand(private val service: AbstractProxyTransferService) : Veloc
                 return@suspendingHandler
             }
 
-            val condition = service.conditionManager.verifyCondition(player.wrapped, destination)
+            val condition = service.conditionManager.verifyCondition(player.wrapped, destination).first
 
             if (!condition) {
                 sender.sendMessage(TRANSFER_FAILED_CONDITIONAL)

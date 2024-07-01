@@ -7,6 +7,7 @@ import ink.pmc.utils.multiplaform.player.PlayerWrapper
 import net.kyori.adventure.text.Component
 
 class DestinationImpl(
+    private val service: AbstractTransferService,
     override val id: String,
     override val icon: KeyedMaterial,
     override val name: Component,
@@ -19,7 +20,7 @@ class DestinationImpl(
 ) : AbstractDestination() {
 
     override suspend fun transfer(player: PlayerWrapper<*>) {
-        player.switchServer(id)
+        service.transferPlayer(player, id)
     }
 
 }

@@ -14,6 +14,7 @@ import ink.pmc.transfer.proto.TransferRspOuterClass.TransferRsp
 import ink.pmc.transfer.proto.TransferRspOuterClass.TransferResult
 import ink.pmc.transfer.proxy.AbstractProxyTransferService
 import ink.pmc.utils.bedrock.uuid
+import ink.pmc.utils.chat.json
 import ink.pmc.utils.concurrent.submitAsync
 import ink.pmc.utils.multiplaform.player.velocity.wrapped
 import ink.pmc.utils.platform.proxy
@@ -65,7 +66,11 @@ class TransferRpc(
         }
 
         return conditionVerifyRsp {
-            result = if (!service.conditionManager.verifyCondition(player.wrapped, destination)) {
+            val verifyResult = service.conditionManager.verifyCondition(player.wrapped, destination)
+            result = if (!verifyResult.first) {
+                if (verifyResult.second != null) {
+                    errorMessage = verifyResult.second!!.json
+                }
                 ConditionVerifyResult.VERIFY_FAILED
             } else {
                 ConditionVerifyResult.VERIFY_SUCCEED
@@ -87,7 +92,7 @@ class TransferRpc(
             }
         }
 
-        val condition = service.conditionManager.verifyCondition(player.wrapped, destination)
+        val condition = service.conditionManager.verifyCondition(player.wrapped, destination).first
 
         if (!condition) {
             return transferRsp {

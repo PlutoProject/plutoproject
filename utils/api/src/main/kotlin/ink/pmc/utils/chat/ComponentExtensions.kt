@@ -41,3 +41,8 @@ val Component.json: String
     get() {
         return serializer.serialize(this)
     }
+
+val String.component: Component
+    get() {
+        return serializer.deserialize(this)
+    }

@@ -1,10 +1,13 @@
 package ink.pmc.transfer.scripting
 
+import ink.pmc.advkt.component.RootComponentKt
 import ink.pmc.utils.structure.Builder
+import net.kyori.adventure.text.Component
 
 @Suppress("UNUSED")
 class MenuDsl : Builder<Menu> {
 
+    private var component: Component? = null
     private val structure = mutableListOf<String>()
     private var background: Char? = null
     private var closeButton: Char? = null
@@ -13,6 +16,10 @@ class MenuDsl : Builder<Menu> {
     private var settings: Char? = null
     private var openHandler: ActionHandler = {}
     private var closeHandler: ActionHandler = {}
+
+    fun title(block: RootComponentKt.() -> Unit) {
+        this.component = RootComponentKt().apply(block).build()
+    }
 
     fun structure(vararg data: String) {
         structure.addAll(data)
@@ -40,6 +47,7 @@ class MenuDsl : Builder<Menu> {
 
     override fun build(): Menu {
         return Menu(
+            component,
             structure,
             background,
             closeButton,

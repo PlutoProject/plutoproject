@@ -1,10 +1,12 @@
 package ink.pmc.transfer.scripting
 
 import ink.pmc.utils.multiplaform.player.PlayerWrapper
+import net.kyori.adventure.text.Component
 
 typealias ActionHandler = (player: PlayerWrapper<*>) -> Unit
 
 data class Menu(
+    val title: Component?,
     val structure: List<String>,
     val background: Char?,
     val closeButton: Char?,

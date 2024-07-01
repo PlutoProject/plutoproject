@@ -2,8 +2,6 @@ package ink.pmc.transfer.backend
 
 import com.electronwill.nightconfig.core.Config
 import com.google.protobuf.Empty
-import ink.pmc.advkt.component.component
-import ink.pmc.advkt.component.miniMessage
 import ink.pmc.transfer.*
 import ink.pmc.transfer.api.ConditionManager
 import ink.pmc.transfer.api.Destination
@@ -13,6 +11,7 @@ import ink.pmc.transfer.proto.TransferRpcGrpcKt.TransferRpcCoroutineStub
 import ink.pmc.transfer.proto.TransferRspOuterClass.TransferResult
 import ink.pmc.transfer.proto.healthyReport
 import ink.pmc.transfer.proto.transferReq
+import ink.pmc.utils.chat.component
 import ink.pmc.utils.concurrent.submitAsyncIO
 import ink.pmc.utils.multiplaform.item.KeyedMaterial
 import ink.pmc.utils.multiplaform.player.PlayerWrapper
@@ -53,8 +52,8 @@ class BackendTransferService(
             val id = it.id
             val playerCount = it.playerCount
             val icon = KeyedMaterial(it.icon)
-            val name = component { miniMessage(it.name) }
-            val description = it.descriptionList.map { component { miniMessage(it) } }
+            val name = it.name.component
+            val description = it.descriptionList.map { c -> c.component }
 
             getCategory(id)?.let { c ->
                 c as AbstractCategory
@@ -78,8 +77,8 @@ class BackendTransferService(
         bundle.destinationsList.forEach {
             val id = it.id
             val icon = KeyedMaterial(it.icon)
-            val name = component { miniMessage(it.name) }
-            val description = it.descriptionList.map { component { miniMessage(it) } }
+            val name = it.name.component
+            val description = it.descriptionList.map { c -> c.component }
             val category = getCategory(it.category)
             val status = it.status.original
             val playerCount = it.playerCount
@@ -101,6 +100,7 @@ class BackendTransferService(
 
             destinations.add(
                 DestinationImpl(
+                    this,
                     id,
                     icon,
                     name,

@@ -2,14 +2,20 @@ package ink.pmc.utils.dsl.invui.item
 
 import ink.pmc.utils.dsl.ItemStackDsl
 import ink.pmc.utils.structure.Builder
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
 import xyz.xenondevs.invui.item.Click
 import xyz.xenondevs.invui.item.Item
 import xyz.xenondevs.invui.item.ItemProvider
 import xyz.xenondevs.invui.item.builder.ItemBuilder
+import kotlin.coroutines.coroutineContext
 
 typealias ClickHandler = (click: Click) -> Unit
+typealias SuspendClickHandler = suspend (click: Click) -> Unit
 
 abstract class ItemDsl<T : Item> : Builder<T> {
 
@@ -27,6 +33,11 @@ abstract class ItemDsl<T : Item> : Builder<T> {
 
     fun onClick(handler: ClickHandler) {
         clickHandler = handler
+    }
+
+    suspend fun onClickSuspending(handler: SuspendClickHandler) {
+        val context = coroutineContext
+        clickHandler = { CoroutineScope(context).launch(context, CoroutineStart.UNDISPATCHED) { handler(it) } }
     }
 
     fun notifyWindows() {
