@@ -7,7 +7,7 @@ import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerMoveEvent
 import org.bukkit.util.Vector
 
-typealias Handler = (player: Player) -> Unit
+typealias Handler = suspend (player: Player) -> Unit
 typealias TypedHandler = Pair<PortalBounding.HandlerType, Handler>
 
 @Suppress("UNUSED")
@@ -32,7 +32,7 @@ class PortalBounding(private val a: Location, private val b: Location) {
         private val world = bounding.a.world
 
         @EventHandler
-        fun playerMoveEvent(event: PlayerMoveEvent) {
+        suspend fun playerMoveEvent(event: PlayerMoveEvent) {
             val player = event.player
 
             if (player.world != world) {

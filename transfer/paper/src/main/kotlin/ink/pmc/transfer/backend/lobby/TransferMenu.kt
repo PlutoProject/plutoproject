@@ -18,7 +18,7 @@ import org.bukkit.Material
 import org.bukkit.entity.Player
 import xyz.xenondevs.invui.window.Window
 
-class TransferMenu(private val service: AbstractTransferService, private val main: Menu, private val categories: Map<String, Menu>) {
+class TransferMenu(private val service: AbstractTransferService, private val lobby: TransferLobby, private val main: Menu, private val categories: Map<String, Menu>) {
 
     private fun GuiDsl<*>.background(menu: Menu) {
         if (menu.background == null) {
@@ -54,7 +54,10 @@ class TransferMenu(private val service: AbstractTransferService, private val mai
             provider(Material.YELLOW_STAINED_GLASS_PANE) {
                 displayName = MENU_BACK
             }
-            onClickSuspending(action)
+            onClickSuspending {
+                clearHandlers()
+                action(it)
+            }
         }
     }
 
@@ -74,7 +77,8 @@ class TransferMenu(private val service: AbstractTransferService, private val mai
                     lore { destinationJoinPrompt(verifyResult.first, verifyResult.second) }
                 }
                 onClickSuspending {
-                    destination.transfer(viewer!!.wrapped)
+                    window.close()
+                    lobby.transferPlayer(viewer!!, destination)
                 }
             }
         }
@@ -95,7 +99,7 @@ class TransferMenu(private val service: AbstractTransferService, private val mai
                 }
                 onClickSuspending {
                     menu.openHandler(viewer!!.wrapped)
-                    refreshHandlers()
+                    clearHandlers()
                     categoryGui(category.id)
                     window.addCloseHandler { menu.closeHandler(viewer!!.wrapped) }
                 }
@@ -127,7 +131,7 @@ class TransferMenu(private val service: AbstractTransferService, private val mai
             background(main)
             closeButton(main, this)
             backButton(menu, this) {
-                refreshHandlers()
+                clearHandlers()
                 mainGui()
             }
             destinationButton(main, this)
@@ -141,7 +145,7 @@ class TransferMenu(private val service: AbstractTransferService, private val mai
         changeTitle(menu.title)
     }
 
-    private fun WindowDsl<*>.refreshHandlers() {
+    private fun WindowDsl<*>.clearHandlers() {
         window.setOpenHandlers(listOf())
         window.setCloseHandlers(listOf())
     }

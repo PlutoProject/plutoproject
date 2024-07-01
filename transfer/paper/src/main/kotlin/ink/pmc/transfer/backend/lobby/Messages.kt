@@ -3,13 +3,12 @@ package ink.pmc.transfer.backend.lobby
 import ink.pmc.advkt.component.component
 import ink.pmc.advkt.component.italic
 import ink.pmc.advkt.component.text
-import ink.pmc.advkt.title.mainTitle
-import ink.pmc.advkt.title.subTitle
-import ink.pmc.advkt.title.title
+import ink.pmc.advkt.title.*
 import ink.pmc.transfer.api.Destination
 import ink.pmc.transfer.api.DestinationStatus
 import ink.pmc.utils.visual.*
 import net.kyori.adventure.text.Component
+import kotlin.time.Duration.Companion.seconds
 
 val KAOMOJI_ARRAY = arrayOf(
     "ヽ( ° ▽°)ノ",
@@ -113,4 +112,18 @@ fun destinationJoinPrompt(condition: Boolean, error: Component?): Component {
 
 val CATEGORY_CLICK_TO_OPEN = component {
     text("√ 点击打开") without italic() with mochaFlamingo
+}
+
+val LOBBY_TRANSFER_PREPARE_TITLE = title {
+    times {
+        fadeIn(0.3.seconds)
+        stay(10.seconds)
+        fadeOut(0.seconds)
+    }
+    mainTitle {
+        text("传送中") with mochaPink
+    }
+    subTitle {
+        text("请稍作等候") with mochaText
+    }
 }

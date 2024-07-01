@@ -1,16 +1,19 @@
 package ink.pmc.transfer.backend.lobby.portal
 
 import com.electronwill.nightconfig.core.Config
+import ink.pmc.transfer.backend.lobby.TransferLobby
 import org.bukkit.Axis
 import org.bukkit.Location
 import org.bukkit.World
 import org.bukkit.entity.Player
+import org.bukkit.util.Vector
 
-class PortalManager(private val config: Config, private val world: World) {
+class PortalManager(private val config: Config, private val lobby: TransferLobby) {
 
     private val views = mutableMapOf<Player, PortalView>()
     val bounding: PortalBounding = createBounding()
     private val meta = createMeta()
+    private val world = lobby.world
 
     private fun createBounding(): PortalBounding {
         val a = Location(

@@ -4,23 +4,37 @@ import com.electronwill.nightconfig.core.Config
 import ink.pmc.member.api.Member
 import ink.pmc.member.api.MemberService
 import ink.pmc.member.api.paper.memberOrNull
+import ink.pmc.transfer.AbstractTransferService
 import ink.pmc.transfer.LOBBY_EVENT_BYPASS_PERMISSION
 import ink.pmc.transfer.MEMBER_PLAYED_ONCE_DATA_KEY
+import ink.pmc.transfer.api.Destination
+import ink.pmc.transfer.backend.lobby.portal.PortalBounding.HandlerType
 import ink.pmc.transfer.backend.lobby.portal.PortalManager
+import ink.pmc.transfer.scripting.LobbyConfigureScopeImpl
+import ink.pmc.transfer.scripting.evalLobbyConfigureScript
+import ink.pmc.transfer.serverLogger
 import ink.pmc.utils.concurrent.submitAsyncIO
+import ink.pmc.utils.multiplaform.player.paper.wrapped
 import ink.pmc.utils.platform.threadSafeTeleport
+import kotlinx.coroutines.delay
 import org.bukkit.*
+import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
+import org.bukkit.potion.PotionEffect
+import org.bukkit.potion.PotionEffectType
+import kotlin.script.experimental.api.SourceCode
+import kotlin.time.Duration.Companion.milliseconds
 
 @Suppress("UNUSED")
-class TransferLobby(config: Config) {
+class TransferLobby(service: AbstractTransferService, config: Config, private val source: SourceCode) {
 
     private val worldName = config.get<String>("world")
-    private val world = loadWorld(worldName).apply { initWorldEnvironment(this) }
+    private val menu: TransferMenu
+    val world = loadWorld(worldName).apply { initWorldEnvironment(this) }
     private val spawnPoint = Location(
         world,
         config.get("spawn-point.x"),
@@ -29,8 +43,29 @@ class TransferLobby(config: Config) {
         config.get("spawn-point.yaw"),
         config.get("spawn-point.pitch")
     )
-    val portalManager = PortalManager(config.get("portal"), world)
+    val portalManager = PortalManager(config.get("portal"), this)
     val listener = LobbyListener(this)
+
+    init {
+        val scope = evalScript()
+        menu = TransferMenu(
+            service,
+            this,
+            scope.main ?: throw IllegalStateException("Main menu not configured!"),
+            scope.categoryMenus
+        )
+        portalManager.bounding.addHandler(HandlerType.ENTER) {
+            menu.openWindow(it)
+        }
+    }
+
+    private fun evalScript(): LobbyConfigureScopeImpl {
+        serverLogger.info("Evaluating lobby configure script...")
+        val scope = LobbyConfigureScopeImpl()
+        evalLobbyConfigureScript(source, scope)
+        serverLogger.info("Done!")
+        return scope
+    }
 
     private fun initWorldEnvironment(world: World) {
         world.setGameRule(GameRule.DO_MOB_SPAWNING, false)
@@ -53,7 +88,11 @@ class TransferLobby(config: Config) {
         suspend fun playerJoinEvent(event: PlayerJoinEvent) {
             event.joinMessage(null)
 
-            val player = event.player.apply { threadSafeTeleport(lobby.spawnPoint) }
+            val player = event.player.apply {
+                gameMode = GameMode.ADVENTURE
+                clearActivePotionEffects()
+                threadSafeTeleport(lobby.spawnPoint)
+            }
             val member = player.memberOrNull()
             val portalView = lobby.portalManager.createView(player)
 
@@ -97,6 +136,23 @@ class TransferLobby(config: Config) {
             event.isCancelled = true
         }
 
+    }
+
+    suspend fun transferPlayer(player: Player, destination: Destination) {
+        player.gameMode = GameMode.SPECTATOR
+        player.threadSafeTeleport(spawnPoint)
+        player.showTitle(LOBBY_TRANSFER_PREPARE_TITLE)
+        player.addPotionEffect(
+            PotionEffect(
+                PotionEffectType.SLOWNESS,
+                1000,
+                3,
+                false,
+                false
+            )
+        )
+        delay(100.milliseconds)
+        destination.transfer(player.wrapped)
     }
 
 }

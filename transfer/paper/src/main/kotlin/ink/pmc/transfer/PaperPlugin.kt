@@ -12,6 +12,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.bukkit.plugin.java.JavaPlugin
 import java.io.File
+import kotlin.script.experimental.api.SourceCode
+import kotlin.script.experimental.host.toScriptSource
 
 lateinit var plugin: JavaPlugin
 lateinit var paperTransferService: AbstractTransferService
@@ -51,9 +53,19 @@ class PaperPlugin : SuspendingJavaPlugin() {
             return
         }
 
-        transferLobby = TransferLobby(fileConfig.get("lobby-settings"))
+        transferLobby = TransferLobby(paperTransferService, fileConfig.get("lobby-settings"), loadScript())
         server.pluginManager.registerSuspendingEvents(transferLobby.listener, this)
         server.pluginManager.registerSuspendingEvents(transferLobby.portalManager.bounding.listener, this)
+    }
+
+    private fun loadScript(): SourceCode {
+        val file = File(dataDir, "config.lobby.kts")
+
+        if (!file.exists()) {
+            saveResource("config.lobby.kts", false)
+        }
+
+        return file.toScriptSource()
     }
 
 }
