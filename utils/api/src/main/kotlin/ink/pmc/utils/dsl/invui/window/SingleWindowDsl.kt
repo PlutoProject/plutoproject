@@ -17,7 +17,10 @@ class SingleWindowDsl : WindowDsl<AbstractSingleWindow>() {
                 outsideClickHandlers.forEach { handler -> addOutsideClickHandler { handler(viewer!!, it) } }
             }
             .build()
-            .apply { window = this } as AbstractSingleWindow
+            .apply {
+                window = this
+                whenBuild(window)
+            } as AbstractSingleWindow
     }
 
 }

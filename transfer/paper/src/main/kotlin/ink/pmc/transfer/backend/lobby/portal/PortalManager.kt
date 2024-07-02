@@ -4,18 +4,18 @@ import com.electronwill.nightconfig.core.Config
 import ink.pmc.transfer.backend.lobby.TransferLobby
 import org.bukkit.Axis
 import org.bukkit.Location
-import org.bukkit.World
 import org.bukkit.entity.Player
-import org.bukkit.util.Vector
 
-class PortalManager(private val config: Config, private val lobby: TransferLobby) {
+class PortalManager(private val config: Config, lobby: TransferLobby) {
 
     private val views = mutableMapOf<Player, PortalView>()
-    val bounding: PortalBounding = createBounding()
-    private val meta = createMeta()
     private val world = lobby.world
+    private val meta = createMeta()
+    val bounding = createBounding()
 
     private fun createBounding(): PortalBounding {
+        println(world)
+
         val a = Location(
             world,
             config.get("detect-a.x"),
@@ -69,6 +69,7 @@ class PortalManager(private val config: Config, private val lobby: TransferLobby
 
     fun createView(player: Player): PortalView {
         if (hasView(player)) {
+            println("Has view")
             return getView(player)!!
         }
 

@@ -16,6 +16,7 @@ import ink.pmc.transfer.proto.TransferRpc
 import ink.pmc.transfer.scripting.ProxyConfigureScopeImpl
 import ink.pmc.transfer.scripting.evalProxyConfigureScript
 import ink.pmc.utils.concurrent.submitAsyncIO
+import ink.pmc.utils.config.toMapViaEntry
 import ink.pmc.utils.multiplaform.item.KeyedMaterial
 import ink.pmc.utils.multiplaform.player.PlayerWrapper
 import ink.pmc.utils.visual.mochaSubtext0
@@ -36,8 +37,8 @@ class ProxyTransferService(
     override val conditionManager: ConditionManager = initConditionManager(source)
     private val dataCollection = database.getCollection<MaintenanceEntry>("transfer_maintenance_data")
     private val proxySettings = config.get<Config>("proxy-settings")
-    private val configDestinations = proxySettings.get<List<Map<String, Any>>>("proxy-settings.destinations")
-    private val configCategories = proxySettings.get<List<Map<String, Any>>>("proxy-settings.categories")
+    private val configDestinations = proxySettings.get<List<Config>>("destinations").map { it.toMapViaEntry() }
+    private val configCategories = proxySettings.get<List<Config>>("categories").map { it.toMapViaEntry() }
 
     init {
         rpc.apply { addService(protocol) }

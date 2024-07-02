@@ -57,7 +57,7 @@ class VelocityPlugin @Inject constructor(suspendingPluginContainer: SuspendingPl
         config.loadConfig()
 
         proxyTransferService = ProxyTransferService(
-            proxy,
+            server,
             RpcServer,
             fileConfig,
             ProviderService.defaultMongoDatabase,

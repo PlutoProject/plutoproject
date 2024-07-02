@@ -25,6 +25,8 @@ class PaperPlugin : SuspendingJavaPlugin() {
 
     override suspend fun onEnableAsync() {
         plugin = this
+        dataDir = dataFolder
+        serverLogger = logger
         val config = File(dataFolder, "config.conf")
 
         if (!config.exists()) {
@@ -43,6 +45,11 @@ class PaperPlugin : SuspendingJavaPlugin() {
 
     override suspend fun onDisableAsync() {
         disabled = true
+
+        if (::transferLobby.isInitialized) {
+            transferLobby.destroy()
+        }
+
         withContext(Dispatchers.IO) {
             transferService.close()
         }

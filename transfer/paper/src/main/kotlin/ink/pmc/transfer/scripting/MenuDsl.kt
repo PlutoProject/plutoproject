@@ -11,6 +11,7 @@ class MenuDsl : Builder<Menu> {
     private val structure = mutableListOf<String>()
     private var background: Char? = null
     private var closeButton: Char? = null
+    private var backButton: Char? = null
     private val destination = mutableMapOf<String, Char>()
     private val category = mutableMapOf<String, Char>()
     private var settings: Char? = null
@@ -33,6 +34,10 @@ class MenuDsl : Builder<Menu> {
         closeButton = char
     }
 
+    fun backButton(char: Char) {
+        backButton = char
+    }
+
     fun destination(name: String, char: Char) {
         destination[name] = char
     }
@@ -43,6 +48,14 @@ class MenuDsl : Builder<Menu> {
 
     fun settings(char: Char) {
         settings = char
+    }
+
+    fun onOpen(handler: ActionHandler) {
+        openHandler = handler
+    }
+
+    fun onClose(handler: ActionHandler) {
+        closeHandler = handler
     }
 
     override fun build(): Menu {

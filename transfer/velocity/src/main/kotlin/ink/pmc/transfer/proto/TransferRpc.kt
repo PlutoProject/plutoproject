@@ -57,22 +57,31 @@ class TransferRpc(
     }
 
     override suspend fun verifyCondition(request: ConditionVerifyReq): ConditionVerifyRsp {
+        println("entry")
         val player = proxyServer.getPlayer(request.uuid.uuid).getOrNull() ?: return conditionVerifyRsp {
+            println("null entry")
             result = ConditionVerifyResult.VERIFY_OFFLINE
         }
+        println("block 1")
 
         val destination = service.getDestination(request.destination) ?: return conditionVerifyRsp {
+            println("null block 2")
             result = ConditionVerifyResult.VERIFY_FAILED
         }
+        println("block 2")
 
         return conditionVerifyRsp {
+            println("returning")
             val verifyResult = service.conditionManager.verifyCondition(player.wrapped, destination)
             result = if (!verifyResult.first) {
                 if (verifyResult.second != null) {
+                    println("failed without msg")
                     errorMessage = verifyResult.second!!.json
                 }
+                println("failed")
                 ConditionVerifyResult.VERIFY_FAILED
             } else {
+                println("succeed")
                 ConditionVerifyResult.VERIFY_SUCCEED
             }
         }

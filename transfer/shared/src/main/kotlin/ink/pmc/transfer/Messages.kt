@@ -1,6 +1,7 @@
 package ink.pmc.transfer
 
 import ink.pmc.advkt.component.component
+import ink.pmc.advkt.component.newline
 import ink.pmc.advkt.component.text
 import ink.pmc.utils.visual.*
 
@@ -22,6 +23,7 @@ val TRANSFER_FAILED_SERVER_MAINTENACE = component {
 
 val TRANSFER_FAILED_SERVER_OFFLINE = component {
     text("传送失败，目标服务器已离线") with mochaMaroon
+    newline()
     text("这可能是一个服务器内部问题，请报告给管理员") with mochaSubtext0
 }
 

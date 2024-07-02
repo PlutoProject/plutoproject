@@ -55,6 +55,8 @@ class TransferLobby(service: AbstractTransferService, config: Config, private va
             scope.categoryMenus
         )
         portalManager.bounding.addHandler(HandlerType.ENTER) {
+            it.threadSafeTeleport(spawnPoint)
+            delay(5)
             menu.openWindow(it)
         }
     }
@@ -107,8 +109,9 @@ class TransferLobby(service: AbstractTransferService, config: Config, private va
                 PLAYER_JOIN_WHITELISTED
             }
 
-            portalView.update()
             player.showTitle(title)
+            delay(100)
+            portalView.on()
         }
 
         private fun isFirstJoin(member: Member): Boolean {
@@ -122,6 +125,8 @@ class TransferLobby(service: AbstractTransferService, config: Config, private va
 
         @EventHandler
         fun playerQuitEvent(event: PlayerQuitEvent) {
+            val player = event.player
+            lobby.portalManager.destroyView(player)
             event.quitMessage(null)
         }
 
@@ -153,6 +158,10 @@ class TransferLobby(service: AbstractTransferService, config: Config, private va
         )
         delay(100.milliseconds)
         destination.transfer(player.wrapped)
+    }
+
+    fun destroy() {
+        portalManager.destroyAll()
     }
 
 }

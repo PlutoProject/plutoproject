@@ -41,7 +41,7 @@ class TransferCommand(private val service: AbstractProxyTransferService) : Veloc
         argument(destinations())
         suspendingHandler {
             val sender = it.sender()
-            val dest = it.flags().get<String>("dest")!!
+            val dest = it.get<String>("dest")
             val destination = service.getDestination(dest)
 
             if (sender !is Player) {
@@ -87,9 +87,9 @@ class TransferCommand(private val service: AbstractProxyTransferService) : Veloc
         argument(velocityRequiredOnlinePlayersArgument())
         suspendingHandler {
             val sender = it.sender()
-            val dest = it.flags().get<String>("dest")!!
+            val dest = it.get<String>("dest")
             val destination = service.getDestination(dest)
-            val player = proxy.getPlayer(it.flags().get<String>("name")).getOrNull()
+            val player = proxy.getPlayer(it.get<String>("name")).getOrNull()
 
             if (player == null) {
                 sender.sendMessage(PLAYER_NOT_ONLINE)

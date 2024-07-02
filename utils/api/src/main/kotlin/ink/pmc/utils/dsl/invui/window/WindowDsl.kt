@@ -1,6 +1,7 @@
 package ink.pmc.utils.dsl.invui.window
 
 import ink.pmc.advkt.component.RootComponentKt
+import ink.pmc.advkt.component.black
 import ink.pmc.utils.structure.Builder
 import net.kyori.adventure.text.Component
 import org.bukkit.entity.Player
@@ -11,6 +12,7 @@ import xyz.xenondevs.invui.window.Window
 
 typealias WindowHandler = (player: Player) -> Unit
 typealias WindowClickHandler = (player: Player, event: InventoryClickEvent) -> Unit
+typealias WindowHook = (window: Window) -> Unit
 
 abstract class WindowDsl<T : Window> : Builder<Window> {
 
@@ -22,6 +24,7 @@ abstract class WindowDsl<T : Window> : Builder<Window> {
     protected var openHandlers = mutableSetOf<WindowHandler>()
     protected var closeHandlers = mutableSetOf<WindowHandler>()
     protected var outsideClickHandlers = mutableSetOf<WindowClickHandler>()
+    var whenBuild: WindowHook = {}
 
     fun title(component: RootComponentKt.() -> Unit) {
         title = RootComponentKt().apply(component).build()
@@ -78,6 +81,10 @@ abstract class WindowDsl<T : Window> : Builder<Window> {
 
             block(player, event)
         }
+    }
+
+    fun whenBuild(block: WindowHook) {
+        whenBuild = block
     }
 
     fun openWindow() {

@@ -93,7 +93,7 @@ class BackendTransferService(
                 return@forEach
             }
 
-            if (category == null && it.category != null) {
+            if (category == null && it.hasCategory()) {
                 serverLogger.warning("Failed to load destination $id because category ${it.category} not found!")
                 return@forEach
             }

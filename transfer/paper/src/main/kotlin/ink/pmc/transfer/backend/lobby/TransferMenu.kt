@@ -118,9 +118,10 @@ class TransferMenu(private val service: AbstractTransferService, private val lob
             closeButton(main, this)
             destinationButton(main, this)
             categoryButton(main, this)
+            whenBuild {
+                changeTitle(Component.text(RANDOM_MAIN_MENU_TITLE))
+            }
         }
-
-        changeTitle(Component.text(RANDOM_MAIN_MENU_TITLE))
     }
 
     private suspend fun WindowDsl<*>.categoryGui(id: String) {
@@ -136,13 +137,15 @@ class TransferMenu(private val service: AbstractTransferService, private val lob
             }
             destinationButton(main, this)
             categoryButton(main, this)
-        }
 
-        if (menu.title == null) {
-            return
-        }
+            if (menu.title == null) {
+                return
+            }
 
-        changeTitle(menu.title)
+            whenBuild {
+                changeTitle(menu.title)
+            }
+        }
     }
 
     private fun WindowDsl<*>.clearHandlers() {
