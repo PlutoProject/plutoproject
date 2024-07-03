@@ -16,6 +16,14 @@ val TRANSFER_FAILED_CONDITIONAL = component {
     text("对于部分服务器，可能需要装载特定的客户端才可以连接") with mochaSubtext0
 }
 
+val TRANSFER_FAILED_CURRENT_SERVER = component {
+    text("你目前就在这个服务器噢！") with mochaMaroon
+}
+
+val TRANSFER_FAILED_CURRENT_SERVER_OTHER = component {
+    text("对方目前就在这个服务器噢！") with mochaMaroon
+}
+
 val TRANSFER_FAILED_SERVER_MAINTENACE = component {
     text("传送失败，目标服务器处于维护状态") with mochaMaroon
     text("你可以多加关注管理组的通知，当我们准备好后就会开放") with mochaSubtext0

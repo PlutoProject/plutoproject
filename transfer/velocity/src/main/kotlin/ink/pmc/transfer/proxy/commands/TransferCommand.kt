@@ -57,6 +57,11 @@ class TransferCommand(private val service: AbstractProxyTransferService) : Veloc
                 return@suspendingHandler
             }
 
+            if (destination.id == sender.currentServer.getOrNull()?.serverInfo?.name) {
+                sender.sendMessage(TRANSFER_FAILED_CURRENT_SERVER)
+                return@suspendingHandler
+            }
+
             if (destination.status == DestinationStatus.MAINTENANCE) {
                 sender.sendMessage(TRANSFER_FAILED_SERVER_MAINTENACE)
                 return@suspendingHandler
@@ -101,6 +106,11 @@ class TransferCommand(private val service: AbstractProxyTransferService) : Veloc
                     DESTINATION_NOT_EXISTED
                         .replace("<id>", Component.text(dest))
                 )
+                return@suspendingHandler
+            }
+
+            if (destination.id == player.currentServer.getOrNull()?.serverInfo?.name) {
+                sender.sendMessage(TRANSFER_FAILED_CURRENT_SERVER_OTHER)
                 return@suspendingHandler
             }
 

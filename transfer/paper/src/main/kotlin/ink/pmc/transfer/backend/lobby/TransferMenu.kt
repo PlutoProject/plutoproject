@@ -153,7 +153,7 @@ class TransferMenu(
 
     /*
     private fun WindowDsl<*>.clearHandlers() {
-        window.setOpenHandlers(mutableListOf())
+        window.setOpenHandlers(mutableListOf())`
         window.setCloseHandlers(mutableListOf())
     }
      */

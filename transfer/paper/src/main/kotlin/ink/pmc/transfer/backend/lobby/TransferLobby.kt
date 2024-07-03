@@ -68,7 +68,6 @@ class TransferLobby(private val service: AbstractTransferService, config: Config
     }
 
     private suspend fun handleMenuOpen(player: Player) {
-        println("enter")
         val view = portalManager.getView(player) ?: return
         view.off()
         delay(100)
@@ -76,7 +75,6 @@ class TransferLobby(private val service: AbstractTransferService, config: Config
     }
 
     fun handleMenuClose(player: Player) {
-        println("close / exit")
         val view = portalManager.getView(player) ?: return
         view.on()
     }

@@ -13,15 +13,14 @@ import ink.pmc.transfer.proto.TransferRpcGrpcKt.TransferRpcCoroutineImplBase
 import ink.pmc.transfer.proto.TransferRspOuterClass.TransferResult
 import ink.pmc.transfer.proto.TransferRspOuterClass.TransferRsp
 import ink.pmc.transfer.proxy.AbstractProxyTransferService
-import ink.pmc.utils.player.uuid
 import ink.pmc.utils.chat.json
 import ink.pmc.utils.concurrent.submitAsync
 import ink.pmc.utils.multiplaform.player.velocity.wrapped
 import ink.pmc.utils.platform.proxy
-import kotlinx.coroutines.delay
+import ink.pmc.utils.player.uuid
 import java.io.Closeable
+import java.time.Instant
 import kotlin.jvm.optionals.getOrNull
-import kotlin.time.Duration.Companion.seconds
 
 class TransferRpc(
     private val proxyServer: ProxyServer,
@@ -30,23 +29,21 @@ class TransferRpc(
 
     private var closed = false
     private val empty = Empty.getDefaultInstance()
-    private val healthyDestinations = mutableSetOf<String>()
+    private val destinationReportTime = mutableMapOf<String, Instant>()
     private val healthyRefresh = submitAsync {
         while (!closed) {
-            delay(10.seconds)
             refreshHealthy()
         }
     }
 
     private fun refreshHealthy() {
-        service.destinations.filter { !healthyDestinations.contains(it.id) }.forEach {
-            if (it.status != DestinationStatus.ONLINE) {
+        service.destinations.filter { destinationReportTime.containsKey(it.id) }.forEach {
+            val time = destinationReportTime[it.id]!!.plusSeconds(10)
+            if (time.isAfter(Instant.now()) || it.status != DestinationStatus.ONLINE) {
                 return@forEach
             }
-
             it.status = DestinationStatus.OFFLINE
         }
-        healthyDestinations.clear()
     }
 
     override suspend fun getSummary(request: Empty): Summary {
@@ -112,10 +109,7 @@ class TransferRpc(
         val playerCount = request.playerCount
         val maxPlayerCount = request.maxPlayerCount
 
-        if (healthyDestinations.contains(id)) {
-            return empty
-        }
-
+        destinationReportTime[id] = Instant.now()
         val destination = service.getDestination(id) as AbstractDestination? ?: return empty
 
         if (destination.status != DestinationStatus.OFFLINE) {
@@ -125,7 +119,6 @@ class TransferRpc(
         destination.status = DestinationStatus.ONLINE
         destination.playerCount = playerCount
         destination.maxPlayerCount = maxPlayerCount
-        healthyDestinations.add(id)
 
         return empty
     }

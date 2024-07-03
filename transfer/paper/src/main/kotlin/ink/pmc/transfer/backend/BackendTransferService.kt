@@ -17,7 +17,6 @@ import ink.pmc.utils.multiplaform.item.KeyedMaterial
 import ink.pmc.utils.multiplaform.player.PlayerWrapper
 import kotlinx.coroutines.delay
 import org.bukkit.Server
-import java.util.logging.Level
 import kotlin.time.Duration.Companion.seconds
 
 class BackendTransferService(
@@ -39,7 +38,7 @@ class BackendTransferService(
     }
     private val healthyReport = submitAsyncIO {
         while (!closed) {
-            delay(5.seconds)
+            delay(1.seconds)
             stub.reportHealthy(healthyReport {
                 id = this@BackendTransferService.id
                 playerCount = server.onlinePlayers.size
