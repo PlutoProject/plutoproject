@@ -34,6 +34,11 @@ object VelocityPlayerListener {
         val player = event.player
         val uuid = fallbackId(player.uniqueId)
 
+        if (!memberService.isWhitelisted(uuid)) {
+            player.disconnect(deniedPrompt(uuid))
+            return
+        }
+
         val member = memberService.lookup(uuid)!!
 
         if (member.rawName != player.username) {
