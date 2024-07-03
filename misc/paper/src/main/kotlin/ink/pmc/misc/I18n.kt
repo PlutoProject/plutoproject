@@ -47,28 +47,24 @@ val MULTI_SITTERS_SOUND = sound {
     source(Sound.Source.BLOCK)
     volume(1f)
     pitch(1f)
-
 }
 
 val CHAT_FORMAT = component {
     text("<player>") with mochaYellow
     text(": ") with mochaSubtext0
     text("<message>") with mochaText
-
 }
 
 val JOIN_FORMAT = component {
     text("[+] ") with mochaGreen
     text("<player> ") with mochaYellow
     text("加入了游戏") with mochaText
-
 }
 
 val QUIT_FORMAT = component {
     text("[-] ") with mochaRed
     text("<player> ") with mochaYellow
     text("退出了游戏") with mochaText
-
 }
 
 fun elevatorGoUpTitle(curr: Int, total: Int): Title {

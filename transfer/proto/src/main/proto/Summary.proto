@@ -1,0 +1,11 @@
+syntax = "proto3";
+package ink.pmc.transfer.proto;
+
+import "DestinationBundle.proto";
+import "CategoryBundle.proto";
+
+message Summary {
+  int32 onlinePlayers = 1;
+  DestinationBundle destinations = 2;
+  CategoryBundle categories = 3;
+}

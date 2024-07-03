@@ -5,7 +5,7 @@ import ink.pmc.advkt.component.newline
 import ink.pmc.advkt.component.text
 import ink.pmc.member.api.Member
 import ink.pmc.utils.bedrock.useFallbackColors
-import ink.pmc.utils.item.keyed
+import ink.pmc.utils.multiplaform.item.exts.keyed
 import ink.pmc.utils.visual.mochaFlamingo
 import ink.pmc.utils.visual.mochaMaroon
 import ink.pmc.utils.visual.mochaText

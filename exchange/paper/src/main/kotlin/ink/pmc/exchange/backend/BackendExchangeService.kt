@@ -41,7 +41,7 @@ class BackendExchangeService : AbstractBackendExchangeService() {
                     handleItemDistribute(it)
                 }
             } catch (e: Exception) {
-                serverLogger.log(Level.SEVERE, "Exception caught while monitoring item distribute", e)
+                serverLogger.log(Level.SEVERE, "Exception caught while monitoring provider distribute", e)
             }
         }
     }

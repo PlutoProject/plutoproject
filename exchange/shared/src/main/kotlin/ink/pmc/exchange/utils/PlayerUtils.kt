@@ -34,7 +34,6 @@ suspend fun Player.distributeItems(items: List<ItemStack>) {
 
     this.sync {
         player.inventory.addItem(*shouldAdd.toTypedArray())
-        println("added items: $shouldAdd, ${shouldAdd.size}")
     }
 
     if (shouldDrop.isEmpty()) {

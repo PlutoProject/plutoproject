@@ -36,10 +36,32 @@ val baseImports = listOf(
     "ink.pmc.utils.chat.*",
     "ink.pmc.utils.command.*",
     "ink.pmc.utils.concurrent.*",
-    "ink.pmc.utils.platform.*",
+    "ink.pmc.utils.data.*",
+    "ink.pmc.utils.dsl.*",
+    "ink.pmc.utils.dsl.form.*",
+    "ink.pmc.utils.dsl.invui.*",
+    "ink.pmc.utils.entity.*",
+    "ink.pmc.utils.json.*",
+    "ink.pmc.utils.jvm.*",
+    "ink.pmc.utils.multiplatform.*",
+    "ink.pmc.utils.multiplatform.item.*",
+    "ink.pmc.utils.multiplatform.item.exts.*",
+    "ink.pmc.utils.multiplatform.player.*",
+    "ink.pmc.utils.multiplatform.player.paper.*",
+    "ink.pmc.utils.multiplatform.player.velocity.*",
     "ink.pmc.utils.player.*",
     "ink.pmc.utils.storage.*",
+    "ink.pmc.utils.structure.*",
+    "ink.pmc.utils.visual.*",
     "ink.pmc.utils.world.*",
+
+    // adventure-kt-core
+    "ink.pmc.advkt.*",
+    "ink.pmc.advkt.book.*",
+    "ink.pmc.advkt.bossbar.*",
+    "ink.pmc.advkt.component.*",
+    "ink.pmc.advkt.sound.*",
+    "ink.pmc.advkt.title.*",
 )
 
 /*

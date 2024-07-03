@@ -3,7 +3,7 @@ package ink.pmc.utils.bedrock
 import java.util.*
 
 @Suppress
-val String.uuid: UUID?
+val String.uuidFromXuid: UUID?
     get() {
         try {
             val part1 = this.substring(0, 3 + 1)

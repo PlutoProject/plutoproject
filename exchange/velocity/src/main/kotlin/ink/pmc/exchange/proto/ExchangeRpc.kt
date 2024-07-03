@@ -109,7 +109,7 @@ class ExchangeRpc(private val service: AbstractProxyExchangeService) :
             itemDistributeFlow.emit(request)
             resultMessage { result = ResultOuterClass.Result.SUCCEED }
         } catch (e: Exception) {
-            serverLogger.log(Level.SEVERE, "Failed to forward item distribute", e)
+            serverLogger.log(Level.SEVERE, "Failed to forward provider distribute", e)
             resultMessage { result = ResultOuterClass.Result.FAILED }
         }
     }

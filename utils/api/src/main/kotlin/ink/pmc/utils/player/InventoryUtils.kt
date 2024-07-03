@@ -63,7 +63,7 @@ fun itemStackArrayToBase64(items: Array<ItemStack?>): String {
         dataOutput.close()
         return Base64Coder.encodeLines(outputStream.toByteArray())
     } catch (e: Exception) {
-        throw IllegalStateException("Unable to save item stacks.", e)
+        throw IllegalStateException("Unable to save provider stacks.", e)
     }
 }
 
@@ -102,7 +102,7 @@ fun inventoryToBase64(inventory: Inventory): String {
         dataOutput.close()
         return Base64Coder.encodeLines(outputStream.toByteArray())
     } catch (e: Exception) {
-        throw IllegalStateException("Unable to save item stacks.", e)
+        throw IllegalStateException("Unable to save provider stacks.", e)
     }
 }
 
@@ -198,7 +198,7 @@ fun itemStackFromBase64(data: String?): ItemStack {
  * A method to serialize one [ItemStack] to Base64 String.
  *
  * @param item to turn into a Base64 String.
- * @return Base64 string of the item.
+ * @return Base64 string of the provider.
  * @throws IllegalStateException
  */
 fun itemStackToBase64(item: ItemStack?): String {
@@ -213,6 +213,6 @@ fun itemStackToBase64(item: ItemStack?): String {
         dataOutput.close()
         return String(Base64Coder.encode(outputStream.toByteArray()))
     } catch (e: java.lang.Exception) {
-        throw java.lang.IllegalStateException("Unable to save item stacks.", e)
+        throw java.lang.IllegalStateException("Unable to save provider stacks.", e)
     }
 }

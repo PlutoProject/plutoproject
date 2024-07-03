@@ -45,3 +45,6 @@ suspend fun String.getPlayerUUID(): UUID? {
         }
     }
 }
+
+val String.uuid: UUID
+    get() = UUID.fromString(this)

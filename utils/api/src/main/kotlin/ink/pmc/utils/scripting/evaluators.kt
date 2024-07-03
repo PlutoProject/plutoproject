@@ -4,6 +4,8 @@ import ink.pmc.utils.platform.utilsLogger
 import java.util.logging.Level
 import kotlin.script.experimental.api.*
 import kotlin.script.experimental.api.ScriptDiagnostic.Severity.*
+import kotlin.script.experimental.jvm.updateClasspath
+import kotlin.script.experimental.jvm.util.classpathFromClassloader
 import kotlin.script.experimental.jvmhost.BasicJvmScriptingHost
 
 val scriptHost = BasicJvmScriptingHost()
@@ -80,4 +82,8 @@ inline fun <reified T : Any> evalCustomScript(
             Thread.currentThread().contextClassLoader = saveClassLoader
             printEvalLogs()
         }
+}
+
+fun ScriptCompilationConfiguration.Builder.importClasspath(classLoader: ClassLoader) {
+    updateClasspath(classpathFromClassloader(classLoader))
 }
