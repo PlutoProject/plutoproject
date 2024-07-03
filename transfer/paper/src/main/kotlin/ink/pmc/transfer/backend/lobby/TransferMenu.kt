@@ -2,7 +2,10 @@ package ink.pmc.transfer.backend.lobby
 
 import ink.pmc.advkt.component.empty
 import ink.pmc.transfer.AbstractTransferService
+import ink.pmc.transfer.api.DestinationStatus
 import ink.pmc.transfer.scripting.Menu
+import ink.pmc.utils.concurrent.submitAsyncIO
+import ink.pmc.utils.concurrent.sync
 import ink.pmc.utils.dsl.invui.gui.GuiDsl
 import ink.pmc.utils.dsl.invui.gui.gui
 import ink.pmc.utils.dsl.invui.item.SuspendClickHandler
@@ -12,6 +15,7 @@ import ink.pmc.utils.dsl.invui.window.singleWindow
 import ink.pmc.utils.multiplaform.item.exts.bukkit
 import ink.pmc.utils.multiplaform.player.paper.wrapped
 import ink.pmc.utils.visual.mochaSubtext0
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.Material
@@ -39,7 +43,7 @@ class TransferMenu(private val service: AbstractTransferService, private val lob
             provider(Material.RED_STAINED_GLASS_PANE) {
                 displayName = MENU_CLOSE
             }
-            onClose {
+            onClick {
                 window.close()
             }
         }
@@ -54,30 +58,34 @@ class TransferMenu(private val service: AbstractTransferService, private val lob
             provider(Material.YELLOW_STAINED_GLASS_PANE) {
                 displayName = MENU_BACK
             }
-            onClickSuspending {
+            onClickAsync {
                 clearHandlers()
                 action(it)
             }
         }
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     private suspend fun WindowDsl<*>.destinationButton(menu: Menu, scope: GuiDsl<*>) {
         menu.destination.forEach {
             val destination = service.getDestination(it.key) ?: return@forEach
             scope.simpleItem(it.value) {
                 val verifyResult = service.conditionManager.verifyCondition(viewer!!.wrapped, destination)
                 provider(destination.icon.bukkit) {
-                    displayName = destination.name.removeItalic().color(mochaSubtext0)
-                    lore { destinationStatus(destination) }
+                    displayName = destination.name.removeItalic()
+                    lore(destinationStatus(destination))
                     lore { empty() }
                     destination.description.forEach { c ->
-                        lore(c.removeItalic().color(mochaSubtext0))
+                        lore(c.removeItalic())
                     }
                     lore { empty() }
-                    lore { destinationJoinPrompt(verifyResult.first, verifyResult.second) }
+                    lore(destinationJoinPrompt(destination, verifyResult.first, verifyResult.second))
                 }
-                onClickSuspending {
-                    window.close()
+                onClickAsync {
+                    if (destination.status != DestinationStatus.ONLINE) {
+                        return@onClickAsync
+                    }
+                    viewer!!.sync { window.close() }
                     lobby.transferPlayer(viewer!!, destination)
                 }
             }
@@ -97,7 +105,7 @@ class TransferMenu(private val service: AbstractTransferService, private val lob
                     lore { empty() }
                     lore(CATEGORY_CLICK_TO_OPEN)
                 }
-                onClickSuspending {
+                onClickAsync {
                     menu.openHandler(viewer!!.wrapped)
                     clearHandlers()
                     categoryGui(category.id)

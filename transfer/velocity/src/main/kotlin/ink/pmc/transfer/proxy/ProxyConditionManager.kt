@@ -9,7 +9,6 @@ import net.kyori.adventure.text.Component
 class ProxyConditionManager(private val conditions: Collection<Condition>) : ConditionManager {
 
     override suspend fun verifyCondition(player: PlayerWrapper<*>, destination: Destination): Pair<Boolean, Component?> {
-        println("Conditions: $conditions")
         val id = destination.id
         val condition = conditions.firstOrNull { it.destination == id }
 

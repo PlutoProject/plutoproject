@@ -102,7 +102,17 @@ val DESTINATION_CLICK_TO_JOIN = component {
     text("√ 点击以加入") without italic() with mochaFlamingo
 }
 
-fun destinationJoinPrompt(condition: Boolean, error: Component?): Component {
+val DESTINATION_TEMP_CANT_JOIN = component {
+    text("× 暂时无法加入") without italic() with mochaMaroon
+}
+
+fun destinationJoinPrompt(destination: Destination, condition: Boolean, error: Component?): Component {
+    when(destination.status) {
+        DestinationStatus.OFFLINE -> { return DESTINATION_TEMP_CANT_JOIN }
+        DestinationStatus.MAINTENANCE -> { return DESTINATION_TEMP_CANT_JOIN }
+        else -> {}
+    }
+
     if (!condition) {
         return error ?: DESTINATION_NOT_AVAILABLE
     }
@@ -125,5 +135,19 @@ val LOBBY_TRANSFER_PREPARE_TITLE = title {
     }
     subTitle {
         text("请稍作等候") with mochaText
+    }
+}
+
+val LOBBY_TRANSFER_FAILED_TITLE = title {
+    times {
+        fadeIn(0.3.seconds)
+        stay(3.seconds)
+        fadeOut(0.3.seconds)
+    }
+    mainTitle {
+        text("传送失败") with mochaMaroon
+    }
+    subTitle {
+        text("请再试一次吧") with mochaSubtext0
     }
 }

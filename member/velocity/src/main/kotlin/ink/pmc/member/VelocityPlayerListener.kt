@@ -10,7 +10,7 @@ import ink.pmc.member.adapter.BedrockAdapter
 import ink.pmc.member.api.AuthType
 import ink.pmc.member.bedrock.removeFloodgatePlayer
 import ink.pmc.utils.bedrock.isFloodgatePlayer
-import ink.pmc.utils.bedrock.uuid
+import ink.pmc.utils.bedrock.uuidFromXuid
 import ink.pmc.utils.bedrock.xuid
 import ink.pmc.utils.chat.replace
 import ink.pmc.utils.concurrent.io
@@ -65,7 +65,7 @@ object VelocityPlayerListener {
         memberService.save(uuid)
 
         if (member.bedrockAccount != null) {
-            removeFloodgatePlayer(member.bedrockAccount!!.xuid.uuid!!)
+            removeFloodgatePlayer(member.bedrockAccount!!.xuid.uuidFromXuid!!)
         }
 
         // 清理缓存的 Member

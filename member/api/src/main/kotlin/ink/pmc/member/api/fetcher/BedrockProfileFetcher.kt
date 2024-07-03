@@ -1,7 +1,7 @@
 package ink.pmc.member.api.fetcher
 
 import com.google.gson.JsonParser
-import ink.pmc.utils.bedrock.uuid
+import ink.pmc.utils.bedrock.uuidFromXuid
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
@@ -50,7 +50,7 @@ object BedrockProfileFetcher : AbstractProfileFetcher() {
     private suspend fun fetchViaWeb(name: String): ProfileData? {
         return try {
             val fetched = getInformationByGamertag(name) ?: return null
-            val fetchedXuid = fetched["xuid-hex"]?.uuid ?: return null
+            val fetchedXuid = fetched["xuid-hex"]?.uuidFromXuid ?: return null
             val fetchedName = fetched["gamertag"] ?: return null
             ProfileData(fetchedXuid, fetchedName)
         } catch (e: Exception) {
@@ -75,7 +75,7 @@ object BedrockProfileFetcher : AbstractProfileFetcher() {
     @OptIn(ExperimentalStdlibApi::class)
     private fun hexedXuid(xuid: Long): UUID {
         val hexXuid = xuid.toHexString(HexFormat.Default)
-        return hexXuid.uuid!!
+        return hexXuid.uuidFromXuid!!
     }
 
     private suspend fun lookupName(xuid: Long): String? = withContext(Dispatchers.IO) {

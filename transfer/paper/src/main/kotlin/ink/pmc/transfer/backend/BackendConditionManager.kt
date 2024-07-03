@@ -19,7 +19,7 @@ class BackendConditionManager(private val stub: TransferRpcCoroutineStub) : Cond
             uuid = player.uuid.toString()
             this.destination = destination.id
         })
-        return (result.result == ConditionVerifyResult.VERIFY_SUCCEED) to (result.errorMessage.component)
+        return (result.result == ConditionVerifyResult.VERIFY_SUCCEED) to if (result.hasErrorMessage()) result.errorMessage.component else null
     }
 
 }

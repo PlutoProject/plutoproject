@@ -1,11 +1,9 @@
 package ink.pmc.utils.dsl.invui.item
 
+import ink.pmc.utils.concurrent.submitAsync
 import ink.pmc.utils.dsl.ItemStackDsl
 import ink.pmc.utils.structure.Builder
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
 import xyz.xenondevs.invui.item.Click
@@ -35,9 +33,10 @@ abstract class ItemDsl<T : Item> : Builder<T> {
         clickHandler = handler
     }
 
-    suspend fun onClickSuspending(handler: SuspendClickHandler) {
-        val context = coroutineContext
-        clickHandler = { CoroutineScope(context).launch(context, CoroutineStart.UNDISPATCHED) { handler(it) } }
+    fun onClickAsync(handler: SuspendClickHandler) {
+        clickHandler = {
+            submitAsync { handler(it) }
+        }
     }
 
     fun notifyWindows() {

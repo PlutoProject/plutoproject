@@ -24,7 +24,7 @@ object DuplicatedUuidDetector : Listener {
         event.isCancelled = true
         entity.remove()
 
-        serverLogger.warning("Removed duplicated uuid entity")
+        serverLogger.warning("Removed duplicated uuidFromXuid entity")
     }
 
 }

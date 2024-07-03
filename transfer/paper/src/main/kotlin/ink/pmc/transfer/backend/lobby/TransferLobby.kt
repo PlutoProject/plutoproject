@@ -13,7 +13,10 @@ import ink.pmc.transfer.backend.lobby.portal.PortalManager
 import ink.pmc.transfer.scripting.LobbyConfigureScopeImpl
 import ink.pmc.transfer.scripting.evalLobbyConfigureScript
 import ink.pmc.transfer.serverLogger
+import ink.pmc.utils.concurrent.io
+import ink.pmc.utils.concurrent.submitAsync
 import ink.pmc.utils.concurrent.submitAsyncIO
+import ink.pmc.utils.concurrent.sync
 import ink.pmc.utils.multiplaform.player.paper.wrapped
 import ink.pmc.utils.platform.threadSafeTeleport
 import kotlinx.coroutines.delay
@@ -28,6 +31,7 @@ import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 import kotlin.script.experimental.api.SourceCode
 import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.seconds
 
 @Suppress("UNUSED")
 class TransferLobby(service: AbstractTransferService, config: Config, private val source: SourceCode) {
@@ -110,7 +114,7 @@ class TransferLobby(service: AbstractTransferService, config: Config, private va
             }
 
             player.showTitle(title)
-            delay(100)
+            delay(200)
             portalView.on()
         }
 
@@ -144,20 +148,38 @@ class TransferLobby(service: AbstractTransferService, config: Config, private va
     }
 
     suspend fun transferPlayer(player: Player, destination: Destination) {
-        player.gameMode = GameMode.SPECTATOR
-        player.threadSafeTeleport(spawnPoint)
-        player.showTitle(LOBBY_TRANSFER_PREPARE_TITLE)
-        player.addPotionEffect(
-            PotionEffect(
-                PotionEffectType.SLOWNESS,
-                1000,
-                3,
-                false,
-                false
+        player.sync {
+            player.gameMode = GameMode.SPECTATOR
+            player.threadSafeTeleport(spawnPoint)
+            player.showTitle(LOBBY_TRANSFER_PREPARE_TITLE)
+            player.addPotionEffect(
+                PotionEffect(
+                    PotionEffectType.SLOWNESS,
+                    1000,
+                    3,
+                    false,
+                    false
+                )
             )
-        )
-        delay(100.milliseconds)
-        destination.transfer(player.wrapped)
+
+            delay(500L)
+
+            val job = submitAsync {
+                delay(5.seconds)
+                if (!player.isOnline) {
+                    return@submitAsync
+                }
+                player.sync {
+                    player.threadSafeTeleport(spawnPoint)
+                    player.gameMode = GameMode.ADVENTURE
+                    player.clearActivePotionEffects()
+                    player.showTitle(LOBBY_TRANSFER_FAILED_TITLE)
+                }
+            }
+
+            io { destination.transfer(player.wrapped) }
+            job.cancel()
+        }
     }
 
     fun destroy() {

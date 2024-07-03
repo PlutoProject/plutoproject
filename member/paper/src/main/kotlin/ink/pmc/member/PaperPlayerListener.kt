@@ -1,7 +1,7 @@
 package ink.pmc.member
 
 import ink.pmc.member.bedrock.removeFloodgatePlayer
-import ink.pmc.utils.bedrock.uuid
+import ink.pmc.utils.bedrock.uuidFromXuid
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
@@ -37,7 +37,7 @@ object PaperPlayerListener : Listener {
         val member = memberService.lookup(player.uniqueId)!!
 
         if (member.bedrockAccount != null) {
-            removeFloodgatePlayer(member.bedrockAccount!!.xuid.uuid!!)
+            removeFloodgatePlayer(member.bedrockAccount!!.xuid.uuidFromXuid!!)
         }
 
         // 清理缓存的 Member

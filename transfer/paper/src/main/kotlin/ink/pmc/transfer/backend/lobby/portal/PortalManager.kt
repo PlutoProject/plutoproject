@@ -14,8 +14,6 @@ class PortalManager(private val config: Config, lobby: TransferLobby) {
     val bounding = createBounding()
 
     private fun createBounding(): PortalBounding {
-        println(world)
-
         val a = Location(
             world,
             config.get("detect-a.x"),
@@ -69,7 +67,6 @@ class PortalManager(private val config: Config, lobby: TransferLobby) {
 
     fun createView(player: Player): PortalView {
         if (hasView(player)) {
-            println("Has view")
             return getView(player)!!
         }
 
