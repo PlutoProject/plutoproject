@@ -387,7 +387,7 @@ allprojects {
 
     configurations.all {
         resolutionStrategy {
-            force("com.google.inject:guice:4.2.2")
+            force("com.google.inject:guice:7.0.0")
         }
     }
 
