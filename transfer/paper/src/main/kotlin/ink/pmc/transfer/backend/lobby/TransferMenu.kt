@@ -4,7 +4,6 @@ import ink.pmc.advkt.component.empty
 import ink.pmc.transfer.AbstractTransferService
 import ink.pmc.transfer.api.DestinationStatus
 import ink.pmc.transfer.scripting.Menu
-import ink.pmc.utils.concurrent.submitAsyncIO
 import ink.pmc.utils.concurrent.sync
 import ink.pmc.utils.dsl.invui.gui.GuiDsl
 import ink.pmc.utils.dsl.invui.gui.gui
@@ -15,14 +14,18 @@ import ink.pmc.utils.dsl.invui.window.singleWindow
 import ink.pmc.utils.multiplaform.item.exts.bukkit
 import ink.pmc.utils.multiplaform.player.paper.wrapped
 import ink.pmc.utils.visual.mochaSubtext0
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import xyz.xenondevs.invui.window.Window
 
-class TransferMenu(private val service: AbstractTransferService, private val lobby: TransferLobby, private val main: Menu, private val categories: Map<String, Menu>) {
+class TransferMenu(
+    private val service: AbstractTransferService,
+    private val lobby: TransferLobby,
+    private val main: Menu,
+    private val categories: Map<String, Menu>
+) {
 
     private fun GuiDsl<*>.background(menu: Menu) {
         if (menu.background == null) {
@@ -59,18 +62,16 @@ class TransferMenu(private val service: AbstractTransferService, private val lob
                 displayName = MENU_BACK
             }
             onClickAsync {
-                clearHandlers()
                 action(it)
             }
         }
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     private suspend fun WindowDsl<*>.destinationButton(menu: Menu, scope: GuiDsl<*>) {
         menu.destination.forEach {
             val destination = service.getDestination(it.key) ?: return@forEach
             scope.simpleItem(it.value) {
-                val verifyResult = service.conditionManager.verifyCondition(viewer!!.wrapped, destination)
+                val verifyResult = lobby.verifyCondition(viewer!!, destination)
                 provider(destination.icon.bukkit) {
                     displayName = destination.name.removeItalic()
                     lore(destinationStatus(destination))
@@ -106,9 +107,8 @@ class TransferMenu(private val service: AbstractTransferService, private val lob
                     lore(CATEGORY_CLICK_TO_OPEN)
                 }
                 onClickAsync {
-                    menu.openHandler(viewer!!.wrapped)
-                    clearHandlers()
-                    categoryGui(category.id)
+                    // clearHandlers()
+                    // viewer!!.sync { categoryGui(category.id) }
                     window.addCloseHandler { menu.closeHandler(viewer!!.wrapped) }
                 }
             }
@@ -132,9 +132,11 @@ class TransferMenu(private val service: AbstractTransferService, private val lob
         }
     }
 
+    // 之后使用新菜单框架重构
+    /*
     private suspend fun WindowDsl<*>.categoryGui(id: String) {
         val menu = categories[id] ?: return
-
+        menu.openHandler(viewer!!.wrapped)
         gui {
             structure(*main.structure.toTypedArray())
             background(main)
@@ -145,26 +147,26 @@ class TransferMenu(private val service: AbstractTransferService, private val lob
             }
             destinationButton(main, this)
             categoryButton(main, this)
-
-            if (menu.title == null) {
-                return
-            }
-
-            whenBuild {
-                changeTitle(menu.title)
-            }
         }
     }
+     */
 
+    /*
     private fun WindowDsl<*>.clearHandlers() {
-        window.setOpenHandlers(listOf())
-        window.setCloseHandlers(listOf())
+        window.setOpenHandlers(mutableListOf())
+        window.setCloseHandlers(mutableListOf())
     }
+     */
 
     suspend fun openWindow(player: Player): Window {
         return singleWindow {
             title { empty() }
             viewer = player
+
+            onClose {
+                lobby.handleMenuClose(viewer!!)
+            }
+
             mainGui()
         }.apply {
             open()

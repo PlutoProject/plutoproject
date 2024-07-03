@@ -10,6 +10,7 @@ import ink.pmc.transfer.proto.TransferRpcGrpcKt.TransferRpcCoroutineStub
 import ink.pmc.utils.platform.paper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
 import java.io.File
 import kotlin.script.experimental.api.SourceCode
@@ -53,6 +54,8 @@ class PaperPlugin : SuspendingJavaPlugin() {
         withContext(Dispatchers.IO) {
             transferService.close()
         }
+
+        Bukkit.getScheduler().cancelTasks(this)
     }
 
     private fun initLobby() {
@@ -63,6 +66,9 @@ class PaperPlugin : SuspendingJavaPlugin() {
         transferLobby = TransferLobby(paperTransferService, fileConfig.get("lobby-settings"), loadScript())
         server.pluginManager.registerSuspendingEvents(transferLobby.listener, this)
         server.pluginManager.registerSuspendingEvents(transferLobby.portalManager.bounding.listener, this)
+        Bukkit.getScheduler().runTaskTimer(this, Runnable {
+            transferLobby.tick()
+        }, 0L, 0L)
     }
 
     private fun loadScript(): SourceCode {

@@ -2,7 +2,6 @@ package ink.pmc.utils.dsl.invui.gui
 
 import ink.pmc.utils.dsl.invui.window.WindowDsl
 import xyz.xenondevs.invui.gui.Gui
-import xyz.xenondevs.invui.window.Window
 import java.util.function.Consumer
 
 class NormalGuiDsl : GuiDsl<Gui>() {

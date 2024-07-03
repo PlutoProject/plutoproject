@@ -95,4 +95,10 @@ class PortalManager(private val config: Config, lobby: TransferLobby) {
         views.clear()
     }
 
+    fun tick() {
+        views.values.forEach {
+            it.update()
+        }
+    }
+
 }

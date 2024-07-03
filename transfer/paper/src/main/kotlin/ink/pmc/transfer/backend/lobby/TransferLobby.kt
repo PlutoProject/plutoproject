@@ -20,6 +20,7 @@ import ink.pmc.utils.concurrent.sync
 import ink.pmc.utils.multiplaform.player.paper.wrapped
 import ink.pmc.utils.platform.threadSafeTeleport
 import kotlinx.coroutines.delay
+import net.kyori.adventure.text.Component
 import org.bukkit.*
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -30,14 +31,14 @@ import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 import kotlin.script.experimental.api.SourceCode
-import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
 @Suppress("UNUSED")
-class TransferLobby(service: AbstractTransferService, config: Config, private val source: SourceCode) {
+class TransferLobby(private val service: AbstractTransferService, config: Config, private val source: SourceCode) {
 
     private val worldName = config.get<String>("world")
     private val menu: TransferMenu
+    private val conditionCache = mutableMapOf<Player, MutableList<ConditionCache>>()
     val world = loadWorld(worldName).apply { initWorldEnvironment(this) }
     private val spawnPoint = Location(
         world,
@@ -59,10 +60,25 @@ class TransferLobby(service: AbstractTransferService, config: Config, private va
             scope.categoryMenus
         )
         portalManager.bounding.addHandler(HandlerType.ENTER) {
-            it.threadSafeTeleport(spawnPoint)
-            delay(5)
-            menu.openWindow(it)
+            handleMenuOpen(it)
         }
+        portalManager.bounding.addHandler(HandlerType.EXIT) {
+            handleMenuClose(it)
+        }
+    }
+
+    private suspend fun handleMenuOpen(player: Player) {
+        println("enter")
+        val view = portalManager.getView(player) ?: return
+        view.off()
+        delay(100)
+        menu.openWindow(player)
+    }
+
+    fun handleMenuClose(player: Player) {
+        println("close / exit")
+        val view = portalManager.getView(player) ?: return
+        view.on()
     }
 
     private fun evalScript(): LobbyConfigureScopeImpl {
@@ -87,6 +103,29 @@ class TransferLobby(service: AbstractTransferService, config: Config, private va
         return Bukkit.createWorld(WorldCreator.name(name))
             ?: throw IllegalStateException("Failed to load transfer world!")
     }
+
+    suspend fun verifyCondition(player: Player, destination: Destination): Pair<Boolean, Component?> {
+        val cachedValue = conditionCache[player]?.firstOrNull { it.destination == destination.id }?.value
+        return cachedValue ?: service.conditionManager.verifyCondition(player.wrapped, destination)
+    }
+
+    suspend fun initConditionCache(player: Player) {
+        val list = conditionCache.computeIfAbsent(player) { mutableListOf() }
+        service.destinations.forEach {
+            list.add(
+                ConditionCache(
+                    it.id,
+                    service.conditionManager.verifyCondition(player.wrapped, it)
+                )
+            )
+        }
+    }
+
+    fun tick() {
+        portalManager.tick()
+    }
+
+    data class ConditionCache(val destination: String, val value: Pair<Boolean, Component?>)
 
     class LobbyListener(private val lobby: TransferLobby) : Listener {
 
@@ -116,6 +155,7 @@ class TransferLobby(service: AbstractTransferService, config: Config, private va
             player.showTitle(title)
             delay(200)
             portalView.on()
+            lobby.initConditionCache(player)
         }
 
         private fun isFirstJoin(member: Member): Boolean {

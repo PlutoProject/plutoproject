@@ -22,7 +22,7 @@ val Destination.proto: ProtoDestination
             maxPlayerCount = this@proto.maxPlayerCount
             isHidden = this@proto.isHidden
             this@proto.category?.let {
-                category = id
+                category = it.id
             }
         }
     }
@@ -31,6 +31,7 @@ val Category.proto: ProtoCategory
     get() {
         return protoCategory {
             id = this@proto.id
+            icon = this@proto.icon.namespacedKey
             name = this@proto.name.json
             description.addAll(this@proto.description.map { it.json })
             playerCount = this@proto.playerCount
