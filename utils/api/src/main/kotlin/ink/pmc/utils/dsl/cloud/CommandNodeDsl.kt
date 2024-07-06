@@ -1,6 +1,9 @@
 package ink.pmc.utils.dsl.cloud
 
 import org.incendo.cloud.component.CommandComponent
+import org.incendo.cloud.parser.ParserDescriptor
+
+typealias ComponentBuilderReceiver<C, T> = CommandComponent.Builder<C, T>.() -> Unit
 
 open class CommandNodeDsl<C> {
 
@@ -13,6 +16,14 @@ open class CommandNodeDsl<C> {
 
     fun permission(node: String) {
         permission = node
+    }
+
+    fun <T> required(name: String, parser: ParserDescriptor<C, T>, mutator: ComponentBuilderReceiver<C, T> = {}) {
+        arguments.add(CommandComponent.builder(name, parser).also(mutator).build())
+    }
+
+    fun <T> optional(name: String, parser: ParserDescriptor<C, T>, mutator: ComponentBuilderReceiver<C, T> = {}) {
+        arguments.add(CommandComponent.builder(name, parser).optional().also(mutator).build())
     }
 
     fun argument(component: CommandComponent<C>) {
