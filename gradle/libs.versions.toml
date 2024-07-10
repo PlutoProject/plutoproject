@@ -15,6 +15,7 @@ resource-factory = "1.1.2"
 cloud = "2.0.0-rc.2"
 cloud-minecraft = "2.0.0-SNAPSHOT"
 koin = "3.6.0-Beta5"
+compose = "1.7.0-alpha01"
 
 [libraries]
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
@@ -98,3 +99,5 @@ protobuf = { id = "com.google.protobuf", version = "0.9.4" }
 paperweight-userdev = { id = "io.papermc.paperweight.userdev", version = "1.7.2" }
 resource-factory-bukkit = { id = "xyz.jpenilla.resource-factory-bukkit-convention", version.ref = "resource-factory" }
 resource-factory-velocity = { id = "xyz.jpenilla.resource-factory-velocity-convention", version.ref = "resource-factory" }
+jetbrains-compose = { id = "org.jetbrains.compose", version.ref = "compose" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
