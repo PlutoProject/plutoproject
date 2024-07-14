@@ -72,8 +72,5 @@ include("transfer:shared")
 include("transfer:proto")
 
 include("messages")
-include("messages:api")
 include("messages:paper")
 include("messages:velocity")
-include("messages:shared")
-include("messages:proto")
