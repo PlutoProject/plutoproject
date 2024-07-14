@@ -70,3 +70,7 @@ include("transfer:paper")
 include("transfer:velocity")
 include("transfer:shared")
 include("transfer:proto")
+
+include("messages")
+include("messages:paper")
+include("messages:velocity")
