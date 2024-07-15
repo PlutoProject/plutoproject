@@ -8,6 +8,7 @@ import com.google.inject.Inject
 import com.velocitypowered.api.event.Subscribe
 import com.velocitypowered.api.event.connection.DisconnectEvent
 import com.velocitypowered.api.event.player.ServerConnectedEvent
+import com.velocitypowered.api.event.player.ServerPostConnectEvent
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent
 import com.velocitypowered.api.event.proxy.ProxyShutdownEvent
 import com.velocitypowered.api.plugin.PluginContainer
@@ -60,7 +61,6 @@ class VelocityPlugin @Inject constructor(suspendingPluginContainer: SuspendingPl
         }
 
         config = configFile.loadConfig()
-        proxy.eventManager.registerSuspend(this, this)
         groups.addAll(loadGroups())
     }
 
@@ -88,10 +88,9 @@ class VelocityPlugin @Inject constructor(suspendingPluginContainer: SuspendingPl
     }
 
     @Subscribe
-    suspend fun ServerConnectedEvent.e() {
-        delay(100.milliseconds)
+    fun ServerPostConnectEvent.e() {
         val group = player.group
-        val previousGroup = previousServer.getOrNull()?.group
+        val previousGroup = previousServer?.group
 
         if (previousGroup != group) {
             group?.broadcastJoinMessage(player)
