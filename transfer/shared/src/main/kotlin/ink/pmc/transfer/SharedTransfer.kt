@@ -11,7 +11,7 @@ lateinit var dataDir: File
 lateinit var fileConfig: FileConfig
 
 fun File.loadConfig() {
-    fileConfig =  FileConfig.builder(this)
+    fileConfig = FileConfig.builder(this)
         .async()
         .autoreload()
         .build()

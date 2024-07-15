@@ -3,6 +3,7 @@ package ink.pmc.messages
 import com.electronwill.nightconfig.core.Config
 import com.electronwill.nightconfig.core.file.FileConfig
 import com.github.shynixn.mccoroutine.velocity.SuspendingPluginContainer
+import com.github.shynixn.mccoroutine.velocity.registerSuspend
 import com.google.inject.Inject
 import com.velocitypowered.api.event.Subscribe
 import com.velocitypowered.api.event.connection.DisconnectEvent
@@ -17,13 +18,16 @@ import com.velocitypowered.api.proxy.server.RegisteredServer
 import ink.pmc.advkt.component.component
 import ink.pmc.advkt.component.miniMessage
 import ink.pmc.advkt.component.replace
+import ink.pmc.utils.platform.namedServer
 import ink.pmc.utils.platform.proxy
 import ink.pmc.utils.platform.saveConfig
+import kotlinx.coroutines.delay
 import net.kyori.adventure.text.Component
 import java.io.File
 import java.nio.file.Path
 import java.util.logging.Logger
 import kotlin.jvm.optionals.getOrNull
+import kotlin.time.Duration.Companion.milliseconds
 
 var disabled = false
 lateinit var pluginContainer: PluginContainer
@@ -56,12 +60,13 @@ class VelocityPlugin @Inject constructor(suspendingPluginContainer: SuspendingPl
         }
 
         config = configFile.loadConfig()
+        proxy.eventManager.registerSuspend(this, this)
         groups.addAll(loadGroups())
     }
 
     @Subscribe
     fun proxyInitializeEvent(event: ProxyInitializeEvent) {
-        pluginContainer = proxy.pluginManager.getPlugin("transfer").get()
+        pluginContainer = proxy.pluginManager.getPlugin("messages").get()
         disabled = false
     }
 
@@ -83,7 +88,8 @@ class VelocityPlugin @Inject constructor(suspendingPluginContainer: SuspendingPl
     }
 
     @Subscribe
-    fun ServerConnectedEvent.e() {
+    suspend fun ServerConnectedEvent.e() {
+        delay(100.milliseconds)
         val group = player.group
         val previousGroup = previousServer.getOrNull()?.group
 
@@ -103,35 +109,34 @@ class VelocityPlugin @Inject constructor(suspendingPluginContainer: SuspendingPl
         get() {
             return mutableListOf<Player>().apply {
                 servers.forEach {
-                    addAll(it.playersConnected)
+                    it.namedServer?.let { s -> addAll(s.playersConnected) }
                 }
             }
         }
 
     private val Player.group: Group?
         get() {
-            return groups.firstOrNull {
-                it.players.contains(this)
-            }
+            return currentServer.getOrNull()?.server?.group
         }
 
     private val RegisteredServer.group: Group?
         get() {
             return groups.firstOrNull {
-                it.servers.contains(this)
+                it.servers.contains(this.serverInfo.name)
             }
         }
 
     private fun File.loadConfig(): FileConfig {
         return FileConfig.builder(this)
-            .async()
             .autoreload()
             .onAutoReload {
                 groups.clear()
                 groups.addAll(loadGroups())
                 serverLogger.info("Reloaded group settings")
             }
+            .async()
             .build()
+            .apply { load() }
     }
 
     private fun loadGroups(): List<Group> {
@@ -139,9 +144,7 @@ class VelocityPlugin @Inject constructor(suspendingPluginContainer: SuspendingPl
             val groupList = config.get<List<Config>>("groups")
             groupList.forEach {
                 val name = it.get<String>("name")
-                val servers = it.get<List<String>>("servers")
-                    .filter { s -> proxy.getServer(s).getOrNull() != null }
-                    .map { s -> proxy.getServer(s).get() }
+                val servers = it.get<List<String>>("servers").filter { s -> proxy.getServer(s).getOrNull() != null }
                 val joinMessage = it.get<String>("join.message")?.let { m -> component { miniMessage(m) } }
                 val quitMessage = it.get<String>("quit.message")?.let { m -> component { miniMessage(m) } }
                 add(Group(name, servers, joinMessage, quitMessage))

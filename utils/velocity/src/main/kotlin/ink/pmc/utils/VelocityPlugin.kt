@@ -29,6 +29,7 @@ class VelocityPlugin @Inject constructor(suspendingPluginContainer: SuspendingPl
     @Inject
     fun velocityUtils(server: ProxyServer, logger: Logger) {
         proxyServer = server
+        proxy = proxyServer
         utilsLogger = logger
         byteBuddy // 初始化
     }
@@ -36,7 +37,6 @@ class VelocityPlugin @Inject constructor(suspendingPluginContainer: SuspendingPl
     @Subscribe
     fun proxyInitializeEvent(event: ProxyInitializeEvent) {
         proxyThread = Thread.currentThread()
-        proxy = proxyServer
         velocityUtilsPlugin = proxyServer.pluginManager.getPlugin("utils").get()
 
         if (floodgateSupport()) {
