@@ -3,11 +3,9 @@ package ink.pmc.messages
 import com.electronwill.nightconfig.core.Config
 import com.electronwill.nightconfig.core.file.FileConfig
 import com.github.shynixn.mccoroutine.velocity.SuspendingPluginContainer
-import com.github.shynixn.mccoroutine.velocity.registerSuspend
 import com.google.inject.Inject
 import com.velocitypowered.api.event.Subscribe
 import com.velocitypowered.api.event.connection.DisconnectEvent
-import com.velocitypowered.api.event.player.ServerConnectedEvent
 import com.velocitypowered.api.event.player.ServerPostConnectEvent
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent
 import com.velocitypowered.api.event.proxy.ProxyShutdownEvent
@@ -22,13 +20,11 @@ import ink.pmc.advkt.component.replace
 import ink.pmc.utils.platform.namedServer
 import ink.pmc.utils.platform.proxy
 import ink.pmc.utils.platform.saveConfig
-import kotlinx.coroutines.delay
 import net.kyori.adventure.text.Component
 import java.io.File
 import java.nio.file.Path
 import java.util.logging.Logger
 import kotlin.jvm.optionals.getOrNull
-import kotlin.time.Duration.Companion.milliseconds
 
 var disabled = false
 lateinit var pluginContainer: PluginContainer
@@ -77,13 +73,19 @@ class VelocityPlugin @Inject constructor(suspendingPluginContainer: SuspendingPl
 
     private fun Group.broadcastJoinMessage(player: Player) {
         players.forEach {
-            joinMessage?.let { m -> it.sendMessage(m.replace("<player>", Component.text(player.username))) }
+            joinMessage?.let { m ->
+                it.sendMessage(m.replace("<player>", Component.text(player.username)))
+                proxy.consoleCommandSource.sendMessage(m)
+            }
         }
     }
 
     private fun Group.broadcastQuitMessage(player: Player) {
         players.forEach {
-            quitMessage?.let { m -> it.sendMessage(m.replace("<player>", Component.text(player.username))) }
+            quitMessage?.let { m ->
+                it.sendMessage(m.replace("<player>", Component.text(player.username)))
+                proxy.consoleCommandSource.sendMessage(m)
+            }
         }
     }
 
