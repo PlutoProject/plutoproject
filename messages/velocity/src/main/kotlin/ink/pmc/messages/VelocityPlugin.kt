@@ -74,8 +74,9 @@ class VelocityPlugin @Inject constructor(suspendingPluginContainer: SuspendingPl
     private fun Group.broadcastJoinMessage(player: Player) {
         players.forEach {
             joinMessage?.let { m ->
-                it.sendMessage(m.replace("<player>", Component.text(player.username)))
-                proxy.consoleCommandSource.sendMessage(m)
+                val component = m.replace("<player>", Component.text(player.username))
+                it.sendMessage(component)
+                proxy.consoleCommandSource.sendMessage(component)
             }
         }
     }
@@ -83,8 +84,9 @@ class VelocityPlugin @Inject constructor(suspendingPluginContainer: SuspendingPl
     private fun Group.broadcastQuitMessage(player: Player) {
         players.forEach {
             quitMessage?.let { m ->
-                it.sendMessage(m.replace("<player>", Component.text(player.username)))
-                proxy.consoleCommandSource.sendMessage(m)
+                val component = m.replace("<player>", Component.text(player.username))
+                it.sendMessage(component)
+                proxy.consoleCommandSource.sendMessage(component)
             }
         }
     }
