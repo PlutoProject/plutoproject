@@ -4,10 +4,8 @@ import com.electronwill.nightconfig.core.file.FileConfig
 import com.github.shynixn.mccoroutine.velocity.SuspendingPluginContainer
 import com.google.inject.Inject
 import com.velocitypowered.api.event.PostOrder
-import com.velocitypowered.api.event.ResultedEvent
 import com.velocitypowered.api.event.Subscribe
 import com.velocitypowered.api.event.connection.PreLoginEvent
-import com.velocitypowered.api.event.player.ServerPreConnectEvent
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent
 import com.velocitypowered.api.event.proxy.ProxyPingEvent
 import com.velocitypowered.api.event.proxy.ProxyShutdownEvent
@@ -16,6 +14,7 @@ import com.velocitypowered.api.plugin.PluginContainer
 import com.velocitypowered.api.plugin.annotation.DataDirectory
 import com.velocitypowered.api.proxy.ProxyServer
 import com.velocitypowered.api.proxy.server.ServerPing
+import com.velocitypowered.api.proxy.server.ServerPing.SamplePlayer
 import ink.pmc.utils.platform.proxy
 import ink.pmc.utils.platform.saveConfig
 import java.io.File
@@ -29,6 +28,8 @@ lateinit var dataDir: File
 lateinit var config: FileConfig
 
 lateinit var protocolRange: IntRange
+var serverBrand: String? = null
+var forwardPlayerList = false
 
 val Int.gameVersion: List<String>
     get() {
@@ -58,6 +59,7 @@ class VelocityPlugin @Inject constructor(suspendingPluginContainer: SuspendingPl
         }
 
         config = configFile.loadConfig()
+        loadConfigValues()
     }
 
     @Subscribe
@@ -79,12 +81,23 @@ class VelocityPlugin @Inject constructor(suspendingPluginContainer: SuspendingPl
             return
         }
 
+        val version = if (serverBrand == null) {
+            ServerPing.Version(protocolRange.first, VERSION_RANGE)
+        } else {
+            ServerPing.Version(protocolRange.first, "$serverBrand $VERSION_RANGE")
+        }
+
         val newPing = ping.asBuilder()
-            .version(ServerPing.Version(protocolRange.first, protocolRange.first.gameVersion.first()))
+            .version(version)
+            .apply {
+                if (forwardPlayerList) {
+                    samplePlayers(*proxy.allPlayers.map { SamplePlayer(it.username, it.uniqueId) }.toTypedArray())
+                }
+            }
             .build()
 
         ping = newPing
-        result = ResultedEvent.GenericResult.denied()
+        // result = ResultedEvent.GenericResult.denied()
     }
 
     @Subscribe(order = PostOrder.FIRST)
@@ -98,12 +111,18 @@ class VelocityPlugin @Inject constructor(suspendingPluginContainer: SuspendingPl
         result = PreLoginEvent.PreLoginComponentResult.denied(VERSION_NOT_SUPPORTED)
     }
 
+    private fun loadConfigValues() {
+        val list = config.get<List<Int>>("protocol-range")
+        protocolRange = list[0]..list[1]
+        serverBrand = config.get("server-brand")
+        forwardPlayerList = config.get("forward-player-list") ?: false
+    }
+
     private fun File.loadConfig(): FileConfig {
         return FileConfig.builder(this)
             .autoreload()
             .onAutoReload {
-                val list = config.get<List<Int>>("protocol-range")
-                protocolRange = list[0]..list[1]
+                loadConfigValues()
                 serverLogger.info("Reloaded protocol settings")
             }
             .async()
