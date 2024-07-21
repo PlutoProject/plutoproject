@@ -74,3 +74,6 @@ include("transfer:proto")
 include("messages")
 include("messages:paper")
 include("messages:velocity")
+
+include("protocol-checker")
+include("protocol-checker:velocity")
