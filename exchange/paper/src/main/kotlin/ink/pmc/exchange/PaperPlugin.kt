@@ -20,7 +20,6 @@ import io.papermc.paper.command.brigadier.CommandSourceStack
 import org.bukkit.Bukkit
 import org.bukkit.World
 import org.bukkit.WorldCreator
-import org.bukkit.command.CommandSender
 import org.incendo.cloud.execution.ExecutionCoordinator
 import org.incendo.cloud.paper.PaperCommandManager
 import java.io.File
