@@ -77,7 +77,7 @@ object CreeperAntiExplodeListener : Listener {
         }
 
         meta.power = 1
-        meta.addEffects(FireworkEffect.builder().withColor(colors).build())
+        meta.addEffects(FireworkEffect.builder().with(FireworkEffect.Type.BALL_LARGE).withColor(colors).build())
 
         firework.fireworkMeta = meta
         firework.persistentDataContainer.set(fireworkKey, PersistentDataType.BOOLEAN, true)
