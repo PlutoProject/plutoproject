@@ -83,3 +83,7 @@ include("messages:velocity")
 
 include("protocol-checker")
 include("protocol-checker:velocity")
+
+include("essentials")
+include("essentials:paper")
+include("essentials:api")
