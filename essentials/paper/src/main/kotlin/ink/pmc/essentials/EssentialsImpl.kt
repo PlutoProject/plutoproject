@@ -8,9 +8,8 @@ import ink.pmc.essentials.api.player.PlayerManager
 import ink.pmc.essentials.api.teleport.TeleportManager
 import ink.pmc.essentials.api.teleport.random.RandomTeleportManager
 import ink.pmc.essentials.api.warp.WarpManager
-import org.koin.core.component.KoinComponent
 
-class EssentialsImpl : IEssentials, KoinComponent {
+class EssentialsImpl : IEssentials {
 
     override val teleportManager: TeleportManager?
         get() = TODO("Not yet implemented")
