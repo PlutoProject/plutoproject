@@ -17,6 +17,6 @@ interface Account {
 
     suspend fun transfer(destination: Account): EconomyOperationResult
 
-    suspend fun setBalance(amount: BigDecimal)
+    suspend fun setBalance(amount: BigDecimal): EconomyOperationResult
 
 }
