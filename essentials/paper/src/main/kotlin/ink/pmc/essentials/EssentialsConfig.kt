@@ -80,13 +80,13 @@ class EssentialsConfig(private val config: Config) : Config by config {
 
     inner class Commands {
         operator fun get(name: String): Boolean {
-            return get("commands.$name")
+            return config.get("commands.$name") ?: false
         }
     }
 
     inner class CommandAliases {
         operator fun get(name: String): Array<String> {
-            return get("command-aliases.$name")
+            return config.get<List<String>>("command-aliases.$name")?.toTypedArray() ?: arrayOf()
         }
     }
 

@@ -9,9 +9,9 @@ open class CommandNodeDsl<C> {
 
     lateinit var name: String
     val aliases = mutableListOf<String>()
-    var permission = ""
+    var permission: String? = null
     var arguments = mutableListOf<CommandComponent<C>>()
-    var handler: ContextReceiver<C> = {}
+    var handler: ContextReceiver<C>? = null
     protected val subNodes = mutableListOf<CommandNode<C>>()
 
     fun permission(node: String) {
