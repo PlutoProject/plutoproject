@@ -18,12 +18,12 @@ interface IEssentials {
         lateinit var instance: IEssentials
     }
 
-    val teleportManager: TeleportManager
-    val backManager: BackManager
-    val randomTeleportManager: RandomTeleportManager
-    val homeManager: HomeManager
-    val warpManager: WarpManager
-    val playerManager: PlayerManager
-    val economyManager: EconomyManager
+    val teleportManager: TeleportManager?
+    val backManager: BackManager?
+    val randomTeleportManager: RandomTeleportManager?
+    val homeManager: HomeManager?
+    val warpManager: WarpManager?
+    val playerManager: PlayerManager?
+    val economyManager: EconomyManager?
 
 }

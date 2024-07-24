@@ -361,6 +361,7 @@ allprojects {
         dep(rootProject.libs.caffeine)
         dep(rootProject.libs.adventure.kt)
         dep(rootProject.libs.invui)
+        dep(rootProject.libs.bundles.koin)
     }
 
     tasks.shadowJar {
