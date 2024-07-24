@@ -3,7 +3,8 @@ package ink.pmc.essentials.api
 import ink.pmc.essentials.api.economy.EconomyManager
 import ink.pmc.essentials.api.home.HomeManager
 import ink.pmc.essentials.api.player.PlayerManager
-import ink.pmc.essentials.api.teleport.RandomTeleportManager
+import ink.pmc.essentials.api.back.BackManager
+import ink.pmc.essentials.api.teleport.random.RandomTeleportManager
 import ink.pmc.essentials.api.teleport.TeleportManager
 import ink.pmc.essentials.api.warp.WarpManager
 
@@ -18,6 +19,7 @@ interface IEssentials {
     }
 
     val teleportManager: TeleportManager
+    val backManager: BackManager
     val randomTeleportManager: RandomTeleportManager
     val homeManager: HomeManager
     val warpManager: WarpManager

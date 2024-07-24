@@ -8,12 +8,12 @@ import java.util.UUID
 interface TeleportRequest {
 
     val id: UUID
-    val option: TeleportOption
+    val option: RequestOptions
     val source: Player
     val destination: Player
     val direction: TeleportDirection
     val createdAt: Instant
-    val status: TeleportStatus
+    val status: RequestStatus
 
     fun cancel(prompt: Boolean = true)
 

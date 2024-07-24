@@ -1,13 +1,13 @@
-package ink.pmc.essentials.api.teleport
+package ink.pmc.essentials.api.teleport.random
 
-import org.bukkit.Location
+import ink.pmc.utils.world.Loc2D
 import org.bukkit.Material
 import org.bukkit.block.Biome
 import java.math.BigDecimal
 import kotlin.time.Duration
 
-data class RandomTeleportOption(
-    val center: Location,
+data class RandomTeleportOptions(
+    val center: Loc2D,
     val startRadius: Double,
     val endRadius: Double,
     val minHeight: Double,

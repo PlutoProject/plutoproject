@@ -1,6 +1,7 @@
 package ink.pmc.essentials.api.teleport
 
 import org.bukkit.Location
+import org.bukkit.World
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 import java.util.*
@@ -9,7 +10,10 @@ import java.util.*
 interface TeleportManager {
 
     val teleportRequests: Collection<TeleportRequest>
-    val defaultOption: TeleportOption
+    val queue: Queue<Pair<Player, Location>>
+    val defaultRequestOptions: RequestOptions
+    val defaultTeleportOptions: Map<World, TeleportOptions>
+    val blacklistedWorlds: Collection<World>
 
     fun getRequest(id: UUID): TeleportRequest?
 
@@ -23,7 +27,7 @@ interface TeleportManager {
         source: Player,
         destination: Player,
         direction: TeleportDirection,
-        option: TeleportOption = defaultOption,
+        option: RequestOptions = defaultRequestOptions,
         prompt: Boolean = true
     ): TeleportRequest?
 
@@ -31,16 +35,33 @@ interface TeleportManager {
 
     fun clearRequest(prompt: Boolean = false)
 
-    fun teleport(player: Player, destination: Location, prompt: Boolean = true)
+    fun teleport(player: Player, destination: Location, teleportOptions: TeleportOptions? = null, prompt: Boolean = true)
 
-    suspend fun teleportSuspend(player: Player, destination: Location, prompt: Boolean = true)
+    suspend fun teleportSuspend(
+        player: Player,
+        destination: Location,
+        teleportOptions: TeleportOptions? = null,
+        prompt: Boolean = true
+    )
 
-    fun teleport(player: Player, destination: Player, prompt: Boolean = true)
+    fun teleport(player: Player, destination: Player, teleportOptions: TeleportOptions? = null, prompt: Boolean = true)
 
-    suspend fun teleportSuspend(player: Player, destination: Player, prompt: Boolean = true)
+    suspend fun teleportSuspend(
+        player: Player,
+        destination: Player,
+        teleportOptions: TeleportOptions? = null,
+        prompt: Boolean = true
+    )
 
-    fun teleport(player: Player, destination: Entity, prompt: Boolean = true)
+    fun teleport(player: Player, destination: Entity, teleportOptions: TeleportOptions? = null, prompt: Boolean = true)
 
-    suspend fun teleportSuspend(player: Player, destination: Entity, prompt: Boolean = true)
+    suspend fun teleportSuspend(
+        player: Player,
+        destination: Entity,
+        teleportOptions: TeleportOptions? = null,
+        prompt: Boolean = true
+    )
+
+    fun tick()
 
 }
