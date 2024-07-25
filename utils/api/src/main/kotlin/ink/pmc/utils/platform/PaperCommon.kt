@@ -1,7 +1,6 @@
 package ink.pmc.utils.platform
 
 import ink.pmc.utils.concurrent.submitSync
-import ink.pmc.utils.concurrent.sync
 import org.bukkit.Location
 import org.bukkit.Server
 import org.bukkit.entity.Player
