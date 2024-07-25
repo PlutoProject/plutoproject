@@ -1,5 +1,7 @@
 package ink.pmc.utils.platform
 
+import ink.pmc.utils.concurrent.submitSync
+import ink.pmc.utils.concurrent.sync
 import org.bukkit.Location
 import org.bukkit.Server
 import org.bukkit.entity.Player
@@ -13,15 +15,25 @@ lateinit var paperUtilsPlugin: JavaPlugin
 val Thread.isServerThread: Boolean
     get() = this == paperThread
 
+val isAsync: Boolean
+    get() = Thread.currentThread() != paperThread
+
 val isFoliaOrAsync: Boolean
-    get() = isFolia || Thread.currentThread() != paperThread
+    get() = isFolia || isAsync
 
 @Suppress("UNUSED")
 fun Player.threadSafeTeleport(location: Location) {
-    if (isFoliaOrAsync) {
-        this.teleportAsync(location)
+    if (isFolia) {
+        teleportAsync(location)
         return
     }
 
-    this.teleport(location)
+    if (isAsync) {
+        submitSync {
+            teleport(location)
+        }
+        return
+    }
+
+    teleport(location)
 }
