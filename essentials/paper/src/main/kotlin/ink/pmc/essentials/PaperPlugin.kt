@@ -65,20 +65,19 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
             .acceptPackages(packageName)
             .scan()
 
-        logger.info("Registering commands...")
         scanResult.allClasses.forEach {
             val cls = Class.forName(it.name)
             cls.declaredMethods.forEach fns@{ fn ->
                 val function = fn.kotlinFunction ?: return@fns
                 val annotation = function.findAnnotation<Command>() ?: return@fns
                 val name = annotation.name
+
                 if (!conf.Commands()[name]) {
-                    logger.info("$name disabled in config")
                     return@fns
                 }
+
                 val aliases = conf.CommandAliases()[name]
                 function.call(this, aliases)
-                logger.info("Registered $name")
             }
         }
     }

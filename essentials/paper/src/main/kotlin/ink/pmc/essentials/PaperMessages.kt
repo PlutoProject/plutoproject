@@ -35,3 +35,15 @@ val COMMAND_GM_FAILED = component {
 val COMMAND_GM_FAILED_OTHER = component {
     text("该玩家已经处于该模式了") with mochaMaroon
 }
+
+val COMMAND_ALIGN_SUCCEED = component {
+    text("已对齐你的视角和位置") with mochaPink
+}
+
+val COMMAND_ALIGN_POS_SUCCEED = component {
+    text("已对齐你的位置") with mochaPink
+}
+
+val COMMAND_ALIGN_VIEW_SUCCEED = component {
+    text("已对齐你的视角") with mochaPink
+}
