@@ -3,6 +3,7 @@ package ink.pmc.essentials.commands
 import ink.pmc.essentials.*
 import ink.pmc.utils.dsl.cloud.invoke
 import ink.pmc.utils.dsl.cloud.sender
+import ink.pmc.utils.entity.teleportSuspend
 import org.bukkit.block.BlockFace.*
 import org.bukkit.entity.Player
 
@@ -41,11 +42,11 @@ fun Cm.align(aliases: Array<String>) {
     }
 }
 
-private fun Player.alignPos() {
-    teleportAsync(location.toCenterLocation())
+private suspend fun Player.alignPos() {
+    teleportSuspend(location.toCenterLocation())
 }
 
-private fun Player.alignView() {
+private suspend fun Player.alignView() {
     val alignYaw = when (facing) {
         NORTH -> -180.0F
         EAST -> -90.0F
@@ -69,5 +70,5 @@ private fun Player.alignView() {
         yaw = alignYaw
         pitch = 0.0F
     }
-    teleportAsync(loc)
+    teleportSuspend(loc)
 }
