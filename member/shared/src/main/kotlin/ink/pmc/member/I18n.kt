@@ -17,7 +17,7 @@ val MEMBER_NOT_WHITELISTED = component {
     text("您的游戏 ID 并没有获得白名单。") with mochaText
     newline()
     text("请加入我们的审核群 ") with mochaText
-    text("795681231 ") with mochaYellow
+    text("152759828 ") with mochaYellow
     text("来进行申请。") with mochaText
     newline()
     text("如果您已通过申请，则可能是因为我们忘记为您添加白名单了。") with mochaText
