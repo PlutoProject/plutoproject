@@ -34,7 +34,7 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
     // 用于在完成队列任务时通知
     private val notifyChannel = MutableSharedFlow<Location>()
 
-    override val teleportRequests: MutableCollection<TeleportRequest> = mutableListOf()
+    override val teleportRequests: MutableList<TeleportRequest> = mutableListOf()
     override val queue: Queue<TeleportTask> = ConcurrentLinkedQueue()
     override val defaultRequestOptions: RequestOptions = RequestOptions(
         Duration.parse(conf.requestExpireAfter),
@@ -184,6 +184,10 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
             return null
         }
 
+        if (conf.blacklistedWorlds.contains(destination.world)) {
+            return null
+        }
+
         val request = TeleportRequestImpl(options, source, destination, direction)
         val message = when (direction) {
             GO -> TELEPORT_TPA_RECEIVED.replace("<player>", source.name)
@@ -193,6 +197,11 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
         destination.sendMessage(message)
         destination.sendMessage(TELEPORT_EXPIRE.replace("<expire>", DURATION(options.expireAfter)))
         destination.sendMessage(TELEPORT_OPERATION(request.id))
+
+        if (teleportRequests.size == conf.maxRequestsStored) {
+            teleportRequests.removeAt(0).cancel()
+        }
+
         teleportRequests.add(request)
 
         essentialsScope.submitAsync {

@@ -18,13 +18,12 @@ class EssentialsConfig(private val config: Config) : Config by config {
         val maxRequestsStored: Int get() = get("teleport.max-requests-stored")
         val requestExpireAfter: String get() = get("teleport.request.expire-after")
         val requestRemoveAfter: String get() = get("teleport.request.remove-after")
+        val queueProcessPerTick: Int get() = get("teleport.queue-process-per-tick")
         val avoidVoid: Boolean = get("teleport.avoid-void")
         val safeLocationSearchRadius: Int get() = get("teleport.safe-location-search-radius")
         val chunkPrepareRadius: Int get() = get("teleport.chunk-prepare-radius")
         val blacklistedBlocks: Collection<Material>
             get() = get<List<String>>("teleport.blacklisted-blocks").map { KeyedMaterial(it).bukkit }
-        val preparePrompt: Boolean get() = get("teleport.prepare-prompt.enabled")
-        val showPreparePromptDestFar: Boolean get() = get("teleport.prepare-prompt.show-on-destination-far")
         val worldOptions: Map<World, Config>
             get() = get<Config>("teleport.world-options")
                 .toMapViaEntry().mapKv { Bukkit.getWorld(it.key)!! to it.value as Config }
@@ -37,6 +36,7 @@ class EssentialsConfig(private val config: Config) : Config by config {
         val spawnPointAsCenter: Boolean get() = get("random-teleport.spawnpoint-as-center")
         val centerX: Int get() = get("random-teleport.center.x")
         val centerZ: Int get() = get("random-teleport.center.z")
+        val cacheProcessPerTick: Int get() = get("random-teleport.cache-process-per-tick")
         val chunkPreserveRadius: Int get() = get("random-teleport.chunk-preserve-radius")
         val startRadius: Int get() = get("random-teleport.start-radius")
         val endRadius: Int get() = get("random-teleport.end-radius")
