@@ -5,6 +5,9 @@ import com.github.shynixn.mccoroutine.bukkit.SuspendingJavaPlugin
 import ink.pmc.utils.storage.saveResourceIfNotExisted
 import io.github.classgraph.ClassGraph
 import io.papermc.paper.command.brigadier.CommandSourceStack
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import org.bukkit.plugin.Plugin
 import org.incendo.cloud.execution.ExecutionCoordinator
 import org.incendo.cloud.paper.PaperCommandManager
@@ -23,6 +26,7 @@ lateinit var fileConfig: FileConfig
 lateinit var commandManager: Cm
 
 private const val COMMAND_PACKAGE = "ink.pmc.essentials.commands"
+val essentialsScope = CoroutineScope(Dispatchers.Default)
 
 @Suppress("UNUSED")
 class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
@@ -44,12 +48,12 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
             .buildOnEnable(this)
 
         commandManager.registerCommands(COMMAND_PACKAGE)
-
         disabled = false
     }
 
     override suspend fun onDisableAsync() {
         disabled = true
+        essentialsScope.cancel()
     }
 
     private fun File.loadConfig(): FileConfig {

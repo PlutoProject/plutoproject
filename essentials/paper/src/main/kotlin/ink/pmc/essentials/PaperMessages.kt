@@ -65,3 +65,7 @@ val COMMAND_HAT_SUCCEED_OTHER = component {
 val COMMAND_HAT_FAILED_EXISTED_OTHER = component {
     text("该玩家的头上似乎已经有物品了") with mochaMaroon
 }
+
+val COMMAND_FLY_SUCCEED = component {
+
+}
