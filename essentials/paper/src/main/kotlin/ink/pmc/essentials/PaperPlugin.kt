@@ -2,6 +2,8 @@ package ink.pmc.essentials
 
 import com.electronwill.nightconfig.core.file.FileConfig
 import com.github.shynixn.mccoroutine.bukkit.SuspendingJavaPlugin
+import com.google.protobuf.duration
+import ink.pmc.essentials.api.Essentials
 import ink.pmc.essentials.api.IEssentials
 import ink.pmc.essentials.listeners.TeleportListener
 import ink.pmc.utils.storage.saveResourceIfNotExisted
@@ -20,6 +22,8 @@ import org.koin.core.context.startKoin
 import java.io.File
 import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.jvm.kotlinFunction
+import kotlin.time.Duration
+import kotlin.time.toJavaDuration
 
 typealias Cm = PaperCommandManager<CommandSourceStack>
 
@@ -59,6 +63,7 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
     override suspend fun onDisableAsync() {
         disabled = true
         essentialsScope.cancel()
+        Essentials.teleportManager.clearRequest()
     }
 
     private fun File.loadConfig(): FileConfig {

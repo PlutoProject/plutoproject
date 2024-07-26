@@ -18,23 +18,34 @@ interface TeleportManager {
 
     fun getRequest(id: UUID): TeleportRequest?
 
-    fun getRequests(player: Player): Collection<TeleportRequest>
-
     fun hasRequest(id: UUID): Boolean
 
+    fun getSentRequests(player: Player): Collection<TeleportRequest>
+
+    fun getReceivedRequests(player: Player): Collection<TeleportRequest>
+
     fun hasUnfinishedRequest(player: Player): Boolean
+
+    fun getUnfinishedRequest(player: Player): TeleportRequest?
+
+    fun hasPendingRequest(player: Player): Boolean
+
+    fun getPendingRequest(player: Player): TeleportRequest?
 
     fun createRequest(
         source: Player,
         destination: Player,
         direction: TeleportDirection,
-        option: RequestOptions = defaultRequestOptions,
-        prompt: Boolean = true
+        options: RequestOptions = defaultRequestOptions,
     ): TeleportRequest?
 
-    fun removeRequest(id: UUID, prompt: Boolean = true)
+    fun cancelRequest(id: UUID)
 
-    fun clearRequest(prompt: Boolean = false)
+    fun cancelRequest(request: TeleportRequest)
+
+    fun removeRequest(id: UUID)
+
+    fun clearRequest()
 
     fun teleport(player: Player, destination: Location, teleportOptions: TeleportOptions? = null, prompt: Boolean = true)
 

@@ -2,13 +2,19 @@ package ink.pmc.essentials.manager
 
 import ink.pmc.essentials.*
 import ink.pmc.essentials.api.teleport.*
+import ink.pmc.essentials.api.teleport.TeleportDirection.COME
+import ink.pmc.essentials.api.teleport.TeleportDirection.GO
+import ink.pmc.utils.chat.DURATION
+import ink.pmc.utils.chat.replace
 import ink.pmc.utils.concurrent.submitAsync
 import ink.pmc.utils.concurrent.submitSync
+import ink.pmc.utils.concurrent.sync
 import ink.pmc.utils.data.mapKv
 import ink.pmc.utils.entity.teleportSuspend
 import ink.pmc.utils.multiplaform.item.KeyedMaterial
 import ink.pmc.utils.multiplaform.item.exts.bukkit
 import ink.pmc.utils.world.ValueChunkLoc
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import org.bukkit.Location
 import org.bukkit.Material
@@ -24,6 +30,7 @@ import kotlin.time.Duration
 class TeleportManagerImpl : TeleportManager, KoinComponent {
 
     private val conf = get<EssentialsConfig>().Teleport()
+
     // 用于在完成队列任务时通知
     private val notifyChannel = MutableSharedFlow<Location>()
 
@@ -113,30 +120,31 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
         }
 
         if (loc == null) {
-            if (!prompt) {
-                return
+            if (prompt) {
+                player.showTitle(TELEPORT_FAILED_TITLE)
+                player.playSound(TELEPORT_FAILED_SOUND)
             }
-            player.showTitle(TELEPORT_FAILED_TITLE)
-            player.playSound(TELEPORT_FAILED_SOUND)
             return
         }
 
         player.teleportSuspend(loc)
 
-        if (!prompt) {
-            return
+        if (prompt) {
+            player.showTitle(TELEPORT_SUCCEED_TITLE)
+            player.playSound(TELEPORT_SUCCEED_SOUND)
         }
-
-        player.showTitle(TELEPORT_SUCCEED_TITLE)
-        player.playSound(TELEPORT_SUCCEED_SOUND)
     }
 
     override fun getRequest(id: UUID): TeleportRequest? {
         return teleportRequests.firstOrNull { it.id == id }
     }
 
-    override fun getRequests(player: Player): Collection<TeleportRequest> {
+    override fun getSentRequests(player: Player): Collection<TeleportRequest> {
         return teleportRequests.filter { it.source == player }
+    }
+
+    override fun getReceivedRequests(player: Player): Collection<TeleportRequest> {
+        return teleportRequests.filter { it.destination == player }
     }
 
     override fun hasRequest(id: UUID): Boolean {
@@ -144,20 +152,79 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
     }
 
     override fun hasUnfinishedRequest(player: Player): Boolean {
-        return getRequests(player).any { it.status == RequestStatus.WAITING }
+        return getSentRequests(player).any { !it.isFinished }
+    }
+
+    override fun getUnfinishedRequest(player: Player): TeleportRequest? {
+        return getSentRequests(player).firstOrNull { !it.isFinished }
+    }
+
+    override fun hasPendingRequest(player: Player): Boolean {
+        return getReceivedRequests(player).any { !it.isFinished }
+    }
+
+    override fun getPendingRequest(player: Player): TeleportRequest? {
+        return getReceivedRequests(player).firstOrNull { !it.isFinished }
     }
 
     override fun createRequest(
         source: Player,
         destination: Player,
         direction: TeleportDirection,
-        option: RequestOptions,
-        prompt: Boolean
+        options: RequestOptions
     ): TeleportRequest? {
-        TODO("Not yet implemented")
+        /*
+        getUnfinishedRequest(source)?.let {
+            it.cancel()
+            source.sendMessage(TELEPORT_REQUEST_AUTO_CANCEL.replace("<player>", source.name))
+        }
+         */
+
+        if (hasUnfinishedRequest(source) || hasPendingRequest(destination)) {
+            return null
+        }
+
+        val request = TeleportRequestImpl(options, source, destination, direction)
+        val message = when (direction) {
+            GO -> TELEPORT_TPA_RECEIVED.replace("<player>", source.name)
+            COME -> TELEPORT_TPAHERE_RECEIVED.replace("<player>", source.name)
+        }
+
+        destination.sendMessage(message)
+        destination.sendMessage(TELEPORT_EXPIRE.replace("<expire>", DURATION(options.expireAfter)))
+        destination.sendMessage(TELEPORT_OPERATION(request.id))
+        teleportRequests.add(request)
+
+        essentialsScope.submitAsync {
+            delay(options.expireAfter)
+            if (!hasRequest(request.id) || request.isFinished) {
+                return@submitAsync
+            }
+            request.expire()
+            destination.sendMessage(TELEPORT_REQUEST_EXPIRED.replace("<player>", destination.name))
+            source.sendMessage(TELEPORT_REQUEST_EXPIRED_SOURCE.replace("<player>", destination.name))
+        }
+
+        essentialsScope.submitAsync {
+            delay(options.removeAfter)
+            if (!hasRequest(request.id)) {
+                return@submitAsync
+            }
+            removeRequest(request.id)
+        }
+
+        return request
     }
 
-    override fun removeRequest(id: UUID, prompt: Boolean) {
+    override fun cancelRequest(id: UUID) {
+        getRequest(id)?.cancel()
+    }
+
+    override fun cancelRequest(request: TeleportRequest) {
+        request.cancel()
+    }
+
+    override fun removeRequest(id: UUID) {
         if (!hasRequest(id)) {
             return
         }
@@ -165,7 +232,7 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
         teleportRequests.removeIf { it.id == id }
     }
 
-    override fun clearRequest(prompt: Boolean) {
+    override fun clearRequest() {
         teleportRequests.forEach { it.cancel() }
         teleportRequests.clear()
     }
@@ -197,8 +264,13 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
         val prepare = destination.chunkNeedToPrepare
 
         if (prepare.allPrepared(destination.world)) {
-            fireTeleport(player, destination, teleportOptions, prompt)
+            sync { fireTeleport(player, destination, teleportOptions, prompt) }
             return
+        }
+
+        if (prompt) {
+            player.showTitle(TELEPORT_PREPARING_TITLE)
+            player.playSound(TELEPORT_PREPARING_SOUND)
         }
 
         queue.offer(TeleportTask(player, destination, teleportOptions, prompt, prepare))
