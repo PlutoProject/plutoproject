@@ -7,20 +7,22 @@ import ink.pmc.essentials.api.home.HomeManager
 import ink.pmc.essentials.api.teleport.TeleportManager
 import ink.pmc.essentials.api.teleport.random.RandomTeleportManager
 import ink.pmc.essentials.api.warp.WarpManager
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
-class EssentialsImpl : IEssentials {
+@Suppress("UNUSED")
+class EssentialsImpl : IEssentials, KoinComponent {
 
-    override val teleportManager: TeleportManager?
-        get() = TODO("Not yet implemented")
-    override val backManager: BackManager?
-        get() = TODO("Not yet implemented")
-    override val randomTeleportManager: RandomTeleportManager?
-        get() = TODO("Not yet implemented")
-    override val homeManager: HomeManager?
-        get() = TODO("Not yet implemented")
-    override val warpManager: WarpManager?
-        get() = TODO("Not yet implemented")
-    override val economyManager: EconomyManager?
-        get() = TODO("Not yet implemented")
+    private val config by inject<EssentialsConfig>()
+    override val teleportManager by inject<TeleportManager>()
+    override val backManager by inject<BackManager>()
+    override val randomTeleportManager by inject<RandomTeleportManager>()
+    override val homeManager by inject<HomeManager>()
+    override val warpManager by inject<WarpManager>()
+    override val economyManager by inject<EconomyManager>()
+
+    override fun isTeleportManagerEnabled(): Boolean {
+        return config.Teleport().enabled
+    }
 
 }

@@ -12,7 +12,8 @@ interface TeleportManager {
     val teleportRequests: Collection<TeleportRequest>
     val queue: Queue<Pair<Player, Location>>
     val defaultRequestOptions: RequestOptions
-    val defaultTeleportOptions: Map<World, TeleportOptions>
+    val defaultTeleportOptions: TeleportOptions
+    val worldTeleportOptions: Map<World, TeleportOptions>
     val blacklistedWorlds: Collection<World>
 
     fun getRequest(id: UUID): TeleportRequest?

@@ -2,6 +2,7 @@ package ink.pmc.essentials
 
 import com.electronwill.nightconfig.core.file.FileConfig
 import com.github.shynixn.mccoroutine.bukkit.SuspendingJavaPlugin
+import ink.pmc.essentials.api.IEssentials
 import ink.pmc.utils.storage.saveResourceIfNotExisted
 import io.github.classgraph.ClassGraph
 import io.papermc.paper.command.brigadier.CommandSourceStack
@@ -12,6 +13,7 @@ import org.bukkit.plugin.Plugin
 import org.incendo.cloud.execution.ExecutionCoordinator
 import org.incendo.cloud.paper.PaperCommandManager
 import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
 import org.koin.core.component.inject
 import org.koin.core.context.startKoin
 import java.io.File
@@ -47,6 +49,7 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
             .executionCoordinator(ExecutionCoordinator.asyncCoordinator())
             .buildOnEnable(this)
 
+        IEssentials.instance = get<IEssentials>()
         commandManager.registerCommands(COMMAND_PACKAGE)
         disabled = false
     }
