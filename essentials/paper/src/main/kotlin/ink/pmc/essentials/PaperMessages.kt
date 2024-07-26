@@ -56,10 +56,6 @@ val COMMAND_HAT_FAILED_EMPTY_HAND = component {
     text("将你想要戴在头上的物品放入手中，然后再试一次吧") with mochaSubtext0
 }
 
-val COMMAND_HAT_FAILED_EXISTED = component {
-    text("你的头上似乎已经有物品了，取下后再试一次吧") with mochaMaroon
-}
-
 val COMMAND_HAT_SUCCEED_OTHER = component {
     text("已将你手中的物品戴在 ") with mochaPink
     text("<player> ") with mochaFlamingo

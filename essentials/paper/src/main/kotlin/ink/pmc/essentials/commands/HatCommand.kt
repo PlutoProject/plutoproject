@@ -44,25 +44,31 @@ fun Cm.hat(aliases: Array<String>) {
                     return@checkPlayer
                 }
 
-                if (hatItem != null) {
-                    sendMessage(COMMAND_HAT_FAILED_EXISTED)
-                    return@checkPlayer
-                }
-
+                val keepHatItem = hatItem
                 hat(handItem)
                 clearHand()
+
+                if (keepHatItem != null) {
+                    hand(keepHatItem)
+                }
+
                 sendMessage(COMMAND_HAT_SUCCEED)
             }
         }
     }
 }
 
-private var Player.handItem: ItemStack
-    set(value) = inventory.setItemInMainHand(value)
+private val Player.handItem: ItemStack
     get() = inventory.itemInMainHand
 
 private val Player.hatItem: ItemStack?
     get() = inventory.helmet
+
+private suspend fun Player.hand(item: ItemStack) {
+    sync {
+        inventory.setItemInMainHand(item)
+    }
+}
 
 private suspend fun Player.hat(item: ItemStack) {
     sync {
@@ -72,6 +78,6 @@ private suspend fun Player.hat(item: ItemStack) {
 
 private suspend fun Player.clearHand() {
     sync {
-        handItem = ItemStack(Material.AIR)
+        hand(ItemStack(Material.AIR))
     }
 }
