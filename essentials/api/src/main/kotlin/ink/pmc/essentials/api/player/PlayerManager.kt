@@ -9,8 +9,12 @@ interface PlayerManager {
 
     fun setInvisibility(player: Player, invisible: Boolean, prompt: Boolean = true)
 
+    fun isInvisible(player: Player): Boolean
+
     fun toggleFly(player: Player, prompt: Boolean = true)
 
-    fun setFly(player: Player, prompt: Boolean = true)
+    fun setFly(player: Player, flyable: Boolean, prompt: Boolean = true)
+
+    fun isFlyable(player: Player): Boolean
 
 }

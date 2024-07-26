@@ -5,6 +5,8 @@ import org.bukkit.Chunk
 import org.bukkit.Location
 import org.bukkit.entity.Entity
 
+// submitSync start
+
 @Suppress("UNUSED")
 @OptIn(DelicateCoroutinesApi::class)
 fun submitSync(block: suspend CoroutineScope.() -> Unit) = GlobalScope.launch(mainThreadDispatcher) { block() }
@@ -50,6 +52,44 @@ fun <T> submitSync(location: Location, block: suspend CoroutineScope.() -> T) =
     GlobalScope.async(location.dispatcher) { block() }
 
 @Suppress("UNUSED")
+fun CoroutineScope.submitSync(block: suspend CoroutineScope.() -> Unit) = launch(mainThreadDispatcher) { block() }
+
+@Suppress("UNUSED")
+fun <T> CoroutineScope.submitSync(block: suspend CoroutineScope.() -> T) = async(mainThreadDispatcher) { block() }
+
+@Suppress("UNUSED")
+@JvmName("submitSyncEntity")
+fun CoroutineScope.submitSync(entity: Entity, block: suspend CoroutineScope.() -> Unit) =
+    launch(entity.dispatcher) { block() }
+
+@Suppress("UNUSED")
+@JvmName("submitSyncChunk")
+fun CoroutineScope.submitSync(chunk: Chunk, block: suspend CoroutineScope.() -> Unit) =
+    launch(chunk.dispatcher) { block() }
+
+@Suppress("UNUSED")
+@JvmName("submitSyncLocation")
+fun CoroutineScope.submitSync(location: Location, block: suspend CoroutineScope.() -> Unit) =
+    launch(location.dispatcher) { block() }
+
+@Suppress("UNUSED")
+@JvmName("submitSyncEntity")
+fun <T> CoroutineScope.submitSync(entity: Entity, block: suspend CoroutineScope.() -> T) =
+    async(entity.dispatcher) { block() }
+
+@Suppress("UNUSED")
+@JvmName("submitSyncChunk")
+fun <T> CoroutineScope.submitSync(chunk: Chunk, block: suspend CoroutineScope.() -> T) =
+    async(chunk.dispatcher) { block() }
+
+@Suppress("UNUSED")
+@JvmName("submitSyncLocation")
+fun <T> CoroutineScope.submitSync(location: Location, block: suspend CoroutineScope.() -> T) =
+    async(location.dispatcher) { block() }
+
+// submitSync end
+
+@Suppress("UNUSED")
 suspend fun sync(block: suspend CoroutineScope.() -> Unit) = withContext(mainThreadDispatcher) { block() }
 
 @Suppress("UNUSED")
@@ -67,35 +107,39 @@ suspend fun sync(chunk: Chunk, block: suspend CoroutineScope.() -> Unit) =
 suspend fun sync(location: Location, block: suspend CoroutineScope.() -> Unit) =
     withContext(location.dispatcher) { block() }
 
-@Suppress("UNUSED")
-@OptIn(DelicateCoroutinesApi::class)
-@JvmName("entitySync")
-fun Entity.submitSync(block: suspend CoroutineScope.() -> Unit) = GlobalScope.launch(this.dispatcher) { block() }
-
-@Suppress("UNUSED")
-@OptIn(DelicateCoroutinesApi::class)
-@JvmName("chunkSync")
-fun Chunk.submitSync(block: suspend CoroutineScope.() -> Unit) = GlobalScope.launch(this.dispatcher) { block() }
-
-@Suppress("UNUSED")
-@OptIn(DelicateCoroutinesApi::class)
-@JvmName("locationSync")
-fun Location.submitSync(block: suspend CoroutineScope.() -> Unit) = GlobalScope.launch(this.dispatcher) { block() }
+// value submitSync start
 
 @Suppress("UNUSED")
 @OptIn(DelicateCoroutinesApi::class)
 @JvmName("entitySync")
-fun <T> Entity.submitSync(block: suspend CoroutineScope.() -> T) = GlobalScope.async(this.dispatcher) { block() }
+fun Entity.submitSync(scope: CoroutineScope = GlobalScope, block: suspend CoroutineScope.() -> Unit) = scope.launch(this.dispatcher) { block() }
 
 @Suppress("UNUSED")
 @OptIn(DelicateCoroutinesApi::class)
 @JvmName("chunkSync")
-fun <T> Chunk.submitSync(block: suspend CoroutineScope.() -> T) = GlobalScope.async(this.dispatcher) { block() }
+fun Chunk.submitSync(scope: CoroutineScope = GlobalScope, block: suspend CoroutineScope.() -> Unit) = scope.launch(this.dispatcher) { block() }
 
 @Suppress("UNUSED")
 @OptIn(DelicateCoroutinesApi::class)
 @JvmName("locationSync")
-fun <T> Location.submitSync(block: suspend CoroutineScope.() -> T) = GlobalScope.async(this.dispatcher) { block() }
+fun Location.submitSync(scope: CoroutineScope = GlobalScope, block: suspend CoroutineScope.() -> Unit) = scope.launch(this.dispatcher) { block() }
+
+@Suppress("UNUSED")
+@OptIn(DelicateCoroutinesApi::class)
+@JvmName("entitySync")
+fun <T> Entity.submitSync(scope: CoroutineScope = GlobalScope, block: suspend CoroutineScope.() -> T) = scope.async(this.dispatcher) { block() }
+
+@Suppress("UNUSED")
+@OptIn(DelicateCoroutinesApi::class)
+@JvmName("chunkSync")
+fun <T> Chunk.submitSync(scope: CoroutineScope = GlobalScope, block: suspend CoroutineScope.() -> T) = scope.async(this.dispatcher) { block() }
+
+@Suppress("UNUSED")
+@OptIn(DelicateCoroutinesApi::class)
+@JvmName("locationSync")
+fun <T> Location.submitSync(scope: CoroutineScope = GlobalScope, block: suspend CoroutineScope.() -> T) = scope.async(this.dispatcher) { block() }
+
+// value submitSync end
 
 @Suppress("UNUSED")
 @JvmName("entitySyncSuspend")
