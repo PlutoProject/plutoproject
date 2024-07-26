@@ -3,6 +3,8 @@ package ink.pmc.essentials
 import ink.pmc.advkt.component.component
 import ink.pmc.advkt.component.newline
 import ink.pmc.advkt.component.text
+import ink.pmc.advkt.sound.sound
+import ink.pmc.advkt.title.title
 import ink.pmc.utils.visual.*
 import net.kyori.adventure.text.Component
 
@@ -65,3 +67,11 @@ val COMMAND_HAT_SUCCEED_OTHER = component {
 val COMMAND_HAT_FAILED_EXISTED_OTHER = component {
     text("该玩家的头上似乎已经有物品了") with mochaMaroon
 }
+
+val TELEPORT_SUCCEED_TITLE = title {  }
+
+val TELEPORT_SUCCEED_SOUND = sound {  }
+
+val TELEPORT_FAILED_TITLE = title {  }
+
+val TELEPORT_FAILED_SOUND = sound {  }

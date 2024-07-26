@@ -3,6 +3,7 @@ package ink.pmc.essentials
 import com.electronwill.nightconfig.core.file.FileConfig
 import com.github.shynixn.mccoroutine.bukkit.SuspendingJavaPlugin
 import ink.pmc.essentials.api.IEssentials
+import ink.pmc.essentials.listeners.TeleportListener
 import ink.pmc.utils.storage.saveResourceIfNotExisted
 import io.github.classgraph.ClassGraph
 import io.papermc.paper.command.brigadier.CommandSourceStack
@@ -51,6 +52,7 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
 
         IEssentials.instance = get<IEssentials>()
         commandManager.registerCommands(COMMAND_PACKAGE)
+        server.pluginManager.registerEvents(TeleportListener, this)
         disabled = false
     }
 

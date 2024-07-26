@@ -10,7 +10,7 @@ import java.util.*
 interface TeleportManager {
 
     val teleportRequests: Collection<TeleportRequest>
-    val queue: Queue<Pair<Player, Location>>
+    val queue: Queue<TeleportTask>
     val defaultRequestOptions: RequestOptions
     val defaultTeleportOptions: TeleportOptions
     val worldTeleportOptions: Map<World, TeleportOptions>
