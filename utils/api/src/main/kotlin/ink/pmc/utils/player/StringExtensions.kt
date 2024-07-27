@@ -48,3 +48,10 @@ suspend fun String.getPlayerUUID(): UUID? {
 
 val String.uuid: UUID
     get() = UUID.fromString(this)
+
+val String.uuidOrNull: UUID?
+    get() = try {
+        UUID.fromString(this)
+    } catch (e: IllegalArgumentException) {
+        null
+    }

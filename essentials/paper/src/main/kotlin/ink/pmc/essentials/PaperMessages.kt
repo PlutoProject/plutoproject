@@ -153,27 +153,9 @@ val TELEPORT_REQUEST_ACCEPTED_SOURCE = component {
     text("接受了你的传送请求") with mochaGreen
 }
 
-val TELEPORT_REQUEST_ACCEPTED = component {
-    text("你接受了 ") with mochaGreen
-    text("<player> ") with mochaFlamingo
-    text("的传送请求") with mochaGreen
-}
-
 val TELEPORT_REQUEST_DENYED_SOURCE = component {
     text("<player> ") with mochaFlamingo
     text("拒绝了你的传送请求") with mochaMaroon
-}
-
-val TELEPORT_REQUEST_DENYED = component {
-    text("你拒绝了 ") with mochaMaroon
-    text("<player> ") with mochaFlamingo
-    text("的传送请求") with mochaMaroon
-}
-
-val TELEPORT_REQUEST_IGNORED = component {
-    text("你忽略了 ") with mochaYellow
-    text("<player> ") with mochaFlamingo
-    text("的传送请求") with mochaYellow
 }
 
 val TELEPORT_REQUEST_EXPIRED = component {
@@ -216,6 +198,14 @@ val COMMAND_TPA_SUCCEED = component {
     text("那里") with mochaPink
 }
 
+val COMMAND_TPA_FAILED_SELF = component {
+    text("你不能向自己发送传送请求噢") with mochaMaroon
+}
+
+val COMMAND_TPA_FAILED_TARGET_BUSY = component {
+    text("对方仍有未处理的传送请求，请稍后再试") with mochaMaroon
+}
+
 val COMMAND_TPAHERE_SUCCEED = component {
     text("已请求 ") with mochaPink
     text("<player> ") with mochaFlamingo
@@ -232,9 +222,36 @@ val TELEPORT_TPAHERE_RECEIVED = component {
     text("想要你传送到他那里") with mochaPink
 }
 
+val COMMAND_TPACCEPT_SUCCEED = component {
+    text("已接受来自 ") with mochaGreen
+    text("<player> ") with mochaFlamingo
+    text("的传送请求") with mochaGreen
+}
+
+val COMMAND_TPDENY_SUCCEED = component {
+    text("已拒绝来自 ") with mochaMaroon
+    text("<player> ") with mochaFlamingo
+    text("的传送请求") with mochaMaroon
+}
+
+val COMMAND_TPACCEPT_FAILED_NO_PENDING = component {
+    text("你暂时没有未接受的传送请求") with mochaMaroon
+}
+
+val COMMAND_TPACCEPT_FAILED_NO_REQUEST = component {
+    text("你没有来自 ") with mochaMaroon
+    text("<player> ") with mochaFlamingo
+    text("的未接受请求") with mochaMaroon
+}
+
+val COMMAND_TPACCEPT_FAILED_NO_REQUEST_ID = component {
+    text("请求已过期或不存在") with mochaMaroon
+    newline()
+    text("如果你认为这是一个错误，请上报给管理组") with mochaSubtext0
+}
+
 @Suppress("FunctionName")
 fun TELEPORT_OPERATION(id: UUID) = component {
     text("[✔ 接受] ") with mochaGreen with showText { text("点击以接受") with mochaGreen } with runCommand("/essentials:tpaccept $id")
     text("[❌ 拒绝] ") with mochaMaroon with showText { text("点击以拒绝") with mochaMaroon } with runCommand("/essentials:tpdeny $id")
-    text("[❓ 忽略]") with mochaYellow with showText { text("点击以忽略") with mochaYellow } with runCommand("/essentials:tpignore $id")
 }

@@ -20,8 +20,6 @@ interface TeleportRequest {
 
     fun deny(prompt: Boolean = true)
 
-    fun ignore(prompt: Boolean = true)
-
     fun expire(prompt: Boolean = true)
 
     fun cancel(prompt: Boolean = true)

@@ -13,6 +13,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import org.bukkit.plugin.Plugin
+import org.incendo.cloud.caption.Caption
+import org.incendo.cloud.caption.CaptionProvider
 import org.incendo.cloud.execution.ExecutionCoordinator
 import org.incendo.cloud.paper.PaperCommandManager
 import org.koin.core.component.KoinComponent
@@ -53,6 +55,8 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
         commandManager = PaperCommandManager.builder()
             .executionCoordinator(ExecutionCoordinator.asyncCoordinator())
             .buildOnEnable(this)
+
+        commandManager.captionRegistry().registerProvider { caption, recipient -> TODO("Not yet implemented") }
 
         IEssentials.instance = get<IEssentials>()
         commandManager.registerCommands(COMMAND_PACKAGE)
