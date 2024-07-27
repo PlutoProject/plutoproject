@@ -173,13 +173,6 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
         direction: TeleportDirection,
         options: RequestOptions
     ): TeleportRequest? {
-        /*
-        getUnfinishedRequest(source)?.let {
-            it.cancel()
-            source.sendMessage(TELEPORT_REQUEST_AUTO_CANCEL.replace("<player>", source.name))
-        }
-         */
-
         if (hasUnfinishedRequest(source) || hasPendingRequest(destination)) {
             return null
         }

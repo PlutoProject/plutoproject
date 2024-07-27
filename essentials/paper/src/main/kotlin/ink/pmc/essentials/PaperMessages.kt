@@ -176,12 +176,6 @@ val TELEPORT_REQUEST_CANCELED = component {
     text("的传送请求已被取消") with mochaYellow
 }
 
-val TELEPORT_REQUEST_CANCELED_SOURCE = component {
-    text("你取消了发送给 ") with mochaYellow
-    text("<player> ") with mochaFlamingo
-    text("的传送请求") with mochaYellow
-}
-
 val TELEPORT_REQUEST_CANCELED_OFFLINE = component {
     text("玩家 ") with mochaYellow
     text("<player> ") with mochaFlamingo
@@ -248,6 +242,35 @@ val COMMAND_TPACCEPT_FAILED_NO_REQUEST_ID = component {
     text("请求已过期或不存在") with mochaMaroon
     newline()
     text("如果你认为这是一个错误，请上报给管理组") with mochaSubtext0
+}
+
+val COMMAND_TPCANCEL_SUCCEED = component {
+    text("已取消发送给 ") with mochaYellow
+    text("<player> ") with mochaFlamingo
+    text("的传送请求") with mochaYellow
+}
+
+val COMMAND_TPCANCEL_SUCCEED_OTHER = component {
+    text("已取消 ") with mochaYellow
+    text("<player> ") with mochaFlamingo
+    text("发送给 ") with mochaYellow
+    text("<dest> ") with mochaFlamingo
+    text("的传送请求") with mochaYellow
+}
+
+val COMMAND_TPCANCEL_OTHER_NOTIFY = component {
+    text("管理员取消了你发送给 ") with mochaYellow
+    text("<player> ") with mochaFlamingo
+    text("的传送请求") with mochaYellow
+}
+
+val COMMAND_TPCANCEL_NO_REQUEST = component {
+    text("你没有待处理的传送请求") with mochaMaroon
+}
+
+val COMMAND_TPCANCEL_NO_REQUEST_OTHER = component {
+    text("<player> ") with mochaFlamingo
+    text("没有待处理的传送请求") with mochaMaroon
 }
 
 @Suppress("FunctionName")
