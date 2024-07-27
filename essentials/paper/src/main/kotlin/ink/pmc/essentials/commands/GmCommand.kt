@@ -17,7 +17,6 @@ import kotlin.jvm.optionals.getOrNull
 @Command("gm")
 @Suppress("UNUSED")
 fun Cm.gm(aliases: Array<String>) {
-    println("Called")
     this("gm", *aliases) {
         ("survival" alias "s" alias "0") {
             permission("essentials.gm.survival")

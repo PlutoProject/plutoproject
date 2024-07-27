@@ -213,6 +213,16 @@ val COMMAND_TPA_FAILED_TARGET_BUSY = component {
     text("对方仍有未处理的传送请求，请稍后再试") with mochaMaroon
 }
 
+val COMMAND_TPA_FAILED_NOT_ALLOWED_GO = component {
+    text("玩家 ") with mochaMaroon
+    text("<player> ") with mochaFlamingo
+    text("所在的世界不允许被传送") with mochaMaroon
+}
+
+val COMMAND_TPA_FAILED_NOT_ALLOWED_COME = component {
+    text("你所在的世界不允许被传送") with mochaMaroon
+}
+
 val COMMAND_TPAHERE_SUCCEED = component {
     text("已向 ") with mochaPink
     text("<player> ") with mochaFlamingo
@@ -292,4 +302,22 @@ val COMMAND_TPCANCEL_NO_REQUEST_OTHER = component {
 fun TELEPORT_OPERATION(id: UUID) = component {
     text("[✔ 接受] ") with mochaGreen with showText { text("点击以接受") with mochaGreen } with runCommand("/essentials:tpaccept $id")
     text("[❌ 拒绝] ") with mochaMaroon with showText { text("点击以拒绝") with mochaMaroon } with runCommand("/essentials:tpdeny $id")
+}
+
+val COMMAND_ETP_SUCCEED = component {
+    text("已传送至 ") with mochaPink
+    text("<location> ") with mochaText
+}
+
+val COMMAND_ETP_SUCCEED_OTHER = component {
+    text("已将玩家 ") with mochaPink
+    text("<player> ") with mochaFlamingo
+    text("传送至 ") with mochaPink
+    text("<location>") with mochaText
+}
+
+val COMMAND_ETP_FAILED_NOT_ALLOWED = component {
+    text("世界 ") with mochaMaroon
+    text("<world> ") with mochaText
+    text("不允许使用传送") with mochaMaroon
 }

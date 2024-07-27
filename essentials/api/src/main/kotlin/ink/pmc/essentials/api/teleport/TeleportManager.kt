@@ -16,6 +16,8 @@ interface TeleportManager {
     val worldTeleportOptions: Map<World, TeleportOptions>
     val blacklistedWorlds: Collection<World>
 
+    fun getWorldTeleportOptions(world: World): TeleportOptions
+
     fun getRequest(id: UUID): TeleportRequest?
 
     fun hasRequest(id: UUID): Boolean

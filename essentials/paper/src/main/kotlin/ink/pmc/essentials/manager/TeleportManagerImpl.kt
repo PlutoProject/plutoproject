@@ -8,13 +8,14 @@ import ink.pmc.utils.chat.DURATION
 import ink.pmc.utils.chat.replace
 import ink.pmc.utils.concurrent.async
 import ink.pmc.utils.concurrent.submitAsync
-import ink.pmc.utils.concurrent.submitSync
 import ink.pmc.utils.concurrent.sync
 import ink.pmc.utils.data.mapKv
 import ink.pmc.utils.entity.teleportSuspend
 import ink.pmc.utils.multiplaform.item.KeyedMaterial
 import ink.pmc.utils.multiplaform.item.exts.bukkit
 import ink.pmc.utils.world.ValueChunkLoc
+import ink.pmc.utils.world.getChunkViaSource
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import org.bukkit.Location
@@ -41,6 +42,7 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
         Duration.parse(conf.requestRemoveAfter)
     )
     override val defaultTeleportOptions: TeleportOptions = TeleportOptions(
+        false,
         conf.avoidVoid,
         conf.safeLocationSearchRadius,
         conf.chunkPrepareRadius,
@@ -48,6 +50,7 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
     )
     override val worldTeleportOptions: Map<World, TeleportOptions> = conf.worldOptions.mapKv {
         it.key to TeleportOptions(
+            false,
             it.value.get("avoid-void") ?: defaultTeleportOptions.avoidVoid,
             it.value.get("safe-location-search-radius") ?: defaultTeleportOptions.safeLocationSearchRadius,
             it.value.get("chunk-prepare-radius") ?: defaultTeleportOptions.chunkPrepareRadius,
@@ -56,6 +59,10 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
         )
     }
     override val blacklistedWorlds: Collection<World> = conf.blacklistedWorlds
+
+    override fun getWorldTeleportOptions(world: World): TeleportOptions {
+        return world.teleportOptions
+    }
 
     private val World.teleportOptions: TeleportOptions
         get() = worldTeleportOptions[this] ?: defaultTeleportOptions
@@ -79,9 +86,11 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
         return all { it.isLoaded(world) }
     }
 
-    private fun List<ValueChunkLoc>.prepareChunk(world: World) {
-        forEach {
-            it.getChunk(world)
+    private suspend fun List<ValueChunkLoc>.prepareChunk(world: World) {
+        coroutineScope {
+            forEach {
+                submitAsync { world.getChunkViaSource(it.x, it.y) }
+            }
         }
     }
 
@@ -169,7 +178,7 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
         prompt: Boolean = true
     ) {
         val options = teleportOptions ?: destination.world.teleportOptions
-        val loc = if (destination.isSafe(options)) {
+        val loc = if (options.bypassSafeCheck || destination.isSafe(options)) {
             destination
         } else {
             async<Location?> { destination.findSafeLoc(options) }
@@ -360,8 +369,8 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
 
     override fun tick() {
         val task = queue.poll() ?: return
-        task.chunkNeedToPrepare.prepareChunk(task.destination.world)
-        submitSync {
+        submitAsync {
+            task.chunkNeedToPrepare.prepareChunk(task.destination.world)
             fireTeleport(task.player, task.destination, task.teleportOptions, task.prompt)
             notifyChannel.emit(task.destination)
         }

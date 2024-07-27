@@ -18,6 +18,7 @@ class RootNodeDsl<C : Any> : BuildableCommandNodeDsl<C>() {
                 permission(node.permission)
             }
             node.arguments.forEach { argument(it) }
+            node.flags.forEach { commandBuilder.flag(it) }
             node.handler?.let { handler -> suspendingHandler { it.handler() } }
         }
     }
@@ -30,6 +31,7 @@ class RootNodeDsl<C : Any> : BuildableCommandNodeDsl<C>() {
         if (parent == null) {
             return mutableListOf<MutableCommandBuilder<C>>().apply {
                 val rootBuilder = commandManager.commandBuilder(node.prefix.name, aliases = node.prefix.aliases) {}
+                node.builderReceiver?.let { rootBuilder.commandBuilder.it() }
                 node.handler?.let { add(rootBuilder.copy().applyProperty(node)) }
                 node.subNodes.forEach {
                     addAll(createBuilder(commandManager, it, rootBuilder))
@@ -38,6 +40,7 @@ class RootNodeDsl<C : Any> : BuildableCommandNodeDsl<C>() {
         }
         return mutableListOf<MutableCommandBuilder<C>>().apply {
             val childBuilder = parent.copy().literal(node.prefix.name, aliases = node.prefix.aliases)
+            node.builderReceiver?.let { childBuilder.commandBuilder.it() }
             node.handler?.let { add(childBuilder.copy().applyProperty(node)) }
             node.subNodes.forEach {
                 addAll(createBuilder(commandManager, it, childBuilder))

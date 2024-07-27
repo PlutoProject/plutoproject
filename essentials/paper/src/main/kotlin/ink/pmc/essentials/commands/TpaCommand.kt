@@ -3,7 +3,8 @@ package ink.pmc.essentials.commands
 import ink.pmc.essentials.*
 import ink.pmc.essentials.api.Essentials
 import ink.pmc.essentials.api.teleport.TeleportDirection
-import ink.pmc.essentials.api.teleport.TeleportDirection.*
+import ink.pmc.essentials.api.teleport.TeleportDirection.COME
+import ink.pmc.essentials.api.teleport.TeleportDirection.GO
 import ink.pmc.utils.chat.DURATION
 import ink.pmc.utils.chat.replace
 import ink.pmc.utils.dsl.cloud.invoke
@@ -54,12 +55,27 @@ private fun handleTpa(source: Player, destination: Player, direction: TeleportDi
         return
     }
 
+    if (direction == GO && manager.blacklistedWorlds.contains(destination.world)) {
+        source.sendMessage(
+            COMMAND_TPA_FAILED_NOT_ALLOWED_GO
+                .replace("<player>", source.name)
+        )
+        source.playSound(TELEPORT_FAILED_SOUND)
+        return
+    }
+
+    if (direction == COME && manager.blacklistedWorlds.contains(source.world)) {
+        source.sendMessage(COMMAND_TPA_FAILED_NOT_ALLOWED_COME)
+        source.playSound(TELEPORT_FAILED_SOUND)
+        return
+    }
+
     val oldRequest = manager.getUnfinishedRequest(source)
 
     oldRequest?.cancel()
     manager.createRequest(source, destination, direction)
 
-    val message = when(direction) {
+    val message = when (direction) {
         GO -> COMMAND_TPA_SUCCEED
         COME -> COMMAND_TPAHERE_SUCCEED
     }
