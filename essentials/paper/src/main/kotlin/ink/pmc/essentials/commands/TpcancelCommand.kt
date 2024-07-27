@@ -65,6 +65,7 @@ fun Cm.tpcancel(aliases: Array<String>) {
                 COMMAND_TPCANCEL_SUCCEED
                     .replace("<player>", request.destination.name)
             )
+            sender.playSound(TELEPORT_REQUEST_CANCELLED_SOUND)
         }
     }
 }

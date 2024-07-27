@@ -81,7 +81,7 @@ class TeleportRequestImpl(
             TELEPORT_REQUEST_EXPIRED_SOURCE
                 .replace("<player>", destination.name)
         )
-        source.playSound(TELEPORT_REQUEST_DENIED_SOUND)
+        source.playSound(TELEPORT_REQUEST_CANCELLED_SOUND)
     }
 
     override fun cancel(prompt: Boolean) {

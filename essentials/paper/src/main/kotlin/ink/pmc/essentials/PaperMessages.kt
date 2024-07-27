@@ -146,8 +146,8 @@ val TELEPORT_REQUEST_CANCELLED_SOUND = sound {
 }
 
 val TELEPORT_EXPIRE = component {
-    text("该请求将在") with mochaSubtext0
-    text("<expire>") with mochaText
+    text("该请求将在 ") with mochaSubtext0
+    text("<expire> ") with mochaText
     text("后过期") with mochaSubtext0
 }
 

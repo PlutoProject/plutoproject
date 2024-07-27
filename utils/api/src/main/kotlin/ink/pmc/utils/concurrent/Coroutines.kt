@@ -48,6 +48,15 @@ suspend fun async(block: suspend CoroutineScope.() -> Unit) = withContext(Dispat
 suspend fun async(coroutineContext: CoroutineContext, block: suspend CoroutineScope.() -> Unit) =
     withContext(coroutineContext) { block() }
 
+@Suppress("UNUSED")
+@JvmName("asyncValue")
+suspend fun <T> async(block: suspend CoroutineScope.() -> T) = withContext(Dispatchers.Default) { block() }
+
+@Suppress("UNUSED")
+@JvmName("asyncValue")
+suspend fun <T> async(coroutineContext: CoroutineContext, block: suspend CoroutineScope.() -> T) =
+    withContext(coroutineContext) { block() }
+
 // async end
 
 // submitAsyncIO start

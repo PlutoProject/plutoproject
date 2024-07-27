@@ -56,7 +56,7 @@ private fun handleTpa(source: Player, destination: Player, direction: TeleportDi
 
     val oldRequest = manager.getUnfinishedRequest(source)
 
-    oldRequest?.cancel(false)
+    oldRequest?.cancel()
     manager.createRequest(source, destination, direction)
 
     val message = when(direction) {
@@ -69,4 +69,5 @@ private fun handleTpa(source: Player, destination: Player, direction: TeleportDi
     oldRequest?.let {
         source.sendMessage(TELEPORT_REQUEST_AUTO_CANCEL.replace("<player>", oldRequest.destination.name))
     }
+    source.playSound(TELEPORT_REQUEST_RECEIVED_SOUND)
 }

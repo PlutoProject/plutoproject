@@ -42,14 +42,13 @@ fun Cm.tpdeny(aliases: Array<String>) {
 
 private suspend fun CommandContext<CommandSourceStack>.handleOperation(type: Operation) {
     checkPlayer(sender.sender) {
-        val player = this
         val manager = Essentials.teleportManager
         val input = optional<String>("request").getOrNull()
 
         val argPlayer = input?.let { Bukkit.getPlayer(it) }
         val argUuid = input?.uuidOrNull
 
-        val emptyArgRequest = manager.getPendingRequest(player) // 没有参数的情况
+        val emptyArgRequest = manager.getPendingRequest(this) // 没有参数的情况
         val playerArgRequest = argPlayer?.let { manager.getUnfinishedRequest(it) } // 参数是玩家名情况
         val uuidArgRequest = argUuid?.let { manager.getRequest(it) } // 参数是请求 ID 的情况
 
@@ -58,16 +57,19 @@ private suspend fun CommandContext<CommandSourceStack>.handleOperation(type: Ope
 
             if (argUuid != null && (uuidArgRequest == null || uuidArgRequest.isFinished || destination != player)) {
                 sendMessage(COMMAND_TPACCEPT_FAILED_NO_REQUEST_ID)
+                playSound(TELEPORT_FAILED_SOUND)
                 return@checkPlayer
             }
 
             if (argPlayer != null && (playerArgRequest == null || playerArgRequest.isFinished || destination != player)) {
                 sendMessage(COMMAND_TPACCEPT_FAILED_NO_REQUEST.replace("<player>", argPlayer.name))
+                playSound(TELEPORT_FAILED_SOUND)
                 return@checkPlayer
             }
 
             if (argUuid == null && argPlayer == null) {
                 sendMessage(COMMAND_TPACCEPT_FAILED_NO_REQUEST.replace("<player>", input)) // 两种都不就当作玩家名发送错误消息
+                playSound(TELEPORT_FAILED_SOUND)
                 return@checkPlayer
             }
 
@@ -76,12 +78,14 @@ private suspend fun CommandContext<CommandSourceStack>.handleOperation(type: Ope
                 Operation.ACCEPT -> {
                     uuidArgRequest?.accept()
                     playerArgRequest?.accept()
+                    playSound(TELEPORT_SUCCEED_SOUND)
                     COMMAND_TPACCEPT_SUCCEED
                 }
 
                 Operation.DENY -> {
                     uuidArgRequest?.deny()
                     playerArgRequest?.deny()
+                    playSound(TELEPORT_REQUEST_DENIED_SOUND)
                     COMMAND_TPDENY_SUCCEED
                 }
             }

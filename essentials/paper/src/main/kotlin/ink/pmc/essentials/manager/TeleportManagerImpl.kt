@@ -6,6 +6,7 @@ import ink.pmc.essentials.api.teleport.TeleportDirection.COME
 import ink.pmc.essentials.api.teleport.TeleportDirection.GO
 import ink.pmc.utils.chat.DURATION
 import ink.pmc.utils.chat.replace
+import ink.pmc.utils.concurrent.async
 import ink.pmc.utils.concurrent.submitAsync
 import ink.pmc.utils.concurrent.submitSync
 import ink.pmc.utils.concurrent.sync
@@ -17,7 +18,6 @@ import ink.pmc.utils.world.ValueChunkLoc
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import org.bukkit.Location
-import org.bukkit.Material
 import org.bukkit.World
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
@@ -65,9 +65,9 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
             val radius = world.teleportOptions.chunkPrepareRadius
             val centerChunk = ValueChunkLoc(chunk.x, chunk.z)
             val chunks = (-radius..radius).flatMap { x ->
-                (-radius..radius).map { y ->
+                (-radius..radius).map { z ->
                     val x1 = centerChunk.x + x
-                    val y1 = centerChunk.y + y
+                    val y1 = centerChunk.y + z
                     ValueChunkLoc(x1, y1)
                 }
             }.toMutableList()
@@ -87,25 +87,78 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
 
     private fun Location.isSafe(options: TeleportOptions): Boolean {
         val voidCheck = if (options.avoidVoid) y >= world.minHeight else true
-        val footCheck = block.type == Material.AIR
-        val headCheck = clone().add(0.0, 1.0, 0.0).block.type == Material.AIR
+        val footCheck = block.type.isAir
+        val headCheck = clone().add(0.0, 1.0, 0.0).block.type.isAir
         val stand = clone().subtract(0.0, 1.0, 0.0)
-        val standCheck = stand.block.type != Material.AIR
+        val standCheck = !stand.block.type.isAir
         val blacklistCheck = !options.blacklistedBlocks.contains(stand.block.type)
         return voidCheck && footCheck && headCheck && standCheck && blacklistCheck
     }
 
     private fun Location.findSafeLoc(options: TeleportOptions): Location? {
-        for (x in -options.safeLocationSearchRadius..options.safeLocationSearchRadius) {
-            for (y in -options.safeLocationSearchRadius..options.safeLocationSearchRadius) {
-                for (z in -options.safeLocationSearchRadius..options.safeLocationSearchRadius) {
-                    val loc = clone().add(x.toDouble(), y.toDouble(), z.toDouble())
-                    if (loc.isSafe(options)) {
-                        return loc
+        val visited = mutableSetOf<Location>()
+
+        fun Location.bfs(): Location? {
+            val radius = options.safeLocationSearchRadius
+            val queue: Queue<Location> = LinkedList()
+            queue.add(this)
+
+            while (queue.isNotEmpty()) {
+                val current = queue.poll()
+                if (!visited.add(current)) {
+                    continue
+                }
+
+                if (current.isSafe(options)) {
+                    return current
+                }
+
+                // 添加相邻位置
+                for (dx in -1..1) {
+                    for (dy in -1..1) {
+                        for (dz in -1..1) {
+                            if (dx == 0 && dy == 0 && dz == 0) continue // 跳过当前位置
+                            val neighbor = current.clone().add(dx.toDouble(), dy.toDouble(), dz.toDouble())
+                            if (neighbor.distance(this) <= radius) {
+                                queue.add(neighbor)
+                            }
+                        }
                     }
                 }
             }
+
+            return null
         }
+
+        fun iterateLocations(range: IntRange): Location? {
+            for (dy in range) {
+                val loc = clone().subtract(0.0, dy.toDouble(), 0.0)
+
+                if (loc.blockY < world.minHeight) {
+                    return null
+                }
+
+                if (!loc.block.type.isAir) {
+                    return loc
+                }
+            }
+            return null
+        }
+
+        val startPoint = if (blockY < world.minHeight) {
+            blockY
+        } else {
+            iterateLocations(0..(blockY - world.minHeight))?.blockY ?: blockY
+        }
+
+        for (dy in startPoint..world.maxHeight) {
+            val loc = clone().apply { y = dy.toDouble() }
+            val bfs = loc.bfs()
+            if (bfs != null) {
+                return bfs.toCenterLocation()
+            }
+        }
+
         return null
     }
 
@@ -119,7 +172,7 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
         val loc = if (destination.isSafe(options)) {
             destination
         } else {
-            destination.findSafeLoc(options)
+            async<Location?> { destination.findSafeLoc(options) }
         }
 
         if (loc == null) {
@@ -207,9 +260,8 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
                 return@submitAsync
             }
             request.expire()
-            destination.sendMessage(TELEPORT_REQUEST_EXPIRED.replace("<player>", destination.name))
+            destination.sendMessage(TELEPORT_REQUEST_EXPIRED.replace("<player>", source.name))
             destination.playSound(TELEPORT_REQUEST_CANCELLED_SOUND)
-            source.sendMessage(TELEPORT_REQUEST_EXPIRED_SOURCE.replace("<player>", destination.name))
         }
 
         essentialsScope.submitAsync {
