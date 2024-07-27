@@ -64,13 +64,15 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
         get() {
             val radius = world.teleportOptions.chunkPrepareRadius
             val centerChunk = ValueChunkLoc(chunk.x, chunk.z)
-            return (-radius..radius).flatMap { x ->
+            val chunks = (-radius..radius).flatMap { x ->
                 (-radius..radius).map { y ->
                     val x1 = centerChunk.x + x
                     val y1 = centerChunk.y + y
                     ValueChunkLoc(x1, y1)
                 }
-            }
+            }.toMutableList()
+            chunks.add(centerChunk)
+            return chunks
         }
 
     private fun List<ValueChunkLoc>.allPrepared(world: World): Boolean {
@@ -85,11 +87,12 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
 
     private fun Location.isSafe(options: TeleportOptions): Boolean {
         val voidCheck = if (options.avoidVoid) y >= world.minHeight else true
-        val suffocateCheck = clone().add(0.0, 1.0, 0.0).block.type == Material.AIR
+        val footCheck = block.type == Material.AIR
+        val headCheck = clone().add(0.0, 1.0, 0.0).block.type == Material.AIR
         val stand = clone().subtract(0.0, 1.0, 0.0)
         val standCheck = stand.block.type != Material.AIR
         val blacklistCheck = !options.blacklistedBlocks.contains(stand.block.type)
-        return voidCheck && suffocateCheck && standCheck && blacklistCheck
+        return voidCheck && footCheck && headCheck && standCheck && blacklistCheck
     }
 
     private fun Location.findSafeLoc(options: TeleportOptions): Location? {
@@ -190,6 +193,7 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
         destination.sendMessage(message)
         destination.sendMessage(TELEPORT_EXPIRE.replace("<expire>", DURATION(options.expireAfter)))
         destination.sendMessage(TELEPORT_OPERATION(request.id))
+        destination.playSound(TELEPORT_REQUEST_RECEIVED_SOUND)
 
         if (teleportRequests.size == conf.maxRequestsStored) {
             teleportRequests.removeAt(0).cancel()
@@ -204,6 +208,7 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
             }
             request.expire()
             destination.sendMessage(TELEPORT_REQUEST_EXPIRED.replace("<player>", destination.name))
+            destination.playSound(TELEPORT_REQUEST_CANCELLED_SOUND)
             source.sendMessage(TELEPORT_REQUEST_EXPIRED_SOURCE.replace("<player>", destination.name))
         }
 

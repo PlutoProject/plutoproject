@@ -3,6 +3,7 @@ package ink.pmc.essentials.listeners
 import com.destroystokyo.paper.event.server.ServerTickEndEvent
 import ink.pmc.essentials.EssentialsConfig
 import ink.pmc.essentials.TELEPORT_REQUEST_CANCELED_OFFLINE
+import ink.pmc.essentials.TELEPORT_REQUEST_CANCELLED_SOUND
 import ink.pmc.essentials.api.teleport.TeleportManager
 import ink.pmc.utils.chat.replace
 import ink.pmc.utils.concurrent.submitSync
@@ -16,7 +17,7 @@ import org.koin.core.component.inject
 @Suppress("UNUSED", "UnusedReceiverParameter")
 object TeleportListener : Listener, KoinComponent {
 
-    private val teleportManager by inject<TeleportManager>()
+    private val manager by inject<TeleportManager>()
     private val conf = get<EssentialsConfig>().Teleport()
 
     @EventHandler
@@ -24,31 +25,33 @@ object TeleportListener : Listener, KoinComponent {
         // 丢入休眠期间执行
         repeat(conf.queueProcessPerTick) {
             submitSync {
-                teleportManager.tick()
+                manager.tick()
             }
         }
     }
 
     @EventHandler
     fun PlayerQuitEvent.e() {
-        val sourceOffline = teleportManager.teleportRequests.firstOrNull { it.source == player }
-        val destinationOffline = teleportManager.teleportRequests.firstOrNull { it.destination == player }
+        val unfinished = manager.getUnfinishedRequest(player)
+        val pending = manager.getPendingRequest(player)
 
-        sourceOffline?.cancel(false)
-        destinationOffline?.cancel(false)
+        if (unfinished != null) {
+            unfinished.cancel(false)
+            unfinished.destination.sendMessage(
+                TELEPORT_REQUEST_CANCELED_OFFLINE
+                    .replace("<player>", player.name)
+            )
+            unfinished.destination.playSound(TELEPORT_REQUEST_CANCELLED_SOUND)
+        }
 
-        sourceOffline?.destination?.sendMessage(
-            TELEPORT_REQUEST_CANCELED_OFFLINE.replace(
-                "<player>",
-                sourceOffline.source.name
+        if (pending != null) {
+            pending.cancel()
+            pending.source.sendMessage(
+                TELEPORT_REQUEST_CANCELED_OFFLINE
+                    .replace("<player>", player.name)
             )
-        )
-        destinationOffline?.source?.sendMessage(
-            TELEPORT_REQUEST_CANCELED_OFFLINE.replace(
-                "<player>",
-                destinationOffline.destination.name
-            )
-        )
+            pending.source.playSound(TELEPORT_REQUEST_CANCELLED_SOUND)
+        }
     }
 
 }

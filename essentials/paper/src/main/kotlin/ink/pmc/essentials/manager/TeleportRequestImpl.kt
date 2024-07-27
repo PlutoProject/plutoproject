@@ -1,9 +1,6 @@
 package ink.pmc.essentials.manager
 
-import ink.pmc.essentials.TELEPORT_REQUEST_ACCEPTED_SOURCE
-import ink.pmc.essentials.TELEPORT_REQUEST_CANCELED
-import ink.pmc.essentials.TELEPORT_REQUEST_DENYED_SOURCE
-import ink.pmc.essentials.TELEPORT_REQUEST_EXPIRED_SOURCE
+import ink.pmc.essentials.*
 import ink.pmc.essentials.api.teleport.*
 import ink.pmc.essentials.api.teleport.TeleportDirection.COME
 import ink.pmc.essentials.api.teleport.TeleportDirection.GO
@@ -63,9 +60,10 @@ class TeleportRequestImpl(
         }
 
         source.sendMessage(
-            TELEPORT_REQUEST_DENYED_SOURCE
+            TELEPORT_REQUEST_DENIED_SOURCE
                 .replace("<player>", destination.name)
         )
+        source.playSound(TELEPORT_REQUEST_DENIED_SOUND)
     }
 
     override fun expire(prompt: Boolean) {
@@ -83,6 +81,7 @@ class TeleportRequestImpl(
             TELEPORT_REQUEST_EXPIRED_SOURCE
                 .replace("<player>", destination.name)
         )
+        source.playSound(TELEPORT_REQUEST_DENIED_SOUND)
     }
 
     override fun cancel(prompt: Boolean) {
@@ -98,8 +97,9 @@ class TeleportRequestImpl(
 
         destination.sendMessage(
             TELEPORT_REQUEST_CANCELED
-                .replace("<player>", destination.name)
+                .replace("<player>", source.name)
         )
+        destination.playSound(TELEPORT_REQUEST_CANCELLED_SOUND)
     }
 
 }

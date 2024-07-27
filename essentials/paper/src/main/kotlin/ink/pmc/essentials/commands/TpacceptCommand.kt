@@ -56,12 +56,12 @@ private suspend fun CommandContext<CommandSourceStack>.handleOperation(type: Ope
         if (input != null) {
             val destination = uuidArgRequest?.destination ?: playerArgRequest?.destination
 
-            if (argUuid != null && (uuidArgRequest == null || destination != player)) {
+            if (argUuid != null && (uuidArgRequest == null || uuidArgRequest.isFinished || destination != player)) {
                 sendMessage(COMMAND_TPACCEPT_FAILED_NO_REQUEST_ID)
                 return@checkPlayer
             }
 
-            if (argPlayer != null && (playerArgRequest == null || destination != player)) {
+            if (argPlayer != null && (playerArgRequest == null || playerArgRequest.isFinished || destination != player)) {
                 sendMessage(COMMAND_TPACCEPT_FAILED_NO_REQUEST.replace("<player>", argPlayer.name))
                 return@checkPlayer
             }
@@ -78,6 +78,7 @@ private suspend fun CommandContext<CommandSourceStack>.handleOperation(type: Ope
                     playerArgRequest?.accept()
                     COMMAND_TPACCEPT_SUCCEED
                 }
+
                 Operation.DENY -> {
                     uuidArgRequest?.deny()
                     playerArgRequest?.deny()

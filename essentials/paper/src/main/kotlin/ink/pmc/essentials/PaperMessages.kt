@@ -86,14 +86,15 @@ val TELEPORT_PREPARING_TITLE = title {
 }
 
 val TELEPORT_PREPARING_SOUND = sound {
-    key(Key.key("block.decorated_pot.insert"))
+    key(Key.key("block.amethyst_cluster.hit"))
 }
 
 val TELEPORT_SUCCEED_MAINTITLE_ARRAY = arrayOf(
     "落地！",
-    "降落！",
     "到站了~",
     "请带好随身行李",
+    "开门请当心",
+    "下车请注意安全"
 )
 
 val TELEPORT_SUCCEED_MAINTITLE
@@ -136,8 +137,16 @@ val TELEPORT_FAILED_SOUND = sound {
     key(Key.key("block.amethyst_cluster.break"))
 }
 
+val TELEPORT_REQUEST_DENIED_SOUND = sound {
+    key(Key.key("entity.villager.no"))
+}
+
+val TELEPORT_REQUEST_CANCELLED_SOUND = sound {
+    key(Key.key("block.chain.hit"))
+}
+
 val TELEPORT_EXPIRE = component {
-    text("该传送请求将在") with mochaSubtext0
+    text("该请求将在") with mochaSubtext0
     text("<expire>") with mochaText
     text("后过期") with mochaSubtext0
 }
@@ -153,7 +162,7 @@ val TELEPORT_REQUEST_ACCEPTED_SOURCE = component {
     text("接受了你的传送请求") with mochaGreen
 }
 
-val TELEPORT_REQUEST_DENYED_SOURCE = component {
+val TELEPORT_REQUEST_DENIED_SOURCE = component {
     text("<player> ") with mochaFlamingo
     text("拒绝了你的传送请求") with mochaMaroon
 }
@@ -186,14 +195,18 @@ val COMMAND_TPA_AFK = component {
     text("对方目前正处于离开状态，可能无法及时查看请求") with mochaSubtext0
 }
 
+val TELEPORT_REQUEST_RECEIVED_SOUND = sound {
+    key(Key.key("block.decorated_pot.insert"))
+}
+
 val COMMAND_TPA_SUCCEED = component {
-    text("已请求传送到 ") with mochaPink
+    text("已向 ") with mochaPink
     text("<player> ") with mochaFlamingo
-    text("那里") with mochaPink
+    text("请求传送至其所在位置") with mochaPink
 }
 
 val COMMAND_TPA_FAILED_SELF = component {
-    text("你不能向自己发送传送请求噢") with mochaMaroon
+    text("你不能向自己发送传送请求") with mochaMaroon
 }
 
 val COMMAND_TPA_FAILED_TARGET_BUSY = component {
@@ -201,19 +214,21 @@ val COMMAND_TPA_FAILED_TARGET_BUSY = component {
 }
 
 val COMMAND_TPAHERE_SUCCEED = component {
-    text("已请求 ") with mochaPink
+    text("已向 ") with mochaPink
     text("<player> ") with mochaFlamingo
-    text("传送到你这里") with mochaPink
+    text("请求传送到你所在的位置") with mochaPink
 }
 
 val TELEPORT_TPA_RECEIVED = component {
     text("<player> ") with mochaFlamingo
-    text("想要传送到你这里") with mochaPink
+    text("请求传送到") with mochaPink
+    text("你所在的位置") with mochaPink with underlined()
 }
 
 val TELEPORT_TPAHERE_RECEIVED = component {
     text("<player> ") with mochaFlamingo
-    text("想要你传送到他那里") with mochaPink
+    text("请求将你传送至") with mochaPink
+    text("其所在的位置") with mochaPink with underlined()
 }
 
 val COMMAND_TPACCEPT_SUCCEED = component {
@@ -265,12 +280,12 @@ val COMMAND_TPCANCEL_OTHER_NOTIFY = component {
 }
 
 val COMMAND_TPCANCEL_NO_REQUEST = component {
-    text("你没有待处理的传送请求") with mochaMaroon
+    text("你没有未完成的传送请求") with mochaMaroon
 }
 
 val COMMAND_TPCANCEL_NO_REQUEST_OTHER = component {
     text("<player> ") with mochaFlamingo
-    text("没有待处理的传送请求") with mochaMaroon
+    text("没有未完成的传送请求") with mochaMaroon
 }
 
 @Suppress("FunctionName")
