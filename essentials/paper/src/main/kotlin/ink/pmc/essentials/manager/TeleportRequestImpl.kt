@@ -68,13 +68,6 @@ class TeleportRequestImpl(
         )
     }
 
-    override fun ignore(prompt: Boolean) {
-        if (isFinished) {
-            return
-        }
-        status = RequestStatus.IGNORED
-    }
-
     override fun expire(prompt: Boolean) {
         if (isFinished) {
             return

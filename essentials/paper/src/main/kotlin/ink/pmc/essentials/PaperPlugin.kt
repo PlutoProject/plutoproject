@@ -2,7 +2,6 @@ package ink.pmc.essentials
 
 import com.electronwill.nightconfig.core.file.FileConfig
 import com.github.shynixn.mccoroutine.bukkit.SuspendingJavaPlugin
-import com.google.protobuf.duration
 import ink.pmc.essentials.api.Essentials
 import ink.pmc.essentials.api.IEssentials
 import ink.pmc.essentials.listeners.TeleportListener
@@ -13,8 +12,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import org.bukkit.plugin.Plugin
-import org.incendo.cloud.caption.Caption
-import org.incendo.cloud.caption.CaptionProvider
 import org.incendo.cloud.execution.ExecutionCoordinator
 import org.incendo.cloud.paper.PaperCommandManager
 import org.koin.core.component.KoinComponent
@@ -24,8 +21,6 @@ import org.koin.core.context.startKoin
 import java.io.File
 import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.jvm.kotlinFunction
-import kotlin.time.Duration
-import kotlin.time.toJavaDuration
 
 typealias Cm = PaperCommandManager<CommandSourceStack>
 
@@ -55,8 +50,6 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
         commandManager = PaperCommandManager.builder()
             .executionCoordinator(ExecutionCoordinator.asyncCoordinator())
             .buildOnEnable(this)
-
-        commandManager.captionRegistry().registerProvider { caption, recipient -> TODO("Not yet implemented") }
 
         IEssentials.instance = get<IEssentials>()
         commandManager.registerCommands(COMMAND_PACKAGE)
