@@ -2,6 +2,7 @@ package ink.pmc.essentials
 
 import ink.pmc.essentials.api.IEssentials
 import ink.pmc.essentials.api.teleport.TeleportManager
+import ink.pmc.essentials.config.EssentialsConfig
 import ink.pmc.essentials.manager.TeleportManagerImpl
 import org.koin.dsl.module
 

@@ -1,4 +1,4 @@
-package ink.pmc.essentials
+package ink.pmc.essentials.config
 
 import com.electronwill.nightconfig.core.Config
 import ink.pmc.utils.config.toMapViaEntry
@@ -19,6 +19,8 @@ class EssentialsConfig(private val config: Config) : Config by config {
         val requestExpireAfter: String get() = get("teleport.request.expire-after")
         val requestRemoveAfter: String get() = get("teleport.request.remove-after")
         val queueProcessPerTick: Int get() = get("teleport.queue-process-per-tick")
+        val chunkPrepareMethod: ChunkPrepareMethod get() = ChunkPrepareMethod.valueOf(get<String>("teleport.chunk-prepare-method").uppercase())
+        val slowChunkPrepare: Boolean get() = get("teleport.slow-chunk-prepare")
         val avoidVoid: Boolean = get("teleport.avoid-void")
         val safeLocationSearchRadius: Int get() = get("teleport.safe-location-search-radius")
         val chunkPrepareRadius: Int get() = get("teleport.chunk-prepare-radius")

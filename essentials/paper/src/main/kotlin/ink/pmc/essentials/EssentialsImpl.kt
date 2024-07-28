@@ -7,6 +7,7 @@ import ink.pmc.essentials.api.home.HomeManager
 import ink.pmc.essentials.api.teleport.TeleportManager
 import ink.pmc.essentials.api.teleport.random.RandomTeleportManager
 import ink.pmc.essentials.api.warp.WarpManager
+import ink.pmc.essentials.config.EssentialsConfig
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 

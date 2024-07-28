@@ -4,6 +4,7 @@ import com.electronwill.nightconfig.core.file.FileConfig
 import com.github.shynixn.mccoroutine.bukkit.SuspendingJavaPlugin
 import ink.pmc.essentials.api.Essentials
 import ink.pmc.essentials.api.IEssentials
+import ink.pmc.essentials.config.EssentialsConfig
 import ink.pmc.essentials.listeners.TeleportListener
 import ink.pmc.utils.storage.saveResourceIfNotExisted
 import io.github.classgraph.ClassGraph

@@ -4,30 +4,34 @@ import ink.pmc.essentials.*
 import ink.pmc.essentials.api.teleport.*
 import ink.pmc.essentials.api.teleport.TeleportDirection.COME
 import ink.pmc.essentials.api.teleport.TeleportDirection.GO
+import ink.pmc.essentials.config.ChunkPrepareMethod.*
+import ink.pmc.essentials.config.EssentialsConfig
 import ink.pmc.utils.chat.DURATION
 import ink.pmc.utils.chat.replace
 import ink.pmc.utils.concurrent.async
+import ink.pmc.utils.concurrent.compose
 import ink.pmc.utils.concurrent.submitAsync
-import ink.pmc.utils.concurrent.sync
+import ink.pmc.utils.concurrent.submitSync
 import ink.pmc.utils.data.mapKv
 import ink.pmc.utils.entity.teleportSuspend
 import ink.pmc.utils.multiplaform.item.KeyedMaterial
 import ink.pmc.utils.multiplaform.item.exts.bukkit
 import ink.pmc.utils.world.ValueChunkLoc
 import ink.pmc.utils.world.getChunkViaSource
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.future.await
 import org.bukkit.Location
 import org.bukkit.World
+import org.bukkit.block.BlockFace
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import java.util.*
+import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentLinkedQueue
+import kotlin.math.floor
 import kotlin.time.Duration
 
 class TeleportManagerImpl : TeleportManager, KoinComponent {
@@ -91,7 +95,14 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
     private suspend fun List<ValueChunkLoc>.prepareChunk(world: World) {
         coroutineScope {
             forEach {
-                submitAsync { world.getChunkViaSource(it.x, it.y) }
+                submitAsync {
+                    when (conf.chunkPrepareMethod) {
+                        SYNC -> world.getChunkAt(it.x, it.y)
+                        ASYNC -> world.getChunkAtAsync(it.x, it.y).await()
+                        ASYNC_SLOW -> world.getChunkAtAsyncUrgently(it.x, it.y).await()
+                        CHUNK_SOURCE -> world.getChunkViaSource(it.x, it.y)
+                    }
+                }
             }
         }
     }
@@ -106,8 +117,8 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
         return voidCheck && footCheck && headCheck && standCheck && blacklistCheck
     }
 
-    private fun Location.findSafeLoc(options: TeleportOptions): Location? {
-        val visited = mutableSetOf<Location>()
+    private suspend fun Location.findSafeLoc(options: TeleportOptions): Location? {
+        val visited = ConcurrentHashMap.newKeySet<Location>()
 
         fun Location.bfs(): Location? {
             val radius = options.safeLocationSearchRadius
@@ -141,36 +152,42 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
             return null
         }
 
-        fun iterateLocations(range: IntRange): Location? {
+        suspend fun iterateLocations(range: IntProgression, direction: BlockFace): Location? {
             for (dy in range) {
-                val loc = clone().subtract(0.0, dy.toDouble(), 0.0)
+                val loc = when (direction) {
+                    BlockFace.UP -> clone().add(0.0, dy.toDouble(), 0.0)
+                    BlockFace.DOWN -> clone().subtract(0.0, dy.toDouble(), 0.0)
+                    else -> throw IllegalStateException("Unsupported direction")
+                }
 
-                if (loc.blockY < world.minHeight) {
+                if (direction == BlockFace.UP && loc.blockY > world.maxHeight) {
                     return null
                 }
 
-                if (!loc.block.type.isAir) {
-                    return loc
+                if (direction == BlockFace.DOWN && loc.blockY < world.minHeight) {
+                    return null
                 }
+
+                val bfs = loc.bfs()
+
+                if (bfs != null) {
+                    return bfs
+                }
+
+                yield() // 尽快响应取消
             }
+
             return null
         }
 
-        val startPoint = if (blockY < world.minHeight) {
-            blockY
-        } else {
-            iterateLocations(0..(blockY - world.minHeight))?.blockY ?: blockY
-        }
+        val searchUp = submitAsync<Location?> { iterateLocations(0..(world.maxHeight - blockY), BlockFace.UP) }
+        val searchCurr = submitAsync<Location?> { bfs() }
+        val searchDown = submitAsync<Location?> { iterateLocations(0..(blockY - world.minHeight), BlockFace.DOWN) }
+        val tasks = arrayOf(searchUp, searchCurr, searchDown)
 
-        for (dy in startPoint..world.maxHeight) {
-            val loc = clone().apply { y = dy.toDouble() }
-            val bfs = loc.bfs()
-            if (bfs != null) {
-                return bfs.toCenterLocation()
-            }
-        }
-
-        return null
+        return compose(tasks) {
+            it != null
+        }?.toCenterLocation()?.apply { y = floor(y) }
     }
 
     private suspend fun fireTeleport(
@@ -331,25 +348,27 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
         teleportOptions: TeleportOptions?,
         prompt: Boolean
     ) {
-        val prepare = destination.chunkNeedToPrepare
+        async {
+            val prepare = destination.chunkNeedToPrepare
 
-        if (prepare.allPrepared(destination.world)) {
-            sync { fireTeleport(player, destination, teleportOptions, prompt) }
-            return
-        }
+            if (prepare.allPrepared(destination.world)) {
+                fireTeleport(player, destination, teleportOptions, prompt)
+                return@async
+            }
 
-        if (prompt) {
-            player.showTitle(TELEPORT_PREPARING_TITLE)
-            player.playSound(TELEPORT_PREPARING_SOUND)
-        }
+            if (prompt) {
+                player.showTitle(TELEPORT_PREPARING_TITLE)
+                player.playSound(TELEPORT_PREPARING_SOUND)
+            }
 
-        val id = UUID.randomUUID()
-        queue.offer(TeleportTask(id, player, destination, teleportOptions, prompt, prepare))
-        coroutineScope {
-            launch {
-                notifyChannel.collect {
-                    if (it == id) {
-                        cancel()
+            val id = UUID.randomUUID()
+            queue.offer(TeleportTask(id, player, destination, teleportOptions, prompt, prepare))
+            coroutineScope {
+                launch {
+                    notifyChannel.collect {
+                        if (it == id) {
+                            cancel()
+                        }
                     }
                 }
             }
@@ -376,7 +395,7 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
 
     override fun tick() {
         val task = queue.poll() ?: return
-        submitAsync {
+        submitSync {
             task.chunkNeedToPrepare.prepareChunk(task.destination.world)
             fireTeleport(task.player, task.destination, task.teleportOptions, task.prompt)
             notifyChannel.emit(task.id)

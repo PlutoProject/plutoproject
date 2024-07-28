@@ -1,7 +1,7 @@
 package ink.pmc.essentials.listeners
 
 import com.destroystokyo.paper.event.server.ServerTickEndEvent
-import ink.pmc.essentials.EssentialsConfig
+import ink.pmc.essentials.config.EssentialsConfig
 import ink.pmc.essentials.TELEPORT_REQUEST_CANCELED_OFFLINE
 import ink.pmc.essentials.TELEPORT_REQUEST_CANCELLED_SOUND
 import ink.pmc.essentials.api.teleport.TeleportManager
