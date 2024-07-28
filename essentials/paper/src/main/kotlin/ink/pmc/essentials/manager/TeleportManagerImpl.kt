@@ -15,9 +15,11 @@ import ink.pmc.utils.multiplaform.item.KeyedMaterial
 import ink.pmc.utils.multiplaform.item.exts.bukkit
 import ink.pmc.utils.world.ValueChunkLoc
 import ink.pmc.utils.world.getChunkViaSource
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.launch
 import org.bukkit.Location
 import org.bukkit.World
 import org.bukkit.entity.Entity
@@ -33,7 +35,7 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
     private val conf = get<EssentialsConfig>().Teleport()
 
     // 用于在完成队列任务时通知
-    private val notifyChannel = MutableSharedFlow<Location>()
+    private val notifyChannel = MutableSharedFlow<UUID>()
 
     override val teleportRequests: MutableList<TeleportRequest> = mutableListOf()
     override val queue: Queue<TeleportTask> = ConcurrentLinkedQueue()
@@ -341,10 +343,15 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
             player.playSound(TELEPORT_PREPARING_SOUND)
         }
 
-        queue.offer(TeleportTask(player, destination, teleportOptions, prompt, prepare))
-        notifyChannel.collect {
-            if (it == destination) {
-                return@collect
+        val id = UUID.randomUUID()
+        queue.offer(TeleportTask(id, player, destination, teleportOptions, prompt, prepare))
+        coroutineScope {
+            launch {
+                notifyChannel.collect {
+                    if (it == id) {
+                        cancel()
+                    }
+                }
             }
         }
     }
@@ -372,7 +379,7 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
         submitAsync {
             task.chunkNeedToPrepare.prepareChunk(task.destination.world)
             fireTeleport(task.player, task.destination, task.teleportOptions, task.prompt)
-            notifyChannel.emit(task.destination)
+            notifyChannel.emit(task.id)
         }
     }
 
