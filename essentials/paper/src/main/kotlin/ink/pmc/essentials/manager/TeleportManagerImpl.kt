@@ -20,6 +20,7 @@ import ink.pmc.utils.world.ValueChunkLoc
 import ink.pmc.utils.world.getChunkViaSource
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.future.asCompletableFuture
 import kotlinx.coroutines.future.await
 import org.bukkit.Location
 import org.bukkit.World
@@ -117,7 +118,7 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
         return voidCheck && footCheck && headCheck && standCheck && blacklistCheck
     }
 
-    private suspend fun Location.findSafeLoc(options: TeleportOptions): Location? {
+    private suspend fun Location.searchSafeLoc(options: TeleportOptions): Location? {
         val visited = ConcurrentHashMap.newKeySet<Location>()
 
         fun Location.bfs(): Location? {
@@ -200,7 +201,7 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
         val loc = if (options.bypassSafeCheck || destination.isSafe(options)) {
             destination
         } else {
-            async<Location?> { destination.findSafeLoc(options) }
+            async<Location?> { destination.searchSafeLoc(options) }
         }
 
         if (loc == null) {
@@ -340,6 +341,20 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
         submitAsync {
             teleportSuspend(player, destination.location, teleportOptions, prompt)
         }
+    }
+
+    override fun isSafe(location: Location, teleportOptions: TeleportOptions?): Boolean {
+        val options = teleportOptions ?: location.world.teleportOptions
+        return location.isSafe(options)
+    }
+
+    override suspend fun searchSafeLocationSuspend(start: Location, teleportOptions: TeleportOptions?): Location? {
+        val options = teleportOptions ?: start.world.teleportOptions
+        return start.searchSafeLoc(options)
+    }
+
+    override fun searchSafeLocation(start: Location, teleportOptions: TeleportOptions?): Location? {
+        return submitAsync<Location?> { searchSafeLocationSuspend(start, teleportOptions) }.asCompletableFuture().join()
     }
 
     override suspend fun teleportSuspend(

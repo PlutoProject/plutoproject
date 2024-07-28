@@ -51,6 +51,12 @@ interface TeleportManager {
 
     fun teleport(player: Player, destination: Location, teleportOptions: TeleportOptions? = null, prompt: Boolean = true)
 
+    fun isSafe(location: Location, teleportOptions: TeleportOptions? = null): Boolean
+
+    suspend fun searchSafeLocationSuspend(start: Location, teleportOptions: TeleportOptions? = null): Location?
+
+    fun searchSafeLocation(start: Location, teleportOptions: TeleportOptions? = null): Location?
+
     suspend fun teleportSuspend(
         player: Player,
         destination: Location,
