@@ -7,11 +7,11 @@ import ink.pmc.essentials.api.teleport.TeleportDirection.GO
 import ink.pmc.essentials.config.ChunkPrepareMethod.*
 import ink.pmc.essentials.config.EssentialsConfig
 import ink.pmc.utils.chat.DURATION
+import ink.pmc.utils.chat.UNUSUAL_ISSUE
 import ink.pmc.utils.chat.replace
 import ink.pmc.utils.concurrent.async
 import ink.pmc.utils.concurrent.compose
 import ink.pmc.utils.concurrent.submitAsync
-import ink.pmc.utils.concurrent.submitSync
 import ink.pmc.utils.data.mapKv
 import ink.pmc.utils.entity.teleportSuspend
 import ink.pmc.utils.multiplaform.item.KeyedMaterial
@@ -34,6 +34,7 @@ import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentLinkedQueue
 import kotlin.math.floor
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 
 class TeleportManagerImpl : TeleportManager, KoinComponent {
 
@@ -66,34 +67,40 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
         )
     }
     override val blacklistedWorlds: Collection<World> = conf.blacklistedWorlds
+    override var tickingTask: TeleportTask? = null
+    override var tickCount = 0L
+    override var lastTickTime = 0L
+    override var state: TeleportManagerState = TeleportManagerState.IDLE
 
     override fun getWorldTeleportOptions(world: World): TeleportOptions {
         return world.teleportOptions
     }
 
+    private val hasUnfinishedTick: Boolean
+        get() = state == TeleportManagerState.TICKING
+
     private val World.teleportOptions: TeleportOptions
         get() = worldTeleportOptions[this] ?: defaultTeleportOptions
 
-    private val Location.chunkNeedToPrepare: List<ValueChunkLoc>
-        get() {
-            val radius = world.teleportOptions.chunkPrepareRadius
-            val centerChunk = ValueChunkLoc(chunk.x, chunk.z)
-            val chunks = (-radius..radius).flatMap { x ->
-                (-radius..radius).map { z ->
-                    val x1 = centerChunk.x + x
-                    val y1 = centerChunk.y + z
-                    ValueChunkLoc(x1, y1)
-                }
-            }.toMutableList()
-            chunks.add(centerChunk)
-            return chunks
-        }
+    private fun Location.chunkNeedToPrepare(radius: Int): List<ValueChunkLoc> {
+        val centerChunk = ValueChunkLoc(chunk.x, chunk.z)
+        val chunks = (-radius..radius).flatMap { x ->
+            (-radius..radius).map { z ->
+                val x1 = centerChunk.x + x
+                val y1 = centerChunk.y + z
+                ValueChunkLoc(x1, y1)
+            }
+        }.toMutableList()
+        chunks.add(centerChunk)
+        return chunks
+    }
 
     private fun List<ValueChunkLoc>.allPrepared(world: World): Boolean {
         return all { it.isLoaded(world) }
     }
 
-    private suspend fun List<ValueChunkLoc>.prepareChunk(world: World) {
+    @JvmName("internalPrepareChunk")
+    private suspend fun Collection<ValueChunkLoc>.prepareChunk(world: World) {
         coroutineScope {
             forEach {
                 submitAsync {
@@ -103,11 +110,13 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
                         ASYNC_SLOW -> world.getChunkAtAsyncUrgently(it.x, it.y).await()
                         CHUNK_SOURCE -> world.getChunkViaSource(it.x, it.y)
                     }
+                    yield() // 确保任务超时可以正常取消
                 }
             }
         }
     }
 
+    @JvmName("internalIsSafe")
     private fun Location.isSafe(options: TeleportOptions): Boolean {
         val voidCheck = if (options.avoidVoid) y >= world.minHeight else true
         val footCheck = block.type.isAir
@@ -115,7 +124,8 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
         val stand = clone().subtract(0.0, 1.0, 0.0)
         val standCheck = !stand.block.type.isAir
         val blacklistCheck = !options.blacklistedBlocks.contains(stand.block.type)
-        return voidCheck && footCheck && headCheck && standCheck && blacklistCheck
+        val worldBorderCheck = this.world.worldBorder.isInside(this)
+        return voidCheck && footCheck && headCheck && standCheck && blacklistCheck && worldBorderCheck
     }
 
     private suspend fun Location.searchSafeLoc(options: TeleportOptions): Location? {
@@ -191,17 +201,17 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
         }?.toCenterLocation()?.apply { y = floor(y) }
     }
 
-    private suspend fun fireTeleport(
+    override suspend fun fireTeleport(
         player: Player,
         destination: Location,
-        teleportOptions: TeleportOptions?,
-        prompt: Boolean = true
+        options: TeleportOptions?,
+        prompt: Boolean
     ) {
-        val options = teleportOptions ?: destination.world.teleportOptions
-        val loc = if (options.bypassSafeCheck || destination.isSafe(options)) {
+        val opt = options ?: destination.world.teleportOptions
+        val loc = if (opt.bypassSafeCheck || destination.isSafe(opt)) {
             destination
         } else {
-            async<Location?> { destination.searchSafeLoc(options) }
+            async<Location?> { destination.searchSafeLoc(opt) }
         }
 
         if (loc == null) {
@@ -325,49 +335,56 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
         teleportRequests.clear()
     }
 
-    override fun teleport(player: Player, destination: Location, teleportOptions: TeleportOptions?, prompt: Boolean) {
+    override suspend fun prepareChunk(chunks: Collection<ValueChunkLoc>, world: World) {
+        chunks.prepareChunk(world)
+    }
+
+    override fun teleport(player: Player, destination: Location, options: TeleportOptions?, prompt: Boolean) {
         submitAsync {
-            teleportSuspend(player, destination, teleportOptions, prompt)
+            teleportSuspend(player, destination, options, prompt)
         }
     }
 
-    override fun teleport(player: Player, destination: Player, teleportOptions: TeleportOptions?, prompt: Boolean) {
+    override fun teleport(player: Player, destination: Player, options: TeleportOptions?, prompt: Boolean) {
         submitAsync {
-            teleportSuspend(player, destination.location, teleportOptions, prompt)
+            teleportSuspend(player, destination.location, options, prompt)
         }
     }
 
-    override fun teleport(player: Player, destination: Entity, teleportOptions: TeleportOptions?, prompt: Boolean) {
+    override fun teleport(player: Player, destination: Entity, options: TeleportOptions?, prompt: Boolean) {
         submitAsync {
-            teleportSuspend(player, destination.location, teleportOptions, prompt)
+            teleportSuspend(player, destination.location, options, prompt)
         }
     }
 
-    override fun isSafe(location: Location, teleportOptions: TeleportOptions?): Boolean {
-        val options = teleportOptions ?: location.world.teleportOptions
-        return location.isSafe(options)
+    override fun isSafe(location: Location, options: TeleportOptions?): Boolean {
+        val opt = options ?: location.world.teleportOptions
+        return location.isSafe(opt)
     }
 
-    override suspend fun searchSafeLocationSuspend(start: Location, teleportOptions: TeleportOptions?): Location? {
-        val options = teleportOptions ?: start.world.teleportOptions
-        return start.searchSafeLoc(options)
+    override suspend fun searchSafeLocationSuspend(start: Location, options: TeleportOptions?): Location? {
+        val opt = options ?: start.world.teleportOptions
+        return start.searchSafeLoc(opt)
     }
 
-    override fun searchSafeLocation(start: Location, teleportOptions: TeleportOptions?): Location? {
-        return submitAsync<Location?> { searchSafeLocationSuspend(start, teleportOptions) }.asCompletableFuture().join()
+    override fun searchSafeLocation(start: Location, options: TeleportOptions?): Location? {
+        return submitAsync<Location?> { searchSafeLocationSuspend(start, options) }.asCompletableFuture().join()
     }
 
     override suspend fun teleportSuspend(
         player: Player,
         destination: Location,
-        teleportOptions: TeleportOptions?,
+        options: TeleportOptions?,
         prompt: Boolean
     ) {
         async {
-            val prepare = destination.chunkNeedToPrepare
+            val optRadius = destination.world.teleportOptions.chunkPrepareRadius
+            val vt = player.sendViewDistance
+            val radius = if (vt < optRadius) vt else optRadius
+            val prepare = destination.chunkNeedToPrepare(radius)
 
             if (prepare.allPrepared(destination.world)) {
-                fireTeleport(player, destination, teleportOptions, prompt)
+                fireTeleport(player, destination, options, prompt)
                 return@async
             }
 
@@ -377,7 +394,20 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
             }
 
             val id = UUID.randomUUID()
-            queue.offer(TeleportTask(id, player, destination, teleportOptions, prompt, prepare))
+            val task = TeleportTaskImpl(id, player, destination, options, prompt, prepare)
+            queue.offer(task)
+
+            essentialsScope.submitAsync {
+                delay(10.seconds)
+                if (task.isFinished) {
+                    return@submitAsync
+                }
+                task.cancel()
+                player.showTitle(TELEPORT_FAILED_TIMEOUT_TITLE)
+                player.sendMessage(UNUSUAL_ISSUE)
+                player.playSound(TELEPORT_FAILED_SOUND)
+            }
+
             coroutineScope {
                 launch {
                     notifyChannel.collect {
@@ -393,28 +423,45 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
     override suspend fun teleportSuspend(
         player: Player,
         destination: Player,
-        teleportOptions: TeleportOptions?,
+        options: TeleportOptions?,
         prompt: Boolean
     ) {
-        teleportSuspend(player, destination.location, teleportOptions, prompt)
+        teleportSuspend(player, destination.location, options, prompt)
     }
 
     override suspend fun teleportSuspend(
         player: Player,
         destination: Entity,
-        teleportOptions: TeleportOptions?,
+        options: TeleportOptions?,
         prompt: Boolean
     ) {
-        teleportSuspend(player, destination.location, teleportOptions, prompt)
+        teleportSuspend(player, destination.location, options, prompt)
     }
 
-    override fun tick() {
-        val task = queue.poll() ?: return
-        submitSync {
-            task.chunkNeedToPrepare.prepareChunk(task.destination.world)
-            fireTeleport(task.player, task.destination, task.teleportOptions, task.prompt)
-            notifyChannel.emit(task.id)
+    override suspend fun tick() {
+        if (hasUnfinishedTick) {
+            return
         }
+
+        if (queue.isEmpty()) {
+            return
+        }
+
+        state = TeleportManagerState.TICKING
+        val start = System.currentTimeMillis()
+
+        repeat(conf.queueProcessPerTick) {
+            val task = queue.poll() ?: return@repeat
+            tickingTask = task
+            task.tick()
+            notifyChannel.emit(task.id)
+            tickingTask = null
+        }
+
+        val end = System.currentTimeMillis()
+        lastTickTime = end - start
+        tickCount++
+        state = TeleportManagerState.IDLE
     }
 
 }

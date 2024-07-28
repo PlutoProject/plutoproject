@@ -2,7 +2,7 @@ package ink.pmc.essentials.api.teleport
 
 import org.bukkit.entity.Player
 import java.time.Instant
-import java.util.UUID
+import java.util.*
 
 @Suppress("UNUSED")
 interface TeleportRequest {

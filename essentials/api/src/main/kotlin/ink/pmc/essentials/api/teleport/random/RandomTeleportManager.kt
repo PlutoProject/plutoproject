@@ -13,18 +13,18 @@ interface RandomTeleportManager {
     val defaultOptions: Map<World, RandomTeleportOptions>
     val blacklistedWorlds: Collection<World>
 
-    fun pollCachedLocation(world: World): Location?
+    fun getRandomTeleportOptions(world: World): RandomTeleportOptions
 
-    fun findSafeLocation(world: World): Location?
+    fun pollCache(world: World): Location?
 
-    fun findSafeLocation(world: World, option: RandomTeleportOptions): Location?
+    fun searchSafeLocation(world: World, options: RandomTeleportOptions? = null): Location?
 
-    fun launch(player: Player, world: World, option: RandomTeleportOptions? = null, prompt: Boolean = true)
+    fun launch(player: Player, world: World, options: RandomTeleportOptions? = null, prompt: Boolean = true)
 
     suspend fun launchSuspend(
         player: Player,
         world: World,
-        option: RandomTeleportOptions? = null,
+        options: RandomTeleportOptions? = null,
         prompt: Boolean = true
     )
 

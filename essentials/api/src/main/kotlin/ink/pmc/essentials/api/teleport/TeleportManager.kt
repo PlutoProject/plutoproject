@@ -1,10 +1,17 @@
 package ink.pmc.essentials.api.teleport
 
+import ink.pmc.utils.world.ValueChunkLoc
 import org.bukkit.Location
 import org.bukkit.World
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 import java.util.*
+
+enum class TeleportManagerState {
+
+    IDLE, TICKING
+
+}
 
 @Suppress("UNUSED")
 interface TeleportManager {
@@ -15,6 +22,10 @@ interface TeleportManager {
     val defaultTeleportOptions: TeleportOptions
     val worldTeleportOptions: Map<World, TeleportOptions>
     val blacklistedWorlds: Collection<World>
+    val tickingTask: TeleportTask?
+    val tickCount: Long
+    val lastTickTime: Long
+    val state: TeleportManagerState
 
     fun getWorldTeleportOptions(world: World): TeleportOptions
 
@@ -49,39 +60,48 @@ interface TeleportManager {
 
     fun clearRequest()
 
-    fun teleport(player: Player, destination: Location, teleportOptions: TeleportOptions? = null, prompt: Boolean = true)
+    suspend fun prepareChunk(chunks: Collection<ValueChunkLoc>, world: World)
 
-    fun isSafe(location: Location, teleportOptions: TeleportOptions? = null): Boolean
+    suspend fun fireTeleport(
+        player: Player,
+        destination: Location,
+        options: TeleportOptions?,
+        prompt: Boolean = true
+    )
 
-    suspend fun searchSafeLocationSuspend(start: Location, teleportOptions: TeleportOptions? = null): Location?
+    fun teleport(player: Player, destination: Location, options: TeleportOptions? = null, prompt: Boolean = true)
 
-    fun searchSafeLocation(start: Location, teleportOptions: TeleportOptions? = null): Location?
+    fun isSafe(location: Location, options: TeleportOptions? = null): Boolean
+
+    suspend fun searchSafeLocationSuspend(start: Location, options: TeleportOptions? = null): Location?
+
+    fun searchSafeLocation(start: Location, options: TeleportOptions? = null): Location?
 
     suspend fun teleportSuspend(
         player: Player,
         destination: Location,
-        teleportOptions: TeleportOptions? = null,
+        options: TeleportOptions? = null,
         prompt: Boolean = true
     )
 
-    fun teleport(player: Player, destination: Player, teleportOptions: TeleportOptions? = null, prompt: Boolean = true)
+    fun teleport(player: Player, destination: Player, options: TeleportOptions? = null, prompt: Boolean = true)
 
     suspend fun teleportSuspend(
         player: Player,
         destination: Player,
-        teleportOptions: TeleportOptions? = null,
+        options: TeleportOptions? = null,
         prompt: Boolean = true
     )
 
-    fun teleport(player: Player, destination: Entity, teleportOptions: TeleportOptions? = null, prompt: Boolean = true)
+    fun teleport(player: Player, destination: Entity, options: TeleportOptions? = null, prompt: Boolean = true)
 
     suspend fun teleportSuspend(
         player: Player,
         destination: Entity,
-        teleportOptions: TeleportOptions? = null,
+        options: TeleportOptions? = null,
         prompt: Boolean = true
     )
 
-    fun tick()
+    suspend fun tick()
 
 }

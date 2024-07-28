@@ -9,7 +9,7 @@ import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.util.Ticks
 import java.time.Duration
-import java.util.UUID
+import java.util.*
 
 val GM_SURVIVAL = Component.text("生存模式")
 
@@ -130,6 +130,20 @@ val TELEPORT_FAILED_TITLE = title {
     }
     subTitle {
         text("无法找到安全位置") with mochaText
+    }
+}
+
+val TELEPORT_FAILED_TIMEOUT_TITLE = title {
+    times {
+        fadeIn(Ticks.duration(5))
+        stay(Ticks.duration(35))
+        fadeOut(Ticks.duration(20))
+    }
+    mainTitle {
+        text("传送失败") with mochaMaroon
+    }
+    subTitle {
+        text("等待已超时") with mochaText
     }
 }
 

@@ -1,12 +1,11 @@
 package ink.pmc.essentials.listeners
 
 import com.destroystokyo.paper.event.server.ServerTickEndEvent
-import ink.pmc.essentials.config.EssentialsConfig
 import ink.pmc.essentials.TELEPORT_REQUEST_CANCELED_OFFLINE
 import ink.pmc.essentials.TELEPORT_REQUEST_CANCELLED_SOUND
 import ink.pmc.essentials.api.teleport.TeleportManager
+import ink.pmc.essentials.config.EssentialsConfig
 import ink.pmc.utils.chat.replace
-import ink.pmc.utils.concurrent.submitSync
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerQuitEvent
@@ -21,13 +20,8 @@ object TeleportListener : Listener, KoinComponent {
     private val conf = get<EssentialsConfig>().Teleport()
 
     @EventHandler
-    fun ServerTickEndEvent.e() {
-        // 丢入休眠期间执行
-        repeat(conf.queueProcessPerTick) {
-            submitSync {
-                manager.tick()
-            }
-        }
+    suspend fun ServerTickEndEvent.e() {
+        manager.tick()
     }
 
     @EventHandler
