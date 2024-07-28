@@ -38,7 +38,9 @@ class EssentialsConfig(private val config: Config) : Config by config {
         val spawnPointAsCenter: Boolean get() = get("random-teleport.spawnpoint-as-center")
         val centerX: Int get() = get("random-teleport.center.x")
         val centerZ: Int get() = get("random-teleport.center.z")
-        val cacheProcessPerTick: Int get() = get("random-teleport.cache-process-per-tick")
+        val chunkCacheMax: Int get() = get("random-teleport.cache.max")
+        val chunkCacheMaxTaskPerTick: Int get() = get("random-teleport.cache.max-task-per-tick")
+        val chunkCacheMaxChunkPerTick: Int get() = get("random-teleport.cache.max-chunk-per-tick")
         val chunkPreserveRadius: Int get() = get("random-teleport.chunk-preserve-radius")
         val startRadius: Int get() = get("random-teleport.start-radius")
         val endRadius: Int get() = get("random-teleport.end-radius")
@@ -50,13 +52,11 @@ class EssentialsConfig(private val config: Config) : Config by config {
         val cost: Int get() = get("random-teleport.cost")
         val blacklistedBiomes: Collection<Biome>
             get() = get<List<String>>("random-teleport.blacklisted-biomes").map { Biome.valueOf(it.uppercase()) }
-        val blacklistedBlocks: Collection<Material>
-            get() = get<List<String>>("random-teleport.blacklisted-blocks").map { KeyedMaterial(it).bukkit }
+        val blacklistedWorlds: Collection<World>
+            get() = get<List<String>>("random-teleport.blacklisted-worlds").map { Bukkit.getWorld(it)!! }
         val worldOptions: Map<World, Config>
             get() = get<Config>("random-teleport.world-options")
                 .toMapViaEntry().mapKv { Bukkit.getWorld(it.key)!! to it.value as Config }
-        val blacklistedWorlds: Collection<World>
-            get() = get<List<String>>("random-teleport.blacklisted-worlds").map { Bukkit.getWorld(it)!! }
     }
 
     inner class Back {

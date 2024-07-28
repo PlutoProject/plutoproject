@@ -17,5 +17,4 @@ data class RandomTeleportOptions(
     val cooldown: Duration,
     val cost: BigDecimal,
     val blacklistedBiomes: Set<Biome>,
-    val blacklistedBlocks: Set<Material>
 )

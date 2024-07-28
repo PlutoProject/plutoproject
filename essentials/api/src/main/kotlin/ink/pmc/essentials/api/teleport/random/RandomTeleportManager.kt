@@ -1,17 +1,23 @@
 package ink.pmc.essentials.api.teleport.random
 
+import ink.pmc.essentials.api.teleport.ManagerState
 import org.bukkit.Location
 import org.bukkit.World
 import org.bukkit.entity.Player
+import java.util.*
 
 @Suppress("UNUSED")
 interface RandomTeleportManager {
 
-    val caches: Collection<Location>
+    val cacheTasks: Collection<RandomTeleportCacheTask>
+    val teleportQueue: Queue<RandomTeleportTask>
+    val caches: Collection<RandomTeleportCache>
     val maxCaches: Int
-    val cacheTaskInterval: Long
     val defaultOptions: Map<World, RandomTeleportOptions>
     val blacklistedWorlds: Collection<World>
+    val tickCount: Long
+    val lastTickTime: Long
+    val state: ManagerState
 
     fun getRandomTeleportOptions(world: World): RandomTeleportOptions
 
@@ -19,16 +25,14 @@ interface RandomTeleportManager {
 
     fun searchSafeLocation(world: World, options: RandomTeleportOptions? = null): Location?
 
-    fun launch(player: Player, world: World, options: RandomTeleportOptions? = null, prompt: Boolean = true)
+    fun launch(player: Player, world: World, options: RandomTeleportOptions? = null, prompt: Boolean = true): RandomTeleportTask
 
     suspend fun launchSuspend(
         player: Player,
         world: World,
         options: RandomTeleportOptions? = null,
         prompt: Boolean = true
-    )
-
-    fun isQueued(player: Player): Boolean
+    ): RandomTeleportTask
 
     fun cancel(player: Player)
 

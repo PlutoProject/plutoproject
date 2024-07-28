@@ -1,4 +1,4 @@
-package ink.pmc.essentials.manager
+package ink.pmc.essentials.teleport
 
 import ink.pmc.essentials.*
 import ink.pmc.essentials.api.teleport.*
