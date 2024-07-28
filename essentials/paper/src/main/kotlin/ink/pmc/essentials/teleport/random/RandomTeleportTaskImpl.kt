@@ -14,7 +14,7 @@ class RandomTeleportTaskImpl(
     override val prompt: Boolean,
 ) : RandomTeleportTask {
 
-    override var retries: Int = 0
+    override var attempts: Int = 0
     override var state: TaskState = TaskState.PENDING
     override val isPending: Boolean
         get() = state == TaskState.PENDING

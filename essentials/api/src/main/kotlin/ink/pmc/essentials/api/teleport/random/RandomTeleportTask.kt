@@ -11,7 +11,7 @@ interface RandomTeleportTask {
     val world: World
     val options: RandomTeleportOptions
     val prompt: Boolean
-    val retries: Int
+    val attempts: Int
     val state: TaskState
     val isPending: Boolean
     val isTicking: Boolean

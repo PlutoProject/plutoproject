@@ -17,7 +17,6 @@ import org.koin.core.component.inject
 object TeleportListener : Listener, KoinComponent {
 
     private val manager by inject<TeleportManager>()
-    private val conf = get<EssentialsConfig>().Teleport()
 
     @EventHandler
     suspend fun ServerTickEndEvent.e() {

@@ -14,7 +14,7 @@ interface RandomTeleportCacheTask {
     val id: UUID
     val world: World
     val options: RandomTeleportOptions
-    val retries: Int
+    val attempts: Int
     val state: CacheTaskState
     val isPending: Boolean
     val isTicking: Boolean

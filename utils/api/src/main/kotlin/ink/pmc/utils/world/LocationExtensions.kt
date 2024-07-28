@@ -11,14 +11,6 @@ fun toRawLocation(location: Location): Location {
     return rawLocation
 }
 
-@Suppress("UNUSED")
-val Location.loc2D: Loc2D
-    get() = Loc2D(this)
-
-@Suppress("UNUSED")
-val Location.rawLoc2D: Loc2D
-    get() = Loc2D(this.rawLocation)
-
 val Location.rawLocation: Location
     get() = toRawLocation(this)
 

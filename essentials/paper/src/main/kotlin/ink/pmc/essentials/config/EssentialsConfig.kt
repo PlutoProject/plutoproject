@@ -36,20 +36,20 @@ class EssentialsConfig(private val config: Config) : Config by config {
     inner class RandomTeleport {
         val enabled: Boolean get() = get("random-teleport.enabled")
         val spawnPointAsCenter: Boolean get() = get("random-teleport.spawnpoint-as-center")
-        val centerX: Int get() = get("random-teleport.center.x")
-        val centerZ: Int get() = get("random-teleport.center.z")
+        val centerX: Double get() = get("random-teleport.center.x")
+        val centerZ: Double get() = get("random-teleport.center.z")
         val chunkCacheMax: Int get() = get("random-teleport.cache.max")
         val chunkCacheMaxTaskPerTick: Int get() = get("random-teleport.cache.max-task-per-tick")
         val chunkCacheMaxChunkPerTick: Int get() = get("random-teleport.cache.max-chunk-per-tick")
         val chunkPreserveRadius: Int get() = get("random-teleport.chunk-preserve-radius")
         val startRadius: Int get() = get("random-teleport.start-radius")
         val endRadius: Int get() = get("random-teleport.end-radius")
-        val minHeight: Int get() = get("random-teleport.min-height")
         val maxHeight: Int get() = get("random-teleport.max-height")
+        val minHeight: Int get() = get("random-teleport.min-height")
         val noCover: Boolean get() = get("random-teleport.no-cover")
-        val maxRetries: Int get() = get("random-teleport.max-retries")
-        val cooldown: Int get() = get("random-teleport.cooldown")
-        val cost: Int get() = get("random-teleport.cost")
+        val maxAttempts: Int get() = get("random-teleport.max-attempts")
+        val cooldown: String get() = get("random-teleport.cooldown")
+        val cost: String get() = get("random-teleport.cost")
         val blacklistedBiomes: Collection<Biome>
             get() = get<List<String>>("random-teleport.blacklisted-biomes").map { Biome.valueOf(it.uppercase()) }
         val blacklistedWorlds: Collection<World>
