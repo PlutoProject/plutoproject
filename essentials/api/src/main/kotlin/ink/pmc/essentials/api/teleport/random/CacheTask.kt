@@ -1,20 +1,24 @@
 package ink.pmc.essentials.api.teleport.random
 
+import ink.pmc.utils.world.ValueChunkLoc
+import org.bukkit.Chunk
 import org.bukkit.World
 import java.util.*
 
 enum class CacheTaskState {
 
-    PENDING, TICKING, TICKING_PREPARE, FINISHED
+    PENDING, TICKING, TICKING_CACHE, SUCCEED, FAILED, CANCELLED
 
 }
 
-interface RandomTeleportCacheTask {
+interface CacheTask {
 
     val id: UUID
     val world: World
     val options: RandomTeleportOptions
     val attempts: Int
+    val pending: Collection<ValueChunkLoc>
+    val cached: Collection<Chunk>
     val state: CacheTaskState
     val isPending: Boolean
     val isTicking: Boolean

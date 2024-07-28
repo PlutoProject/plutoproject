@@ -329,9 +329,3 @@ val COMMAND_ETP_SUCCEED_OTHER = component {
     text("传送至 ") with mochaPink
     text("<location>") with mochaText
 }
-
-val COMMAND_ETP_FAILED_NOT_ALLOWED = component {
-    text("世界 ") with mochaMaroon
-    text("<world> ") with mochaText
-    text("不允许使用传送") with mochaMaroon
-}

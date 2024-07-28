@@ -18,7 +18,7 @@ interface TeleportTask {
     val destination: Location
     val teleportOptions: TeleportOptions?
     val prompt: Boolean
-    val chunkNeedToPrepare: List<ValueChunkLoc>
+    val chunkNeedToPrepare: Collection<ValueChunkLoc>
     val state: TeleportTaskState
     val isPending: Boolean
     val isTicking: Boolean

@@ -335,6 +335,10 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
         teleportRequests.clear()
     }
 
+    override fun getRequiredChunks(center: Location, radius: Int): Collection<ValueChunkLoc> {
+        return center.chunkNeedToPrepare(radius)
+    }
+
     override suspend fun prepareChunk(chunks: Collection<ValueChunkLoc>, world: World) {
         chunks.prepareChunk(world)
     }
@@ -436,6 +440,10 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
         prompt: Boolean
     ) {
         teleportSuspend(player, destination.location, options, prompt)
+    }
+
+    override fun isBlacklisted(world: World): Boolean {
+        return blacklistedWorlds.contains(world)
     }
 
     override suspend fun tick() {

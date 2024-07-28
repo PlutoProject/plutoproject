@@ -55,7 +55,7 @@ private fun handleTpa(source: Player, destination: Player, direction: TeleportDi
         return
     }
 
-    if (direction == GO && manager.blacklistedWorlds.contains(destination.world)) {
+    if (direction == GO && manager.isBlacklisted(destination.world) && !source.hasPermission(BYPASS_WORLD_BLACKLIST)) {
         source.sendMessage(
             COMMAND_TPA_FAILED_NOT_ALLOWED_GO
                 .replace("<player>", source.name)
@@ -64,7 +64,7 @@ private fun handleTpa(source: Player, destination: Player, direction: TeleportDi
         return
     }
 
-    if (direction == COME && manager.blacklistedWorlds.contains(source.world)) {
+    if (direction == COME && manager.isBlacklisted(source.world) && !source.hasPermission(BYPASS_WORLD_BLACKLIST)) {
         source.sendMessage(COMMAND_TPA_FAILED_NOT_ALLOWED_COME)
         source.playSound(TELEPORT_FAILED_SOUND)
         return

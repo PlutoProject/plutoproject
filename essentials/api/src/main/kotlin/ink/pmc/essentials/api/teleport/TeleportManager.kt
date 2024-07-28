@@ -60,6 +60,8 @@ interface TeleportManager {
 
     fun clearRequest()
 
+    fun getRequiredChunks(center: Location, radius: Int): Collection<ValueChunkLoc>
+
     suspend fun prepareChunk(chunks: Collection<ValueChunkLoc>, world: World)
 
     suspend fun fireTeleport(
@@ -101,6 +103,8 @@ interface TeleportManager {
         options: TeleportOptions? = null,
         prompt: Boolean = true
     )
+
+    fun isBlacklisted(world: World): Boolean
 
     suspend fun tick()
 

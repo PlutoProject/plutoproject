@@ -10,10 +10,12 @@ import java.util.*
 @Suppress("UNUSED")
 interface RandomTeleportManager {
 
-    val cacheTasks: Collection<RandomTeleportCacheTask>
+    val cacheTasks: Collection<CacheTask>
     val teleportQueue: Queue<RandomTeleportTask>
     val caches: Collection<RandomTeleportCache>
+    val maxChunkCachePerTick: Int
     val maxCaches: Int
+    val chunkPreserveRadius: Int
     val defaultOptions: RandomTeleportOptions
     val worldOptions: Map<World, RandomTeleportOptions>
     val blacklistedWorlds: Collection<World>
@@ -23,11 +25,27 @@ interface RandomTeleportManager {
 
     fun getRandomTeleportOptions(world: World): RandomTeleportOptions
 
-    fun getCenterLocation(world: World): Pos2D
+    fun getCenterLocation(world: World, options: RandomTeleportOptions? = null): Pos2D
 
-    fun pollCache(world: World): Location?
+    fun getMaxCacheAmount(world: World): Int
 
-    fun searchSafeLocation(world: World, options: RandomTeleportOptions? = null): Location?
+    fun getCaches(world: World): Collection<RandomTeleportCache>
+
+    fun pollCache(world: World): RandomTeleportCache?
+
+    fun pollCache(id: UUID): RandomTeleportCache?
+
+    suspend fun randomOnce(world: World, options: RandomTeleportOptions? = null): Location?
+
+    suspend fun random(world: World, options: RandomTeleportOptions? = null): Location?
+
+    fun submitCache(world: World, options: RandomTeleportOptions? = null): CacheTask
+
+    fun inTeleportQueue(player: Player): Boolean
+
+    fun inTeleportQueue(id: UUID): Boolean
+
+    fun hasCacheTask(id: UUID): Boolean
 
     fun launch(player: Player, world: World, options: RandomTeleportOptions? = null, prompt: Boolean = true): RandomTeleportTask
 

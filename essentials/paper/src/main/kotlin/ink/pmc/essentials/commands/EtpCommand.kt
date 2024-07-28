@@ -32,14 +32,6 @@ fun Cm.etp(aliases: Array<String>) {
             val bypassSafe = optional<Boolean>("bypassSafe").getOrNull() == true
             val options = manager.getWorldTeleportOptions(location.world).copy(bypassSafeCheck = bypassSafe)
 
-            if (manager.blacklistedWorlds.contains(location.world)) {
-                sender.sendMessage(
-                    COMMAND_ETP_FAILED_NOT_ALLOWED
-                        .replace("<world>", location.world.name)
-                )
-                return@handler
-            }
-
             if (argPlayer != null) {
                 manager.teleportSuspend(argPlayer, location, options)
                 sender.sendMessage(
