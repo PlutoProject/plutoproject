@@ -367,6 +367,10 @@ val RANDOM_TELEPORT_SEARCHING_FAILED = component {
     text("如果此问题总是发生，请报告给管理组") with mochaSubtext0
 }
 
+val RANDOM_TELEPORT_FAILED_IN_PROGRESS = component {
+    text("你已有一个正在处理的随机传送操作，请不要着急") with mochaYellow
+}
+
 val COMMAND_RTP_NOT_ENABLED = component {
     text("该世界未启用随机传送") with mochaMaroon
 }

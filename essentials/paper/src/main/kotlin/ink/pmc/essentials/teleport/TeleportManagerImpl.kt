@@ -107,7 +107,7 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
                     when (conf.chunkPrepareMethod) {
                         SYNC -> world.getChunkAt(it.x, it.y)
                         ASYNC -> world.getChunkAtAsync(it.x, it.y).await()
-                        ASYNC_SLOW -> world.getChunkAtAsyncUrgently(it.x, it.y).await()
+                        ASYNC_FAST -> world.getChunkAtAsyncUrgently(it.x, it.y).await()
                         CHUNK_SOURCE -> world.getChunkViaSource(it.x, it.y)
                     }
                     yield() // 确保任务超时可以正常取消

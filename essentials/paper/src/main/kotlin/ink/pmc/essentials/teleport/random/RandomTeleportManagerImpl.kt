@@ -22,7 +22,6 @@ import net.kyori.adventure.text.Component
 import net.minecraft.server.level.ChunkLevel
 import net.minecraft.server.level.FullChunkStatus
 import net.minecraft.server.level.TicketType
-import net.minecraft.world.level.ChunkPos
 import org.bukkit.Chunk
 import org.bukkit.Location
 import org.bukkit.World
@@ -32,16 +31,20 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.math.BigDecimal
 import java.util.*
+import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.LinkedBlockingDeque
 import kotlin.time.Duration
 import kotlin.time.toKotlinDuration
 
 internal fun Chunk.addTeleportTicket() {
-    addTicket(TicketType.FORCED, x, z, ChunkLevel.byStatus(FullChunkStatus.FULL), ChunkPos(x, z))
+    if (pluginChunkTickets.contains(plugin)) {
+        return
+    }
+    addTicket(TicketType.PLUGIN_TICKET, x, z, ChunkLevel.byStatus(FullChunkStatus.FULL), plugin)
 }
 
 internal fun Chunk.removeTeleportTicket() {
-    removeTicket(TicketType.FORCED, x, z, ChunkLevel.byStatus(FullChunkStatus.FULL), ChunkPos(x, z))
+    removeTicket(TicketType.PLUGIN_TICKET, x, z, ChunkLevel.byStatus(FullChunkStatus.FULL), plugin)
 }
 
 class RandomTeleportManagerImpl : RandomTeleportManager, KoinComponent {
@@ -51,6 +54,7 @@ class RandomTeleportManagerImpl : RandomTeleportManager, KoinComponent {
     private val teleportConf = baseConf.Teleport()
     private val teleport by inject<TeleportManager>()
     private var waitedTicks: Long = -1
+    private var inTeleport = ConcurrentHashMap.newKeySet<Player>()
 
     override val cacheTasks: Deque<CacheTask> = LinkedBlockingDeque()
     override val caches: ListMultimap<World, RandomTeleportCache> =
@@ -139,7 +143,7 @@ class RandomTeleportManagerImpl : RandomTeleportManager, KoinComponent {
         }
 
         fun cover(location: Location): Boolean {
-            for (y in location.blockY..(world.maxHeight - location.blockY)) {
+            for (y in 0..(world.maxHeight - location.blockY)) {
                 val loc = location.clone().add(0.0, y.toDouble(), 0.0)
                 if (!loc.block.type.isAir) return true
             }
@@ -253,6 +257,14 @@ class RandomTeleportManagerImpl : RandomTeleportManager, KoinComponent {
         prompt: Boolean
     ) {
         async {
+            if (inTeleport.contains(player)) {
+                if (prompt) {
+                    player.sendMessage(RANDOM_TELEPORT_FAILED_IN_PROGRESS)
+                }
+                return@async
+            }
+
+            inTeleport.add(player)
             val timer = TeleportTimer()
             val defaultOpt = getRandomTeleportOptions(world)
             val opt = options ?: defaultOpt
@@ -263,6 +275,7 @@ class RandomTeleportManagerImpl : RandomTeleportManager, KoinComponent {
                 teleport.teleportSuspend(player, location, prompt = prompt)
                 val time = timer.end()
                 notifyPlayerOfTeleport(player, location, cache.attempts, time, prompt)
+                inTeleport.remove(player)
                 return@async
             }
 
@@ -281,12 +294,14 @@ class RandomTeleportManagerImpl : RandomTeleportManager, KoinComponent {
                     player.playSound(TELEPORT_FAILED_SOUND)
                     player.sendMessage(RANDOM_TELEPORT_SEARCHING_FAILED)
                 }
+                inTeleport.remove(player)
                 return@async
             }
 
             teleport.teleportSuspend(player, location, prompt = prompt)
             val time = timer.end()
             notifyPlayerOfTeleport(player, location, attempts, time, prompt)
+            inTeleport.remove(player)
         }
     }
 
