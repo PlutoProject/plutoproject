@@ -124,7 +124,8 @@ class RandomTeleportManagerImpl : RandomTeleportManager, KoinComponent {
 
     override suspend fun randomOnce(world: World, options: RandomTeleportOptions?): Location? {
         val opt = options ?: getRandomTeleportOptions(world)
-        val range = opt.startRadius..opt.endRadius
+        val rad = opt.endRadius - opt.startRadius
+        val range = -rad..rad
         val center = getCenterLocation(world, options)
         val baseX = center.x.toInt()
         val baseZ = center.z.toInt()
