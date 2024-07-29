@@ -7,6 +7,7 @@ import ink.pmc.essentials.api.teleport.TeleportManager
 import ink.pmc.essentials.api.teleport.random.*
 import ink.pmc.essentials.api.teleport.random.CacheTaskState.*
 import ink.pmc.essentials.config.EssentialsConfig
+import ink.pmc.utils.chat.DURATION
 import ink.pmc.utils.chat.replace
 import ink.pmc.utils.concurrent.async
 import ink.pmc.utils.concurrent.submitAsync
@@ -24,6 +25,7 @@ import java.math.BigDecimal
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.time.Duration
+import kotlin.time.toKotlinDuration
 
 class RandomTeleportManagerImpl : RandomTeleportManager, KoinComponent {
 
@@ -208,6 +210,27 @@ class RandomTeleportManagerImpl : RandomTeleportManager, KoinComponent {
 
     }
 
+    private fun notifyPlayerOfTeleport(
+        player: Player,
+        location: Location,
+        attempts: Int,
+        time: Long,
+        prompt: Boolean
+    ) {
+        if (!prompt) {
+            return
+        }
+        player.sendMessage(
+            RANDOM_TELEPORT_SUCCED
+                .replace(
+                    "<location>",
+                    Component.text("${location.blockX}, ${location.blockY}, ${location.blockZ}")
+                )
+                .replace("<attempts>", Component.text(attempts))
+                .replace("<time>", DURATION(java.time.Duration.ofMillis(time).toKotlinDuration()))
+        )
+    }
+
     override suspend fun launchSuspend(
         player: Player,
         world: World,
@@ -221,20 +244,15 @@ class RandomTeleportManagerImpl : RandomTeleportManager, KoinComponent {
 
             if (cache != null) {
                 val location = cache.location
-                teleport.teleport(player, location, prompt = prompt)
+                teleport.teleportSuspend(player, location, prompt = prompt)
                 val time = timer.end()
-                if (prompt) {
-                    player.sendMessage(
-                        RANDOM_TELEPORT_SUCCED
-                            .replace(
-                                "<location>",
-                                Component.text("${location.blockX}, ${location.blockY}, ${location.blockZ}")
-                            )
-                            .replace("<attempts>", Component.text(cache.attempts))
-                            .replace("<time>", Component.text(time))
-                    )
-                }
+                notifyPlayerOfTeleport(player, location, cache.attempts, time, prompt)
                 return@async
+            }
+
+            if (prompt) {
+                player.showTitle(RANDOM_TELEPORT_SEARCHING_TITLE)
+                player.playSound(RANDOM_TELEPORT_SEARCHING_SOUND)
             }
 
             val random = random(world, opt)
@@ -250,20 +268,9 @@ class RandomTeleportManagerImpl : RandomTeleportManager, KoinComponent {
                 return@async
             }
 
-            teleport.teleport(player, location, prompt = prompt)
+            teleport.teleportSuspend(player, location, prompt = prompt)
             val time = timer.end()
-
-            if (prompt) {
-                player.sendMessage(
-                    RANDOM_TELEPORT_SUCCED
-                        .replace(
-                            "<location>",
-                            Component.text("${location.blockX}, ${location.blockY}, ${location.blockZ}")
-                        )
-                        .replace("<attempts>", Component.text(attempts))
-                        .replace("<time>", Component.text(time))
-                )
-            }
+            notifyPlayerOfTeleport(player, location, attempts, time, prompt)
         }
     }
 

@@ -336,7 +336,7 @@ val RANDOM_TELEPORT_SUCCED = component {
     newline()
     text("本次传送尝试 ") with mochaSubtext0
     text("<attempts> ") with mochaText
-    text("次，耗时") with mochaSubtext0
+    text("次，耗时 ") with mochaSubtext0
     text("<time>") with mochaText
 }
 
