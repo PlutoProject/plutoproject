@@ -10,6 +10,7 @@ data class RandomTeleportCache(
     val world: World,
     val center: Chunk,
     val preservedChunks: Collection<Chunk>,
+    val attempts: Int,
     val location: Location,
     val options: RandomTeleportOptions
 )

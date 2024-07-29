@@ -43,6 +43,7 @@ class CacheTaskImpl(
         if (location == null) {
             state = CacheTaskState.TICKING
             if (attempts < options.maxAttempts) {
+                attempts++
                 val random = manager.randomOnce(world, options)
                 if (random != null) {
                     location = random
@@ -60,17 +61,18 @@ class CacheTaskImpl(
 
         state = CacheTaskState.TICKING_CACHE
 
+        if (cached.size == pendingCount) {
+            state = CacheTaskState.SUCCEED
+            return RandomTeleportCache(id, world, location!!.chunk, cached, attempts, location!!, options)
+        }
+
         if (manager.currentTickCaches < manager.maxChunkCachePerTick) {
             val loc = pending.removeFirst() ?: return null
             val chunk = world.getChunkAtAsyncUrgently(loc.x, loc.y).await()
             cached.add(chunk)
             chunk.addPluginChunkTicket(plugin)
             manager.currentTickCaches++
-        }
-
-        if (cached.size == pendingCount) {
-            state = CacheTaskState.SUCCEED
-            return RandomTeleportCache(id, world, location!!.chunk, cached, location!!, options)
+            return null
         }
 
         return null

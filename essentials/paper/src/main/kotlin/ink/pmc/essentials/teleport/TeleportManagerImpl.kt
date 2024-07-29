@@ -407,9 +407,11 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
                     return@submitAsync
                 }
                 task.cancel()
-                player.showTitle(TELEPORT_FAILED_TIMEOUT_TITLE)
-                player.sendMessage(UNUSUAL_ISSUE)
-                player.playSound(TELEPORT_FAILED_SOUND)
+                if (prompt) {
+                    player.showTitle(TELEPORT_FAILED_TIMEOUT_TITLE)
+                    player.sendMessage(UNUSUAL_ISSUE)
+                    player.playSound(TELEPORT_FAILED_SOUND)
+                }
             }
 
             coroutineScope {

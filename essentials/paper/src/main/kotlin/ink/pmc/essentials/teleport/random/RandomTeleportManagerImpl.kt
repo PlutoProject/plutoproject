@@ -1,23 +1,24 @@
 package ink.pmc.essentials.teleport.random
 
 import com.electronwill.nightconfig.core.Config
+import ink.pmc.essentials.*
 import ink.pmc.essentials.api.teleport.ManagerState
 import ink.pmc.essentials.api.teleport.TeleportManager
 import ink.pmc.essentials.api.teleport.random.*
 import ink.pmc.essentials.api.teleport.random.CacheTaskState.*
 import ink.pmc.essentials.config.EssentialsConfig
-import ink.pmc.essentials.plugin
+import ink.pmc.utils.chat.replace
 import ink.pmc.utils.concurrent.async
+import ink.pmc.utils.concurrent.submitAsync
 import ink.pmc.utils.data.mapKv
 import ink.pmc.utils.world.Pos2D
-import kotlinx.coroutines.channels.Channel
+import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.World
 import org.bukkit.block.Biome
 import org.bukkit.entity.Player
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.get
 import org.koin.core.component.inject
 import java.math.BigDecimal
 import java.util.*
@@ -26,18 +27,18 @@ import kotlin.time.Duration
 
 class RandomTeleportManagerImpl : RandomTeleportManager, KoinComponent {
 
-    private val conf = get<EssentialsConfig>().RandomTeleport()
+    private val baseConf by inject<EssentialsConfig>()
+    private val conf = baseConf.RandomTeleport()
+    private val teleportConf = baseConf.Teleport()
     private val teleport by inject<TeleportManager>()
-    private val cacheNotify = Channel<UUID>()
-    private val teleportNotify = Channel<UUID>()
     internal var currentTickCaches: Int = 0
 
     override val cacheTasks: MutableList<CacheTask> = mutableListOf()
-    override val teleportQueue: Queue<RandomTeleportTask> = LinkedList()
     override val caches: MutableSet<RandomTeleportCache> = ConcurrentHashMap.newKeySet()
     override val maxChunkCachePerTick: Int = conf.chunkCacheMax
     override val maxCaches: Int = conf.chunkCacheMax
-    override val chunkPreserveRadius: Int = conf.chunkPreserveRadius
+    override val chunkPreserveRadius: Int =
+        if (conf.chunkPreserveRadius >= 0) conf.chunkPreserveRadius else teleportConf.chunkPrepareRadius
     override val defaultOptions: RandomTeleportOptions = RandomTeleportOptions(
         center = Pos2D(conf.centerX, conf.centerZ),
         spawnPointAsCenter = conf.spawnPointAsCenter,
@@ -68,7 +69,7 @@ class RandomTeleportManagerImpl : RandomTeleportManager, KoinComponent {
                 ?.map { b -> Biome.valueOf(b.uppercase()) }?.toSet() ?: defaultOptions.blacklistedBiomes
         )
     }
-    override val blacklistedWorlds: Collection<World> = conf.blacklistedWorlds
+    override val enabledWorlds: Collection<World> = conf.enabledWorlds
     override var tickCount: Long = 0L
     override var lastTickTime: Long = 0L
     override var state: ManagerState = ManagerState.IDLE
@@ -88,7 +89,7 @@ class RandomTeleportManagerImpl : RandomTeleportManager, KoinComponent {
         return if (spawnPointAsCenter) spawnPoint else center
     }
 
-    override fun getMaxCacheAmount(world: World): Int {
+    override fun getCacheAmount(world: World): Int {
         return conf.chunkCacheAmount.get(world.name) ?: conf.chunkCacheDefaultAmount
     }
 
@@ -118,10 +119,6 @@ class RandomTeleportManagerImpl : RandomTeleportManager, KoinComponent {
         val center = getCenterLocation(world, options)
         val baseX = center.x.toInt()
         val baseZ = center.z.toInt()
-
-        if (blacklistedWorlds.contains(world)) {
-            return null
-        }
 
         fun random(): Int {
             return range.random()
@@ -164,14 +161,16 @@ class RandomTeleportManagerImpl : RandomTeleportManager, KoinComponent {
         return async<Location?> { searchLocation() }
     }
 
-    override suspend fun random(world: World, options: RandomTeleportOptions?): Location? {
+    override suspend fun random(world: World, options: RandomTeleportOptions?): RandomResult {
         val opt = options ?: getRandomTeleportOptions(world)
-        return async<Location?> {
+        return async<RandomResult> {
+            var attempts = 0
             repeat(opt.maxAttempts) {
+                attempts++
                 val loc = randomOnce(world, opt)
-                if (loc != null) return@async loc
+                if (loc != null) return@async RandomResult(attempts, loc)
             }
-            return@async null
+            return@async RandomResult(attempts, null)
         }
     }
 
@@ -180,14 +179,6 @@ class RandomTeleportManagerImpl : RandomTeleportManager, KoinComponent {
         val task = CacheTaskImpl(world, opt)
         cacheTasks.add(task)
         return task
-    }
-
-    override fun inTeleportQueue(player: Player): Boolean {
-        return teleportQueue.any { it.player == player }
-    }
-
-    override fun inTeleportQueue(id: UUID): Boolean {
-        return teleportQueue.any { it.id == id }
     }
 
     override fun hasCacheTask(id: UUID): Boolean {
@@ -199,8 +190,22 @@ class RandomTeleportManagerImpl : RandomTeleportManager, KoinComponent {
         world: World,
         options: RandomTeleportOptions?,
         prompt: Boolean
-    ): RandomTeleportTask {
-        TODO("Not yet implemented")
+    ) {
+        submitAsync {
+            launchSuspend(player, world, options, prompt)
+        }
+    }
+
+    private class TeleportTimer {
+
+        private val start: Long = System.currentTimeMillis()
+        private var end: Long? = null
+
+        fun end(): Long {
+            end = System.currentTimeMillis()
+            return end!! - start
+        }
+
     }
 
     override suspend fun launchSuspend(
@@ -208,28 +213,66 @@ class RandomTeleportManagerImpl : RandomTeleportManager, KoinComponent {
         world: World,
         options: RandomTeleportOptions?,
         prompt: Boolean
-    ): RandomTeleportTask {
-        TODO("Not yet implemented")
+    ) {
+        async {
+            val timer = TeleportTimer()
+            val opt = options ?: getRandomTeleportOptions(world)
+            val cache = if (options != null) pollCache(world) else null
+
+            if (cache != null) {
+                val location = cache.location
+                teleport.teleport(player, location, prompt = prompt)
+                val time = timer.end()
+                if (prompt) {
+                    player.sendMessage(
+                        RANDOM_TELEPORT_SUCCED
+                            .replace(
+                                "<location>",
+                                Component.text("${location.blockX}, ${location.blockY}, ${location.blockZ}")
+                            )
+                            .replace("<attempts>", Component.text(cache.attempts))
+                            .replace("<time>", Component.text(time))
+                    )
+                }
+                return@async
+            }
+
+            val random = random(world, opt)
+            val attempts = random.attempts
+            val location = random.location
+
+            if (location == null) {
+                if (prompt) {
+                    player.showTitle(TELEPORT_FAILED_TITLE)
+                    player.playSound(TELEPORT_FAILED_SOUND)
+                    player.sendMessage(RANDOM_TELEPORT_SEARCHING_FAILED)
+                }
+                return@async
+            }
+
+            teleport.teleport(player, location, prompt = prompt)
+            val time = timer.end()
+
+            if (prompt) {
+                player.sendMessage(
+                    RANDOM_TELEPORT_SUCCED
+                        .replace(
+                            "<location>",
+                            Component.text("${location.blockX}, ${location.blockY}, ${location.blockZ}")
+                        )
+                        .replace("<attempts>", Component.text(attempts))
+                        .replace("<time>", Component.text(time))
+                )
+            }
+        }
     }
 
-    override fun cancel(id: UUID) {
-        TODO("Not yet implemented")
-    }
-
-    override fun cancel(player: Player) {
-        TODO("Not yet implemented")
-    }
-
-    override fun isBlacklisted(world: World): Boolean {
-        return blacklistedWorlds.contains(world)
-    }
-
-    private suspend fun tickTeleportQueue() {
-        val task = teleportQueue.poll() ?: return
-        task.tick()
+    override fun isEnabled(world: World): Boolean {
+        return enabledWorlds.contains(world)
     }
 
     private suspend fun tickCacheTask() {
+        currentTickCaches = 0
         cacheTasks.forEach {
             val cache = it.tick()
             when (it.state) {
@@ -253,10 +296,10 @@ class RandomTeleportManagerImpl : RandomTeleportManager, KoinComponent {
                 }
             }
         }
-        val worlds = Bukkit.getWorlds().filter { !blacklistedWorlds.contains(it) }
+        val worlds = Bukkit.getWorlds().filter { enabledWorlds.contains(it) }
         worlds.forEach {
             val cached = getCaches(it).size
-            val limit = getMaxCacheAmount(it)
+            val limit = getCacheAmount(it)
             if (cached < limit) {
                 submitCache(it)
             }
@@ -268,16 +311,13 @@ class RandomTeleportManagerImpl : RandomTeleportManager, KoinComponent {
             return
         }
 
-        if (teleportQueue.isEmpty() && cacheTasks.isEmpty()) {
+        if (cacheTasks.isEmpty()) {
             return
         }
 
         state = ManagerState.TICKING
         val start = System.currentTimeMillis()
-
-        tickTeleportQueue()
         tickCacheTask()
-
         val end = System.currentTimeMillis()
         lastTickTime = end - start
         tickCount++

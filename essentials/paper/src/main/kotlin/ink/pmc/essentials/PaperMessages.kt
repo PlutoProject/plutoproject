@@ -329,3 +329,37 @@ val COMMAND_ETP_SUCCEED_OTHER = component {
     text("传送至 ") with mochaPink
     text("<location>") with mochaText
 }
+
+val RANDOM_TELEPORT_SUCCED = component {
+    text("已将你传送到 ") with mochaPink
+    text("<location>") with mochaText
+    newline()
+    text("本次传送尝试 ") with mochaSubtext0
+    text("<attempts> ") with mochaText
+    text("次，耗时") with mochaSubtext0
+    text("<time>") with mochaText
+}
+
+val RANDOM_TELEPORT_SEARCHING_TITLE = title {
+    times {
+        fadeIn(Ticks.duration(5))
+        stay(Duration.ofMinutes(1))
+        fadeOut(Duration.ZERO)
+    }
+    mainTitle {
+        text("传送中") with mochaPink
+    }
+    subTitle {
+        text("正在搜寻目的地") with mochaText
+    }
+}
+
+val RANDOM_TELEPORT_SEARCHING_SOUND = sound {
+    key(Key.key("entity.tnt.primed"))
+}
+
+val RANDOM_TELEPORT_SEARCHING_FAILED = component {
+    text("这次运气似乎不太好...") with mochaYellow
+    newline()
+    text("如果此问题总是发生，请报告给管理组") with mochaSubtext0
+}

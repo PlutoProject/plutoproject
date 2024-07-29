@@ -53,8 +53,8 @@ class EssentialsConfig(private val config: Config) : Config by config {
         val cost: String get() = get("random-teleport.cost")
         val blacklistedBiomes: Collection<Biome>
             get() = get<List<String>>("random-teleport.blacklisted-biomes").map { Biome.valueOf(it.uppercase()) }
-        val blacklistedWorlds: Collection<World>
-            get() = get<List<String>>("random-teleport.blacklisted-worlds").map { Bukkit.getWorld(it)!! }
+        val enabledWorlds: Collection<World>
+            get() = get<List<String>>("random-teleport.enabled-worlds").map { Bukkit.getWorld(it)!! }
         val worldOptions: Map<World, Config>
             get() = get<Config>("random-teleport.world-options")
                 .toMapViaEntry().mapKv { Bukkit.getWorld(it.key)!! to it.value as Config }
