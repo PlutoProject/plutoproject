@@ -1,11 +1,14 @@
 package ink.pmc.essentials.teleport.random
 
 import com.electronwill.nightconfig.core.Config
+import com.google.common.collect.ArrayListMultimap
+import com.google.common.collect.ListMultimap
+import com.google.common.collect.Multimaps
 import ink.pmc.essentials.*
 import ink.pmc.essentials.api.teleport.ManagerState
+import ink.pmc.essentials.api.teleport.TaskState.*
 import ink.pmc.essentials.api.teleport.TeleportManager
 import ink.pmc.essentials.api.teleport.random.*
-import ink.pmc.essentials.api.teleport.random.CacheTaskState.*
 import ink.pmc.essentials.config.EssentialsConfig
 import ink.pmc.utils.chat.DURATION
 import ink.pmc.utils.chat.replace
@@ -13,8 +16,14 @@ import ink.pmc.utils.concurrent.async
 import ink.pmc.utils.concurrent.submitAsync
 import ink.pmc.utils.data.mapKv
 import ink.pmc.utils.world.Pos2D
+import ink.pmc.utils.world.addTicket
+import ink.pmc.utils.world.removeTicket
 import net.kyori.adventure.text.Component
-import org.bukkit.Bukkit
+import net.minecraft.server.level.ChunkLevel
+import net.minecraft.server.level.FullChunkStatus
+import net.minecraft.server.level.TicketType
+import net.minecraft.world.level.ChunkPos
+import org.bukkit.Chunk
 import org.bukkit.Location
 import org.bukkit.World
 import org.bukkit.block.Biome
@@ -23,9 +32,17 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.math.BigDecimal
 import java.util.*
-import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.LinkedBlockingDeque
 import kotlin.time.Duration
 import kotlin.time.toKotlinDuration
+
+internal fun Chunk.addTeleportTicket() {
+    addTicket(TicketType.FORCED, x, z, ChunkLevel.byStatus(FullChunkStatus.FULL), ChunkPos(x, z))
+}
+
+internal fun Chunk.removeTeleportTicket() {
+    removeTicket(TicketType.FORCED, x, z, ChunkLevel.byStatus(FullChunkStatus.FULL), ChunkPos(x, z))
+}
 
 class RandomTeleportManagerImpl : RandomTeleportManager, KoinComponent {
 
@@ -33,12 +50,11 @@ class RandomTeleportManagerImpl : RandomTeleportManager, KoinComponent {
     private val conf = baseConf.RandomTeleport()
     private val teleportConf = baseConf.Teleport()
     private val teleport by inject<TeleportManager>()
-    internal var currentTickCaches: Int = 0
+    private var waitedTicks: Long = -1
 
-    override val cacheTasks: MutableList<CacheTask> = mutableListOf()
-    override val caches: MutableSet<RandomTeleportCache> = ConcurrentHashMap.newKeySet()
-    override val maxChunkCachePerTick: Int = conf.chunkCacheMax
-    override val maxCaches: Int = conf.chunkCacheMax
+    override val cacheTasks: Deque<CacheTask> = LinkedBlockingDeque()
+    override val caches: ListMultimap<World, RandomTeleportCache> =
+        Multimaps.synchronizedListMultimap(ArrayListMultimap.create())
     override val chunkPreserveRadius: Int =
         if (conf.chunkPreserveRadius >= 0) conf.chunkPreserveRadius else teleportConf.chunkPrepareRadius
     override val defaultOptions: RandomTeleportOptions = RandomTeleportOptions(
@@ -92,26 +108,17 @@ class RandomTeleportManagerImpl : RandomTeleportManager, KoinComponent {
     }
 
     override fun getCacheAmount(world: World): Int {
-        return conf.chunkCacheAmount.get(world.name) ?: conf.chunkCacheDefaultAmount
+        return conf.cacheAmount.get(world.name) ?: conf.cacheDefaultAmount
     }
 
     override fun getCaches(world: World): Collection<RandomTeleportCache> {
-        return caches.filter { it.world == world }
+        return caches.get(world)
     }
 
     override fun pollCache(world: World): RandomTeleportCache? {
-        if (!caches.any { it.world == world }) return null
-        val cache = caches.firstOrNull { it.world == world } ?: return null
-        cache.preservedChunks.forEach { it.removePluginChunkTicket(plugin) }
-        caches.remove(cache)
-        return cache
-    }
-
-    override fun pollCache(id: UUID): RandomTeleportCache? {
-        if (!caches.any { it.id == id }) return null
-        val cache = caches.firstOrNull { it.id == id } ?: return null
-        cache.preservedChunks.forEach { it.removePluginChunkTicket(plugin) }
-        caches.remove(cache)
+        if (getCaches(world).isEmpty()) return null
+        val cache = caches.get(world).removeFirst()
+        cache.preservedChunks.forEach { it.removeTeleportTicket() }
         return cache
     }
 
@@ -179,7 +186,14 @@ class RandomTeleportManagerImpl : RandomTeleportManager, KoinComponent {
     override fun submitCache(world: World, options: RandomTeleportOptions?): CacheTask {
         val opt = options ?: getRandomTeleportOptions(world)
         val task = CacheTaskImpl(world, opt)
-        cacheTasks.add(task)
+        cacheTasks.offer(task)
+        return task
+    }
+
+    override fun submitCacheFirst(world: World, options: RandomTeleportOptions?): CacheTask {
+        val opt = options ?: getRandomTeleportOptions(world)
+        val task = CacheTaskImpl(world, opt)
+        cacheTasks.offerFirst(task)
         return task
     }
 
@@ -239,8 +253,9 @@ class RandomTeleportManagerImpl : RandomTeleportManager, KoinComponent {
     ) {
         async {
             val timer = TeleportTimer()
-            val opt = options ?: getRandomTeleportOptions(world)
-            val cache = if (options != null) pollCache(world) else null
+            val defaultOpt = getRandomTeleportOptions(world)
+            val opt = options ?: defaultOpt
+            val cache = if (opt == defaultOpt) pollCache(world) else null
 
             if (cache != null) {
                 val location = cache.location
@@ -279,36 +294,31 @@ class RandomTeleportManagerImpl : RandomTeleportManager, KoinComponent {
     }
 
     private suspend fun tickCacheTask() {
-        currentTickCaches = 0
-        cacheTasks.forEach {
-            val cache = it.tick()
-            when (it.state) {
-                PENDING -> {}
-                TICKING -> {}
-                TICKING_CACHE -> {}
-
-                SUCCEED -> {
-                    if (cache != null) {
-                        caches.add(cache)
-                    }
-                    cacheTasks.remove(it)
-                }
-
-                FAILED -> {
-                    cacheTasks.remove(it)
-                }
-
-                CANCELLED -> {
-                    cacheTasks.remove(it)
+        val task = cacheTasks.poll() ?: return
+        val cache = task.tick()
+        when (task.state) {
+            PENDING -> {}
+            TICKING -> {}
+            FINISHED -> {
+                if (cache != null) {
+                    caches.put(cache.world, cache)
                 }
             }
         }
-        val worlds = Bukkit.getWorlds().filter { enabledWorlds.contains(it) }
-        worlds.forEach {
-            val cached = getCaches(it).size
-            val limit = getCacheAmount(it)
-            if (cached < limit) {
-                submitCache(it)
+    }
+
+    private fun tryEmitTasks() {
+        enabledWorlds.forEach {
+            val amount = getCacheAmount(it)
+            val pending = cacheTasks.filter { t -> t.world == it }.size
+            val spare = amount - (getCaches(it).size + pending)
+
+            if (spare <= 0) {
+                return@forEach
+            }
+
+            repeat(spare) { _ ->
+                submitCache(it, getRandomTeleportOptions(it))
             }
         }
     }
@@ -317,6 +327,13 @@ class RandomTeleportManagerImpl : RandomTeleportManager, KoinComponent {
         if (hasUnfinishedTick) {
             return
         }
+
+        if (waitedTicks != -1L && waitedTicks < conf.cacheInterval) {
+            waitedTicks++
+            return
+        }
+
+        tryEmitTasks()
 
         if (cacheTasks.isEmpty()) {
             return
@@ -329,6 +346,7 @@ class RandomTeleportManagerImpl : RandomTeleportManager, KoinComponent {
         lastTickTime = end - start
         tickCount++
         state = ManagerState.IDLE
+        waitedTicks = 0
     }
 
 }

@@ -22,8 +22,12 @@ class EssentialsImpl : IEssentials, KoinComponent {
     override val warpManager by inject<WarpManager>()
     override val economyManager by inject<EconomyManager>()
 
-    override fun isTeleportManagerEnabled(): Boolean {
+    override fun isTeleportEnabled(): Boolean {
         return config.Teleport().enabled
+    }
+
+    override fun isRandomTeleportEnabled(): Boolean {
+        return config.RandomTeleport().enabled
     }
 
 }

@@ -30,6 +30,10 @@ fun Duration.formatDuration(): String {
     if (microseconds > 0) result.append("$microseconds 微秒 ")
     if (nanoseconds > 0) result.append("$nanoseconds 纳秒")
 
+    if (result.isEmpty()) {
+        result.append("0 毫秒 ")
+    }
+
     // 检查最后一个单位是否是分钟
     if (result.endsWith(" 分 ")) {
         result.replace(result.length - 2, result.length, "分钟 ")

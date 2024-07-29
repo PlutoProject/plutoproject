@@ -24,6 +24,8 @@ interface IEssentials {
     val warpManager: WarpManager
     val economyManager: EconomyManager
 
-    fun isTeleportManagerEnabled(): Boolean
+    fun isTeleportEnabled(): Boolean
+
+    fun isRandomTeleportEnabled(): Boolean
 
 }

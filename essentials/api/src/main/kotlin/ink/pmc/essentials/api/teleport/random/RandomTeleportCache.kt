@@ -3,7 +3,7 @@ package ink.pmc.essentials.api.teleport.random
 import org.bukkit.Chunk
 import org.bukkit.Location
 import org.bukkit.World
-import java.util.UUID
+import java.util.*
 
 data class RandomTeleportCache(
     val id: UUID,

@@ -9,6 +9,7 @@ import ink.pmc.utils.visual.mochaMaroon
 import ink.pmc.utils.visual.mochaSubtext0
 import net.kyori.adventure.text.Component
 import kotlin.time.Duration
+import kotlin.time.toKotlinDuration
 
 val NON_PLAYER = component { text("该命令仅限玩家使用") with mochaMaroon }
 
@@ -27,6 +28,11 @@ val NO_PERMISSON = component {
 @Suppress("FunctionName")
 fun DURATION(duration: Duration): Component {
     return Component.text(duration.formatDuration())
+}
+
+@Suppress("FunctionName")
+fun DURATION(duration: java.time.Duration): Component {
+    return Component.text(duration.toKotlinDuration().formatDuration())
 }
 
 val UNUSUAL_ISSUE = component {

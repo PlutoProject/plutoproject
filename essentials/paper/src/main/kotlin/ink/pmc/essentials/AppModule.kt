@@ -26,7 +26,7 @@ val appModule = module {
         if (conf.RandomTeleport().enabled) {
             RandomTeleportManagerImpl()
         } else {
-            throw IllegalStateException("TeleportManager not available")
+            throw IllegalStateException("RandomTeleportManager not available")
         }
     }
 }

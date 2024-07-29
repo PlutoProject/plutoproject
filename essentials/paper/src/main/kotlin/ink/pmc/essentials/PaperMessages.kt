@@ -4,12 +4,15 @@ import ink.pmc.advkt.component.*
 import ink.pmc.advkt.sound.key
 import ink.pmc.advkt.sound.sound
 import ink.pmc.advkt.title.*
+import ink.pmc.essentials.api.Essentials
+import ink.pmc.utils.chat.DURATION
 import ink.pmc.utils.visual.*
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.util.Ticks
 import java.time.Duration
 import java.util.*
+import kotlin.time.toKotlinDuration
 
 val GM_SURVIVAL = Component.text("生存模式")
 
@@ -363,3 +366,42 @@ val RANDOM_TELEPORT_SEARCHING_FAILED = component {
     newline()
     text("如果此问题总是发生，请报告给管理组") with mochaSubtext0
 }
+
+val COMMAND_RTP_NOT_ENABLED = component {
+    text("该世界未启用随机传送") with mochaMaroon
+}
+
+val COMMAND_ESS_RTP
+    get() = component {
+        val manager = Essentials.randomTeleportManager
+
+        text("随机传送状态：") with mochaFlamingo
+        newline()
+
+        text("  - ") with mochaSubtext0
+        text("已处理刻数：") with mochaText
+        text("${manager.tickCount}") with mochaLavender
+        newline()
+
+        text("  - ") with mochaSubtext0
+        text("上次刻处理用时：") with mochaText
+        raw(DURATION(Duration.ofMillis(manager.lastTickTime).toKotlinDuration())) with mochaLavender
+
+        newline()
+        empty()
+        newline()
+
+        text("世界缓存数：") with mochaFlamingo
+        newline()
+
+        val worlds = manager.enabledWorlds
+        worlds.forEach {
+            val caches = manager.getCaches(it).size
+            text("  - ") with mochaSubtext0
+            text("${it.name}：") with mochaText
+            text(caches) with mochaLavender
+            if (worlds.last() != it) {
+                newline()
+            }
+        }
+    }

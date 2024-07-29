@@ -1,5 +1,6 @@
 package ink.pmc.essentials.api.teleport.random
 
+import com.google.common.collect.Multimap
 import ink.pmc.essentials.api.teleport.ManagerState
 import ink.pmc.utils.world.Pos2D
 import org.bukkit.Location
@@ -10,10 +11,8 @@ import java.util.*
 @Suppress("UNUSED")
 interface RandomTeleportManager {
 
-    val cacheTasks: Collection<CacheTask>
-    val caches: Collection<RandomTeleportCache>
-    val maxChunkCachePerTick: Int
-    val maxCaches: Int
+    val cacheTasks: Queue<CacheTask>
+    val caches: Multimap<World, RandomTeleportCache>
     val chunkPreserveRadius: Int
     val defaultOptions: RandomTeleportOptions
     val worldOptions: Map<World, RandomTeleportOptions>
@@ -32,13 +31,13 @@ interface RandomTeleportManager {
 
     fun pollCache(world: World): RandomTeleportCache?
 
-    fun pollCache(id: UUID): RandomTeleportCache?
-
     suspend fun randomOnce(world: World, options: RandomTeleportOptions? = null): Location?
 
     suspend fun random(world: World, options: RandomTeleportOptions? = null): RandomResult
 
     fun submitCache(world: World, options: RandomTeleportOptions? = null): CacheTask
+
+    fun submitCacheFirst(world: World, options: RandomTeleportOptions? = null): CacheTask
 
     fun hasCacheTask(id: UUID): Boolean
 

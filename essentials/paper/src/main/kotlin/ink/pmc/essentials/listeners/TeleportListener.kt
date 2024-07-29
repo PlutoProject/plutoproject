@@ -4,13 +4,11 @@ import com.destroystokyo.paper.event.server.ServerTickEndEvent
 import ink.pmc.essentials.TELEPORT_REQUEST_CANCELED_OFFLINE
 import ink.pmc.essentials.TELEPORT_REQUEST_CANCELLED_SOUND
 import ink.pmc.essentials.api.teleport.TeleportManager
-import ink.pmc.essentials.config.EssentialsConfig
 import ink.pmc.utils.chat.replace
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerQuitEvent
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.get
 import org.koin.core.component.inject
 
 @Suppress("UNUSED", "UnusedReceiverParameter")
