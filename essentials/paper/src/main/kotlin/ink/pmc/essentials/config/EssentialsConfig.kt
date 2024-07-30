@@ -13,6 +13,8 @@ import org.bukkit.block.Biome
 @Suppress("UNUSED")
 class EssentialsConfig(private val config: Config) : Config by config {
 
+    val serverName: String get() = get("server-name")
+
     inner class Teleport {
         val enabled: Boolean get() = get("teleport.enabled")
         val maxRequestsStored: Int get() = get("teleport.max-requests-stored")

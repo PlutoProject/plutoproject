@@ -11,7 +11,6 @@ interface Home {
 
     val id: UUID
     val name: String
-    var alias: String?
     val createdAt: Instant
     var location: Location
     val owner: OfflinePlayer

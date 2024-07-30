@@ -4,15 +4,16 @@ import org.bukkit.Location
 import org.bukkit.entity.Player
 import java.math.BigDecimal
 import java.time.Instant
+import java.util.UUID
 
 @Suppress("UNUSED")
 interface Warp {
 
+    val id: UUID
     val name: String
     var alias: String?
     val createdAt: Instant
     var location: Location
-    var cost: BigDecimal
 
     fun teleport(player: Player, cost: Boolean = true, prompt: Boolean = true)
 
