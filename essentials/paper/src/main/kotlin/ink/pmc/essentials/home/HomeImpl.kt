@@ -43,7 +43,8 @@ class HomeImpl(private val dto: HomeDto) : Home, KoinComponent {
     }
 
     override suspend fun teleportSuspend(player: Player, prompt: Boolean) {
-        teleport.teleportSuspend(player, location, prompt = prompt)
+        val options = teleport.getWorldTeleportOptions(location.world).copy(bypassSafeCheck = true)
+        teleport.teleportSuspend(player, location, options, prompt)
     }
 
     private fun toDto(): HomeDto {
