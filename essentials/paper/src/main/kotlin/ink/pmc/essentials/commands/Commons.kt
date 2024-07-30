@@ -12,7 +12,3 @@ suspend fun checkPlayer(sender: CommandSender, action: suspend Player.() -> Unit
     }
     sender.action()
 }
-
-suspend fun checkPlayer(source: CommandSourceStack, action: suspend Player.() -> Unit) {
-    checkPlayer(source.sender, action)
-}

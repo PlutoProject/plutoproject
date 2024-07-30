@@ -1,7 +1,6 @@
 package ink.pmc.essentials.api
 
 import ink.pmc.essentials.api.back.BackManager
-import ink.pmc.essentials.api.economy.EconomyManager
 import ink.pmc.essentials.api.home.HomeManager
 import ink.pmc.essentials.api.teleport.TeleportManager
 import ink.pmc.essentials.api.teleport.random.RandomTeleportManager
@@ -22,7 +21,6 @@ interface IEssentials {
     val randomTeleportManager: RandomTeleportManager
     val homeManager: HomeManager
     val warpManager: WarpManager
-    val economyManager: EconomyManager
 
     fun isTeleportEnabled(): Boolean
 
