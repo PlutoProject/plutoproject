@@ -14,6 +14,7 @@ interface Home {
     val createdAt: Instant
     var location: Location
     val owner: OfflinePlayer
+    val isLoaded: Boolean
 
     fun teleport(player: Player, prompt: Boolean = true)
 

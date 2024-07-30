@@ -1,5 +1,6 @@
 package ink.pmc.essentials.api.home
 
+import com.google.common.collect.ListMultimap
 import org.bukkit.Location
 import org.bukkit.OfflinePlayer
 import org.bukkit.World
@@ -11,8 +12,17 @@ interface HomeManager {
 
     val maxHomes: Int
     val blacklistedWorlds: Collection<World>
+    val loadedHomes: ListMultimap<OfflinePlayer, Home>
+
+    fun isLoaded(id: UUID): Boolean
+
+    fun unload(id: UUID)
+
+    fun unloadAll(player: OfflinePlayer)
 
     suspend fun get(id: UUID): Home?
+
+    suspend fun get(player: OfflinePlayer, name: String): Home?
 
     suspend fun list(player: OfflinePlayer): Collection<Home>
 

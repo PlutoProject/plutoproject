@@ -1,6 +1,7 @@
 package ink.pmc.essentials.home
 
 import ink.pmc.essentials.api.home.Home
+import ink.pmc.essentials.api.home.HomeManager
 import ink.pmc.essentials.api.teleport.TeleportManager
 import ink.pmc.essentials.dtos.HomeDto
 import ink.pmc.essentials.repositories.HomeRepository
@@ -17,6 +18,7 @@ import java.util.*
 
 class HomeImpl(private val dto: HomeDto) : Home, KoinComponent {
 
+    private val manager by inject<HomeManager>()
     private val repo by inject<HomeRepository>()
     private val teleport by inject<TeleportManager>()
 
@@ -24,13 +26,15 @@ class HomeImpl(private val dto: HomeDto) : Home, KoinComponent {
     override var name: String = dto.name
     override val createdAt: Instant = Instant.ofEpochMilli(dto.createdAt)
     override var location: Location =
-        requireNotNull(dto.location.location) { loadFailed("cannot to obtain location ${dto.location}") }
+        requireNotNull(dto.location.location) {
+            loadFailed(id, "cannot to obtain location ${dto.location}")
+        }
     override val owner: OfflinePlayer =
-        requireNotNull(Bukkit.getOfflinePlayer(dto.owner)) { loadFailed("cannot obtain OfflinePlayer ${dto.owner}") }
-
-    private fun loadFailed(reason: String): String {
-        return "Failed to load Home $id: $reason"
-    }
+        requireNotNull(Bukkit.getOfflinePlayer(dto.owner)) {
+            loadFailed(id, "cannot obtain OfflinePlayer ${dto.owner}")
+        }
+    override val isLoaded: Boolean
+        get() = manager.isLoaded(id)
 
     override fun teleport(player: Player, prompt: Boolean) {
         submitAsync {
