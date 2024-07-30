@@ -1,33 +1,72 @@
 package ink.pmc.essentials.repositories
 
+import com.github.benmanes.caffeine.cache.Caffeine
+import com.mongodb.client.model.Filters.and
+import com.mongodb.client.model.Filters.eq
 import ink.pmc.essentials.config.EssentialsConfig
 import ink.pmc.essentials.dtos.HomeDto
 import ink.pmc.provider.ProviderService
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.toCollection
 import org.bukkit.entity.Player
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import java.util.UUID
+import java.time.Duration
+import java.util.*
 
 class HomeRepository : KoinComponent {
 
     private val conf by inject<EssentialsConfig>()
+    private val cache = Caffeine.newBuilder()
+        .expireAfterWrite(Duration.ofMinutes(60))
+        .build<UUID, HomeDto>()
     private val db =
         ProviderService.defaultMongoDatabase.getCollection<HomeDto>("ess_${conf.serverName}_homes")
 
     suspend fun findById(id: UUID): HomeDto? {
-        TODO()
+        val cached = cache.getIfPresent(id)
+        if (cached == null) {
+            val lookup = db.find(eq("id", id)).firstOrNull() ?: return null
+            cache.put(id, lookup)
+            return lookup
+        }
+        return cached
     }
 
     suspend fun findByName(player: Player, name: String): HomeDto? {
-        TODO()
+        val cached = cache.asMap().values.firstOrNull { it.owner == player.uniqueId && it.name == name }
+        if (cached == null) {
+            val lookup = db.find(
+                and(eq("owner", player.uniqueId), eq("name", name))
+            ).firstOrNull() ?: return null
+            cache.put(lookup.id, lookup)
+            return lookup
+        }
+        return cached
+    }
+
+    suspend fun findByPlayer(player: Player): Collection<HomeDto> {
+        return mutableListOf<HomeDto>().apply {
+            db.find(eq("owner", player.uniqueId)).toCollection(this)
+        }
+    }
+
+    suspend fun hasById(id: UUID): Boolean {
+        return findById(id) != null
+    }
+
+    suspend fun hasByName(player: Player, name: String): Boolean {
+        return findByPlayer(player).any { it.name == name }
     }
 
     suspend fun save(dto: HomeDto) {
-
+        require(!hasById(dto.id)) { "HomeDto with id ${dto.id} already existed" }
+        db.insertOne(dto)
     }
 
     suspend fun update(dto: HomeDto) {
-
+        require(hasById(dto.id)) { "HomeDto with id ${dto.id} not exist" }
+        db.replaceOne(eq("id", dto.id), dto)
     }
 
 }

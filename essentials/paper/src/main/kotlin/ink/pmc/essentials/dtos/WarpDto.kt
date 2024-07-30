@@ -1,23 +1,15 @@
 package ink.pmc.essentials.dtos
 
-import ink.pmc.essentials.api.warp.Warp
 import ink.pmc.utils.storage.entity.LocationDto
-import ink.pmc.utils.storage.entity.dto
 import kotlinx.serialization.Contextual
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import org.bson.types.ObjectId
 import java.util.*
-
-val Warp.dto: WarpDto
-    get() = WarpDto(
-        id = id,
-        name = name,
-        alias = alias,
-        createdAt = createdAt.toEpochMilli(),
-        location = location.dto,
-    )
 
 @Serializable
 data class WarpDto(
+    @SerialName("_id") @Contextual val objectId: ObjectId,
     @Contextual val id: UUID,
     val name: String,
     val alias: String?,

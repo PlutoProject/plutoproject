@@ -1,26 +1,18 @@
 package ink.pmc.essentials.dtos
 
-import ink.pmc.essentials.api.home.Home
 import ink.pmc.utils.storage.entity.LocationDto
-import ink.pmc.utils.storage.entity.dto
 import kotlinx.serialization.Contextual
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import java.util.UUID
-
-val Home.dto: HomeDto
-    get() = HomeDto(
-        id = id,
-        name = name,
-        createdAt = createdAt.toEpochMilli(),
-        location = location.dto,
-        owner = owner.uniqueId.toString()
-    )
+import org.bson.types.ObjectId
+import java.util.*
 
 @Serializable
 data class HomeDto(
+    @SerialName("_id") @Contextual val objectId: ObjectId,
     @Contextual val id: UUID,
     val name: String,
     val createdAt: Long,
     val location: LocationDto,
-    val owner: String
+    @Contextual val owner: UUID
 )
