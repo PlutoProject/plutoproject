@@ -8,7 +8,7 @@ import ink.pmc.essentials.dtos.HomeDto
 import ink.pmc.provider.ProviderService
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.toCollection
-import org.bukkit.entity.Player
+import org.bukkit.OfflinePlayer
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.time.Duration
@@ -33,7 +33,7 @@ class HomeRepository : KoinComponent {
         return cached
     }
 
-    suspend fun findByName(player: Player, name: String): HomeDto? {
+    suspend fun findByName(player: OfflinePlayer, name: String): HomeDto? {
         val cached = cache.asMap().values.firstOrNull { it.owner == player.uniqueId && it.name == name }
         if (cached == null) {
             val lookup = db.find(
@@ -45,7 +45,7 @@ class HomeRepository : KoinComponent {
         return cached
     }
 
-    suspend fun findByPlayer(player: Player): Collection<HomeDto> {
+    suspend fun findByPlayer(player: OfflinePlayer): Collection<HomeDto> {
         return mutableListOf<HomeDto>().apply {
             db.find(eq("owner", player.uniqueId)).toCollection(this)
         }
@@ -55,13 +55,27 @@ class HomeRepository : KoinComponent {
         return findById(id) != null
     }
 
-    suspend fun hasByName(player: Player, name: String): Boolean {
+    suspend fun hasByName(player: OfflinePlayer, name: String): Boolean {
         return findByPlayer(player).any { it.name == name }
+    }
+
+    suspend fun deleteById(id: UUID) {
+        db.deleteOne(eq("id", id))
+    }
+
+    suspend fun deleteByName(player: OfflinePlayer, name: String) {
+        db.deleteOne(
+            and(
+                eq("owner", player.uniqueId),
+                eq("name", name)
+            )
+        )
     }
 
     suspend fun save(dto: HomeDto) {
         require(!hasById(dto.id)) { "HomeDto with id ${dto.id} already existed" }
         db.insertOne(dto)
+        cache.put(dto.id, dto)
     }
 
     suspend fun update(dto: HomeDto) {

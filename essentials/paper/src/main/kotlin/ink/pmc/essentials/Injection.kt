@@ -1,9 +1,11 @@
 package ink.pmc.essentials
 
 import ink.pmc.essentials.api.IEssentials
+import ink.pmc.essentials.api.home.HomeManager
 import ink.pmc.essentials.api.teleport.TeleportManager
 import ink.pmc.essentials.api.teleport.random.RandomTeleportManager
 import ink.pmc.essentials.config.EssentialsConfig
+import ink.pmc.essentials.home.HomeManagerImpl
 import ink.pmc.essentials.repositories.HomeRepository
 import ink.pmc.essentials.teleport.TeleportManagerImpl
 import ink.pmc.essentials.teleport.random.RandomTeleportManagerImpl
@@ -23,5 +25,9 @@ val appModule = module {
     single<RandomTeleportManager> {
         require(conf.Teleport().enabled && conf.RandomTeleport().enabled) { "RandomTeleportManager not available" }
         RandomTeleportManagerImpl()
+    }
+    single<HomeManager> {
+        require(conf.Teleport().enabled && conf.Home().enabled) { "HomeManager not available" }
+        HomeManagerImpl()
     }
 }

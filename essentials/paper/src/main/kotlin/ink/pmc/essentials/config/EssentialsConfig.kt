@@ -67,12 +67,14 @@ class EssentialsConfig(private val config: Config) : Config by config {
     }
 
     inner class Home {
+        val enabled: Boolean get() = get("home.enabled")
         val maxHomes: Int get() = get("home.max-homes")
         val blacklistedWorlds: Collection<World>
             get() = get<List<String>>("home.blacklisted-worlds").map { Bukkit.getWorld(it)!! }
     }
 
     inner class Warp {
+        val enabled: Boolean get() = get("warp.enabled")
         val blacklistedWorlds: Collection<World>
             get() = get<List<String>>("warp.blacklisted-worlds").map { Bukkit.getWorld(it)!! }
     }

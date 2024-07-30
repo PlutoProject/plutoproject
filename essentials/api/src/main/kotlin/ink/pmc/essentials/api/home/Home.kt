@@ -10,7 +10,7 @@ import java.util.*
 interface Home {
 
     val id: UUID
-    val name: String
+    var name: String
     val createdAt: Instant
     var location: Location
     val owner: OfflinePlayer
@@ -19,6 +19,6 @@ interface Home {
 
     suspend fun teleportSuspend(player: Player, prompt: Boolean = true)
 
-    suspend fun save()
+    suspend fun update()
 
 }

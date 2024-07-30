@@ -12,15 +12,19 @@ interface HomeManager {
     val maxHomes: Int
     val blacklistedWorlds: Collection<World>
 
-    suspend fun getHome(id: UUID): Home?
+    suspend fun get(id: UUID): Home?
 
-    suspend fun getHomes(player: OfflinePlayer): Collection<Home>
+    suspend fun list(player: OfflinePlayer): Collection<Home>
 
-    suspend fun hasHome(player: OfflinePlayer, name: String): Boolean
+    suspend fun has(player: OfflinePlayer, name: String): Boolean
 
-    suspend fun removeHome(id: UUID)
+    suspend fun remove(id: UUID)
 
-    suspend fun createHome(owner: Player, location: Location, name: String): Home
+    suspend fun remove(player: OfflinePlayer, name: String)
+
+    suspend fun create(owner: Player, name: String, location: Location): Home
+
+    suspend fun update(home: Home)
 
     fun isBlacklisted(world: World): Boolean
 

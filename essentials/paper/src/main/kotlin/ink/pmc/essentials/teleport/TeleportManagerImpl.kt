@@ -38,7 +38,7 @@ import kotlin.time.Duration.Companion.seconds
 
 class TeleportManagerImpl : TeleportManager, KoinComponent {
 
-    private val conf = get<EssentialsConfig>().Teleport()
+    private val conf by lazy { get<EssentialsConfig>().Teleport() }
 
     // 用于在完成队列任务时通知
     private val notifyChannel = MutableSharedFlow<UUID>()

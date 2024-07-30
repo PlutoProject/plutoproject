@@ -26,4 +26,6 @@ interface IEssentials {
 
     fun isRandomTeleportEnabled(): Boolean
 
+    fun isHomeEnabled(): Boolean
+
 }

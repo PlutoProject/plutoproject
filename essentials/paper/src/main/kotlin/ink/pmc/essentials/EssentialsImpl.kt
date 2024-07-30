@@ -8,6 +8,7 @@ import ink.pmc.essentials.api.teleport.random.RandomTeleportManager
 import ink.pmc.essentials.api.warp.WarpManager
 import ink.pmc.essentials.config.EssentialsConfig
 import org.koin.core.component.KoinComponent
+import org.koin.core.component.getScopeName
 import org.koin.core.component.inject
 
 @Suppress("UNUSED")
@@ -26,6 +27,10 @@ class EssentialsImpl : IEssentials, KoinComponent {
 
     override fun isRandomTeleportEnabled(): Boolean {
         return config.RandomTeleport().enabled
+    }
+
+    override fun isHomeEnabled(): Boolean {
+        return config.Home().enabled
     }
 
 }
