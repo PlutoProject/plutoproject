@@ -8,17 +8,20 @@ import ink.pmc.essentials.repositories.HomeRepository
 import ink.pmc.essentials.teleport.TeleportManagerImpl
 import ink.pmc.essentials.teleport.random.RandomTeleportManagerImpl
 import org.koin.dsl.module
+import org.koin.java.KoinJavaComponent.getKoin
+
+private val conf by lazy { getKoin().get<EssentialsConfig>() }
 
 val appModule = module {
     single { EssentialsConfig(fileConfig) }
     single<IEssentials> { EssentialsImpl() }
     single<HomeRepository> { HomeRepository() }
     single<TeleportManager> {
-        require(get<EssentialsConfig>().Teleport().enabled) { "TeleportManager not available" }
+        require(conf.Teleport().enabled) { "TeleportManager not available" }
         TeleportManagerImpl()
     }
     single<RandomTeleportManager> {
-        require(get<EssentialsConfig>().RandomTeleport().enabled) { "RandomTeleportManager not available" }
+        require(conf.RandomTeleport().enabled) { "RandomTeleportManager not available" }
         RandomTeleportManagerImpl()
     }
 }
