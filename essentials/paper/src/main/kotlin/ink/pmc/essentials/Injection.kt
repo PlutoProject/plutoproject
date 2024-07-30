@@ -21,7 +21,7 @@ val appModule = module {
         TeleportManagerImpl()
     }
     single<RandomTeleportManager> {
-        require(conf.RandomTeleport().enabled) { "RandomTeleportManager not available" }
+        require(conf.Teleport().enabled && conf.RandomTeleport().enabled) { "RandomTeleportManager not available" }
         RandomTeleportManagerImpl()
     }
 }
