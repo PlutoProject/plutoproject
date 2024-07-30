@@ -339,6 +339,10 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
         return center.chunkNeedToPrepare(radius)
     }
 
+    override fun isAllPrepared(chunks: Collection<ValueChunkLoc>, world: World): Boolean {
+        return chunks.toList().allPrepared(world)
+    }
+
     override suspend fun prepareChunk(chunks: Collection<ValueChunkLoc>, world: World) {
         chunks.prepareChunk(world)
     }

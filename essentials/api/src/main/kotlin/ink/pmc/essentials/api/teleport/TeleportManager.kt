@@ -1,6 +1,7 @@
 package ink.pmc.essentials.api.teleport
 
 import ink.pmc.utils.world.ValueChunkLoc
+import net.bytebuddy.matcher.CollectionItemMatcher
 import org.bukkit.Location
 import org.bukkit.World
 import org.bukkit.entity.Entity
@@ -61,6 +62,8 @@ interface TeleportManager {
     fun clearRequest()
 
     fun getRequiredChunks(center: Location, radius: Int): Collection<ValueChunkLoc>
+
+    fun isAllPrepared(chunks: Collection<ValueChunkLoc>, world: World): Boolean
 
     suspend fun prepareChunk(chunks: Collection<ValueChunkLoc>, world: World)
 

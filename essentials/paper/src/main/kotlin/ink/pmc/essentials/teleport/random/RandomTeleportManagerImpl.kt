@@ -18,6 +18,8 @@ import ink.pmc.utils.data.mapKv
 import ink.pmc.utils.world.Pos2D
 import ink.pmc.utils.world.addTicket
 import ink.pmc.utils.world.removeTicket
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.supervisorScope
 import net.kyori.adventure.text.Component
 import net.minecraft.server.level.ChunkLevel
 import net.minecraft.server.level.FullChunkStatus
@@ -37,7 +39,7 @@ import kotlin.time.Duration
 import kotlin.time.toKotlinDuration
 
 internal fun Chunk.addTeleportTicket() {
-    if (pluginChunkTickets.contains(plugin)) {
+    if (hasTeleportTicket()) {
         return
     }
     addTicket(TicketType.PLUGIN_TICKET, x, z, ChunkLevel.byStatus(FullChunkStatus.FULL), plugin)
@@ -45,6 +47,10 @@ internal fun Chunk.addTeleportTicket() {
 
 internal fun Chunk.removeTeleportTicket() {
     removeTicket(TicketType.PLUGIN_TICKET, x, z, ChunkLevel.byStatus(FullChunkStatus.FULL), plugin)
+}
+
+internal fun Chunk.hasTeleportTicket(): Boolean {
+    return pluginChunkTickets.contains(plugin)
 }
 
 class RandomTeleportManagerImpl : RandomTeleportManager, KoinComponent {
@@ -323,6 +329,19 @@ class RandomTeleportManagerImpl : RandomTeleportManager, KoinComponent {
         }
     }
 
+    private suspend fun refreshChunkCache() = supervisorScope {
+        caches.forEach { _, it ->
+            val preserve = teleport.getRequiredChunks(it.location, chunkPreserveRadius)
+            if (preserve.all { c -> c.isLoaded(it.world) && c.getChunk(it.world).hasTeleportTicket() }) {
+                return@forEach
+            }
+            launch {
+                teleport.prepareChunk(preserve, it.world)
+                preserve.forEach { c -> c.getChunk(it.world).addTeleportTicket() }
+            }
+        }
+    }
+
     private fun tryEmitTasks() {
         enabledWorlds.forEach {
             val amount = getCacheAmount(it)
@@ -334,7 +353,7 @@ class RandomTeleportManagerImpl : RandomTeleportManager, KoinComponent {
             }
 
             repeat(spare) { _ ->
-                submitCache(it, getRandomTeleportOptions(it))
+                submitCacheFirst(it, getRandomTeleportOptions(it))
             }
         }
     }
@@ -357,7 +376,10 @@ class RandomTeleportManagerImpl : RandomTeleportManager, KoinComponent {
 
         state = ManagerState.TICKING
         val start = System.currentTimeMillis()
+
         tickCacheTask()
+        refreshChunkCache()
+
         val end = System.currentTimeMillis()
         lastTickTime = end - start
         tickCount++

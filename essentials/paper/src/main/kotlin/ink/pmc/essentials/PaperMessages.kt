@@ -409,3 +409,11 @@ val COMMAND_ESS_RTP
             }
         }
     }
+
+val COMMAND_ESS_RTP_PERF_START = component {
+    text("已开启性能测试，再次使用本指令以关闭") with mochaPink
+}
+
+val COMMAND_ESS_RTP_PERF_END = component {
+    text("已关闭性能测试") with mochaPink
+}
