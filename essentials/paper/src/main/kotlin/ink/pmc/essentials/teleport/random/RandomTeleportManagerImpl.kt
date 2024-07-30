@@ -140,8 +140,12 @@ class RandomTeleportManagerImpl : RandomTeleportManager, KoinComponent {
         val baseX = center.x.toInt()
         val baseZ = center.z.toInt()
 
+        require(opt.startRadius < opt.endRadius) { "startRadius must less than endRadius" }
+
         fun random(): Int {
-            return range.random()
+            val rand = range.random()
+            val offset = if (rand >= 0) opt.startRadius else -opt.startRadius
+            return rand + offset
         }
 
         fun biome(location: Location): Boolean {
