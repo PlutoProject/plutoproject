@@ -18,10 +18,13 @@ import ink.pmc.utils.multiplaform.item.KeyedMaterial
 import ink.pmc.utils.multiplaform.item.exts.bukkit
 import ink.pmc.utils.world.ValueChunkLoc
 import ink.pmc.utils.world.getChunkViaSource
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.future.asCompletableFuture
 import kotlinx.coroutines.future.await
+import kotlinx.coroutines.supervisorScope
+import kotlinx.coroutines.yield
 import org.bukkit.Location
 import org.bukkit.World
 import org.bukkit.block.BlockFace
@@ -41,7 +44,7 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
     private val conf by lazy { get<EssentialsConfig>().Teleport() }
 
     // 用于在完成队列任务时通知
-    private val notifyChannel = MutableSharedFlow<UUID>()
+    private val notifyChannel = Channel<UUID>()
 
     override val teleportRequests: MutableList<TeleportRequest> = mutableListOf()
     override val queue: Queue<TeleportTask> = ConcurrentLinkedQueue()
@@ -418,12 +421,10 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
                 }
             }
 
-            coroutineScope {
-                launch {
-                    notifyChannel.collect {
-                        if (it == id) {
-                            cancel()
-                        }
+            supervisorScope {
+                for (uuid in notifyChannel) {
+                    if (uuid == id) {
+                        break
                     }
                 }
             }
@@ -468,7 +469,7 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
             val task = queue.poll() ?: return@repeat
             tickingTask = task
             task.tick()
-            notifyChannel.emit(task.id)
+            notifyChannel.send(task.id)
             tickingTask = null
         }
 
