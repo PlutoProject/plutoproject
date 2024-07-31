@@ -417,3 +417,61 @@ val COMMAND_ESS_RTP_PERF_START = component {
 val COMMAND_ESS_RTP_PERF_END = component {
     text("已关闭性能测试") with mochaPink
 }
+
+val COMMAND_SETHOME_FAILED_REACH_LIMIT
+    get() = component {
+        val manager = Essentials.homeManager
+        text("你当前设置的家数量已经到达上限，请删除一些再试") with mochaMaroon
+        newline()
+        text("当前家上限数量为 ") with mochaSubtext0
+        text("${manager.maxHomes} ") with mochaText
+        text("个") with mochaSubtext0
+    }
+
+val COMMAND_SETHOME_FAILED_EXISTED = component {
+    text("你已经有一个名为 ") with mochaMaroon
+    text("<name> ") with mochaText
+    text("的家了") with mochaMaroon
+    newline()
+    text("请删除或更换一个名字后再试") with mochaSubtext0
+}
+
+val COMMAND_SETHOME_FAILED_NOT_VALID = component {
+    text("家的名字只可以包含字母、数字、下划线") with mochaMaroon
+    newline()
+    text("不可以使用中文、空格等字符") with mochaSubtext0
+}
+
+val COMMAND_SETHOME_FAILED_LENGTN_LIMIT
+    get() = component {
+        val manager = Essentials.homeManager
+        text("家的名字最多只能使用 ") with mochaMaroon
+        text("${manager.nameLengthLimit} ") with mochaText
+        text("个字符") with mochaMaroon
+        newline()
+        text("请缩短一些后再试") with mochaSubtext0
+    }
+
+val COMMAND_SETHOME_SUCCEED = component {
+    text("已成功设置名为 ") with mochaPink
+    text("<name> ") with mochaText
+    text("的家") with mochaPink
+}
+
+val COMMAND_HOME_NOT_EXISTED = component {
+    text("名为 ") with mochaMaroon
+    text("<name> ") with mochaText
+    text("的家不存在") with mochaMaroon
+}
+
+val COMMAND_HOME_SUCCEED = component {
+    text("已传送到名为 ") with mochaPink
+    text("<name> ") with mochaText
+    text("的家") with mochaPink
+}
+
+val COMMAND_DELHOME_SUCCEED = component {
+    text("已删除名为 ") with mochaPink
+    text("<name> ") with mochaText
+    text("的家") with mochaPink
+}

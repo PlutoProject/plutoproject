@@ -34,6 +34,7 @@ class HomeManagerImpl : HomeManager, KoinComponent {
     private val repo by inject<HomeRepository>()
 
     override val maxHomes: Int = conf.maxHomes
+    override val nameLengthLimit: Int = conf.nameLengthLimit
     override val blacklistedWorlds: Collection<World> = conf.blacklistedWorlds
     override val loadedHomes: ListMultimap<OfflinePlayer, Home> =
         Multimaps.synchronizedListMultimap<OfflinePlayer, Home>(ArrayListMultimap.create())
@@ -48,59 +49,76 @@ class HomeManagerImpl : HomeManager, KoinComponent {
     }
 
     override fun isLoaded(id: UUID): Boolean {
-        return loadedHomes.values().any { it.id == id }
+        return getLoaded(id) != null
+    }
+
+    override fun isLoaded(player: OfflinePlayer, name: String): Boolean {
+        return getLoaded(player, name) != null
     }
 
     override fun unload(id: UUID) {
-        loadedHomes.values().removeIf { it.id == id  }
+        loadedHomes.values().removeIf { it.id == id }
+    }
+
+    override fun unload(player: OfflinePlayer, name: String) {
+        loadedHomes.get(player).removeIf { it.name == name }
     }
 
     override fun unloadAll(player: OfflinePlayer) {
         loadedHomes.removeAll(player)
     }
 
+    private fun getLoaded(id: UUID): Home? {
+        return loadedHomes.values().firstOrNull { it.id == id }
+    }
+
+    private fun getLoaded(player: OfflinePlayer, name: String): Home? {
+        return loadedHomes.get(player).firstOrNull { it.name == name }
+    }
+
     override suspend fun get(id: UUID): Home? {
-        val dto = repo.findById(id) ?: return null
-        val home = HomeImpl(dto)
-        if (!isLoaded(id)) {
+        val loaded = getLoaded(id) ?: run {
+            val dto = repo.findById(id) ?: return null
+            val home = HomeImpl(dto)
             loadedHomes.put(home.owner, home)
+            home
         }
-        return home
+        return loaded
     }
 
     override suspend fun get(player: OfflinePlayer, name: String): Home? {
-        val dto = repo.findByName(player, name) ?: return null
-        val home = HomeImpl(dto)
-        if (!isLoaded(dto.id)) {
+        val loaded = getLoaded(player, name) ?: run {
+            val dto = repo.findByName(player, name) ?: return null
+            val home = HomeImpl(dto)
             loadedHomes.put(home.owner, home)
+            home
         }
-        return home
+        return loaded
     }
 
     override suspend fun list(player: OfflinePlayer): Collection<Home> {
         val dto = repo.findByPlayer(player)
-        val homes = dto.map { HomeImpl(it) }
-        homes.forEach {
-            if (!isLoaded(it.id)) {
-                loadedHomes.put(it.owner, it)
-            }
-        }
+        val homes = dto.mapNotNull { get(it.id) }
         return homes
     }
 
     override suspend fun has(player: OfflinePlayer, name: String): Boolean {
+        if (getLoaded(player, name) != null) return true
         return repo.hasByName(player, name)
     }
 
     override suspend fun remove(id: UUID) {
+        if (isLoaded(id)) unload(id)
         repo.deleteById(id)
     }
 
     override suspend fun remove(player: OfflinePlayer, name: String) {
+        if (isLoaded(player, name)) unload(player, name)
         repo.deleteByName(player, name)
     }
 
     override suspend fun create(owner: Player, name: String, location: Location): Home {
+        require(!has(owner, name)) { "Home of player ${owner.name} named $name already existed" }
         val dto = HomeDto(
             ObjectId(),
             UUID.randomUUID(),

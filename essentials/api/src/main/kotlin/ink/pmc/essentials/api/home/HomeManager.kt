@@ -11,12 +11,17 @@ import java.util.*
 interface HomeManager {
 
     val maxHomes: Int
+    val nameLengthLimit: Int
     val blacklistedWorlds: Collection<World>
     val loadedHomes: ListMultimap<OfflinePlayer, Home>
 
     fun isLoaded(id: UUID): Boolean
 
+    fun isLoaded(player: OfflinePlayer, name: String): Boolean
+
     fun unload(id: UUID)
+
+    fun unload(player: OfflinePlayer, name: String)
 
     fun unloadAll(player: OfflinePlayer)
 

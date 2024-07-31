@@ -1,9 +1,10 @@
-package ink.pmc.essentials.commands
+package ink.pmc.essentials.commands.teleport.random
 
 import ink.pmc.essentials.COMMAND_RTP_NOT_ENABLED
 import ink.pmc.essentials.Cm
 import ink.pmc.essentials.Command
 import ink.pmc.essentials.api.Essentials
+import ink.pmc.essentials.commands.checkPlayer
 import ink.pmc.utils.chat.NO_PERMISSON
 import ink.pmc.utils.dsl.cloud.invoke
 import ink.pmc.utils.dsl.cloud.sender

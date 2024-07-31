@@ -69,6 +69,7 @@ class EssentialsConfig(private val config: Config) : Config by config {
     inner class Home {
         val enabled: Boolean get() = get("home.enabled")
         val maxHomes: Int get() = get("home.max-homes")
+        val nameLengthLimit: Int get() = get("home.name-length-limit")
         val blacklistedWorlds: Collection<World>
             get() = get<List<String>>("home.blacklisted-worlds").map { Bukkit.getWorld(it)!! }
     }

@@ -1,4 +1,4 @@
-package ink.pmc.essentials.commands
+package ink.pmc.essentials.commands.teleport
 
 import ink.pmc.essentials.*
 import ink.pmc.essentials.api.Essentials
