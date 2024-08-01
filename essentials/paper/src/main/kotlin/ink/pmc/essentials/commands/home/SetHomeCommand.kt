@@ -5,6 +5,7 @@ import ink.pmc.essentials.api.Essentials
 import ink.pmc.essentials.commands.checkPlayer
 import ink.pmc.utils.chat.isValidIdentifier
 import ink.pmc.utils.chat.replace
+import ink.pmc.utils.concurrent.submitAsync
 import ink.pmc.utils.dsl.cloud.invoke
 import ink.pmc.utils.dsl.cloud.sender
 import org.incendo.cloud.parser.standard.StringParser
@@ -45,7 +46,7 @@ fun Cm.sethome(aliases: Array<String>) {
                     return@checkPlayer
                 }
 
-                manager.create(this, name, location)
+                submitAsync { manager.create(this@checkPlayer, name, location) }
                 sendMessage(COMMAND_SETHOME_SUCCEED.replace("<name>", name))
                 playSound(TELEPORT_REQUEST_RECEIVED_SOUND)
             }

@@ -5,6 +5,7 @@ import ink.pmc.essentials.api.Essentials
 import ink.pmc.essentials.commands.checkPlayer
 import ink.pmc.utils.chat.NO_PERMISSON
 import ink.pmc.utils.chat.replace
+import ink.pmc.utils.concurrent.submitAsync
 import ink.pmc.utils.dsl.cloud.invoke
 import ink.pmc.utils.dsl.cloud.sender
 import ink.pmc.utils.player.uuidOrNull
@@ -32,7 +33,7 @@ fun Cm.delhome(aliases: Array<String>) {
                         return@checkPlayer
                     }
                     val home = manager.get(argUuid)
-                    manager.remove(argUuid)
+                    submitAsync { manager.remove(argUuid) }
                     sendMessage(COMMAND_HOME_SUCCEED.replace("<name>", home!!.name))
                     return@checkPlayer
                 }
@@ -43,7 +44,7 @@ fun Cm.delhome(aliases: Array<String>) {
                     return@checkPlayer
                 }
 
-                manager.remove(this, name)
+                submitAsync { manager.remove(this@checkPlayer, name) }
                 sendMessage(COMMAND_DELHOME_SUCCEED.replace("<name>", name))
                 playSound(TELEPORT_REQUEST_RECEIVED_SOUND)
             }
