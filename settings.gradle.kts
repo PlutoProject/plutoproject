@@ -46,12 +46,15 @@ include("misc:paper")
 include("hypervisor")
 include("hypervisor:paper")
 
+// 删除：1.1.0
+/*
 include("exchange")
 include("exchange:api")
 include("exchange:paper")
 include("exchange:shared")
 include("exchange:velocity")
 include("exchange:proto")
+*/
 
 include("visual")
 include("visual:api")
