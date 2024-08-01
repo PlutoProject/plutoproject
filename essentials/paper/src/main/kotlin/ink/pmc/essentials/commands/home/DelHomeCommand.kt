@@ -17,16 +17,15 @@ fun Cm.delhome(aliases: Array<String>) {
         handler {
             checkPlayer(sender.sender) {
                 val manager = Essentials.homeManager
-                val list = manager.list(this)
                 val name = get<String>("name")
 
-                if (!list.any { it.name == name }) {
-                    sendMessage(COMMAND_HOME_NOT_EXISTED)
+                if (!manager.has(this, name)) {
+                    sendMessage(COMMAND_HOME_NOT_EXISTED.replace("<name>", name))
                     playSound(TELEPORT_FAILED_SOUND)
                     return@checkPlayer
                 }
 
-                manager.remove(this , name)
+                manager.remove(this, name)
                 sendMessage(COMMAND_DELHOME_SUCCEED.replace("<name>", name))
                 playSound(TELEPORT_REQUEST_RECEIVED_SOUND)
             }

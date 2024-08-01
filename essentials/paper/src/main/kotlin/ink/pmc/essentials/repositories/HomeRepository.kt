@@ -37,7 +37,7 @@ class HomeRepository : KoinComponent {
         val cached = cache.asMap().values.firstOrNull { it.owner == player.uniqueId && it.name == name }
         if (cached == null) {
             val lookup = db.find(
-                and(eq("owner", player.uniqueId), eq("name", name))
+                and(eq("owner", player.uniqueId.toString()), eq("name", name))
             ).firstOrNull() ?: return null
             cache.put(lookup.id, lookup)
             return lookup
@@ -47,7 +47,7 @@ class HomeRepository : KoinComponent {
 
     suspend fun findByPlayer(player: OfflinePlayer): Collection<HomeDto> {
         return mutableListOf<HomeDto>().apply {
-            db.find(eq("owner", player.uniqueId)).toCollection(this)
+            db.find(eq("owner", player.uniqueId.toString())).toCollection(this)
         }
     }
 
@@ -66,7 +66,7 @@ class HomeRepository : KoinComponent {
     suspend fun deleteByName(player: OfflinePlayer, name: String) {
         db.deleteOne(
             and(
-                eq("owner", player.uniqueId),
+                eq("owner", player.uniqueId.toString()),
                 eq("name", name)
             )
         )

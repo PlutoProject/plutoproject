@@ -27,7 +27,7 @@ fun Cm.sethome(aliases: Array<String>) {
                     return@checkPlayer
                 }
 
-                if (list.any { it.name == name }) {
+                if (manager.has(this, name)) {
                     sendMessage(COMMAND_SETHOME_FAILED_EXISTED.replace("<name>", name))
                     playSound(TELEPORT_FAILED_SOUND)
                     return@checkPlayer

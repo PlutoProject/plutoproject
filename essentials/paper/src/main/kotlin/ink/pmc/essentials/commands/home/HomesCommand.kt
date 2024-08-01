@@ -1,6 +1,7 @@
 package ink.pmc.essentials.commands.home
 
 import ink.pmc.essentials.Cm
+import ink.pmc.essentials.Command
 import ink.pmc.utils.chat.NON_PLAYER
 import ink.pmc.utils.dsl.cloud.invoke
 import ink.pmc.utils.dsl.cloud.sender
@@ -8,6 +9,8 @@ import org.bukkit.entity.Player
 import org.incendo.cloud.bukkit.parser.PlayerParser
 import kotlin.jvm.optionals.getOrNull
 
+@Command("homes")
+@Suppress("UNUSED")
 fun Cm.homes(aliases: Array<String>) {
     this("homes", *aliases) {
         permission("essentials.home")

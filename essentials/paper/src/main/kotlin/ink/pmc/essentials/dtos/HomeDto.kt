@@ -1,5 +1,6 @@
 package ink.pmc.essentials.dtos
 
+import ink.pmc.utils.data.UUIDSerializer
 import ink.pmc.utils.storage.entity.LocationDto
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.SerialName
@@ -10,9 +11,9 @@ import java.util.*
 @Serializable
 data class HomeDto(
     @SerialName("_id") @Contextual val objectId: ObjectId,
-    @Contextual val id: UUID,
+    @Serializable(UUIDSerializer::class) val id: UUID,
     val name: String,
     val createdAt: Long,
     val location: LocationDto,
-    @Contextual val owner: UUID
+    @Serializable(UUIDSerializer::class) val owner: UUID
 )

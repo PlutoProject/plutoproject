@@ -17,17 +17,16 @@ fun Cm.home(aliases: Array<String>) {
         handler {
             checkPlayer(sender.sender) {
                 val manager = Essentials.homeManager
-                val list = manager.list(this)
                 val name = get<String>("name")
 
-                if (!list.any { it.name == name }) {
+                if (!manager.has(this, name)) {
                     sendMessage(COMMAND_HOME_NOT_EXISTED.replace("<name>", name))
                     playSound(TELEPORT_FAILED_SOUND)
                     return@checkPlayer
                 }
 
-                val home = list.first { it.name == name }
-                home.teleportSuspend(this)
+                val home = manager.get(this, name)
+                home?.teleportSuspend(this)
                 sendMessage(COMMAND_HOME_SUCCEED.replace("<name>", name))
             }
         }
