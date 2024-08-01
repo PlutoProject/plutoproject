@@ -2,12 +2,11 @@ package ink.pmc.essentials.commands.home
 
 import ink.pmc.essentials.Cm
 import ink.pmc.essentials.Command
-import ink.pmc.utils.chat.NON_PLAYER
+import ink.pmc.essentials.TELEPORT_FAILED_SOUND
+import ink.pmc.utils.chat.IN_PROGRESS
 import ink.pmc.utils.dsl.cloud.invoke
 import ink.pmc.utils.dsl.cloud.sender
-import org.bukkit.entity.Player
 import org.incendo.cloud.bukkit.parser.PlayerParser
-import kotlin.jvm.optionals.getOrNull
 
 @Command("homes")
 @Suppress("UNUSED")
@@ -17,12 +16,11 @@ fun Cm.homes(aliases: Array<String>) {
         optional("player", PlayerParser.playerParser())
         handler {
             val sender = sender.sender
-            val argPlayer = optional<Player>("player").getOrNull()
+            sender.sendMessage(IN_PROGRESS)
+            sender.playSound(TELEPORT_FAILED_SOUND)
+            return@handler
 
-            if (argPlayer == null && sender !is Player) {
-                sender.sendMessage(NON_PLAYER)
-                return@handler
-            }
+            // TODO: 家 UI
         }
     }
 }

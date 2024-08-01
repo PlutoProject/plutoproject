@@ -98,10 +98,13 @@ class HomeManagerImpl : HomeManager, KoinComponent {
 
     override suspend fun list(player: OfflinePlayer): Collection<Home> {
         val dto = repo.findByPlayer(player)
-        println("dto: $dto")
         val homes = dto.mapNotNull { get(it.id) }
-        println("homes: $homes")
         return homes
+    }
+
+    override suspend fun has(id: UUID): Boolean {
+        if (isLoaded(id)) return true
+        return repo.hasById(id)
     }
 
     override suspend fun has(player: OfflinePlayer, name: String): Boolean {

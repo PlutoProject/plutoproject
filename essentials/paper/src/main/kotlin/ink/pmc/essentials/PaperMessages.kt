@@ -464,6 +464,10 @@ val COMMAND_HOME_NOT_EXISTED = component {
     text("的家不存在") with mochaMaroon
 }
 
+val COMMAND_HOME_NOT_EXISTED_UUID = component {
+    text("无法通过指定的 ID 找到对应的家") with mochaMaroon
+}
+
 val COMMAND_HOME_SUCCEED = component {
     text("已传送到名为 ") with mochaPink
     text("<name> ") with mochaText

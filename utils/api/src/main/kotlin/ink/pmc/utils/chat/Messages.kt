@@ -40,3 +40,9 @@ val UNUSUAL_ISSUE = component {
     newline()
     text("我们建议你反馈这个问题，有助于将服务器变得更好") with mochaSubtext0
 }
+
+val IN_PROGRESS = component {
+    text("正在施工中...") with mochaMaroon
+    newline()
+    text("前面的路，以后再来探索吧！") with mochaSubtext0
+}

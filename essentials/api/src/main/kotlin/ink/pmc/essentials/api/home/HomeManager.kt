@@ -31,6 +31,8 @@ interface HomeManager {
 
     suspend fun list(player: OfflinePlayer): Collection<Home>
 
+    suspend fun has(id: UUID): Boolean
+
     suspend fun has(player: OfflinePlayer, name: String): Boolean
 
     suspend fun remove(id: UUID)

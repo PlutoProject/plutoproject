@@ -1,7 +1,6 @@
 package ink.pmc.essentials.api.teleport
 
 import ink.pmc.utils.world.ValueChunkLoc
-import net.bytebuddy.matcher.CollectionItemMatcher
 import org.bukkit.Location
 import org.bukkit.World
 import org.bukkit.entity.Entity
