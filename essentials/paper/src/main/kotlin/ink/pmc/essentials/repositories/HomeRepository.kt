@@ -24,23 +24,21 @@ class HomeRepository : KoinComponent {
         ProviderService.defaultMongoDatabase.getCollection<HomeDto>("ess_${conf.serverName}_homes")
 
     suspend fun findById(id: UUID): HomeDto? {
-        val cached = cache.getIfPresent(id)
-        if (cached == null) {
-            val lookup = db.find(eq("id", id)).firstOrNull() ?: return null
+        val cached = cache.getIfPresent(id) ?: run {
+            val lookup = db.find(eq("id", id.toString())).firstOrNull() ?: return null
             cache.put(id, lookup)
-            return lookup
+            lookup
         }
         return cached
     }
 
     suspend fun findByName(player: OfflinePlayer, name: String): HomeDto? {
-        val cached = cache.asMap().values.firstOrNull { it.owner == player.uniqueId && it.name == name }
-        if (cached == null) {
+        val cached = cache.asMap().values.firstOrNull { it.owner == player.uniqueId && it.name == name } ?: run {
             val lookup = db.find(
                 and(eq("owner", player.uniqueId.toString()), eq("name", name))
             ).firstOrNull() ?: return null
             cache.put(lookup.id, lookup)
-            return lookup
+            lookup
         }
         return cached
     }
@@ -60,7 +58,7 @@ class HomeRepository : KoinComponent {
     }
 
     suspend fun deleteById(id: UUID) {
-        db.deleteOne(eq("id", id))
+        db.deleteOne(eq("id", id.toString()))
     }
 
     suspend fun deleteByName(player: OfflinePlayer, name: String) {
@@ -80,7 +78,7 @@ class HomeRepository : KoinComponent {
 
     suspend fun update(dto: HomeDto) {
         require(hasById(dto.id)) { "HomeDto with id ${dto.id} not exist" }
-        db.replaceOne(eq("id", dto.id), dto)
+        db.replaceOne(eq("id", dto.id.toString()), dto)
     }
 
 }
