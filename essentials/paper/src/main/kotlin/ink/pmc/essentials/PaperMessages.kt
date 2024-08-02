@@ -503,3 +503,74 @@ val COMMAND_DELHOME_SUCCEED = component {
     text("<name> ") with mochaText
     text("的家") with mochaPink
 }
+
+val COMMAND_WARP_NOT_EXISTED = component {
+    text("名为 ") with mochaMaroon
+    text("<name> ") with mochaText
+    text("的地标不存在") with mochaMaroon
+}
+
+val COMMAND_WARP_FAILED_NOT_EXISTED_UUID = component {
+    text("无法通过指定的 ID 找到对应的地标") with mochaMaroon
+}
+
+val COMMAND_WARP_SUCCEED = component {
+    text("已传送到名为 ") with mochaPink
+    text("<name> ") with mochaText
+    text("的地标") with mochaPink
+}
+
+val COMMAND_WARP_SUCCEED_ALIAS = component {
+    text("已传送到名为 ") with mochaPink
+    text("<alias> ") with mochaText
+    text("(<name>) ") with mochaSubtext0
+    text("的地标") with mochaPink
+}
+
+val COMMAND_SETWARP_FAILED_EXISTED = component {
+    text("名为 ") with mochaMaroon
+    text("<name> ") with mochaText
+    text("的地标已存在") with mochaMaroon
+}
+
+val COMMAND_SETWARP_FAILED_NOT_VALID = component {
+    text("地标的名字只可以包含字母、数字、下划线") with mochaMaroon
+    newline()
+    text("不可以使用中文、空格等字符") with mochaSubtext0
+}
+
+val COMMAND_SETWARP_FAILED_LENGTN_LIMIT
+    get() = component {
+        val manager = Essentials.warpManager
+        text("地标的名字最多只能使用 ") with mochaMaroon
+        text("${manager.nameLengthLimit} ") with mochaText
+        text("个字符") with mochaMaroon
+        newline()
+        text("请缩短一些后再试") with mochaSubtext0
+    }
+
+val COMMAND_SETWARP_SUCCEED = component {
+    text("已成功设置名为 ") with mochaPink
+    text("<name> ") with mochaText
+    text("的地标") with mochaPink
+}
+
+val COMMAND_SETWARP_SUCCEED_ALIAS = component {
+    text("已成功设置名为 ") with mochaPink
+    text("<alias> ") with mochaText
+    text("(<name>) ") with mochaSubtext0
+    text("的地标") with mochaPink
+}
+
+val COMMAND_DELWARP_SUCCEED = component {
+    text("已删除名为 ") with mochaPink
+    text("<name> ") with mochaText
+    text("的地标") with mochaPink
+}
+
+val COMMAND_DELWARP_SUCCEED_ALIAS = component {
+    text("已删除名为 ") with mochaPink
+    text("<alias> ") with mochaText
+    text("(<name>) ") with mochaSubtext0
+    text("的地标") with mochaPink
+}

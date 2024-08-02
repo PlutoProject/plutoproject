@@ -58,10 +58,12 @@ class HomeRepository : KoinComponent {
     }
 
     suspend fun deleteById(id: UUID) {
+        cache.invalidate(id)
         db.deleteOne(eq("id", id.toString()))
     }
 
     suspend fun deleteByName(player: OfflinePlayer, name: String) {
+        cache.asMap().entries.removeIf { it.value.owner == player.uniqueId && it.value.name == name }
         db.deleteOne(
             and(
                 eq("owner", player.uniqueId.toString()),

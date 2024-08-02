@@ -54,10 +54,12 @@ class WarpRepository : KoinComponent {
     }
 
     suspend fun deleteById(id: UUID) {
+        cache.invalidate(id)
         db.deleteOne(eq("id", id.toString()))
     }
 
     suspend fun deleteByName(name: String) {
+        cache.asMap().entries.removeIf { it.value.name == name }
         db.deleteOne(eq("name", name))
     }
 

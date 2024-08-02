@@ -4,15 +4,16 @@ import ink.pmc.essentials.*
 import ink.pmc.essentials.api.Essentials
 import ink.pmc.essentials.commands.checkPlayer
 import ink.pmc.utils.chat.replace
+import ink.pmc.utils.concurrent.submitAsync
 import ink.pmc.utils.dsl.cloud.invoke
 import ink.pmc.utils.dsl.cloud.sender
 import ink.pmc.utils.player.uuidOrNull
 
-@Command("warp")
+@Command("delwarp")
 @Suppress("UNUSED")
-fun Cm.warp(aliases: Array<String>) {
-    this("warp", *aliases) {
-        permission("essentials.warp")
+fun Cm.delwarp(aliases: Array<String>) {
+    this("delwarp", *aliases) {
+        permission("essentials.delwarp")
         argument(warps("name").required())
         handler {
             checkPlayer(sender.sender) {
@@ -39,16 +40,18 @@ fun Cm.warp(aliases: Array<String>) {
                     return@checkPlayer
                 }
 
-                warp.teleportSuspend(this)
+                submitAsync { manager.remove(warp.id) }
                 if (warp.alias == null) {
-                    sendMessage(COMMAND_WARP_SUCCEED.replace("<name>", name))
+                    sendMessage(COMMAND_DELWARP_SUCCEED.replace("<name>", name))
+                    return@checkPlayer
                 } else {
                     sendMessage(
-                        COMMAND_WARP_SUCCEED_ALIAS
+                        COMMAND_DELWARP_SUCCEED_ALIAS
                             .replace("<name>", name)
                             .replace("<alias>", warp.alias!!)
                     )
                 }
+                playSound(TELEPORT_REQUEST_RECEIVED_SOUND)
             }
         }
     }

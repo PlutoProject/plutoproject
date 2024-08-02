@@ -1,4 +1,4 @@
-package ink.pmc.essentials.commands.home
+package ink.pmc.essentials.commands.warp
 
 import ink.pmc.essentials.Cm
 import ink.pmc.essentials.Command
@@ -8,11 +8,11 @@ import ink.pmc.utils.dsl.cloud.invoke
 import ink.pmc.utils.dsl.cloud.sender
 import org.incendo.cloud.bukkit.parser.PlayerParser
 
-@Command("homes")
+@Command("warps")
 @Suppress("UNUSED")
-fun Cm.homes(aliases: Array<String>) {
-    this("homes", *aliases) {
-        permission("essentials.homes")
+fun Cm.warps(aliases: Array<String>) {
+    this("warps", *aliases) {
+        permission("essentials.warps")
         optional("player", PlayerParser.playerParser())
         handler {
             val sender = sender.sender
@@ -20,7 +20,7 @@ fun Cm.homes(aliases: Array<String>) {
             sender.playSound(TELEPORT_FAILED_SOUND)
             return@handler
 
-            // TODO: 家 UI
+            // TODO: 地标 UI
         }
     }
 }

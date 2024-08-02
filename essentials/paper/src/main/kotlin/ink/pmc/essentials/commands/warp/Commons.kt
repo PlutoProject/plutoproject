@@ -1,4 +1,4 @@
-package ink.pmc.essentials.commands.home
+package ink.pmc.essentials.commands.warp
 
 import ink.pmc.essentials.api.Essentials
 import ink.pmc.utils.concurrent.submitAsync
@@ -10,18 +10,26 @@ import org.incendo.cloud.parser.standard.StringParser
 import org.incendo.cloud.suggestion.Suggestion
 import java.util.concurrent.CompletableFuture
 
-internal fun homes(argName: String) =
+internal fun warps(argName: String) =
     CommandComponent.builder<CommandSourceStack, String>()
         .suggestionProvider { ctx, _ ->
-            val manager = Essentials.homeManager
+            val manager = Essentials.warpManager
             val sender = ctx.sender().sender
             if (sender is Player) {
                 submitAsync<List<Suggestion>> {
-                    manager.list(sender).map { Suggestion.suggestion(it.name) }
+                    manager.list().map {
+                        val name = it.name
+                        val alias = it.alias
+                        if (alias == null) {
+                            Suggestion.suggestion(name)
+                        } else {
+                            Suggestion.suggestion("$name-$alias")
+                        }
+                    }
                 }.asCompletableFuture()
             } else {
                 CompletableFuture.completedFuture(listOf())
             }
         }
-        .parser(StringParser.quotedStringParser())
+        .parser(StringParser.greedyStringParser())
         .name(argName)

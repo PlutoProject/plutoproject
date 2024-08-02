@@ -129,7 +129,7 @@ class HomeManagerImpl : HomeManager, KoinComponent {
     }
 
     override suspend fun has(player: OfflinePlayer, name: String): Boolean {
-        if (getLoaded(player, name) != null) return true
+        if (isLoaded(player, name)) return true
         return repo.hasByName(player, name)
     }
 

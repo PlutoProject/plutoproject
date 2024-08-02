@@ -16,7 +16,7 @@ import kotlin.jvm.optionals.getOrNull
 fun Cm.sethome(aliases: Array<String>) {
     this("sethome", *aliases) {
         permission("essentials.sethome")
-        optional("name", StringParser.stringParser())
+        optional("name", StringParser.quotedStringParser())
         handler {
             checkPlayer(sender.sender) {
                 val manager = Essentials.homeManager

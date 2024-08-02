@@ -7,7 +7,6 @@ import ink.pmc.essentials.api.teleport.TeleportTaskState
 import ink.pmc.utils.world.ValueChunkLoc
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.supervisorScope
 import org.bukkit.Location
 import org.bukkit.entity.Player

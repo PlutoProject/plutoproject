@@ -9,6 +9,7 @@ import ink.pmc.essentials.config.EssentialsConfig
 import ink.pmc.essentials.listeners.HomeListener
 import ink.pmc.essentials.listeners.RandomTeleportListener
 import ink.pmc.essentials.listeners.TeleportListener
+import ink.pmc.essentials.listeners.WarpListener
 import ink.pmc.utils.storage.saveResourceIfNotExisted
 import io.github.classgraph.ClassGraph
 import io.papermc.paper.command.brigadier.CommandSourceStack
@@ -60,6 +61,7 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
         server.pluginManager.registerSuspendingEvents(TeleportListener, this)
         server.pluginManager.registerSuspendingEvents(RandomTeleportListener, this)
         server.pluginManager.registerSuspendingEvents(HomeListener, this)
+        server.pluginManager.registerSuspendingEvents(WarpListener, this)
 
         disabled = false
     }
@@ -78,7 +80,7 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
             .apply { load() }
     }
 
-    private fun PaperCommandManager<CommandSourceStack>.registerCommands(packageName: String) {
+    private fun Cm.registerCommands(packageName: String) {
         val scanResult = ClassGraph()
             .acceptPackages(packageName)
             .scan()

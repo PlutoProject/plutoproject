@@ -25,11 +25,11 @@ class WarpManagerImpl : WarpManager, KoinComponent {
     override val loadedWarps: MutableMap<UUID, Warp> = ConcurrentHashMap()
 
     override fun isLoaded(id: UUID): Boolean {
-        return loadedWarps.containsKey(id)
+        return getLoaded(id) != null
     }
 
     override fun isLoaded(name: String): Boolean {
-        return loadedWarps.values.any { it.name == name }
+        return getLoaded(name) != null
     }
 
     override fun unload(id: UUID) {
