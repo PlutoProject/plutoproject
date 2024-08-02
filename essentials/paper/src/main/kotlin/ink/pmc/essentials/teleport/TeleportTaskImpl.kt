@@ -8,6 +8,7 @@ import ink.pmc.utils.world.ValueChunkLoc
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.supervisorScope
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.koin.core.component.KoinComponent
@@ -40,7 +41,7 @@ class TeleportTaskImpl(
         }
 
         state = TeleportTaskState.TICKING
-        coroutineScope {
+        supervisorScope {
             scope = this
             manager.prepareChunk(chunkNeedToPrepare, destination.world)
             manager.fireTeleport(player, destination, teleportOptions, prompt)
