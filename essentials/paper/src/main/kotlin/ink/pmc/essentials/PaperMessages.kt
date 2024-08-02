@@ -118,6 +118,21 @@ val TELEPORT_SUCCEED_TITLE
         }
     }
 
+val TELEPORT_SUCCEED_TITLE_SAFE
+    get() = title {
+        times {
+            fadeIn(Ticks.duration(5))
+            stay(Ticks.duration(35))
+            fadeOut(Ticks.duration(20))
+        }
+        mainTitle {
+            text(TELEPORT_SUCCEED_MAINTITLE) with mochaGreen
+        }
+        subTitle {
+            text("已传送至附近的安全位置") with mochaText
+        }
+    }
+
 val TELEPORT_SUCCEED_SOUND = sound {
     key(Key.key("entity.ender_dragon.flap"))
 }

@@ -216,6 +216,7 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
         } else {
             async<Location?> { destination.searchSafeLoc(opt) }
         }
+        val title = if (loc == destination) TELEPORT_SUCCEED_TITLE else TELEPORT_SUCCEED_TITLE_SAFE
 
         if (loc == null) {
             if (prompt) {
@@ -228,7 +229,7 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
         player.teleportSuspend(loc)
 
         if (prompt) {
-            player.showTitle(TELEPORT_SUCCEED_TITLE)
+            player.showTitle(title)
             player.playSound(TELEPORT_SUCCEED_SOUND)
         }
     }
