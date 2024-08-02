@@ -9,18 +9,19 @@ import ink.pmc.utils.concurrent.submitAsync
 import ink.pmc.utils.dsl.cloud.invoke
 import ink.pmc.utils.dsl.cloud.sender
 import org.incendo.cloud.parser.standard.StringParser
+import kotlin.jvm.optionals.getOrNull
 
 @Command("sethome")
 @Suppress("UNUSED")
 fun Cm.sethome(aliases: Array<String>) {
     this("sethome", *aliases) {
         permission("essentials.sethome")
-        required("name", StringParser.stringParser())
+        optional("name", StringParser.stringParser())
         handler {
             checkPlayer(sender.sender) {
                 val manager = Essentials.homeManager
                 val list = manager.list(this)
-                val name = get<String>("name")
+                val name = optional<String>("name").getOrNull() ?: "home"
 
                 if (list.size >= manager.maxHomes && !hasPermission(BYPASS_HOME_LIMIT)) {
                     sendMessage(COMMAND_SETHOME_FAILED_REACH_LIMIT)
