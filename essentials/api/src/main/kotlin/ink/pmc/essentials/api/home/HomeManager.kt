@@ -29,6 +29,10 @@ interface HomeManager {
 
     suspend fun get(player: OfflinePlayer, name: String): Home?
 
+    suspend fun getPreferredHome(player: OfflinePlayer): Home?
+
+    suspend fun setPreferredHome(player: OfflinePlayer, name: String)
+
     suspend fun list(player: OfflinePlayer): Collection<Home>
 
     suspend fun has(id: UUID): Boolean

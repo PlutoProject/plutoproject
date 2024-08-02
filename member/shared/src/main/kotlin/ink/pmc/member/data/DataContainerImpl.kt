@@ -6,6 +6,8 @@ import ink.pmc.member.storage.DataContainerBean
 import org.bson.*
 import java.time.Instant
 import java.util.logging.Level
+import javax.security.auth.kerberos.KeyTab
+import kotlin.script.experimental.api.CompiledSnippet
 
 @Suppress("UNCHECKED_CAST")
 class DataContainerImpl(override val owner: Member, override var bean: DataContainerBean) :
@@ -194,6 +196,13 @@ class DataContainerImpl(override val owner: Member, override var bean: DataConta
 
             return null
         }
+    }
+
+    override fun <T : Any> computeIfAbsent(key: String, compute: (String) -> T): T {
+        if (contains(key)) return get(key) as T
+        val computed = compute(key)
+        set(key, computed)
+        return computed
     }
 
     override fun setBson(key: String, value: BsonValue) {

@@ -18,6 +18,8 @@ interface DataContainer {
 
     operator fun get(key: String): Any?
 
+    fun <T : Any> computeIfAbsent(key: String, compute: (String) -> T): T
+
     fun setBson(key: String, value: BsonValue)
 
     fun getBson(key: String): BsonValue?

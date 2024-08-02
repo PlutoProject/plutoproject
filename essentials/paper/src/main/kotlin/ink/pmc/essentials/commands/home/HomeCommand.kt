@@ -8,18 +8,19 @@ import ink.pmc.utils.chat.replace
 import ink.pmc.utils.dsl.cloud.invoke
 import ink.pmc.utils.dsl.cloud.sender
 import ink.pmc.utils.player.uuidOrNull
+import kotlin.jvm.optionals.getOrNull
 
 @Command("home")
 @Suppress("UNUSED")
 fun Cm.home(aliases: Array<String>) {
     this("home", *aliases) {
         permission("essentials.home")
-        argument(homes("name").required())
+        argument(homes("name").optional())
         handler {
             checkPlayer(sender.sender) {
                 val manager = Essentials.homeManager
-                val name = get<String>("name")
-                val argUuid = name.uuidOrNull
+                val name = optional<String>("name").getOrNull()
+                val argUuid = name?.uuidOrNull
 
                 if (argUuid != null) {
                     if (!hasPermission("essentials.home.other")) {
@@ -34,6 +35,18 @@ fun Cm.home(aliases: Array<String>) {
                     val home = manager.get(argUuid)
                     home?.teleportSuspend(this)
                     sendMessage(COMMAND_HOME_SUCCEED.replace("<name>", home!!.name))
+                    return@checkPlayer
+                }
+
+                if (name == null) {
+                    val preferred = manager.getPreferredHome(this)
+                    if (preferred == null) {
+                        sendMessage(COMMAND_HOME_FAILED_NO_PREFREED)
+                        playSound(TELEPORT_FAILED_SOUND)
+                        return@checkPlayer
+                    }
+                    preferred.teleportSuspend(this)
+                    sendMessage(COMMAND_HOME_SUCCEED.replace("<name>", preferred.name))
                     return@checkPlayer
                 }
 

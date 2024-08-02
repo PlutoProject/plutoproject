@@ -10,7 +10,9 @@ import ink.pmc.essentials.disabled
 import ink.pmc.essentials.dtos.HomeDto
 import ink.pmc.essentials.essentialsScope
 import ink.pmc.essentials.repositories.HomeRepository
+import ink.pmc.member.api.MemberService
 import ink.pmc.utils.concurrent.submitAsync
+import ink.pmc.utils.player.uuidOrNull
 import ink.pmc.utils.storage.entity.dto
 import kotlinx.coroutines.delay
 import org.bson.types.ObjectId
@@ -19,7 +21,6 @@ import org.bukkit.OfflinePlayer
 import org.bukkit.World
 import org.bukkit.entity.Player
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.get
 import org.koin.core.component.inject
 import java.util.*
 import kotlin.time.Duration.Companion.minutes
@@ -30,8 +31,10 @@ internal fun loadFailed(id: UUID, reason: String): String {
 
 class HomeManagerImpl : HomeManager, KoinComponent {
 
-    private val conf by lazy { get<EssentialsConfig>().Home() }
+    private val baseConf by inject<EssentialsConfig>()
+    private val conf by lazy { baseConf.Home() }
     private val repo by inject<HomeRepository>()
+    private val preferredHomeKey = "essentials.${baseConf.serverName}.home.preferred_home"
 
     override val maxHomes: Int = conf.maxHomes
     override val nameLengthLimit: Int = conf.nameLengthLimit
@@ -94,6 +97,24 @@ class HomeManagerImpl : HomeManager, KoinComponent {
             home
         }
         return loaded
+    }
+
+    override suspend fun getPreferredHome(player: OfflinePlayer): Home? {
+        val member = MemberService.lookup(player.uniqueId)
+        requireNotNull(member) { "Member entry of player ${player.name} (${player.uniqueId}) is null" }
+        val data = member.dataContainer
+        val id = data.getString(preferredHomeKey)?.uuidOrNull ?: return null
+        return get(id)
+    }
+
+    override suspend fun setPreferredHome(player: OfflinePlayer, name: String) {
+        val home = get(player, name)
+        requireNotNull(home) { "Cannot find home of ${player.name} (${player.uniqueId}) named $name" }
+        val member = MemberService.lookup(player.uniqueId)
+        requireNotNull(member) { "Member entry of player ${player.name} (${player.uniqueId}) is null" }
+        val data = member.dataContainer
+        data[preferredHomeKey] = home.id
+        member.save()
     }
 
     override suspend fun list(player: OfflinePlayer): Collection<Home> {
