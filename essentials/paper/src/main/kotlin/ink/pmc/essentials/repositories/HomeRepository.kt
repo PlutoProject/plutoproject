@@ -18,10 +18,10 @@ class HomeRepository : KoinComponent {
 
     private val conf by inject<EssentialsConfig>()
     private val cache = Caffeine.newBuilder()
-        .expireAfterWrite(Duration.ofMinutes(60))
+        .expireAfterWrite(Duration.ofMinutes(10))
         .build<UUID, HomeDto>()
     private val db =
-        ProviderService.defaultMongoDatabase.getCollection<HomeDto>("ess_${conf.serverName}_homes")
+        ProviderService.defaultMongoDatabase.getCollection<HomeDto>("essentials_${conf.serverName}_homes")
 
     suspend fun findById(id: UUID): HomeDto? {
         val cached = cache.getIfPresent(id) ?: run {

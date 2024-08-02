@@ -28,4 +28,6 @@ interface IEssentials {
 
     fun isHomeEnabled(): Boolean
 
+    fun isWarpEnabled(): Boolean
+
 }
