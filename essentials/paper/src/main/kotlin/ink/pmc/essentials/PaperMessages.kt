@@ -468,7 +468,7 @@ val COMMAND_SETHOME_FAILED_LENGTN_LIMIT
     }
 
 val COMMAND_SETHOME_SUCCEED = component {
-    text("已成功设置名为 ") with mochaPink
+    text("已设置名为 ") with mochaPink
     text("<name> ") with mochaText
     text("的家") with mochaPink
 }
@@ -550,13 +550,13 @@ val COMMAND_SETWARP_FAILED_LENGTN_LIMIT
     }
 
 val COMMAND_SETWARP_SUCCEED = component {
-    text("已成功设置名为 ") with mochaPink
+    text("已设置名为 ") with mochaPink
     text("<name> ") with mochaText
     text("的地标") with mochaPink
 }
 
 val COMMAND_SETWARP_SUCCEED_ALIAS = component {
-    text("已成功设置名为 ") with mochaPink
+    text("已设置名为 ") with mochaPink
     text("<alias> ") with mochaText
     text("(<name>) ") with mochaSubtext0
     text("的地标") with mochaPink
