@@ -76,6 +76,7 @@ class EssentialsConfig(private val config: Config) : Config by config {
 
     inner class Warp {
         val enabled: Boolean get() = get("warp.enabled")
+        val nameLengthLimit: Int get() = get("warp.name-length-limit")
         val blacklistedWorlds: Collection<World>
             get() = get<List<String>>("warp.blacklisted-worlds").map { Bukkit.getWorld(it)!! }
     }

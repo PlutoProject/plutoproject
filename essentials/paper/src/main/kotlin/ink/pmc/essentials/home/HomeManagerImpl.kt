@@ -133,16 +133,6 @@ class HomeManagerImpl : HomeManager, KoinComponent {
         return repo.hasByName(player, name)
     }
 
-    override suspend fun remove(id: UUID) {
-        if (isLoaded(id)) unload(id)
-        repo.deleteById(id)
-    }
-
-    override suspend fun remove(player: OfflinePlayer, name: String) {
-        if (isLoaded(player, name)) unload(player, name)
-        repo.deleteByName(player, name)
-    }
-
     override suspend fun create(owner: Player, name: String, location: Location): Home {
         require(!has(owner, name)) { "Home of player ${owner.name} named $name already existed" }
         val dto = HomeDto(
@@ -151,12 +141,22 @@ class HomeManagerImpl : HomeManager, KoinComponent {
             name,
             System.currentTimeMillis(),
             location.dto,
-            owner.uniqueId
+            owner.uniqueId,
         )
         val home = HomeImpl(dto)
         loadedHomes.put(owner, home)
         repo.save(dto)
         return home
+    }
+
+    override suspend fun remove(player: OfflinePlayer, name: String) {
+        if (isLoaded(player, name)) unload(player, name)
+        repo.deleteByName(player, name)
+    }
+
+    override suspend fun remove(id: UUID) {
+        if (isLoaded(id)) unload(id)
+        repo.deleteById(id)
     }
 
     override suspend fun update(home: Home) {

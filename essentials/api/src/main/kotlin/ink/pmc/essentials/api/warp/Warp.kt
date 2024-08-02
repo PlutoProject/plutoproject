@@ -13,11 +13,12 @@ interface Warp {
     var alias: String?
     val createdAt: Instant
     var location: Location
+    val isLoaded: Boolean
 
-    fun teleport(player: Player, cost: Boolean = true, prompt: Boolean = true)
+    fun teleport(player: Player, prompt: Boolean = true)
 
-    suspend fun teleportSuspend(player: Player, cost: Boolean = true, prompt: Boolean = true)
+    suspend fun teleportSuspend(player: Player, prompt: Boolean = true)
 
-    suspend fun save()
+    suspend fun update()
 
 }

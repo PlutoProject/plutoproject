@@ -47,15 +47,13 @@ class HomeImpl(private val dto: HomeDto) : Home, KoinComponent {
         teleport.teleportSuspend(player, location, options, prompt)
     }
 
-    private fun toDto(): HomeDto {
-        return dto.copy(
-            id = id,
-            name = name,
-            createdAt = createdAt.toEpochMilli(),
-            location = location.dto,
-            owner = owner.uniqueId
-        )
-    }
+    private fun toDto() = dto.copy(
+        id = id,
+        name = name,
+        createdAt = createdAt.toEpochMilli(),
+        location = location.dto,
+        owner = owner.uniqueId,
+    )
 
     override suspend fun update() {
         repo.update(toDto())

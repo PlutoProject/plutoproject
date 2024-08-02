@@ -39,11 +39,11 @@ interface HomeManager {
 
     suspend fun has(player: OfflinePlayer, name: String): Boolean
 
+    suspend fun create(owner: Player, name: String, location: Location): Home
+
     suspend fun remove(id: UUID)
 
     suspend fun remove(player: OfflinePlayer, name: String)
-
-    suspend fun create(owner: Player, name: String, location: Location): Home
 
     suspend fun update(home: Home)
 
