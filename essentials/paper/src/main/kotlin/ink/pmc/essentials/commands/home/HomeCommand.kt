@@ -23,7 +23,8 @@ fun Cm.home(aliases: Array<String>) {
                 val argUuid = name?.uuidOrNull
 
                 if (argUuid != null) {
-                    if (!hasPermission("essentials.home.other")) {
+                    val uuidHome = manager.get(argUuid)
+                    if (uuidHome?.owner != this && !hasPermission("essentials.home.other")) {
                         sendMessage(NO_PERMISSON)
                         return@checkPlayer
                     }

@@ -113,7 +113,7 @@ class HomeManagerImpl : HomeManager, KoinComponent {
         val member = MemberService.lookup(player.uniqueId)
         requireNotNull(member) { "Member entry of player ${player.name} (${player.uniqueId}) is null" }
         val data = member.dataContainer
-        data[preferredHomeKey] = home.id
+        data[preferredHomeKey] = home.id.toString()
         member.save()
     }
 
