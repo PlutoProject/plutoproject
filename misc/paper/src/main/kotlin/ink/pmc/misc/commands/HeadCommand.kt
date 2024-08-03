@@ -42,7 +42,7 @@ object HeadCommand : PaperCommand() {
             }
 
             inv.addItem(head)
-            sender.sendMessage(HEAD_GET_SUCCEED.replace("<player>", Component.text(name).color(mochaYellow)))
+            sender.sendMessage(HEAD_GET_SUCCEED.replace("<player>", Component.text(name)))
         }
 
     init {
