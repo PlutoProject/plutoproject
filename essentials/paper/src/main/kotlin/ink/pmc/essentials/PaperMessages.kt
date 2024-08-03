@@ -165,6 +165,21 @@ val TELEPORT_FAILED_TIMEOUT_TITLE = title {
     }
 }
 
+@Suppress("FunctionName")
+fun TELEPORT_FAILED_DEINED_TITLE(reason: Component) = title {
+    times {
+        fadeIn(Ticks.duration(5))
+        stay(Ticks.duration(35))
+        fadeOut(Ticks.duration(20))
+    }
+    mainTitle {
+        text("传送被阻止") with mochaMaroon
+    }
+    subTitle {
+        raw(reason) with mochaText
+    }
+}
+
 val TELEPORT_FAILED_SOUND = sound {
     key(Key.key("block.amethyst_cluster.break"))
 }
@@ -355,7 +370,7 @@ val RANDOM_TELEPORT_SUCCED = component {
     text("本次传送尝试 ") with mochaSubtext0
     text("<attempts> ") with mochaText
     text("次，耗时 ") with mochaSubtext0
-    text("<time>") with mochaText
+    text("<lastLookupTime>") with mochaText
 }
 
 val RANDOM_TELEPORT_SEARCHING_TITLE = title {
