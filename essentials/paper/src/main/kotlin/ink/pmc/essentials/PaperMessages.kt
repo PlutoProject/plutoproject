@@ -209,7 +209,7 @@ val TELEPORT_REQUEST_AUTO_CANCEL = component {
 }
 
 val TELEPORT_REQUEST_ACCEPTED_SOURCE = component {
-    text("<player> ") with mochaFlamingo
+    text("<player> ") with mochaYellow
     text("接受了你的传送请求") with mochaGreen
 }
 
@@ -294,7 +294,7 @@ val TELEPORT_TPAHERE_RECEIVED = component {
 
 val COMMAND_TPACCEPT_SUCCEED = component {
     text("已接受来自 ") with mochaGreen
-    text("<player> ") with mochaFlamingo
+    text("<player> ") with mochaYellow
     text("的传送请求") with mochaGreen
 }
 
