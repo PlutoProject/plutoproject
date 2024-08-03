@@ -160,7 +160,7 @@ class RandomTeleportManagerImpl : RandomTeleportManager, KoinComponent {
             return false
         }
 
-        fun safeBlock(x: Int, z: Int): Location? {
+        suspend fun safeBlock(x: Int, z: Int): Location? {
             for (y in world.maxHeight downTo world.minHeight) {
                 val stand = Location(world, x.toDouble(), y.toDouble(), z.toDouble())
                 val loc = stand.clone().add(0.0, 1.0, 0.0)
@@ -176,7 +176,7 @@ class RandomTeleportManagerImpl : RandomTeleportManager, KoinComponent {
             return null
         }
 
-        fun searchLocation(): Location? {
+        suspend fun searchLocation(): Location? {
             val dx = baseX + random()
             val dz = baseZ + random()
             return safeBlock(dx, dz)
@@ -256,7 +256,7 @@ class RandomTeleportManagerImpl : RandomTeleportManager, KoinComponent {
                     Component.text("${location.blockX}, ${location.blockY}, ${location.blockZ}")
                 )
                 .replace("<attempts>", Component.text(attempts))
-                .replace("<time>", DURATION(java.time.Duration.ofMillis(time).toKotlinDuration()))
+                .replace("<lastLookupTime>", DURATION(java.time.Duration.ofMillis(time).toKotlinDuration()))
         )
     }
 

@@ -13,6 +13,8 @@ enum class TeleportManagerState {
 
 }
 
+typealias LocationChecker = suspend (Location, TeleportOptions) -> Boolean
+
 @Suppress("UNUSED")
 interface TeleportManager {
 
@@ -22,6 +24,7 @@ interface TeleportManager {
     val defaultTeleportOptions: TeleportOptions
     val worldTeleportOptions: Map<World, TeleportOptions>
     val blacklistedWorlds: Collection<World>
+    val locationCheckers: Map<String, LocationChecker>
     val tickingTask: TeleportTask?
     val tickCount: Long
     val lastTickTime: Long
@@ -75,7 +78,11 @@ interface TeleportManager {
 
     fun teleport(player: Player, destination: Location, options: TeleportOptions? = null, prompt: Boolean = true)
 
-    fun isSafe(location: Location, options: TeleportOptions? = null): Boolean
+    fun registerLocationChecker(id: String, checker: LocationChecker)
+
+    fun unregisterLocationChecker(id: String)
+
+    suspend fun isSafe(location: Location, options: TeleportOptions? = null): Boolean
 
     suspend fun searchSafeLocationSuspend(start: Location, options: TeleportOptions? = null): Location?
 

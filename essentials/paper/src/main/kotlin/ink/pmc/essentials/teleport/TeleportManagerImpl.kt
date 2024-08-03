@@ -70,10 +70,28 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
         )
     }
     override val blacklistedWorlds: Collection<World> = conf.blacklistedWorlds
+    override val locationCheckers: MutableMap<String, LocationChecker> = mutableMapOf()
     override var tickingTask: TeleportTask? = null
     override var tickCount = 0L
     override var lastTickTime = 0L
     override var state: TeleportManagerState = TeleportManagerState.IDLE
+
+    init {
+        registerLocationChecker("void") { l, o -> if (o.avoidVoid) l.y >= l.world.minHeight else true }
+        registerLocationChecker("solid") { l, _ ->
+            val foot = !l.block.type.isSolid
+            val head = !l.clone().add(0.0, 1.0, 0.0).block.type.isSolid
+            val stand = !l.clone().subtract(0.0, 1.0, 0.0).block.type.isSolid
+            foot && head && stand
+        }
+        registerLocationChecker("blacklist") { l, o ->
+            val foot = !o.blacklistedBlocks.contains(l.block.type)
+            val head = !o.blacklistedBlocks.contains(l.clone().add(0.0, 1.0, 0.0).block.type)
+            val stand = !o.blacklistedBlocks.contains(l.clone().subtract(0.0, 1.0, 0.0).block.type)
+            foot && head && stand
+        }
+        registerLocationChecker("world_border") { l, _ -> l.world.worldBorder.isInside(l) }
+    }
 
     override fun getWorldTeleportOptions(world: World): TeleportOptions {
         return world.teleportOptions
@@ -119,22 +137,10 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
         }
     }
 
-    @JvmName("internalIsSafe")
-    private fun Location.isSafe(options: TeleportOptions): Boolean {
-        val voidCheck = if (options.avoidVoid) y >= world.minHeight else true
-        val footCheck = block.type.isAir
-        val headCheck = clone().add(0.0, 1.0, 0.0).block.type.isAir
-        val stand = clone().subtract(0.0, 1.0, 0.0)
-        val standCheck = !stand.block.type.isAir
-        val blacklistCheck = !options.blacklistedBlocks.contains(stand.block.type)
-        val worldBorderCheck = this.world.worldBorder.isInside(this)
-        return voidCheck && footCheck && headCheck && standCheck && blacklistCheck && worldBorderCheck
-    }
-
     private suspend fun Location.searchSafeLoc(options: TeleportOptions): Location? {
         val visited = ConcurrentHashMap.newKeySet<Location>()
 
-        fun Location.bfs(): Location? {
+        suspend fun Location.bfs(): Location? {
             val radius = options.safeLocationSearchRadius
             val queue: Queue<Location> = LinkedList()
             queue.add(this)
@@ -145,7 +151,7 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
                     continue
                 }
 
-                if (current.isSafe(options)) {
+                if (isSafe(current, options)) {
                     return current
                 }
 
@@ -211,7 +217,7 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
         prompt: Boolean
     ) {
         val opt = options ?: destination.world.teleportOptions
-        val loc = if (opt.bypassSafeCheck || destination.isSafe(opt)) {
+        val loc = if (opt.bypassSafeCheck || isSafe(destination, opt)) {
             destination
         } else {
             async<Location?> { destination.searchSafeLoc(opt) }
@@ -369,9 +375,17 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
         }
     }
 
-    override fun isSafe(location: Location, options: TeleportOptions?): Boolean {
+    override fun registerLocationChecker(id: String, checker: LocationChecker) {
+        locationCheckers[id] = checker
+    }
+
+    override fun unregisterLocationChecker(id: String) {
+        locationCheckers.remove(id)
+    }
+
+    override suspend fun isSafe(location: Location, options: TeleportOptions?): Boolean {
         val opt = options ?: location.world.teleportOptions
-        return location.isSafe(opt)
+        return locationCheckers.values.all { it(location, opt) }
     }
 
     override suspend fun searchSafeLocationSuspend(start: Location, options: TeleportOptions?): Location? {
