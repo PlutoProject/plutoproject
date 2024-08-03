@@ -15,7 +15,7 @@ import ink.pmc.essentials.warp.WarpManagerImpl
 import org.koin.dsl.module
 import org.koin.java.KoinJavaComponent.getKoin
 
-private val conf by lazy { getKoin().get<EssentialsConfig>() }
+private val ess by lazy { getKoin().get<IEssentials>() }
 
 val appModule = module {
     single { EssentialsConfig(fileConfig) }
@@ -23,19 +23,19 @@ val appModule = module {
     single<HomeRepository> { HomeRepository() }
     single<WarpRepository> { WarpRepository() }
     single<TeleportManager> {
-        require(conf.Teleport().enabled) { "TeleportManager not available" }
+        require(ess.isTeleportEnabled()) { "TeleportManager not available" }
         TeleportManagerImpl()
     }
     single<RandomTeleportManager> {
-        require(conf.Teleport().enabled && conf.RandomTeleport().enabled) { "RandomTeleportManager not available" }
+        require(ess.isRandomTeleportEnabled()) { "RandomTeleportManager not available" }
         RandomTeleportManagerImpl()
     }
     single<HomeManager> {
-        require(conf.Teleport().enabled && conf.Home().enabled) { "HomeManager not available" }
+        require(ess.isHomeEnabled()) { "HomeManager not available" }
         HomeManagerImpl()
     }
     single<WarpManager> {
-        require(conf.Teleport().enabled && conf.Warp().enabled) { "WarpManager not available" }
+        require(ess.isWarpEnabled()) { "WarpManager not available" }
         WarpManagerImpl()
     }
 }

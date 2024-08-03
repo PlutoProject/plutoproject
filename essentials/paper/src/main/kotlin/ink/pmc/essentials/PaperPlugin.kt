@@ -58,11 +58,7 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
 
         IEssentials.instance = get<IEssentials>()
         commandManager.registerCommands(COMMAND_PACKAGE)
-        server.pluginManager.registerSuspendingEvents(TeleportListener, this)
-        server.pluginManager.registerSuspendingEvents(RandomTeleportListener, this)
-        server.pluginManager.registerSuspendingEvents(HomeListener, this)
-        server.pluginManager.registerSuspendingEvents(WarpListener, this)
-
+        registerEvents()
         disabled = false
     }
 
@@ -70,6 +66,24 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
         disabled = true
         essentialsScope.cancel()
         Essentials.teleportManager.clearRequest()
+    }
+
+    private fun registerEvents() {
+        if (Essentials.isTeleportEnabled()) {
+            server.pluginManager.registerSuspendingEvents(TeleportListener, this)
+        }
+
+        if (Essentials.isRandomTeleportEnabled()) {
+            server.pluginManager.registerSuspendingEvents(RandomTeleportListener, this)
+        }
+
+        if (Essentials.isHomeEnabled()) {
+            server.pluginManager.registerSuspendingEvents(HomeListener, this)
+        }
+
+        if (Essentials.isWarpEnabled()) {
+            server.pluginManager.registerSuspendingEvents(WarpListener, this)
+        }
     }
 
     private fun File.loadConfig(): FileConfig {

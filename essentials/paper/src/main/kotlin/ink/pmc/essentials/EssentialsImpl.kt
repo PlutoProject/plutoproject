@@ -25,19 +25,19 @@ class EssentialsImpl : IEssentials, KoinComponent {
     }
 
     override fun isRandomTeleportEnabled(): Boolean {
-        return config.RandomTeleport().enabled
+        return isTeleportEnabled() && config.RandomTeleport().enabled
     }
 
     override fun isHomeEnabled(): Boolean {
-        return config.Home().enabled
+        return isTeleportEnabled() && config.Home().enabled
     }
 
     override fun isWarpEnabled(): Boolean {
-        return config.Warp().enabled
+        return isTeleportEnabled() && config.Warp().enabled
     }
 
     override fun isBackEnabled(): Boolean {
-        return config.Back().enabled
+        return isTeleportEnabled() && config.Back().enabled
     }
 
 }
