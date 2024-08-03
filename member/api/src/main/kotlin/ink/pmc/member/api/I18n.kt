@@ -30,15 +30,3 @@ val BEDROCK_ONLY_AUTH = component {
 val NONE_AUTH = component { 
     text("无")
 }
-
-val BAN_PUNISHMENT = component { 
-    text("封禁")
-}
-
-val WARN_PUNISHMENT = component { 
-    text("警告")
-}
-
-val REMOVE_WHITELIST_PUNISHMENT = component { 
-    text("撤销白名单")
-}

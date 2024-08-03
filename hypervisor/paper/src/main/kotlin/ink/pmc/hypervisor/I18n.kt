@@ -12,22 +12,22 @@ import kotlin.time.Duration.Companion.seconds
 
 val SERVER_STATUS
     get() = component {
-        text("服务器状态：") with mochaFlamingo
+        text("服务器状态: ") with mochaFlamingo
         newline()
         text("  - ") with mochaSubtext0
-        text("在线玩家：") with mochaText
+        text("在线玩家: ") with mochaText
         text(plugin.server.onlinePlayers.size.toString()) with mochaLavender
         newline()
         text("  - ") with mochaSubtext0
-        text("当前 TPS：") with mochaText
+        text("当前 TPS: ") with mochaText
         raw(sparkTPS5Secs.colorizedTPSComponent)
         newline()
         text("  - ") with mochaSubtext0
-        text("当前 MSPT：") with mochaText
+        text("当前 MSPT: ") with mochaText
         raw(sparkMSPT10Secs.colorizedMSPTComponent)
         newline()
         text("  - ") with mochaSubtext0
-        text("自 5s, 1m, 5m 以来的 TPS：") with mochaText
+        text("自 5s, 1m, 5m 以来的 TPS: ") with mochaText
         raw(sparkTPS5Secs.colorizedTPSComponent)
         text(", ") with mochaSubtext0
         raw(sparkTPS1Mins.colorizedTPSComponent)
@@ -36,14 +36,14 @@ val SERVER_STATUS
         newline()
 
         text("  - ") with mochaSubtext0
-        text("自 10s, 1m 以来的 MSPT：") with mochaText
+        text("自 10s, 1m 以来的 MSPT: ") with mochaText
         raw(sparkMSPT10Secs.colorizedMSPTComponent)
         text(", ") with mochaSubtext0
         raw(sparkMSPT1Min.colorizedMSPTComponent)
     }
 
 val WORLD_STATUS = component {
-    text("世界状态：") with mochaFlamingo
+    text("世界状态: ") with mochaFlamingo
 }
 
 val WORLD_STATUS_ENTRIES: Component

@@ -45,8 +45,8 @@ object VelocityPlayerListener {
             member.modifier.name(player.username)
             player.sendMessage(
                 MEMBER_NAME_CHANGED
-                    .replace("<oldName>", Component.text(member.rawName).color(mochaYellow))
-                    .replace("<newName>", Component.text(player.username).color(mochaYellow))
+                    .replace("<oldName>", Component.text(member.rawName))
+                    .replace("<newName>", Component.text(player.username))
             )
         }
 

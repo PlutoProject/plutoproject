@@ -15,9 +15,9 @@ val VERSION_RANGE
 
 val VERSION_NOT_SUPPORTED
     get() = component {
-        text("你正在尝试使用不支持的版本加入服务器哦。") with mochaMaroon
+        text("你正在尝试使用不支持的版本加入服务器哦") with mochaMaroon
         newline()
         text("目前服务器支持通过 ") with mochaMaroon
         text(VERSION_RANGE) with mochaText
-        text(" 进行游玩。") with mochaMaroon
+        text(" 进行游玩") with mochaMaroon
     }
