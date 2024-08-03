@@ -67,12 +67,15 @@ include("provider:paper")
 include("provider:velocity")
 include("provider:shared")
 
+// 删除：1.1.0
+/*
 include("transfer")
 include("transfer:api")
 include("transfer:paper")
 include("transfer:velocity")
 include("transfer:shared")
 include("transfer:proto")
+*/
 
 include("messages")
 include("messages:paper")
