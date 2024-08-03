@@ -75,9 +75,9 @@ object MemberCommand : VelocityCommand() {
                     sender.sendMessage(
                         MEMBER_CREATE_BE_ALREADY_EXISTED
                             .replace("<player>", profile.name)
-                            .replace("<gamertag>", Component.text(beStorage.gamertag).color(mochaYellow))
-                            .replace("<xuid>", Component.text(beStorage.xuid).color(mochaYellow))
-                            .replace("<other>", Component.text(linkedMember.rawName).color(mochaYellow))
+                            .replace("<gamertag>", Component.text(beStorage.gamertag))
+                            .replace("<xuid>", Component.text(beStorage.xuid))
+                            .replace("<other>", Component.text(linkedMember.rawName))
                     )
                     return@suspendingHandler
                 }
@@ -91,8 +91,7 @@ object MemberCommand : VelocityCommand() {
             memberService.create(profile.name, authType)
             sender.sendMessage(
                 MEMBER_CREATE_SUCCEED.replace(
-                    "<player>",
-                    Component.text(profile.name).color(mochaYellow)
+                    "<player>", Component.text(profile.name)
                 )
             )
         }
@@ -124,7 +123,7 @@ object MemberCommand : VelocityCommand() {
             if (!member.isWhitelisted) {
                 sender.sendMessage(
                     MEMBER_MODIFY_EXEMPT_WHITELIST_FAILED_NOT_WHITELISTED
-                        .replace("<player>", Component.text(member.rawName).color(mochaYellow))
+                        .replace("<player>", Component.text(member.rawName))
                 )
                 return@suspendingHandler
             }
@@ -133,7 +132,7 @@ object MemberCommand : VelocityCommand() {
                 member.modifier.hide(true)
                 sender.sendMessage(
                     MEMBER_MODIFY_HIDE_SUCCEED
-                        .replace("<player>", Component.text(member.rawName).color(mochaYellow))
+                        .replace("<player>", Component.text(member.rawName))
                 )
             }
 
@@ -149,7 +148,7 @@ object MemberCommand : VelocityCommand() {
             sender.sendMessage(
                 MEMBER_MODIFY_EXEMPT_WHITELIST_SUCCEED
                     .replace(
-                        "<player>", Component.text(member.rawName).color(mochaYellow)
+                        "<player>", Component.text(member.rawName)
                     )
             )
         }
@@ -191,9 +190,9 @@ object MemberCommand : VelocityCommand() {
             member.save()
 
             sender.sendMessage(
-                MEMBER_MODIFY_GRAND_WHITELIST_SUCCEED
+                MEMBER_MODIFY_GRANT_WHITELIST_SUCCEED
                     .replace(
-                        "<player>", Component.text(member.rawName).color(mochaYellow)
+                        "<player>", Component.text(member.rawName)
                     )
             )
         }
@@ -309,7 +308,7 @@ object MemberCommand : VelocityCommand() {
             }
 
             sender.sendMessage(MEMBER_MODIFY_UNLINK_BE_SUCCEED
-                .replace("<player>", Component.text(member.rawName).color(mochaYellow)))
+                .replace("<player>", Component.text(member.rawName)))
         }
 
     private val memberModifyHide = commandManager.commandBuilder("member")
