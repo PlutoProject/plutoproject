@@ -36,4 +36,8 @@ class EssentialsImpl : IEssentials, KoinComponent {
         return config.Warp().enabled
     }
 
+    override fun isBackEnabled(): Boolean {
+        return config.Back().enabled
+    }
+
 }

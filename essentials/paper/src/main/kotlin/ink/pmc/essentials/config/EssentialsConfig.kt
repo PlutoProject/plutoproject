@@ -61,6 +61,7 @@ class EssentialsConfig(private val config: Config) : Config by config {
     }
 
     inner class Back {
+        val enabled: Boolean get() = get("back.enabled")
         val maxLocationStored: Int get() = get("back.max-location-stored")
         val blacklistedWorlds: Collection<World>
             get() = get<List<String>>("back.blacklisted-worlds").map { Bukkit.getWorld(it)!! }

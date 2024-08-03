@@ -30,4 +30,6 @@ interface IEssentials {
 
     fun isWarpEnabled(): Boolean
 
+    fun isBackEnabled(): Boolean
+
 }
