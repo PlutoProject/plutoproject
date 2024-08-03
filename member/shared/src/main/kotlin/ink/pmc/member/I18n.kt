@@ -13,27 +13,27 @@ val MEMBER_NOT_WHITELISTED = component {
     newline()
     text(" ")
     newline()
-    text("你的游戏 ID 未获得白名单。") with mochaText
+    text("你的游戏 ID 未获得白名单") with mochaText
     newline()
     text("请加入我们的审核群 ") with mochaText
     text("152759828 ") with mochaYellow
-    text("进行申请。") with mochaText
+    text("进行申请") with mochaText
     newline()
-    text("如果你已通过申请，可能是我们忘记为你添加白名单。") with mochaText
+    text("如果你已通过申请，可能是我们忘记为你添加白名单") with mochaText
     newline()
-    text("请联系当天的审核员添加白名单。") with mochaText
+    text("请联系当天的审核员添加白名单") with mochaText
 }
 
 val MEMBER_NOT_WHITELISTED_BE = component {
-    text("你的游戏 ID 未获得白名单。") with mochaText.bedrockMapped
+    text("你的游戏 ID 未获得白名单") with mochaText.bedrockMapped
     newline()
     text("请加入我们的审核群 ") with mochaText.bedrockMapped
     text("795681231 ") with mochaYellow.bedrockMapped
-    text("进行申请。") with mochaText.bedrockMapped
+    text("进行申请") with mochaText.bedrockMapped
     newline()
-    text("如果你已通过申请，可能是我们忘记为你添加白名单。") with mochaText.bedrockMapped
+    text("如果你已通过申请，可能是我们忘记为你添加白名单") with mochaText.bedrockMapped
     newline()
-    text("请联系当天的审核员添加白名单。") with mochaText.bedrockMapped
+    text("请联系当天的审核员添加白名单") with mochaText.bedrockMapped
 }
 
 @Suppress("UNUSED")
@@ -42,11 +42,11 @@ val MEMBER_BE_LOGIN = component {
     newline()
     text(" ")
     newline()
-    text("你绑定的基岩版账号在其他地方登录。") with mochaText
+    text("你绑定的基岩版账号在其他地方登录") with mochaText
     newline()
-    text("绑定后，基岩版和 Java 版账号数据互通，无法同时登录。") with mochaText
+    text("绑定后，基岩版和 Java 版账号数据互通，无法同时登录") with mochaText
     newline()
-    text("若需基岩版账号独立使用，请向管理组申请解绑。") with mochaText
+    text("若需基岩版账号独立使用，请向管理组申请解绑") with mochaText
 }
 
 val MEMBER_NAME_CHANGED = component {
