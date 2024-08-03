@@ -81,9 +81,9 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
     init {
         registerLocationChecker("void") { l, o -> if (o.avoidVoid) l.y >= l.world.minHeight else true }
         registerLocationChecker("solid") { l, _ ->
-            val foot = !l.block.type.isSolid
-            val head = !l.clone().add(0.0, 1.0, 0.0).block.type.isSolid
-            val stand = !l.clone().subtract(0.0, 1.0, 0.0).block.type.isSolid
+            val foot = !l.block.isSolid
+            val head = !l.clone().add(0.0, 1.0, 0.0).block.isSolid
+            val stand = l.clone().subtract(0.0, 1.0, 0.0).block.isSolid
             foot && head && stand
         }
         registerLocationChecker("blacklist") { l, o ->
@@ -218,39 +218,41 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
         options: TeleportOptions?,
         prompt: Boolean
     ) {
-        val opt = options ?: destination.world.teleportOptions
-        val loc = if (opt.bypassSafeCheck || isSafe(destination, opt)) {
-            destination
-        } else {
-            async<Location?> { destination.searchSafeLoc(opt) }
-        }
-        val title = if (loc == destination) TELEPORT_SUCCEED_TITLE else TELEPORT_SUCCEED_TITLE_SAFE
-
-        if (loc == null) {
-            if (prompt) {
-                player.showTitle(TELEPORT_FAILED_TITLE)
-                player.playSound(TELEPORT_FAILED_SOUND)
+        async {
+            val opt = options ?: destination.world.teleportOptions
+            val loc = if (opt.bypassSafeCheck || isSafe(destination, opt)) {
+                destination
+            } else {
+                destination.searchSafeLoc(opt)
             }
-            return
-        }
+            val title = if (loc == destination) TELEPORT_SUCCEED_TITLE else TELEPORT_SUCCEED_TITLE_SAFE
 
-        EssentialsTeleportEvent(player, loc, opt).apply {
-            callEvent()
-            if (isDenied) {
+            if (loc == null) {
                 if (prompt) {
-                    val reason = deniedReason ?: TELEPORT_DENIED_REASON_DEFAULT
+                    player.showTitle(TELEPORT_FAILED_TITLE)
+                    player.playSound(TELEPORT_FAILED_SOUND)
+                }
+                return@async
+            }
+
+            // 必须异步触发
+            val event = EssentialsTeleportEvent(player, loc, opt).apply { callEvent() }
+
+            if (event.isDenied) {
+                if (prompt) {
+                    val reason = event.deniedReason ?: TELEPORT_DENIED_REASON_DEFAULT
                     player.showTitle(TELEPORT_FAILED_DEINED_TITLE(reason))
                     player.playSound(TELEPORT_SUCCEED_SOUND)
                 }
-                return
+                return@async
             }
-        }
 
-        player.teleportSuspend(loc)
+            player.teleportSuspend(loc)
 
-        if (prompt) {
-            player.showTitle(title)
-            player.playSound(TELEPORT_SUCCEED_SOUND)
+            if (prompt) {
+                player.showTitle(title)
+                player.playSound(TELEPORT_SUCCEED_SOUND)
+            }
         }
     }
 

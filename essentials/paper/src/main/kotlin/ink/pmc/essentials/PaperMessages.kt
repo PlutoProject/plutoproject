@@ -593,3 +593,13 @@ val COMMAND_DELWARP_SUCCEED_ALIAS = component {
     text("(<name>) ") with mochaSubtext0
     text("的地标") with mochaPink
 }
+
+val COMMAND_BACK_FAILED_NO_LOC = component {
+    text("还没有记录到你先前的位置") with mochaMaroon
+    newline()
+    text("进行一段时间游玩后位置才会被记录") with mochaSubtext0
+}
+
+val COMMAND_BACK_SUCCEED = component {
+    text("已回到你先前的位置") with mochaPink
+}

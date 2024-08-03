@@ -6,10 +6,7 @@ import com.github.shynixn.mccoroutine.bukkit.registerSuspendingEvents
 import ink.pmc.essentials.api.Essentials
 import ink.pmc.essentials.api.IEssentials
 import ink.pmc.essentials.config.EssentialsConfig
-import ink.pmc.essentials.listeners.HomeListener
-import ink.pmc.essentials.listeners.RandomTeleportListener
-import ink.pmc.essentials.listeners.TeleportListener
-import ink.pmc.essentials.listeners.WarpListener
+import ink.pmc.essentials.listeners.*
 import ink.pmc.utils.storage.saveResourceIfNotExisted
 import io.github.classgraph.ClassGraph
 import io.papermc.paper.command.brigadier.CommandSourceStack
@@ -83,6 +80,10 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
 
         if (Essentials.isWarpEnabled()) {
             server.pluginManager.registerSuspendingEvents(WarpListener, this)
+        }
+
+        if (Essentials.isBackEnabled()) {
+            server.pluginManager.registerSuspendingEvents(BackListener, this)
         }
     }
 

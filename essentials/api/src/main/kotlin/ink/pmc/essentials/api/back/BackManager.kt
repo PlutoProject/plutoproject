@@ -1,23 +1,24 @@
 package ink.pmc.essentials.api.back
 
-import com.google.common.collect.Multimap
 import org.bukkit.Location
 import org.bukkit.entity.Player
 
 @Suppress("UNUSED")
 interface BackManager {
 
-    val maxStoredBacks: Int
-    val storedBacks: Multimap<Player, Location>
+    val maxLocations: Int
+    val previousLocations: Map<Player, Location>
 
-    fun getStoredLocations(player: Player): Collection<Location>
+    fun has(player: Player): Boolean
 
-    fun back(player: Player, prompt: Boolean = true): Location
+    fun get(player: Player): Location?
 
-    fun store(player: Player, location: Location)
+    fun back(player: Player)
+
+    suspend fun backSuspend(player: Player)
+
+    suspend fun store(player: Player, location: Location)
 
     fun discard(player: Player)
-
-    fun poll(player: Player): Location
 
 }

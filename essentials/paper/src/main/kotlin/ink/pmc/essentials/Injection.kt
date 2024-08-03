@@ -1,10 +1,12 @@
 package ink.pmc.essentials
 
 import ink.pmc.essentials.api.IEssentials
+import ink.pmc.essentials.api.back.BackManager
 import ink.pmc.essentials.api.home.HomeManager
 import ink.pmc.essentials.api.teleport.TeleportManager
 import ink.pmc.essentials.api.teleport.random.RandomTeleportManager
 import ink.pmc.essentials.api.warp.WarpManager
+import ink.pmc.essentials.back.BackManagerImpl
 import ink.pmc.essentials.config.EssentialsConfig
 import ink.pmc.essentials.home.HomeManagerImpl
 import ink.pmc.essentials.repositories.HomeRepository
@@ -37,5 +39,9 @@ val appModule = module {
     single<WarpManager> {
         require(ess.isWarpEnabled()) { "WarpManager not available" }
         WarpManagerImpl()
+    }
+    single<BackManager> {
+        require(ess.isBackEnabled()) { "BackManager not available" }
+        BackManagerImpl()
     }
 }
