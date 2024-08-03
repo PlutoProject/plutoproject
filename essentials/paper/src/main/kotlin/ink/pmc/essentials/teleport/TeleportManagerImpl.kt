@@ -238,7 +238,7 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
             callEvent()
             if (isDenied) {
                 if (prompt) {
-                    val reason = deniedReason ?: Component.text("请再试一次吧").color(mochaText)
+                    val reason = deniedReason ?: TELEPORT_DENIED_REASON_DEFAULT
                     player.showTitle(TELEPORT_FAILED_DEINED_TITLE(reason))
                     player.playSound(TELEPORT_SUCCEED_SOUND)
                 }

@@ -180,6 +180,10 @@ fun TELEPORT_FAILED_DEINED_TITLE(reason: Component) = title {
     }
 }
 
+val TELEPORT_DENIED_REASON_DEFAULT = component {
+    text("请再试一次吧") with mochaText
+}
+
 val TELEPORT_FAILED_SOUND = sound {
     key(Key.key("block.amethyst_cluster.break"))
 }
