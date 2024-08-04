@@ -1,21 +1,18 @@
 package ink.pmc.utils.world
 
-import org.bukkit.Chunk
 import org.bukkit.Location
 import org.bukkit.World
 
 @Suppress("UNUSED")
 data class Loc2D(var world: World, var x: Double, var z: Double) : Cloneable {
 
+    constructor(world: World, pos2d: Pos2D) : this(world, pos2d.x, pos2d.z)
+
     constructor(location: Location) : this(location.world, location.x, location.z)
 
-    val chunk: Chunk
-        get() {
-            val loc = Location(world, x, 0.0, z)
-            val chunk = world.getChunkAtAsync(loc) // 防止线程上下文问题
-
-            return chunk.join()
-        }
+    fun toPos2D(): Pos2D {
+        return Pos2D(this.x, this.z)
+    }
 
     fun add(x: Double, z: Double): Loc2D {
         this.x += x

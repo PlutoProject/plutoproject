@@ -14,6 +14,7 @@ ktor = "2.3.12"
 resource-factory = "1.1.2"
 cloud = "2.0.0-rc.2"
 cloud-minecraft = "2.0.0-SNAPSHOT"
+koin = "3.6.0-Beta5"
 
 [libraries]
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
@@ -69,6 +70,10 @@ kotlin-scripting-jvm-host = { module = "org.jetbrains.kotlin:kotlin-scripting-jv
 kotlin-scripting-dependencies = { module = "org.jetbrains.kotlin:kotlin-scripting-dependencies", version.ref = "kotlin" }
 kotlin-scripting-dependencies-maven = { module = "org.jetbrains.kotlin:kotlin-scripting-dependencies-maven", version.ref = "kotlin" }
 invui = { module = "xyz.xenondevs.invui:invui", version = "1.32" }
+koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
+koin-core-coroutines = { module = "io.insert-koin:koin-core-coroutines", version.ref = "koin" }
+classgraph = { module = "io.github.classgraph:classgraph", version = "4.8.174" }
+vault-api = { module = "com.github.MilkBowl:VaultAPI", version = "1.7" }
 
 [bundles]
 kotlin = ["kotlin-stdlib", "kotlin-reflect", "kotlinx-coroutine-core", "kotlinx-serialization", "kotlin-scripting-common", "kotlin-scripting-jvm", "kotlin-scripting-jvm-host", "kotlin-scripting-dependencies", "kotlin-scripting-dependencies-maven"]
@@ -81,6 +86,7 @@ grpc = ["grpc-protobuf", "grpc-okhttp", "grpc-stub", "grpc-kotlin-stub"]
 javers = ["javers-core"]
 mongodb = ["mongodb-kotlin", "mongodb-kotlin-bson"]
 ktor = ["ktor-content-negotiation", "ktor-core", "ktor-serialization", "ktor-netty", "ktor-config"]
+koin = ["koin-core", "koin-core-coroutines"]
 
 [plugins]
 kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }

@@ -3,6 +3,8 @@ package ink.pmc.utils.concurrent
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
+// submitAsync start
+
 @Suppress("UNUSED")
 @OptIn(DelicateCoroutinesApi::class)
 fun submitAsync(block: suspend CoroutineScope.() -> Unit) = GlobalScope.launch { block() }
@@ -22,11 +24,42 @@ fun <T> submitAsync(coroutineContext: CoroutineContext, block: suspend Coroutine
     GlobalScope.async(coroutineContext) { block() }
 
 @Suppress("UNUSED")
+fun CoroutineScope.submitAsync(block: suspend CoroutineScope.() -> Unit) = launch { block() }
+
+@Suppress("UNUSED")
+fun CoroutineScope.submitAsync(coroutineContext: CoroutineContext, block: suspend CoroutineScope.() -> Unit) =
+    launch(coroutineContext) { block() }
+
+@Suppress("UNUSED")
+fun <T> CoroutineScope.submitAsync(block: suspend CoroutineScope.() -> T): Deferred<T> = async { block() }
+
+@Suppress("UNUSED")
+fun <T> CoroutineScope.submitAsync(coroutineContext: CoroutineContext, block: suspend CoroutineScope.() -> T): Deferred<T> =
+    async(coroutineContext) { block() }
+
+// submitAsync end
+
+// async start
+
+@Suppress("UNUSED")
 suspend fun async(block: suspend CoroutineScope.() -> Unit) = withContext(Dispatchers.Default) { block() }
 
 @Suppress("UNUSED")
 suspend fun async(coroutineContext: CoroutineContext, block: suspend CoroutineScope.() -> Unit) =
     withContext(coroutineContext) { block() }
+
+@Suppress("UNUSED")
+@JvmName("asyncValue")
+suspend fun <T> async(block: suspend CoroutineScope.() -> T) = withContext(Dispatchers.Default) { block() }
+
+@Suppress("UNUSED")
+@JvmName("asyncValue")
+suspend fun <T> async(coroutineContext: CoroutineContext, block: suspend CoroutineScope.() -> T) =
+    withContext(coroutineContext) { block() }
+
+// async end
+
+// submitAsyncIO start
 
 @Suppress("UNUSED")
 @OptIn(DelicateCoroutinesApi::class)
@@ -38,6 +71,17 @@ fun <T> submitAsyncIO(block: suspend CoroutineScope.() -> T): Deferred<T> =
     GlobalScope.async(Dispatchers.IO) { block() }
 
 @Suppress("UNUSED")
+fun CoroutineScope.submitAsyncIO(block: suspend CoroutineScope.() -> Unit) = launch(Dispatchers.IO) { block() }
+
+@Suppress("UNUSED")
+fun <T> CoroutineScope.submitAsyncIO(block: suspend CoroutineScope.() -> T): Deferred<T> =
+    async(Dispatchers.IO) { block() }
+
+// submitAsyncIO end
+
+// submitAsyncUnconfined start
+
+@Suppress("UNUSED")
 @OptIn(DelicateCoroutinesApi::class)
 fun submitAsyncUnconfined(block: suspend CoroutineScope.() -> Unit) =
     GlobalScope.launch(Dispatchers.Unconfined) { block() }
@@ -46,6 +90,16 @@ fun submitAsyncUnconfined(block: suspend CoroutineScope.() -> Unit) =
 @OptIn(DelicateCoroutinesApi::class)
 fun <T> submitAsyncUnconfined(block: suspend CoroutineScope.() -> T) =
     GlobalScope.async(Dispatchers.Unconfined) { block() }
+
+@Suppress("UNUSED")
+fun CoroutineScope.submitAsyncUnconfined(block: suspend CoroutineScope.() -> Unit) =
+    launch(Dispatchers.Unconfined) { block() }
+
+@Suppress("UNUSED")
+fun <T> CoroutineScope.submitAsyncUnconfined(block: suspend CoroutineScope.() -> T) =
+    async(Dispatchers.Unconfined) { block() }
+
+// submitAsyncUnconfined end
 
 @Suppress("UNUSED")
 suspend fun io(block: suspend CoroutineScope.() -> Unit) = withContext(Dispatchers.IO) { block() }

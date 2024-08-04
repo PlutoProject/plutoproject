@@ -1,17 +1,23 @@
 package ink.pmc.utils.dsl.cloud
 
+import org.incendo.cloud.Command
 import org.incendo.cloud.component.CommandComponent
 import org.incendo.cloud.parser.ParserDescriptor
+import org.incendo.cloud.parser.flag.CommandFlag
+import java.util.*
 
 typealias ComponentBuilderReceiver<C, T> = CommandComponent.Builder<C, T>.() -> Unit
+typealias BuilderReceiver<C> = Command.Builder<C>.() -> Unit
 
 open class CommandNodeDsl<C> {
 
     lateinit var name: String
     val aliases = mutableListOf<String>()
-    var permission = ""
-    var arguments = mutableListOf<CommandComponent<C>>()
-    var handler: ContextReceiver<C> = {}
+    var permission: String? = null
+    var arguments: MutableList<CommandComponent<C>> = Collections.synchronizedList(mutableListOf<CommandComponent<C>>())
+    var flags: MutableList<CommandFlag<*>> = Collections.synchronizedList(mutableListOf<CommandFlag<*>>())
+    var handler: ContextReceiver<C>? = null
+    var builderReceiver: BuilderReceiver<C>? = null
     protected val subNodes = mutableListOf<CommandNode<C>>()
 
     fun permission(node: String) {
@@ -34,8 +40,20 @@ open class CommandNodeDsl<C> {
         arguments.add(component.build())
     }
 
+    fun <T> flag(flag: CommandFlag<T>) {
+        flags.add(flag)
+    }
+
+    fun <T> flag(flag: CommandFlag.Builder<C, T>) {
+        flags.add(flag.build())
+    }
+
     fun handler(block: ContextReceiver<C>) {
         handler = block
+    }
+
+    fun builder(block: BuilderReceiver<C>) {
+        builderReceiver = block
     }
 
     fun node(node: CommandNode<C>) {

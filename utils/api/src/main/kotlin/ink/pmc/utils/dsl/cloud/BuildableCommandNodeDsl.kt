@@ -5,7 +5,7 @@ import ink.pmc.utils.structure.Builder
 open class BuildableCommandNodeDsl<C> : CommandNodeDsl<C>(), Builder<CommandNode<C>> {
 
     override fun build(): CommandNode<C> {
-        return CommandNode(CommandNodePrefix(name, aliases.toTypedArray()), permission, arguments, handler)
+        return CommandNode(CommandNodePrefix(name, aliases.toTypedArray()), permission, arguments, flags, handler, builderReceiver)
             .apply { this@BuildableCommandNodeDsl.subNodes.forEach { append(it) } }
     }
 
