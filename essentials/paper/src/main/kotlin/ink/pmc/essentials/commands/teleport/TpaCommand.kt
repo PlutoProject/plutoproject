@@ -83,6 +83,9 @@ private fun handleTpa(source: Player, destination: Player, direction: TeleportDi
 
     source.sendMessage(message.replace("<player>", destination.name))
     source.sendMessage(TELEPORT_EXPIRE.replace("<expire>", DURATION(manager.defaultRequestOptions.expireAfter)))
+    if (Essentials.isAfkEnabled() && Essentials.afkManager.isAfk(destination)) {
+        source.sendMessage(COMMAND_TPA_AFK)
+    }
     oldRequest?.let {
         source.sendMessage(TELEPORT_REQUEST_AUTO_CANCEL.replace("<player>", oldRequest.destination.name))
     }
