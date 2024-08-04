@@ -4,6 +4,6 @@ const val BYPASS_WORLD_BLACKLIST = "essentials.teleport.bypass"
 
 const val BYPASS_HOME_LIMIT = "essentials.home.bypass"
 
-const val HOMES_OTHER = "essentials.homes.other"
+const val ITEMFRAME_PROTECT_BYPASS = "essentials.itemframe.bypass"
 
-const val HOMES_COMMAND = "/essentials:homes <player> <page>"
+const val LECTERN_PROTECT_BYPASS = "essentials.lectern.bypass"

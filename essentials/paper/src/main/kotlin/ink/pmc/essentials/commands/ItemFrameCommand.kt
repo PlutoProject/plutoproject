@@ -90,7 +90,7 @@ private fun Player.handleOperation(operation: Operation) {
     val player = this
 
     fun ItemFrame.handleInvisible() {
-        if (isProtected && protector != player) {
+        if (isProtected && protector != player && !player.hasPermission(ITEMFRAME_PROTECT_BYPASS)) {
             player.sendMessage(IF_PROTECTED_ACTION.replace("<player>", protectorName))
             return
         }
@@ -104,7 +104,7 @@ private fun Player.handleOperation(operation: Operation) {
     }
 
     fun ItemFrame.handleProtect() {
-        if (isProtected && protector != player) {
+        if (isProtected && protector != player && !player.hasPermission(ITEMFRAME_PROTECT_BYPASS)) {
             player.sendMessage(IF_PROTECTED_ACTION.replace("<player>", protectorName))
             return
         }

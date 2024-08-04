@@ -2,6 +2,7 @@ package ink.pmc.essentials.commands
 
 import ink.pmc.essentials.*
 import ink.pmc.utils.chat.replace
+import ink.pmc.utils.concurrent.sync
 import ink.pmc.utils.dsl.cloud.invoke
 import ink.pmc.utils.dsl.cloud.sender
 import ink.pmc.utils.player.uuidOrNull
@@ -35,9 +36,11 @@ private fun Lectern.setProtect(value: Boolean, player: Player) {
     persistentDataContainer.set(protectKey, PersistentDataType.BOOLEAN, value)
     if (value) {
         persistentDataContainer.set(protectorKey, PersistentDataType.STRING, player.uniqueId.toString())
+        update()
         return
     }
     persistentDataContainer.remove(protectorKey)
+    update()
 }
 
 @Command("lectern")
@@ -47,28 +50,31 @@ fun Cm.lectern(aliases: Array<String>) {
         permission("essentials.lectern")
         handler {
             checkPlayer(sender.sender) {
-                val range = getAttribute(Attribute.PLAYER_BLOCK_INTERACTION_RANGE)!!.value
-                val block = getTargetBlockExact(range.toInt())
+                sync {
+                    val range = getAttribute(Attribute.PLAYER_BLOCK_INTERACTION_RANGE)!!.value
+                    val block = getTargetBlockExact(range.toInt())?.state
+                    val player = this@checkPlayer
 
-                if (block == null || block !is Lectern) {
-                    sendMessage(COMMAND_LECT_FAILED_NO_LECTERN)
-                    return@checkPlayer
+                    if (block == null || block !is Lectern) {
+                        sendMessage(COMMAND_LECT_FAILED_NO_LECTERN)
+                        return@sync
+                    }
+
+                    if (block.isProtected && block.protector != player && !player.hasPermission(LECTERN_PROTECT_BYPASS)) {
+                        sendMessage(LECT_PROTECTED_ACTION.replace("<player>", block.protectorName))
+                        return@sync
+                    }
+
+                    if (!block.protect) {
+                        block.setProtect(true, player)
+                        sendMessage(COMMAND_LECT_PROTECT_ON_SUCCEED)
+                        return@sync
+                    }
+
+                    block.setProtect(false, player)
+                    sendMessage(COMMAND_LECT_PROTECT_OFF_SUCCEED)
+                    return@sync
                 }
-
-                if (block.isProtected && block.protector != player) {
-                    sendMessage(LECT_PROTECTED_ACTION.replace("<player>", block.protectorName))
-                    return@checkPlayer
-                }
-
-                if (!block.protect) {
-                    block.setProtect(true, this)
-                    sendMessage(COMMAND_LECT_PROTECT_ON_SUCCEED)
-                    return@checkPlayer
-                }
-
-                block.setProtect(false, this)
-                sendMessage(COMMAND_LECT_PROTECT_OFF_SUCCEED)
-                return@checkPlayer
             }
         }
     }
