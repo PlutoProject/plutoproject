@@ -282,6 +282,9 @@ class RandomTeleportManagerImpl : RandomTeleportManager, KoinComponent {
 
             if (cache != null) {
                 val location = cache.location
+                // 必须异步触发
+                val event = RandomTeleportEvent(player, player.location, location).apply { callEvent() }
+                if (event.isCancelled) return@async
                 teleport.teleportSuspend(player, location, prompt = prompt)
                 val time = timer.end()
                 notifyPlayerOfTeleport(player, location, cache.attempts, time, prompt)

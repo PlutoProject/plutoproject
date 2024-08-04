@@ -31,3 +31,7 @@ fun maxLocation(a: Location, b: Location): Location {
         maxOf(a.z, b.z)
     )
 }
+
+fun Location.blockEquals(other: Location): Boolean {
+    return blockX == other.blockX && blockY == other.blockY && blockZ == other.blockZ
+}

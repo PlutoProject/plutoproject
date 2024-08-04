@@ -15,7 +15,7 @@ fun Cm.afk(aliases: Array<String>) {
         handler {
             checkPlayer(sender.sender) {
                 val manager = Essentials.afkManager
-                manager.toggle(this )
+                manager.toggle(this, true)
             }
         }
     }

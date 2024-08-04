@@ -15,7 +15,8 @@ class TeleportEvent(
 
     private companion object {
         val handlers = HandlerList()
-        @JvmStatic fun getHandlerList() = handlers
+        @JvmStatic
+        fun getHandlerList() = handlers
     }
 
     private var _isDenied = false
