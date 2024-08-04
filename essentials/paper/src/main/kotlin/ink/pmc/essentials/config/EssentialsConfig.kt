@@ -88,6 +88,14 @@ class EssentialsConfig(private val config: Config) : Config by config {
         val idleDuration: Duration get() = Duration.parse(get("afk.idle-duration"))
     }
 
+    inner class ItemFrame {
+        val enabled: Boolean get() = get("itemframe.enabled")
+    }
+
+    inner class Lectern {
+        val enabled: Boolean get() = get("lectern.enabled")
+    }
+
     inner class Commands {
         operator fun get(name: String): Boolean {
             return config.get("commands.$name") ?: false

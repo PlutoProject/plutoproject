@@ -36,4 +36,8 @@ interface IEssentials {
 
     fun isAfkEnabled(): Boolean
 
+    fun isItemFrameEnabled(): Boolean
+
+    fun isLecternEnabled(): Boolean
+
 }

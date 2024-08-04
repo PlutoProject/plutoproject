@@ -91,6 +91,10 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
         if (Essentials.isAfkEnabled()) {
             server.pluginManager.registerSuspendingEvents(AfkListener, this)
         }
+
+        if (Essentials.isItemFrameEnabled()) {
+            server.pluginManager.registerSuspendingEvents(ItemFrameListener, this)
+        }
     }
 
     private fun initialize() {

@@ -243,7 +243,7 @@ val TELEPORT_REQUEST_CANCELED_OFFLINE = component {
 }
 
 val COMMAND_TPA_AFK = component {
-    text("对方目前正处于离开状态，可能无法及时查看请求") with mochaSubtext0
+    text("对方目前处于离开状态，可能无法及时查看请求") with mochaSubtext0
 }
 
 val TELEPORT_REQUEST_RECEIVED_SOUND = sound {
@@ -611,3 +611,35 @@ val AFK_START_ANNOUNCE = component {
 val AFK_END_ANNOUNCE = component {
     text("* <player> 回来了") with mochaSubtext0
 }
+
+val COMMAND_IF_FAILED_NO_FRAME = component {
+    text("你需要面对着一个物品展示框才可以这么做") with mochaMaroon
+}
+
+val COMMAND_IF_INV_ON_SUCCEED = component {
+    text("已将你面前的展示框隐藏") with mochaPink
+}
+
+val COMMAND_IF_INV_OFF_SUCCEED = component {
+    text("已将你面前的展示框显现") with mochaPink
+}
+
+val COMMAND_IF_PROTECT_ON_SUCCEED = component {
+    text("已将你面前的展示框保护") with mochaPink
+}
+
+val COMMAND_IF_PROTECT_OFF_SUCCEED = component {
+    text("已将你面前的展示框取消保护") with mochaPink
+}
+
+val IF_PROTECTED_ACTION = component {
+    text("此展示框已被 ") with mochaSubtext0
+    text("<player> ") with mochaText
+    text("保护") with mochaSubtext0
+}
+
+const val IF_PROTECT_UNKNOWN_PLAYER = "未知玩家"
+
+val IF_UNFINISHED_BOOK = Component.text("未完成的书")
+
+val IF_UNFINISHED_BOOK_AUTHOR = Component.text("未知作者")

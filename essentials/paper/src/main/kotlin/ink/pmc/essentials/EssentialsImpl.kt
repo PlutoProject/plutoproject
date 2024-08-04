@@ -46,4 +46,12 @@ class EssentialsImpl : IEssentials, KoinComponent {
         return config.Afk().enabled
     }
 
+    override fun isItemFrameEnabled(): Boolean {
+        return config.ItemFrame().enabled
+    }
+
+    override fun isLecternEnabled(): Boolean {
+        return config.Lectern().enabled
+    }
+
 }
