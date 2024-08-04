@@ -54,7 +54,6 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
             .executionCoordinator(ExecutionCoordinator.asyncCoordinator())
             .buildOnEnable(this)
 
-        IEssentials.instance = get<IEssentials>()
         commandManager.registerCommands(COMMAND_PACKAGE)
         registerEvents()
         initialize()

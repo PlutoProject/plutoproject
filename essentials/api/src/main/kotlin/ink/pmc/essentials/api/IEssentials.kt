@@ -6,6 +6,7 @@ import ink.pmc.essentials.api.home.HomeManager
 import ink.pmc.essentials.api.teleport.TeleportManager
 import ink.pmc.essentials.api.teleport.random.RandomTeleportManager
 import ink.pmc.essentials.api.warp.WarpManager
+import org.koin.java.KoinJavaComponent.getKoin
 
 @Suppress("UNUSED")
 object Essentials : IEssentials by IEssentials.instance
@@ -14,7 +15,7 @@ object Essentials : IEssentials by IEssentials.instance
 interface IEssentials {
 
     companion object {
-        lateinit var instance: IEssentials
+        val instance by lazy { getKoin().get<IEssentials>() }
     }
 
     val teleportManager: TeleportManager
