@@ -364,7 +364,6 @@ allprojects {
         dep(rootProject.libs.invui)
         dep(rootProject.libs.bundles.koin)
         dep(rootProject.libs.classgraph)
-        dep(rootProject.libs.vault.api)
     }
 
     tasks.shadowJar {
