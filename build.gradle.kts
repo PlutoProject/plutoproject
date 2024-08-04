@@ -325,6 +325,7 @@ allprojects {
     repositories {
         mavenCentral()
         mavenLocal()
+        maven(uri("https://jitpack.io"))
         maven(uri("https://oss.sonatype.org/content/repositories/snapshots/"))
         maven(uri("https://repo.papermc.io/repository/maven-public/"))
         maven(uri("https://maven.nostal.ink/repository/maven-public"))
@@ -363,6 +364,7 @@ allprojects {
         dep(rootProject.libs.invui)
         dep(rootProject.libs.bundles.koin)
         dep(rootProject.libs.classgraph)
+        dep(rootProject.libs.vault.api)
     }
 
     tasks.shadowJar {

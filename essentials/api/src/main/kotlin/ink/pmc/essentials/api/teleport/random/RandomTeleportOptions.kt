@@ -2,8 +2,6 @@ package ink.pmc.essentials.api.teleport.random
 
 import ink.pmc.utils.world.Pos2D
 import org.bukkit.block.Biome
-import java.math.BigDecimal
-import kotlin.time.Duration
 
 data class RandomTeleportOptions(
     val center: Pos2D,
@@ -14,7 +12,6 @@ data class RandomTeleportOptions(
     val minHeight: Int,
     val noCover: Boolean,
     val maxAttempts: Int,
-    val cooldown: Duration,
-    val cost: BigDecimal,
+    val cost: Double,
     val blacklistedBiomes: Set<Biome>,
 )

@@ -31,11 +31,9 @@ import org.bukkit.block.Biome
 import org.bukkit.entity.Player
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import java.math.BigDecimal
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.LinkedBlockingDeque
-import kotlin.time.Duration
 import kotlin.time.toKotlinDuration
 
 internal fun Chunk.addTeleportTicket() {
@@ -76,8 +74,7 @@ class RandomTeleportManagerImpl : RandomTeleportManager, KoinComponent {
         minHeight = conf.minHeight,
         noCover = conf.noCover,
         maxAttempts = conf.maxAttempts,
-        cooldown = Duration.parse(conf.cooldown),
-        cost = BigDecimal(conf.cost),
+        cost = conf.cost,
         blacklistedBiomes = conf.blacklistedBiomes.toSet()
     )
     override val worldOptions: Map<World, RandomTeleportOptions> = conf.worldOptions.mapKv {
@@ -91,8 +88,7 @@ class RandomTeleportManagerImpl : RandomTeleportManager, KoinComponent {
             minHeight = it.value.get("min-height") ?: defaultOptions.minHeight,
             noCover = it.value.get("no-cover") ?: defaultOptions.noCover,
             maxAttempts = it.value.get("max-attempts") ?: defaultOptions.maxAttempts,
-            cooldown = it.value.get<String>("cooldown")?.let { c -> Duration.parse(c) } ?: defaultOptions.cooldown,
-            cost = it.value.get<String>("cost")?.let { c -> BigDecimal(c) } ?: defaultOptions.cost,
+            cost = it.value.get<Double>("cost") ?: defaultOptions.cost,
             blacklistedBiomes = it.value.get<List<String>>("blacklisted-biomes")
                 ?.map { b -> Biome.valueOf(b.uppercase()) }?.toSet() ?: defaultOptions.blacklistedBiomes
         )
@@ -244,6 +240,10 @@ class RandomTeleportManagerImpl : RandomTeleportManager, KoinComponent {
         location: Location,
         attempts: Int,
         time: Long,
+        costed: Boolean,
+        cost: Double,
+        symbol: String,
+        balance: Double,
         prompt: Boolean
     ) {
         if (!prompt) {
@@ -258,6 +258,14 @@ class RandomTeleportManagerImpl : RandomTeleportManager, KoinComponent {
                 .replace("<attempts>", Component.text(attempts))
                 .replace("<lastLookupTime>", DURATION(java.time.Duration.ofMillis(time).toKotlinDuration()))
         )
+        if (costed) {
+            player.sendMessage(
+                RANDOM_TELEPORT_WITHDRAW
+                    .replace("<amount>", cost.toString())
+                    .replace("<symbol>", symbol)
+                    .replace("<balance>", balance.toString())
+            )
+        }
     }
 
     override suspend fun launchSuspend(
@@ -274,11 +282,35 @@ class RandomTeleportManagerImpl : RandomTeleportManager, KoinComponent {
                 return@async
             }
 
-            inTeleport.add(player)
-            val timer = TeleportTimer()
             val defaultOpt = getRandomTeleportOptions(world)
             val opt = options ?: defaultOpt
+
+            val eco = economy!!
+            val plural = eco.currencyNamePlural() ?: DEFAULT_ECONOMY_SYMBOL
+            val singular = eco.currencyNameSingular() ?: DEFAULT_ECONOMY_SYMBOL
+            val cost = opt.cost
+            val symbol = if (cost <= 1) singular else plural
+            var costed = false
+
+            if (economy != null && !player.hasPermission(RANDOM_TELEPORT_COST_BYPASS)) {
+                val balance = eco.getBalance(player)
+                if (balance < cost) {
+                    player.sendMessage(
+                        RANDOM_TELEPORT_BALANCE_NOT_ENOUGH
+                            .replace("<amount>", cost.toString())
+                            .replace("<symbol>", symbol)
+                            .replace("<balance>", balance.toString())
+                    )
+                    return@async
+                }
+                eco.withdrawPlayer(player, cost)
+                costed = true
+            }
+
+            val balance = eco.getBalance(player)
             val cache = if (opt == defaultOpt) pollCache(world) else null
+            val timer = TeleportTimer()
+            inTeleport.add(player)
 
             if (cache != null) {
                 val location = cache.location
@@ -287,7 +319,7 @@ class RandomTeleportManagerImpl : RandomTeleportManager, KoinComponent {
                 if (event.isCancelled) return@async
                 teleport.teleportSuspend(player, location, prompt = prompt)
                 val time = timer.end()
-                notifyPlayerOfTeleport(player, location, cache.attempts, time, prompt)
+                notifyPlayerOfTeleport(player, location, cache.attempts, time, costed, cost, symbol, balance, prompt)
                 inTeleport.remove(player)
                 return@async
             }
@@ -317,7 +349,7 @@ class RandomTeleportManagerImpl : RandomTeleportManager, KoinComponent {
 
             teleport.teleportSuspend(player, location, prompt = prompt)
             val time = timer.end()
-            notifyPlayerOfTeleport(player, location, attempts, time, prompt)
+            notifyPlayerOfTeleport(player, location, attempts, time, costed, cost, symbol, balance, prompt)
             inTeleport.remove(player)
         }
     }

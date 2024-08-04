@@ -51,7 +51,7 @@ class EssentialsConfig(private val config: Config) : Config by config {
         val noCover: Boolean get() = get("random-teleport.no-cover")
         val maxAttempts: Int get() = get("random-teleport.max-attempts")
         val cooldown: String get() = get("random-teleport.cooldown")
-        val cost: String get() = get("random-teleport.cost")
+        val cost: Double get() = get("random-teleport.cost")
         val blacklistedBiomes: Collection<Biome>
             get() = get<List<String>>("random-teleport.blacklisted-biomes").map { Biome.valueOf(it.uppercase()) }
         val enabledWorlds: Collection<World>

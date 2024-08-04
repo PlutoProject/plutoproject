@@ -73,6 +73,7 @@ invui = { module = "xyz.xenondevs.invui:invui", version = "1.32" }
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 koin-core-coroutines = { module = "io.insert-koin:koin-core-coroutines", version.ref = "koin" }
 classgraph = { module = "io.github.classgraph:classgraph", version = "4.8.174" }
+vault-api = { module = "com.github.MilkBowl:VaultAPI", version = "1.7" }
 
 [bundles]
 kotlin = ["kotlin-stdlib", "kotlin-reflect", "kotlinx-coroutine-core", "kotlinx-serialization", "kotlin-scripting-common", "kotlin-scripting-jvm", "kotlin-scripting-jvm-host", "kotlin-scripting-dependencies", "kotlin-scripting-dependencies-maven"]

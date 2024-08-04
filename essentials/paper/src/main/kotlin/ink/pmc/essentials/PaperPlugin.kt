@@ -14,6 +14,7 @@ import io.papermc.paper.command.brigadier.CommandSourceStack
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
+import net.milkbowl.vault.economy.Economy
 import org.bukkit.plugin.Plugin
 import org.incendo.cloud.execution.ExecutionCoordinator
 import org.incendo.cloud.paper.PaperCommandManager
@@ -28,6 +29,7 @@ import kotlin.reflect.jvm.kotlinFunction
 typealias Cm = PaperCommandManager<CommandSourceStack>
 
 var disabled = true
+var economy: Economy? = null
 lateinit var plugin: Plugin
 lateinit var fileConfig: FileConfig
 lateinit var commandManager: Cm
@@ -57,6 +59,8 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
         commandManager.registerCommands(COMMAND_PACKAGE)
         registerEvents()
         initialize()
+        economy = server.servicesManager.getRegistration(Economy::class.java)?.provider
+        if (economy == null) logger.info("Cannot obtain Economy API, certain features will be disabled")
         disabled = false
     }
 
