@@ -16,7 +16,6 @@ import ink.pmc.utils.data.mapKv
 import ink.pmc.utils.entity.teleportSuspend
 import ink.pmc.utils.multiplaform.item.KeyedMaterial
 import ink.pmc.utils.multiplaform.item.exts.bukkit
-import ink.pmc.utils.visual.mochaText
 import ink.pmc.utils.world.ValueChunkLoc
 import ink.pmc.utils.world.getChunkViaSource
 import kotlinx.coroutines.channels.Channel
@@ -26,7 +25,6 @@ import kotlinx.coroutines.future.asCompletableFuture
 import kotlinx.coroutines.future.await
 import kotlinx.coroutines.supervisorScope
 import kotlinx.coroutines.yield
-import net.kyori.adventure.text.Component
 import org.bukkit.Location
 import org.bukkit.World
 import org.bukkit.block.BlockFace
@@ -236,7 +234,7 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
             }
 
             // 必须异步触发
-            val event = EssentialsTeleportEvent(player, loc, opt).apply { callEvent() }
+            val event = TeleportEvent(player, player.location, loc, opt).apply { callEvent() }
 
             if (event.isDenied) {
                 if (prompt) {
@@ -244,6 +242,10 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
                     player.showTitle(TELEPORT_FAILED_DEINED_TITLE(reason))
                     player.playSound(TELEPORT_SUCCEED_SOUND)
                 }
+                return@async
+            }
+
+            if (event.isCancelled) {
                 return@async
             }
 

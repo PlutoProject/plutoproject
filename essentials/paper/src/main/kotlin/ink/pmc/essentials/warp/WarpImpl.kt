@@ -3,9 +3,11 @@ package ink.pmc.essentials.warp
 import ink.pmc.essentials.api.teleport.TeleportManager
 import ink.pmc.essentials.api.warp.Warp
 import ink.pmc.essentials.api.warp.WarpManager
+import ink.pmc.essentials.api.warp.WarpTeleportEvent
 import ink.pmc.essentials.dtos.WarpDto
 import ink.pmc.essentials.home.loadFailed
 import ink.pmc.essentials.repositories.WarpRepository
+import ink.pmc.utils.concurrent.async
 import ink.pmc.utils.concurrent.submitAsync
 import ink.pmc.utils.storage.entity.dto
 import org.bukkit.Location
@@ -39,8 +41,13 @@ class WarpImpl(private val dto: WarpDto) : Warp, KoinComponent {
     }
 
     override suspend fun teleportSuspend(player: Player, prompt: Boolean) {
-        val options = teleport.getWorldTeleportOptions(location.world).copy(bypassSafeCheck = true)
-        teleport.teleportSuspend(player, location, options, prompt)
+        async {
+            val options = teleport.getWorldTeleportOptions(location.world).copy(bypassSafeCheck = true)
+            // 必须异步触发
+            val event = WarpTeleportEvent(player, player.location, this@WarpImpl).apply { callEvent() }
+            if (event.isCancelled) return@async
+            teleport.teleportSuspend(player, location, options, prompt)
+        }
     }
 
     private fun toDto(): WarpDto = dto.copy(

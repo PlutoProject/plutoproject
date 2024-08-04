@@ -308,6 +308,10 @@ class RandomTeleportManagerImpl : RandomTeleportManager, KoinComponent {
                 return@async
             }
 
+            // 必须异步触发
+            val event = RandomTeleportEvent(player, player.location, location).apply { callEvent() }
+            if (event.isCancelled) return@async
+
             teleport.teleportSuspend(player, location, prompt = prompt)
             val time = timer.end()
             notifyPlayerOfTeleport(player, location, attempts, time, prompt)
