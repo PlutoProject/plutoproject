@@ -5,6 +5,7 @@ import com.github.shynixn.mccoroutine.bukkit.SuspendingJavaPlugin
 import com.github.shynixn.mccoroutine.bukkit.registerSuspendingEvents
 import ink.pmc.essentials.api.Essentials
 import ink.pmc.essentials.api.IEssentials
+import ink.pmc.essentials.api.afk.AfkManager
 import ink.pmc.essentials.config.EssentialsConfig
 import ink.pmc.essentials.listeners.*
 import ink.pmc.utils.storage.saveResourceIfNotExisted
@@ -56,6 +57,7 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
         IEssentials.instance = get<IEssentials>()
         commandManager.registerCommands(COMMAND_PACKAGE)
         registerEvents()
+        initialize()
         disabled = false
     }
 
@@ -84,6 +86,13 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
 
         if (Essentials.isBackEnabled()) {
             server.pluginManager.registerSuspendingEvents(BackListener, this)
+        }
+    }
+
+    private fun initialize() {
+        // 初始化 AfkManager，开始后台任务
+        if (Essentials.isAfkEnabled()) {
+            get<AfkManager>()
         }
     }
 

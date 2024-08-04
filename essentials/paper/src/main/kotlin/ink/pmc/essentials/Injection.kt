@@ -1,6 +1,8 @@
 package ink.pmc.essentials
 
+import ink.pmc.essentials.afk.AfkManagerImpl
 import ink.pmc.essentials.api.IEssentials
+import ink.pmc.essentials.api.afk.AfkManager
 import ink.pmc.essentials.api.back.BackManager
 import ink.pmc.essentials.api.home.HomeManager
 import ink.pmc.essentials.api.teleport.TeleportManager
@@ -9,6 +11,7 @@ import ink.pmc.essentials.api.warp.WarpManager
 import ink.pmc.essentials.back.BackManagerImpl
 import ink.pmc.essentials.config.EssentialsConfig
 import ink.pmc.essentials.home.HomeManagerImpl
+import ink.pmc.essentials.repositories.BackRepository
 import ink.pmc.essentials.repositories.HomeRepository
 import ink.pmc.essentials.repositories.WarpRepository
 import ink.pmc.essentials.teleport.TeleportManagerImpl
@@ -24,6 +27,7 @@ val appModule = module {
     single<IEssentials> { EssentialsImpl() }
     single<HomeRepository> { HomeRepository() }
     single<WarpRepository> { WarpRepository() }
+    single<BackRepository> { BackRepository() }
     single<TeleportManager> {
         require(ess.isTeleportEnabled()) { "TeleportManager not available" }
         TeleportManagerImpl()
@@ -43,5 +47,9 @@ val appModule = module {
     single<BackManager> {
         require(ess.isBackEnabled()) { "BackManager not available" }
         BackManagerImpl()
+    }
+    single<AfkManager> {
+        require(ess.isAfkEnabled()) { "AfkManager not available" }
+        AfkManagerImpl()
     }
 }

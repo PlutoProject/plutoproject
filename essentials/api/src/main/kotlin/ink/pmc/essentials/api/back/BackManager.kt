@@ -7,18 +7,17 @@ import org.bukkit.entity.Player
 interface BackManager {
 
     val maxLocations: Int
-    val previousLocations: Map<Player, Location>
 
-    fun has(player: Player): Boolean
+    suspend fun has(player: Player): Boolean
 
-    fun get(player: Player): Location?
+    suspend fun get(player: Player): Location?
 
     fun back(player: Player)
 
     suspend fun backSuspend(player: Player)
 
-    suspend fun store(player: Player, location: Location)
+    suspend fun set(player: Player, location: Location)
 
-    fun discard(player: Player)
+    suspend fun remove(player: Player)
 
 }

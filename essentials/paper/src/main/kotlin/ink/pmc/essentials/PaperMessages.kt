@@ -603,3 +603,11 @@ val COMMAND_BACK_FAILED_NO_LOC = component {
 val COMMAND_BACK_SUCCEED = component {
     text("已回到你先前的位置") with mochaPink
 }
+
+val AFK_START_ANNOUNCE = component {
+    text("* <player> 暂时离开了") with mochaSubtext0
+}
+
+val AFK_END_ANNOUNCE = component {
+    text("* <player> 回来了") with mochaSubtext0
+}

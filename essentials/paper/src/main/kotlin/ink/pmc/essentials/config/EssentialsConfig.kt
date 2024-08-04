@@ -9,6 +9,7 @@ import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.World
 import org.bukkit.block.Biome
+import kotlin.time.Duration
 
 @Suppress("UNUSED")
 class EssentialsConfig(private val config: Config) : Config by config {
@@ -82,8 +83,9 @@ class EssentialsConfig(private val config: Config) : Config by config {
             get() = get<List<String>>("warp.blacklisted-worlds").map { Bukkit.getWorld(it)!! }
     }
 
-    inner class Economy {
-        val balanceTopEntries: Int get() = get("economy.balance-top-entries")
+    inner class Afk {
+        val enabled: Boolean get() = get("afk.enabled")
+        val idleDuration: Duration get() = Duration.parse(get("afk.idle-duration"))
     }
 
     inner class Commands {

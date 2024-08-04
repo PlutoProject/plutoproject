@@ -1,6 +1,7 @@
 package ink.pmc.essentials
 
 import ink.pmc.essentials.api.IEssentials
+import ink.pmc.essentials.api.afk.AfkManager
 import ink.pmc.essentials.api.back.BackManager
 import ink.pmc.essentials.api.home.HomeManager
 import ink.pmc.essentials.api.teleport.TeleportManager
@@ -19,6 +20,7 @@ class EssentialsImpl : IEssentials, KoinComponent {
     override val randomTeleportManager by inject<RandomTeleportManager>()
     override val homeManager by inject<HomeManager>()
     override val warpManager by inject<WarpManager>()
+    override val afkManager by inject<AfkManager>()
 
     override fun isTeleportEnabled(): Boolean {
         return config.Teleport().enabled
@@ -38,6 +40,10 @@ class EssentialsImpl : IEssentials, KoinComponent {
 
     override fun isBackEnabled(): Boolean {
         return isTeleportEnabled() && config.Back().enabled
+    }
+
+    override fun isAfkEnabled(): Boolean {
+        return config.Afk().enabled
     }
 
 }

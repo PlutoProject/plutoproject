@@ -1,5 +1,6 @@
 package ink.pmc.essentials.api
 
+import ink.pmc.essentials.api.afk.AfkManager
 import ink.pmc.essentials.api.back.BackManager
 import ink.pmc.essentials.api.home.HomeManager
 import ink.pmc.essentials.api.teleport.TeleportManager
@@ -21,6 +22,7 @@ interface IEssentials {
     val randomTeleportManager: RandomTeleportManager
     val homeManager: HomeManager
     val warpManager: WarpManager
+    val afkManager: AfkManager
 
     fun isTeleportEnabled(): Boolean
 
@@ -31,5 +33,7 @@ interface IEssentials {
     fun isWarpEnabled(): Boolean
 
     fun isBackEnabled(): Boolean
+
+    fun isAfkEnabled(): Boolean
 
 }
