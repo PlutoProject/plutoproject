@@ -4,7 +4,6 @@ import com.electronwill.nightconfig.core.file.FileConfig
 import com.github.shynixn.mccoroutine.bukkit.SuspendingJavaPlugin
 import com.github.shynixn.mccoroutine.bukkit.registerSuspendingEvents
 import ink.pmc.essentials.api.Essentials
-import ink.pmc.essentials.api.IEssentials
 import ink.pmc.essentials.api.afk.AfkManager
 import ink.pmc.essentials.config.EssentialsConfig
 import ink.pmc.essentials.listeners.*

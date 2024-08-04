@@ -377,6 +377,12 @@ val RANDOM_TELEPORT_SUCCED = component {
     text("<lastLookupTime>") with mochaText
 }
 
+val RANDOM_TELEPORT_SUCCED_COST = component {
+    raw(RANDOM_TELEPORT_SUCCED)
+    text("，花费 ") with mochaSubtext0
+    text("<amount> <symbol>") with mochaText
+}
+
 val RANDOM_TELEPORT_SEARCHING_TITLE = title {
     times {
         fadeIn(Ticks.duration(5))
@@ -670,9 +676,4 @@ val RANDOM_TELEPORT_BALANCE_NOT_ENOUGH = component {
     newline()
     text("你当前拥有 ") with mochaSubtext0
     text("<balance> <symbol>") with mochaText
-}
-
-val RANDOM_TELEPORT_WITHDRAW = component {
-    text("进行随机传送消耗了 ") with mochaPeach
-    text("<amount> <symbol>") with mochaText
 }

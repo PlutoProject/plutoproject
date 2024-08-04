@@ -14,6 +14,7 @@ class HomeTeleportEvent(
     @Suppress("UNUSED")
     private companion object {
         val handlers = HandlerList()
+
         @JvmStatic
         fun getHandlerList() = handlers
     }

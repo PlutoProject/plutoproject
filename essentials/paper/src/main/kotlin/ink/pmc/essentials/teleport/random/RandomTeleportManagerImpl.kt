@@ -11,6 +11,7 @@ import ink.pmc.essentials.api.teleport.TeleportManager
 import ink.pmc.essentials.api.teleport.random.*
 import ink.pmc.essentials.config.EssentialsConfig
 import ink.pmc.utils.chat.DURATION
+import ink.pmc.utils.chat.currencyFormat
 import ink.pmc.utils.chat.replace
 import ink.pmc.utils.concurrent.async
 import ink.pmc.utils.concurrent.submitAsync
@@ -243,29 +244,23 @@ class RandomTeleportManagerImpl : RandomTeleportManager, KoinComponent {
         costed: Boolean,
         cost: Double,
         symbol: String,
-        balance: Double,
         prompt: Boolean
     ) {
         if (!prompt) {
             return
         }
+        val message = if (!costed) RANDOM_TELEPORT_SUCCED else RANDOM_TELEPORT_SUCCED_COST
         player.sendMessage(
-            RANDOM_TELEPORT_SUCCED
+            message
                 .replace(
                     "<location>",
                     Component.text("${location.blockX}, ${location.blockY}, ${location.blockZ}")
                 )
+                .replace("<amount>", cost.currencyFormat())
+                .replace("<symbol>", symbol)
                 .replace("<attempts>", Component.text(attempts))
                 .replace("<lastLookupTime>", DURATION(java.time.Duration.ofMillis(time).toKotlinDuration()))
         )
-        if (costed) {
-            player.sendMessage(
-                RANDOM_TELEPORT_WITHDRAW
-                    .replace("<amount>", cost.toString())
-                    .replace("<symbol>", symbol)
-                    .replace("<balance>", balance.toString())
-            )
-        }
     }
 
     override suspend fun launchSuspend(
@@ -297,9 +292,9 @@ class RandomTeleportManagerImpl : RandomTeleportManager, KoinComponent {
                 if (balance < cost) {
                     player.sendMessage(
                         RANDOM_TELEPORT_BALANCE_NOT_ENOUGH
-                            .replace("<amount>", cost.toString())
+                            .replace("<amount>", cost.currencyFormat())
                             .replace("<symbol>", symbol)
-                            .replace("<balance>", balance.toString())
+                            .replace("<balance>", balance.currencyFormat())
                     )
                     player.playSound(TELEPORT_FAILED_SOUND)
                     return@async
@@ -308,7 +303,6 @@ class RandomTeleportManagerImpl : RandomTeleportManager, KoinComponent {
                 costed = true
             }
 
-            val balance = eco.getBalance(player)
             val cache = if (opt == defaultOpt) pollCache(world) else null
             val timer = TeleportTimer()
             inTeleport.add(player)
@@ -320,7 +314,7 @@ class RandomTeleportManagerImpl : RandomTeleportManager, KoinComponent {
                 if (event.isCancelled) return@async
                 teleport.teleportSuspend(player, location, prompt = prompt)
                 val time = timer.end()
-                notifyPlayerOfTeleport(player, location, cache.attempts, time, costed, cost, symbol, balance, prompt)
+                notifyPlayerOfTeleport(player, location, cache.attempts, time, costed, cost, symbol, prompt)
                 inTeleport.remove(player)
                 return@async
             }
@@ -350,7 +344,7 @@ class RandomTeleportManagerImpl : RandomTeleportManager, KoinComponent {
 
             teleport.teleportSuspend(player, location, prompt = prompt)
             val time = timer.end()
-            notifyPlayerOfTeleport(player, location, attempts, time, costed, cost, symbol, balance, prompt)
+            notifyPlayerOfTeleport(player, location, attempts, time, costed, cost, symbol, prompt)
             inTeleport.remove(player)
         }
     }
