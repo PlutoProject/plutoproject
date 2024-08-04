@@ -666,16 +666,13 @@ const val DEFAULT_ECONOMY_SYMBOL = "\uD83C\uDF1F"
 
 val RANDOM_TELEPORT_BALANCE_NOT_ENOUGH = component {
     text("货币不足，进行随机传送需要 ") with mochaMaroon
-    text("<amount><symbol>") with mochaText
+    text("<amount> <symbol>") with mochaText
     newline()
     text("你当前拥有 ") with mochaSubtext0
-    text("<balance><symbol>") with mochaText
+    text("<balance> <symbol>") with mochaText
 }
 
 val RANDOM_TELEPORT_WITHDRAW = component {
     text("进行随机传送消耗了 ") with mochaPeach
-    text("<amount><symbol>") with mochaText
-    newline()
-    text("当前剩余 ") with mochaSubtext0
-    text("<balance><symbol>") with mochaText
+    text("<amount> <symbol>") with mochaText
 }

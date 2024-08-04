@@ -292,7 +292,7 @@ class RandomTeleportManagerImpl : RandomTeleportManager, KoinComponent {
             val symbol = if (cost <= 1) singular else plural
             var costed = false
 
-            if (economy != null && !player.hasPermission(RANDOM_TELEPORT_COST_BYPASS)) {
+            if (economy != null && cost > 0.0 && !player.hasPermission(RANDOM_TELEPORT_COST_BYPASS)) {
                 val balance = eco.getBalance(player)
                 if (balance < cost) {
                     player.sendMessage(
@@ -301,6 +301,7 @@ class RandomTeleportManagerImpl : RandomTeleportManager, KoinComponent {
                             .replace("<symbol>", symbol)
                             .replace("<balance>", balance.toString())
                     )
+                    player.playSound(TELEPORT_FAILED_SOUND)
                     return@async
                 }
                 eco.withdrawPlayer(player, cost)
