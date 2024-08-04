@@ -613,7 +613,7 @@ val AFK_END_ANNOUNCE = component {
 }
 
 val COMMAND_IF_FAILED_NO_FRAME = component {
-    text("你需要面对着一个物品展示框才可以这么做") with mochaMaroon
+    text("你需要对着一个物品展示框才可以这么做") with mochaMaroon
 }
 
 val COMMAND_IF_INV_ON_SUCCEED = component {
@@ -643,3 +643,21 @@ const val IF_PROTECT_UNKNOWN_PLAYER = "未知玩家"
 val IF_UNFINISHED_BOOK = Component.text("未完成的书")
 
 val IF_UNFINISHED_BOOK_AUTHOR = Component.text("未知作者")
+
+val COMMAND_LECT_FAILED_NO_LECTERN = component {
+    text("你需要对着一个讲台才可以这么做") with mochaMaroon
+}
+
+val COMMAND_LECT_PROTECT_ON_SUCCEED = component {
+    text("已将你面前的讲台保护") with mochaPink
+}
+
+val COMMAND_LECT_PROTECT_OFF_SUCCEED = component {
+    text("已将你面前的讲台取消保护") with mochaPink
+}
+
+val LECT_PROTECTED_ACTION = component {
+    text("此讲台已被 ") with mochaSubtext0
+    text("<player> ") with mochaText
+    text("保护") with mochaSubtext0
+}

@@ -1,7 +1,6 @@
 package ink.pmc.essentials.listeners
 
 import ink.pmc.essentials.api.afk.AfkManager
-import ink.pmc.utils.world.blockEquals
 import io.papermc.paper.event.player.AsyncChatEvent
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -25,7 +24,7 @@ object AfkListener : Listener, KoinComponent {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     fun PlayerMoveEvent.e() {
-        if (from.blockEquals(to)) return
+        if (!hasExplicitlyChangedBlock()) return
         player.unAfk()
     }
 

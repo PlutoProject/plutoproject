@@ -20,9 +20,9 @@ private enum class Operation {
 
 }
 
-internal val invKey = NamespacedKey("essentials", "itemframe_invsible")
-internal val protectKey = NamespacedKey("essentials", "itemframe_protect")
-internal val protectorKey = NamespacedKey("essentials", "itemframe_protector")
+private val invKey = NamespacedKey("essentials", "itemframe_invsible")
+private val protectKey = NamespacedKey("essentials", "itemframe_protect")
+private val protectorKey = NamespacedKey("essentials", "itemframe_protector")
 
 internal var ItemFrame.inv: Boolean
     get() = persistentDataContainer.getOrDefault(invKey, PersistentDataType.BOOLEAN, false)

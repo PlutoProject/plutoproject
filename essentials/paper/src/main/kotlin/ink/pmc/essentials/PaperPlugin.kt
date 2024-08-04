@@ -95,6 +95,10 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
         if (Essentials.isItemFrameEnabled()) {
             server.pluginManager.registerSuspendingEvents(ItemFrameListener, this)
         }
+
+        if (Essentials.isLecternEnabled()) {
+            server.pluginManager.registerSuspendingEvents(LecternListener, this)
+        }
     }
 
     private fun initialize() {
