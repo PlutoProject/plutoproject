@@ -39,12 +39,23 @@ class RootNodeDsl<C : Any> : BuildableCommandNodeDsl<C>() {
             }
         }
         return mutableListOf<MutableCommandBuilder<C>>().apply {
-            val childBuilder = parent.copy().literal(node.prefix.name, aliases = node.prefix.aliases)
-            node.builderReceiver?.let { childBuilder.commandBuilder.it() }
-            node.handler?.let { add(childBuilder.copy().applyProperty(node)) }
-            node.subNodes.forEach {
-                addAll(createBuilder(commandManager, it, childBuilder))
+            /*
+            * 由于 Brigadier 原因，Cloud 暂时无法处理 literal 的 alias。
+            * 此处为每个 alias 都单独创建一个 Node 来实现 alias 的效果。
+            * 见：https://github.com/Incendo/cloud-minecraft/issues/5
+            * */
+            fun createChild(name: String): MutableCommandBuilder<C> {
+                return parent.copy().literal(name).apply {
+                    node.builderReceiver?.let { commandBuilder.it() }
+                    node.handler?.let { add(copy().applyProperty(node)) }
+                    node.subNodes.forEach {
+                        addAll(createBuilder(commandManager, it, this))
+                    }
+                }
             }
+
+            createChild(node.prefix.name)
+            node.prefix.aliases.forEach { createChild(it) }
         }
     }
 }

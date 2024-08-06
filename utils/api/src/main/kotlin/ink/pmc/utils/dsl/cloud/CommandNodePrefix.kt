@@ -17,21 +17,21 @@ data class CommandNodePrefix(val name: String, val aliases: Array<String> = arra
     infix fun alias(name: String): CommandNodePrefix {
         return copy(
             name = this.name,
-            aliases = this.aliases.copyInto(arrayOf(name))
+            aliases = arrayOf(*this.aliases, name)
         )
     }
 
     infix fun alias(name: Array<String>): CommandNodePrefix {
         return copy(
             name = this.name,
-            aliases = this.aliases.copyInto(name)
+            aliases = arrayOf(*this.aliases, *name)
         )
     }
 
     infix fun alias(name: Collection<String>): CommandNodePrefix {
         return copy(
             name = this.name,
-            aliases = this.aliases.copyInto(name.toTypedArray())
+            aliases = arrayOf(*this.aliases, *name.toTypedArray())
         )
     }
 
