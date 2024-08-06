@@ -1,4 +1,4 @@
-package ink.pmc.essentials
+package ink.pmc.utils.annotation
 
 @Target(AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.RUNTIME)

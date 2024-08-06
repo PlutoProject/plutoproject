@@ -1,8 +1,8 @@
 package ink.pmc.essentials.commands.warp
 
 import ink.pmc.essentials.Cm
-import ink.pmc.essentials.Command
 import ink.pmc.essentials.TELEPORT_FAILED_SOUND
+import ink.pmc.utils.annotation.Command
 import ink.pmc.utils.chat.IN_PROGRESS
 import ink.pmc.utils.dsl.cloud.invoke
 import ink.pmc.utils.dsl.cloud.sender

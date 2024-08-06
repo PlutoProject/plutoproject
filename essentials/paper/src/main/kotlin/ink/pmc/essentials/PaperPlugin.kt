@@ -7,8 +7,8 @@ import ink.pmc.essentials.api.Essentials
 import ink.pmc.essentials.api.afk.AfkManager
 import ink.pmc.essentials.config.EssentialsConfig
 import ink.pmc.essentials.listeners.*
+import ink.pmc.utils.command.registerCommands
 import ink.pmc.utils.storage.saveResourceIfNotExisted
-import io.github.classgraph.ClassGraph
 import io.papermc.paper.command.brigadier.CommandSourceStack
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -22,8 +22,6 @@ import org.koin.core.component.get
 import org.koin.core.component.inject
 import org.koin.core.context.startKoin
 import java.io.File
-import kotlin.reflect.full.findAnnotation
-import kotlin.reflect.jvm.kotlinFunction
 
 typealias Cm = PaperCommandManager<CommandSourceStack>
 
@@ -55,7 +53,10 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
             .executionCoordinator(ExecutionCoordinator.asyncCoordinator())
             .buildOnEnable(this)
 
-        commandManager.registerCommands(COMMAND_PACKAGE)
+        commandManager.registerCommands(COMMAND_PACKAGE) {
+            conf.Commands()[it] to conf.CommandAliases()[it]
+        }
+
         registerEvents()
         initialize()
         economy = server.servicesManager.getRegistration(Economy::class.java)?.provider
@@ -116,28 +117,6 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
             .autoreload()
             .build()
             .apply { load() }
-    }
-
-    private fun Cm.registerCommands(packageName: String) {
-        val scanResult = ClassGraph()
-            .acceptPackages(packageName)
-            .scan()
-
-        scanResult.allClasses.forEach {
-            val cls = Class.forName(it.name)
-            cls.declaredMethods.forEach fns@{ fn ->
-                val function = fn.kotlinFunction ?: return@fns
-                val annotation = function.findAnnotation<Command>() ?: return@fns
-                val name = annotation.name
-
-                if (!conf.Commands()[name]) {
-                    return@fns
-                }
-
-                val aliases = conf.CommandAliases()[name]
-                function.call(this, aliases)
-            }
-        }
     }
 
 }

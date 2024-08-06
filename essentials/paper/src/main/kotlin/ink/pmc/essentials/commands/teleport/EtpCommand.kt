@@ -2,8 +2,12 @@ package ink.pmc.essentials.commands.teleport
 
 import ink.pmc.advkt.component.component
 import ink.pmc.advkt.component.text
-import ink.pmc.essentials.*
+import ink.pmc.essentials.COMMAND_ETP_SUCCEED
+import ink.pmc.essentials.COMMAND_ETP_SUCCEED_OTHER
+import ink.pmc.essentials.Cm
+import ink.pmc.essentials.TELEPORT_SUCCEED_SOUND
 import ink.pmc.essentials.api.Essentials
+import ink.pmc.utils.annotation.Command
 import ink.pmc.utils.chat.NON_PLAYER
 import ink.pmc.utils.chat.replace
 import ink.pmc.utils.dsl.cloud.invoke
