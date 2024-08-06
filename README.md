@@ -11,6 +11,7 @@
 - `utils`: 工具类。
 - `hypervisor`: 服务端监测、调控工具。
 - `exchange`: 兑换系统。
+- `economy`: 经济系统。
 - `visual`: 视觉相关 API。
 - `bedrock-adaptive`: 基岩版适配逻辑。
 - `messages`: 消息提示相关逻辑。
