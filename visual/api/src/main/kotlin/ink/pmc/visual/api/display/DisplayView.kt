@@ -10,8 +10,11 @@ interface DisplayView {
     val uuid: UUID
     val location: Location
     val viewer: Player
+    val renderer: DisplayRenderer<out DisplayView>
     val options: DisplayOptions
 
-    fun update()
+    fun render()
+
+    fun destroy()
 
 }

@@ -1,9 +1,9 @@
 package ink.pmc.visual.api.display.text
 
-object DefaultTextDisplayRenderer: TextDisplayRenderer by TextDisplayRenderers.defaultRenderer
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
+import org.koin.core.qualifier.named
 
-object TextDisplayRenderers {
-
-    lateinit var defaultRenderer: TextDisplayRenderer
-
-}
+object DefaultTextDisplayRenderer: TextDisplayRenderer by object : KoinComponent {
+    val instance by inject<TextDisplayRenderer>(named("nms"))
+}.instance

@@ -5,6 +5,10 @@ import org.bukkit.entity.Player
 
 interface TextDisplayManager : DisplayManager<TextDisplay, TextDisplayView> {
 
-    fun create(display: TextDisplay, viewer: Player, renderer: TextDisplayRenderer = DefaultTextDisplayRenderer)
+    fun create(
+        viewer: Player,
+        display: TextDisplay,
+        renderer: TextDisplayRenderer = DefaultTextDisplayRenderer
+    ): TextDisplayView
 
 }

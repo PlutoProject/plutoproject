@@ -19,7 +19,7 @@ import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
 @Suppress("UNUSED")
-object PaperToastRenderer : ToastRenderer<Player>() {
+class NmsToastRenderer : ToastRenderer<Player> {
 
     private val location = optional(namespacedKey("visual", "paper_toast_renderer"))
     private val criteria = mapOf("for_free" to Criterion(ImpossibleTrigger(), ImpossibleTrigger.TriggerInstance()))

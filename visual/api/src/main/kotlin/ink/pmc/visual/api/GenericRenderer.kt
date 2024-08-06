@@ -1,6 +1,6 @@
 package ink.pmc.visual.api
 
-interface Renderer<P, T> {
+interface GenericRenderer<P, T> {
 
     fun render(player: P, obj: T)
 

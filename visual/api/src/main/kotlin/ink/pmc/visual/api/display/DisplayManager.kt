@@ -5,13 +5,13 @@ import org.bukkit.entity.Player
 
 interface DisplayManager<D : Display<V>, V : DisplayView> {
 
-    val views: Multimap<Player, DisplayView>
+    val views: Multimap<Player, V>
 
     fun create(viewer: Player, display: D, renderer: DisplayRenderer<V>): V
 
-    fun update(view: V)
+    fun render(view: V)
 
-    fun updateAll()
+    fun renderAll()
 
     fun destroy(view: V)
 
