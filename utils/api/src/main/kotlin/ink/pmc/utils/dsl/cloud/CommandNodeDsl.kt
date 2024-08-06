@@ -4,6 +4,7 @@ import org.incendo.cloud.Command
 import org.incendo.cloud.component.CommandComponent
 import org.incendo.cloud.parser.ParserDescriptor
 import org.incendo.cloud.parser.flag.CommandFlag
+import org.incendo.cloud.suggestion.SuggestionProvider
 import java.util.*
 
 typealias ComponentBuilderReceiver<C, T> = CommandComponent.Builder<C, T>.() -> Unit
@@ -28,8 +29,16 @@ open class CommandNodeDsl<C> {
         arguments.add(CommandComponent.builder(name, parser).also(mutator).build())
     }
 
+    fun <T> required(name: String, parser: ParserDescriptor<C, T>, suggestionProvider: SuggestionProvider<in C>) {
+        arguments.add(CommandComponent.builder(name, parser).suggestionProvider(suggestionProvider).build())
+    }
+
     fun <T> optional(name: String, parser: ParserDescriptor<C, T>, mutator: ComponentBuilderReceiver<C, T> = {}) {
         arguments.add(CommandComponent.builder(name, parser).optional().also(mutator).build())
+    }
+
+    fun <T> optional(name: String, parser: ParserDescriptor<C, T>, suggestionProvider: SuggestionProvider<in C>) {
+        arguments.add(CommandComponent.builder(name, parser).optional().suggestionProvider(suggestionProvider).build())
     }
 
     fun argument(component: CommandComponent<C>) {
