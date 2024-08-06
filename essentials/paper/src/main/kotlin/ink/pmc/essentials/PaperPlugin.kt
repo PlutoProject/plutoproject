@@ -8,6 +8,7 @@ import ink.pmc.essentials.api.afk.AfkManager
 import ink.pmc.essentials.config.EssentialsConfig
 import ink.pmc.essentials.listeners.*
 import ink.pmc.utils.command.registerCommands
+import ink.pmc.utils.inject.startKoinIfNotPresent
 import ink.pmc.utils.storage.saveResourceIfNotExisted
 import io.papermc.paper.command.brigadier.CommandSourceStack
 import kotlinx.coroutines.CoroutineScope
@@ -20,7 +21,6 @@ import org.incendo.cloud.paper.PaperCommandManager
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import org.koin.core.component.inject
-import org.koin.core.context.startKoin
 import java.io.File
 
 typealias Cm = PaperCommandManager<CommandSourceStack>
@@ -42,7 +42,7 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
     override suspend fun onEnableAsync() {
         plugin = this
 
-        startKoin {
+        startKoinIfNotPresent {
             modules(appModule)
         }
 

@@ -1,14 +1,10 @@
 package ink.pmc.visual.api.toast
 
-import ink.pmc.visual.api.Renderer
+import ink.pmc.visual.api.GenericRenderer
 
 @Suppress("UNUSED")
-abstract class ToastRenderer<P> : Renderer<P, Toast> {
+interface ToastRenderer<P> : GenericRenderer<P, Toast> {
 
-    companion object {
-        lateinit var defaultRenderer: ToastRenderer<*>
-    }
-
-    abstract override fun render(player: P, obj: Toast)
+    override fun render(player: P, obj: Toast)
 
 }

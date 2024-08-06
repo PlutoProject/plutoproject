@@ -1,14 +1,10 @@
 package ink.pmc.visual.api.toast
 
 import org.bukkit.entity.Player
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
+import org.koin.core.qualifier.named
 
-@Suppress("FunctionName", "UNUSED")
-fun NmsToastRenderer(): ToastRenderer<Player> {
-    return PaperToastRenderers.nmsRenderer
-}
-
-object PaperToastRenderers {
-
-    lateinit var nmsRenderer: ToastRenderer<Player>
-
-}
+object BukkitDefaultToastRenderer: ToastRenderer<Player> by object : KoinComponent {
+    val instance by inject<ToastRenderer<Player>>(named("nms"))
+}.instance
