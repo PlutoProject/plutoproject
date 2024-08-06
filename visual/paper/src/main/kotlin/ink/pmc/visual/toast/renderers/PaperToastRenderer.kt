@@ -1,4 +1,4 @@
-package ink.pmc.visual.renderers
+package ink.pmc.visual.toast.renderers
 
 import ink.pmc.utils.chat.nms
 import ink.pmc.utils.data.namespacedKey
