@@ -5,6 +5,6 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.qualifier.named
 
-object DefaultBukkitToastRenderer: ToastRenderer<Player> by object : KoinComponent {
+object BukkitDefaultToastRenderer: ToastRenderer<Player> by object : KoinComponent {
     val instance by inject<ToastRenderer<Player>>(named("nms"))
 }.instance

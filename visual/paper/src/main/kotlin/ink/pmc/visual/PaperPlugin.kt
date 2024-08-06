@@ -1,6 +1,7 @@
 package ink.pmc.visual
 
 import com.github.shynixn.mccoroutine.bukkit.SuspendingJavaPlugin
+import ink.pmc.utils.inject.startKoinIfNotPresent
 import ink.pmc.visual.api.display.text.TextDisplayFactory
 import ink.pmc.visual.api.display.text.TextDisplayManager
 import ink.pmc.visual.api.display.text.TextDisplayRenderer
@@ -12,7 +13,6 @@ import ink.pmc.visual.display.text.renderers.NmsTextDisplayRenderer
 import ink.pmc.visual.toast.renderers.NmsToastRenderer
 import org.bukkit.entity.Player
 import org.bukkit.event.Listener
-import org.koin.core.context.startKoin
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
@@ -31,7 +31,7 @@ private val bukkitModule = module {
 class PaperPlugin : SuspendingJavaPlugin(), Listener {
 
     override suspend fun onEnableAsync() {
-        startKoin {
+        startKoinIfNotPresent {
             modules(bukkitModule)
         }
     }
