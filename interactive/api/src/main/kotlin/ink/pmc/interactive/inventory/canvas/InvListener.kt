@@ -10,7 +10,8 @@ import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.event.inventory.InventoryDragEvent
 
-class InvEventListener : Listener {
+@Suppress("UNUSED", "UnusedReceiverParameter")
+object InvListener : Listener {
 
     @EventHandler
     fun InventoryClickEvent.onClick() {
