@@ -677,3 +677,27 @@ val RANDOM_TELEPORT_BALANCE_NOT_ENOUGH = component {
     text("你当前拥有 ") with mochaSubtext0
     text("<balance> <symbol>") with mochaText
 }
+
+val UI_HOME_LOADING = component {
+    text("正在加载数据")
+}
+
+val UI_HOME_SELF = component {
+    text("你的家 (<curr>/<total>)")
+}
+
+val UI_CLOSE = component {
+    text("关闭") with mochaMaroon without italic()
+}
+
+val UI_BACK = component {
+    text("返回上一页") with mochaYellow without italic()
+}
+
+val UI_HOME_PREVIOUS = component {
+    text("向前翻") with mochaYellow without italic()
+}
+
+val UI_HOME_NEXT = component {
+    text("向后翻") with mochaGreen without italic()
+}

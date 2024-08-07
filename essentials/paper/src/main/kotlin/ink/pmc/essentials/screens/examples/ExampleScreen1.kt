@@ -3,6 +3,7 @@ package ink.pmc.essentials.screens.examples
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import ink.pmc.advkt.component.component
@@ -30,6 +31,8 @@ import org.bukkit.entity.Player
 import kotlin.math.floor
 
 class ExampleScreen1(private val player: Player) : Screen {
+
+    override val key: ScreenKey = "essentials_example_1"
 
     @Composable
     override fun Content() {

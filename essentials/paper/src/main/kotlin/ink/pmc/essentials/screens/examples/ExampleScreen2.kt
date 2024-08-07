@@ -2,6 +2,7 @@ package ink.pmc.essentials.screens.examples
 
 import androidx.compose.runtime.Composable
 import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import ink.pmc.advkt.component.component
@@ -29,6 +30,8 @@ import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
 class ExampleScreen2(private val player: Player) : Screen {
+
+    override val key: ScreenKey = "essentials_example_2"
 
     @Composable
     override fun Content() {
