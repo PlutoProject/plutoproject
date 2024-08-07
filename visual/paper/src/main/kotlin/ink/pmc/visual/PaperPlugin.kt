@@ -1,6 +1,7 @@
 package ink.pmc.visual
 
 import com.github.shynixn.mccoroutine.bukkit.SuspendingJavaPlugin
+import com.github.shynixn.mccoroutine.bukkit.registerSuspendingEvents
 import ink.pmc.utils.inject.startKoinIfNotPresent
 import ink.pmc.visual.api.display.text.TextDisplayFactory
 import ink.pmc.visual.api.display.text.TextDisplayManager
@@ -8,6 +9,7 @@ import ink.pmc.visual.api.display.text.TextDisplayRenderer
 import ink.pmc.visual.api.toast.ToastFactory
 import ink.pmc.visual.api.toast.ToastRenderer
 import ink.pmc.visual.display.text.TextDisplayFactoryImpl
+import ink.pmc.visual.display.text.TextDisplayListener
 import ink.pmc.visual.display.text.TextDisplayManagerImpl
 import ink.pmc.visual.display.text.renderers.NmsTextDisplayRenderer
 import ink.pmc.visual.toast.renderers.NmsToastRenderer
@@ -34,6 +36,11 @@ class PaperPlugin : SuspendingJavaPlugin(), Listener {
         startKoinIfNotPresent {
             modules(bukkitModule)
         }
+        initialize()
+    }
+
+    private fun initialize() {
+        server.pluginManager.registerSuspendingEvents(TextDisplayListener, this)
     }
 
 }
