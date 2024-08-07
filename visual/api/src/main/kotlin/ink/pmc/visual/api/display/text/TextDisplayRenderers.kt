@@ -1,9 +1,8 @@
 package ink.pmc.visual.api.display.text
 
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
+import ink.pmc.utils.inject.inlinedGet
 import org.koin.core.qualifier.named
 
-object DefaultTextDisplayRenderer: TextDisplayRenderer by object : KoinComponent {
-    val instance by inject<TextDisplayRenderer>(named("nms"))
-}.instance
+object DefaultTextDisplayRenderer: TextDisplayRenderer by inlinedGet(named("nms"))
+
+object BedrockTextDisplayRenderer: TextDisplayRenderer by inlinedGet(named("bedrock"))

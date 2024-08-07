@@ -22,7 +22,7 @@ import kotlin.random.Random
 import net.minecraft.world.entity.Display.TextDisplay as NmsTextDisplay
 
 @Suppress("UNCHECKED_CAST")
-class NmsTextDisplayRenderer : TextDisplayRenderer {
+open class NmsTextDisplayRenderer : TextDisplayRenderer {
 
     private val uuidToIdMap = ConcurrentHashMap<UUID, Int>()
 

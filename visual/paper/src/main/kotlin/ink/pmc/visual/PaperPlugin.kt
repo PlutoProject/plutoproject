@@ -11,7 +11,9 @@ import ink.pmc.visual.api.toast.ToastRenderer
 import ink.pmc.visual.display.text.TextDisplayFactoryImpl
 import ink.pmc.visual.display.text.TextDisplayListener
 import ink.pmc.visual.display.text.TextDisplayManagerImpl
+import ink.pmc.visual.display.text.renderers.BedrockTextDisplayRenderer
 import ink.pmc.visual.display.text.renderers.NmsTextDisplayRenderer
+import ink.pmc.visual.toast.renderers.BedrockToastRenderer
 import ink.pmc.visual.toast.renderers.NmsToastRenderer
 import org.bukkit.entity.Player
 import org.bukkit.event.Listener
@@ -22,11 +24,13 @@ private val bukkitModule = module {
     // Toast
     single<ToastFactory> { ToastFactoryImpl() }
     single<ToastRenderer<Player>>(named("nms")) { NmsToastRenderer() }
+    single<ToastRenderer<Player>>(named("bedrock")) { BedrockToastRenderer() }
 
     // Display
     single<TextDisplayManager> { TextDisplayManagerImpl() }
     single<TextDisplayFactory> { TextDisplayFactoryImpl() }
     single<TextDisplayRenderer>(named("nms")) { NmsTextDisplayRenderer() }
+    single<TextDisplayRenderer>(named("bedrock")) { BedrockTextDisplayRenderer() }
 }
 
 @Suppress("UNUSED")
