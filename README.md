@@ -15,6 +15,7 @@
 - `bedrock-adaptive`: 基岩版适配逻辑。
 - `messages`: 消息提示相关逻辑。
 - `transfer`: 中转大厅。
+- `interactive`: 交互框架，其 `inventory` 部分基于 [guiy-compose](https://github.com/MineInAbyss/guiy-compose) 开发。
 
 ## 🔧 构建
 
@@ -39,5 +40,7 @@
 
 [PlutoProject/common](https://github.com/PlutoProject/common)
 在 [GNU Lesser General Public License v3.0](https://www.gnu.org/licenses/lgpl-3.0.html) 下许可。
+
+`interactive` 的 `inventory` 部分在未说明的情况下使用 [MIT License](https://opensource.org/license/mit) 许可。
 
 ![license](lgpl-v3.png)

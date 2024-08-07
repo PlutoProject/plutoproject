@@ -87,3 +87,8 @@ include("protocol-checker:velocity")
 include("essentials")
 include("essentials:paper")
 include("essentials:api")
+
+include("interactive")
+include("interactive:api")
+include("interactive:paper")
+include("interactive:velocity")

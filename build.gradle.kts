@@ -13,6 +13,8 @@ plugins {
     alias(libs.plugins.paperweight.userdev)
     alias(libs.plugins.resource.factory.bukkit)
     alias(libs.plugins.resource.factory.velocity)
+    alias(libs.plugins.jetbrains.compose)
+    alias(libs.plugins.compose.compiler)
 }
 
 val paperDevBundleVer = "1.21-R0.1-SNAPSHOT"
@@ -308,6 +310,8 @@ allprojects {
     apply(plugin = rootProject.libs.plugins.kotlin.kapt.get().pluginId)
     apply(plugin = rootProject.libs.plugins.shadow.get().pluginId)
     apply(plugin = rootProject.libs.plugins.protobuf.get().pluginId)
+    apply(plugin = rootProject.libs.plugins.jetbrains.compose.get().pluginId)
+    apply(plugin = rootProject.libs.plugins.compose.compiler.get().pluginId)
 
     this.group = packageName()
     this.version = "1.1.0"
@@ -323,6 +327,7 @@ allprojects {
     repositories {
         mavenCentral()
         mavenLocal()
+        google()
         maven(uri("https://jitpack.io"))
         maven(uri("https://oss.sonatype.org/content/repositories/snapshots/"))
         maven(uri("https://repo.papermc.io/repository/maven-public/"))
@@ -362,6 +367,7 @@ allprojects {
         dep(rootProject.libs.invui)
         dep(rootProject.libs.bundles.koin)
         dep(rootProject.libs.classgraph)
+        dep(provider { compose.runtime })
     }
 
     tasks.shadowJar {
