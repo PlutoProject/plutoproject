@@ -310,6 +310,8 @@ allprojects {
     apply(plugin = rootProject.libs.plugins.kotlin.kapt.get().pluginId)
     apply(plugin = rootProject.libs.plugins.shadow.get().pluginId)
     apply(plugin = rootProject.libs.plugins.protobuf.get().pluginId)
+    apply(plugin = rootProject.libs.plugins.jetbrains.compose.get().pluginId)
+    apply(plugin = rootProject.libs.plugins.compose.compiler.get().pluginId)
 
     this.group = packageName()
     this.version = "1.1.0"
