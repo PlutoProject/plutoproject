@@ -95,6 +95,6 @@ kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 runpaper = { id = "xyz.jpenilla.run-paper", version = "2.3.0" }
 shadow = { id = "io.github.goooler.shadow", version = "8.1.8" }
 protobuf = { id = "com.google.protobuf", version = "0.9.4" }
-paperweight-userdev = { id = "io.papermc.paperweight.userdev", version = "1.7.1" }
+paperweight-userdev = { id = "io.papermc.paperweight.userdev", version = "1.7.2" }
 resource-factory-bukkit = { id = "xyz.jpenilla.resource-factory-bukkit-convention", version.ref = "resource-factory" }
 resource-factory-velocity = { id = "xyz.jpenilla.resource-factory-velocity-convention", version.ref = "resource-factory" }
