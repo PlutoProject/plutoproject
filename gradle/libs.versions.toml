@@ -89,7 +89,7 @@ ktor = ["ktor-content-negotiation", "ktor-core", "ktor-serialization", "ktor-net
 koin = ["koin-core", "koin-core-coroutines"]
 
 [plugins]
-kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 runpaper = { id = "xyz.jpenilla.run-paper", version = "2.3.0" }

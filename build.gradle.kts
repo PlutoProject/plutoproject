@@ -4,7 +4,7 @@ import xyz.jpenilla.runpaper.task.RunServer
 plugins {
     id("java")
     id("java-library")
-    alias(libs.plugins.kotlin)
+    alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.kotlin.kapt)
     alias(libs.plugins.shadow)
@@ -301,15 +301,13 @@ fun Project.applyProtobuf() {
 }
 
 allprojects {
-    apply {
-        plugin("java")
-        plugin("java-library")
-        plugin(kotlin("jvm"))
-        plugin(kotlin("plugin.serialization"))
-        plugin(kotlin("kapt"))
-        plugin("io.github.goooler.shadow")
-        plugin("com.google.protobuf")
-    }
+    apply(plugin = "java")
+    apply(plugin = "java-library")
+    apply(plugin = rootProject.libs.plugins.kotlin.jvm.get().pluginId)
+    apply(plugin = rootProject.libs.plugins.kotlin.serialization.get().pluginId)
+    apply(plugin = rootProject.libs.plugins.kotlin.kapt.get().pluginId)
+    apply(plugin = rootProject.libs.plugins.shadow.get().pluginId)
+    apply(plugin = rootProject.libs.plugins.protobuf.get().pluginId)
 
     this.group = packageName()
     this.version = "1.1.0"
