@@ -1,13 +1,12 @@
-package com.mineinabyss.guiy.inventory
+package ink.pmc.interactive.inventory.canvas
 
-import ink.pmc.interactive.inventory.inventory.GuiyCanvas
 import org.bukkit.inventory.ItemStack
 
 data class OffsetCanvas(
     val offsetX: Int,
     val offsetY: Int,
-    val delegate: GuiyCanvas,
-): GuiyCanvas by delegate {
+    val delegate: Canvas,
+): Canvas by delegate {
 
     override fun set(x: Int, y: Int, item: ItemStack?) {
         delegate.set(x + offsetX, y + offsetY, item)

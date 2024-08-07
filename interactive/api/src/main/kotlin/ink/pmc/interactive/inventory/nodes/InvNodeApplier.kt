@@ -3,7 +3,8 @@ package ink.pmc.interactive.inventory.nodes
 import androidx.compose.runtime.AbstractApplier
 import ink.pmc.interactive.inventory.layout.LayoutNode
 
-internal class GuiyNodeApplier(root: LayoutNode) : AbstractApplier<LayoutNode>(root) {
+internal class InvNodeApplier(root: LayoutNode) : AbstractApplier<LayoutNode>(root) {
+
     override fun insertTopDown(index: Int, instance: LayoutNode) {
         // Ignored, we insert bottom-up.
     }
@@ -27,4 +28,5 @@ internal class GuiyNodeApplier(root: LayoutNode) : AbstractApplier<LayoutNode>(r
     override fun onClear() {
         current.children.clear()
     }
+
 }

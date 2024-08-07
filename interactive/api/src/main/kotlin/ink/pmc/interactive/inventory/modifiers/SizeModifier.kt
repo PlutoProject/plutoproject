@@ -3,9 +3,7 @@ package ink.pmc.interactive.inventory.modifiers
 import androidx.compose.runtime.Stable
 import kotlin.math.roundToInt
 
-data class SizeModifier(
-    val constraints: Constraints
-) : Modifier.Element<SizeModifier>, LayoutChangingModifier {
+data class SizeModifier(val constraints: Constraints) : Modifier.Element<SizeModifier>, LayoutChangingModifier {
     override fun mergeWith(other: SizeModifier) = with(constraints) {
         SizeModifier(
             Constraints(

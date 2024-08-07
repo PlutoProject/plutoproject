@@ -1,15 +1,16 @@
 package ink.pmc.interactive.inventory.nodes
 
-import ink.pmc.interactive.inventory.inventory.GuiyCanvas
+import ink.pmc.interactive.inventory.canvas.Canvas
 import ink.pmc.interactive.inventory.layout.LayoutNode
 import ink.pmc.interactive.inventory.layout.MeasurePolicy
 import ink.pmc.interactive.inventory.layout.Renderer
 import ink.pmc.interactive.inventory.modifiers.Modifier
 
-interface GuiyNode {
+interface InvNode {
+
     var measurePolicy: MeasurePolicy
     var renderer: Renderer
-    var canvas: GuiyCanvas?
+    var canvas: Canvas?
     var modifier: Modifier
     var width: Int
     var height: Int
@@ -17,10 +18,11 @@ interface GuiyNode {
     var y: Int
 
     fun render() = renderTo(null)
-    fun renderTo(canvas: GuiyCanvas?)
+    fun renderTo(canvas: Canvas?)
 
     companion object {
-        val Constructor: () -> GuiyNode = ::LayoutNode
+        val Constructor: () -> InvNode = ::LayoutNode
     }
+
 }
 

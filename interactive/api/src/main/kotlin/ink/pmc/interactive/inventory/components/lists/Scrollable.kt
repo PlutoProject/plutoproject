@@ -19,8 +19,10 @@ fun <T> Scrollable(
     previousButton: @Composable () -> Unit,
     navbarPosition: NavbarPosition = NavbarPosition.BOTTOM,
     navbarBackground: ItemStack? = remember {
-        ItemStack(Material.GRAY_STAINED_GLASS_PANE).editItemMeta {
-            isHideTooltip = true
+        ItemStack(Material.GRAY_STAINED_GLASS_PANE).apply {
+            editMeta {
+                it.isHideTooltip = true
+            }
         }
     },
     content: @Composable (page: List<T>) -> Unit,

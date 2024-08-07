@@ -1,8 +1,8 @@
-package com.mineinabyss.guiy.inventory
+package ink.pmc.interactive.inventory.canvas
 
 import kotlinx.coroutines.CoroutineScope
 
-object GuiyScopeManager {
+object InvScopes {
 
     val scopes = mutableSetOf<CoroutineScope>()
 

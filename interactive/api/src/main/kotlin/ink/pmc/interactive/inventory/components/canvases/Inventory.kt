@@ -1,21 +1,20 @@
 package ink.pmc.interactive.inventory.components.canvases
 
 import androidx.compose.runtime.*
-import com.github.shynixn.mccoroutine.bukkit.launch
-import com.github.shynixn.mccoroutine.bukkit.minecraftDispatcher
 import ink.pmc.interactive.inventory.components.state.IntCoordinates
-import com.mineinabyss.guiy.inventory.*
 import ink.pmc.interactive.inventory.layout.Layout
 import ink.pmc.interactive.inventory.layout.Renderer
 import ink.pmc.interactive.inventory.modifiers.Modifier
 import ink.pmc.interactive.inventory.modifiers.click.ClickScope
 import ink.pmc.interactive.inventory.modifiers.drag.DragScope
-import ink.pmc.interactive.inventory.nodes.GuiyNode
+import ink.pmc.interactive.inventory.nodes.InvNode
 import ink.pmc.interactive.inventory.nodes.InventoryCloseScope
 import ink.pmc.interactive.inventory.nodes.StaticMeasurePolicy
-import ink.pmc.interactive.inventory.inventory.*
+import ink.pmc.interactive.inventory.canvas.*
+import ink.pmc.utils.concurrent.submitAsync
+import ink.pmc.utils.concurrent.sync
+import ink.pmc.utils.time.ticks
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.withContext
 import org.bukkit.entity.Player
 import org.bukkit.event.Cancellable
 import org.bukkit.event.inventory.InventoryCloseEvent
@@ -43,7 +42,7 @@ fun Inventory(
     // Close inventory when it switches to a new one
     DisposableEffect(inventory) {
         onDispose {
-            guiyPlugin.launch {
+            submitAsync {
                 inventory.close()
             }
         }
@@ -51,8 +50,7 @@ fun Inventory(
     // Manage opening inventory for new viewers or when inventory changes
     LaunchedEffect(viewers, inventory) {
         val oldViewers = inventory.viewers.toSet()
-
-        withContext(guiyPlugin.minecraftDispatcher) {
+        sync {
             // Close inventory for removed viewers
             (oldViewers - viewers).forEach {
                 it.closeInventory(InventoryCloseEvent.Reason.PLUGIN)
@@ -65,7 +63,7 @@ fun Inventory(
             }
         }
     }
-    val canvas = remember { MapBackedGuiyCanvas() }
+    val canvas = remember { MapBackedCanvas() }
 
     CompositionLocalProvider(
         LocalCanvas provides canvas,
@@ -74,11 +72,11 @@ fun Inventory(
         Layout(
             measurePolicy = StaticMeasurePolicy,
             renderer = object : Renderer {
-                override fun GuiyCanvas.render(node: GuiyNode) {
+                override fun Canvas.render(node: InvNode) {
                     canvas.startRender()
                 }
 
-                override fun GuiyCanvas.renderAfterChildren(node: GuiyNode) {
+                override fun Canvas.renderAfterChildren(node: InvNode) {
                     val items = canvas.getCoordinates()
                     repeat(inventory.size) { index ->
                         val coords = inventoryIndexToGrid(index)
@@ -102,10 +100,10 @@ fun Inventory(
 inline fun rememberInventoryHolder(
     viewers: Set<Player>,
     crossinline onClose: InventoryCloseScope.(Player) -> Unit = {},
-): GuiyInventoryHolder {
+): InvInventoryHolder {
     val clickHandler = LocalClickHandler.current
     return remember(clickHandler) {
-        object : GuiyInventoryHolder() {
+        object : InvInventoryHolder() {
             override fun processClick(scope: ClickScope, event: Cancellable) {
                 val clickResult = clickHandler.processClick(scope)
             }
@@ -122,7 +120,7 @@ inline fun rememberInventoryHolder(
                             .forEach { it.openInventory(inventory) }
                     }
                 }
-                guiyPlugin.launch {
+                submitAsync {
                     delay(1.ticks)
                     onClose.invoke(scope, player)
                 }

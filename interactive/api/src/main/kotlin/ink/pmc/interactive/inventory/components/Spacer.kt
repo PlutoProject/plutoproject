@@ -1,4 +1,4 @@
-package com.mineinabyss.guiy.components
+package ink.pmc.interactive.inventory.components
 
 import androidx.compose.runtime.Composable
 import ink.pmc.interactive.inventory.layout.Layout
@@ -11,9 +11,10 @@ import ink.pmc.interactive.inventory.modifiers.width
  * A layout element that takes up space without drawing anything.
  */
 @Composable
+@Suppress("FunctionName")
 fun Spacer(modifier: Modifier = Modifier) {
     Layout(
-        measurePolicy = { measurables, constraints ->
+        measurePolicy = { _, constraints ->
             MeasureResult(constraints.minWidth, constraints.minHeight) {}
         },
         modifier = modifier,
@@ -27,6 +28,7 @@ fun Spacer(modifier: Modifier = Modifier) {
  * @param height The height of the spacer.
  */
 @Composable
+@Suppress("FunctionName")
 fun Spacer(width: Int? = null, height: Int? = null, modifier: Modifier = Modifier) {
     Spacer(modifier
         .run { if (width != null) width(width) else this }

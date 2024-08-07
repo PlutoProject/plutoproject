@@ -4,16 +4,14 @@ import ink.pmc.interactive.inventory.components.state.IntCoordinates
 import ink.pmc.interactive.inventory.components.state.IntOffset
 import ink.pmc.interactive.inventory.components.state.IntSize
 import ink.pmc.interactive.inventory.components.state.ItemPositions
-import ink.pmc.interactive.inventory.inventory.ClickResult
-import ink.pmc.interactive.inventory.inventory.GuiyCanvas
-import com.mineinabyss.guiy.inventory.OffsetCanvas
-import com.mineinabyss.guiy.layout.*
-import com.mineinabyss.guiy.modifiers.*
+import ink.pmc.interactive.inventory.canvas.ClickResult
+import ink.pmc.interactive.inventory.canvas.Canvas
+import ink.pmc.interactive.inventory.canvas.OffsetCanvas
 import ink.pmc.interactive.inventory.modifiers.click.ClickModifier
 import ink.pmc.interactive.inventory.modifiers.click.ClickScope
 import ink.pmc.interactive.inventory.modifiers.drag.DragModifier
 import ink.pmc.interactive.inventory.modifiers.drag.DragScope
-import ink.pmc.interactive.inventory.nodes.GuiyNode
+import ink.pmc.interactive.inventory.nodes.InvNode
 import ink.pmc.interactive.inventory.modifiers.Constraints
 import ink.pmc.interactive.inventory.modifiers.LayoutChangingModifier
 import ink.pmc.interactive.inventory.modifiers.Modifier
@@ -27,10 +25,10 @@ import kotlin.reflect.KClass
  *  You can configure stuff through [measurePolicy], [placer], and the [modifier], but things creates some problems
  *  when trying to make your own composable nodes that interact with this Layout node.
  */
-internal class LayoutNode : Measurable, Placeable, GuiyNode {
+internal class LayoutNode : Measurable, Placeable, InvNode {
     override var measurePolicy: MeasurePolicy = ChildMeasurePolicy
     override var renderer: Renderer = EmptyRenderer
-    override var canvas: GuiyCanvas? = null
+    override var canvas: Canvas? = null
 
     val children = mutableListOf<LayoutNode>()
     override var modifier: Modifier = Modifier
@@ -98,7 +96,7 @@ internal class LayoutNode : Measurable, Placeable, GuiyNode {
         this.y = offset.y
     }
 
-    override fun renderTo(canvas: GuiyCanvas?) {
+    override fun renderTo(canvas: Canvas?) {
         val offsetCanvas = (canvas ?: this.canvas)?.let { OffsetCanvas(x, y, it) }
         renderer.apply { offsetCanvas?.render(this@LayoutNode) }
         for (child in children) child.renderTo(offsetCanvas)
@@ -125,7 +123,7 @@ internal class LayoutNode : Measurable, Placeable, GuiyNode {
         val itemMap: ItemPositions = ItemPositions(),
     )
 
-    fun buildDragMap(coords: IntCoordinates, item: ItemStack, dragMap: MutableMap<GuiyNode, DragInfo>): Boolean {
+    fun buildDragMap(coords: IntCoordinates, item: ItemStack, dragMap: MutableMap<InvNode, DragInfo>): Boolean {
         val (iX, iY) = coords
         if (iX !in 0 until width || iY !in 0 until height) return false
         val dragModifier = get<DragModifier>()
@@ -142,7 +140,7 @@ internal class LayoutNode : Measurable, Placeable, GuiyNode {
     }
 
     fun processDrag(scope: DragScope) {
-        val dragMap = mutableMapOf<GuiyNode, DragInfo>()
+        val dragMap = mutableMapOf<InvNode, DragInfo>()
         scope.updatedItems.items.forEach { (coords, item) ->
             buildDragMap(coords, item, dragMap)
         }

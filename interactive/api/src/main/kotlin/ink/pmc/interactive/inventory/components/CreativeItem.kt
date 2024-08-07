@@ -10,18 +10,18 @@ import org.bukkit.inventory.ItemStack
  * An item that acts like a creative inventory item that can be copied on click.
  */
 @Composable
-fun CreativeItem(itemStack: ItemStack?, modifier: Modifier = Modifier) {
+fun CreativeItem(itemStack: ItemStack, modifier: Modifier = Modifier) {
     Item(itemStack, modifier.clickable {
         // Mimic all vanilla interactions
         val result: ItemStack? = when {
             (clickType.isShiftClick || clickType == ClickType.MIDDLE) && cursor == null ->
-                itemStack?.asQuantity(itemStack.maxStackSize)
+                itemStack.asQuantity(itemStack.maxStackSize)
 
             clickType == ClickType.MIDDLE -> return@clickable
             clickType == ClickType.SHIFT_LEFT && cursor != null && cursor.isSimilar(itemStack) ->
                 cursor.asQuantity(cursor.maxStackSize)
 
-            cursor == null -> itemStack?.clone()?.asOne()
+            cursor == null -> itemStack.clone().asOne()
             clickType.isRightClick -> cursor.clone().subtract()
             clickType.isLeftClick && !cursor.isSimilar(itemStack) -> null
 

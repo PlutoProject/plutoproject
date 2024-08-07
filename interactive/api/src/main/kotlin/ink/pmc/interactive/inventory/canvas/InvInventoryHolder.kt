@@ -1,4 +1,4 @@
-package ink.pmc.interactive.inventory.inventory
+package ink.pmc.interactive.inventory.canvas
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -11,12 +11,12 @@ import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.InventoryHolder
 
-abstract class GuiyInventoryHolder : InventoryHolder {
+abstract class InvInventoryHolder : InventoryHolder {
 
     var activeInventory: Inventory? by mutableStateOf(null)
 
     override fun getInventory(): Inventory =
-        activeInventory ?: error("Guiy inventory is used in bukkit but has not been rendered yet.")
+        activeInventory ?: error("Interactive inventory is used in bukkit but has not been rendered yet.")
 
     abstract fun processClick(scope: ClickScope, event: Cancellable)
     abstract fun processDrag(scope: DragScope)

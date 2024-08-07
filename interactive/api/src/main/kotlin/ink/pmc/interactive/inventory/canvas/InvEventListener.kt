@@ -1,4 +1,4 @@
-package ink.pmc.interactive.inventory.inventory
+package ink.pmc.interactive.inventory.canvas
 
 import ink.pmc.interactive.inventory.modifiers.click.ClickScope
 import org.bukkit.Material
@@ -10,47 +10,44 @@ import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.event.inventory.InventoryDragEvent
 
-class GuiyEventListener : Listener {
+class InvEventListener : Listener {
 
     @EventHandler
     fun InventoryClickEvent.onClick() {
-        val guiyHolder = inventory.holder as? GuiyInventoryHolder ?: return
+        val invHolder = inventory.holder as? InvInventoryHolder ?: return
 
         // Avoid any exploits shift clicking or double-clicking into/from the GUI
         if (click !in setOf(LEFT, RIGHT, MIDDLE)) isCancelled = true
 
         val clickedInventory = clickedInventory ?: return
-        if (clickedInventory.holder !== guiyHolder) return
+        if (clickedInventory.holder !== invHolder) return
         isCancelled = true
 
         val scope = ClickScope(
             click, slot, cursor.takeIf { it.type != Material.AIR }, whoClicked
         )
-        guiyHolder.processClick(scope, this)
+        invHolder.processClick(scope, this)
     }
 
     @EventHandler
     fun InventoryCloseEvent.onClose() {
-        val guiyHolder = inventory.holder as? GuiyInventoryHolder ?: return
-
+        val invHolder = inventory.holder as? InvInventoryHolder ?: return
         if (reason != InventoryCloseEvent.Reason.PLUGIN) {
-            guiyHolder.onClose(player as Player)
+            invHolder.onClose(player as Player)
         }
     }
 
 
     @EventHandler
     fun InventoryDragEvent.onInventoryDrag() {
-        val guiyHolder = inventory.holder as? GuiyInventoryHolder ?: return
-//        val inPlayerInv = newItems.filter { it.key >= view.topInventory.size }
-        val inGuiy = newItems.filter { it.key < view.topInventory.size }
-        // Handle single slot drag events as clicks for better responsiveness
-        if (newItems.size == 1 && inGuiy.size == 1) {
+        val invHolder = inventory.holder as? InvInventoryHolder ?: return
+        val inInv = newItems.filter { it.key < view.topInventory.size }
+        if (newItems.size == 1 && inInv.size == 1) {
             isCancelled = true
-            val clicked = inGuiy.entries.first()
+            val clicked = inInv.entries.first()
             val scope = ClickScope(LEFT, clicked.key, cursor?.takeIf { it.type != Material.AIR }, whoClicked)
-            guiyHolder.processClick(scope, this)
-        } else if (inGuiy.isNotEmpty()) {
+            invHolder.processClick(scope, this)
+        } else if (inInv.isNotEmpty()) {
             isCancelled = true
         }
     }

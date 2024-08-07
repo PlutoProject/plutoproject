@@ -1,16 +1,16 @@
-package ink.pmc.interactive.inventory.inventory
+package ink.pmc.interactive.inventory.canvas
 
 import ink.pmc.interactive.inventory.components.state.IntCoordinates
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap
 import org.bukkit.inventory.ItemStack
 
-interface GuiyCanvas {
+interface Canvas {
 
     fun set(x: Int, y: Int, item: ItemStack?)
 
 }
 
-open class MapBackedGuiyCanvas : GuiyCanvas {
+open class MapBackedCanvas : Canvas {
 
     private val contents = Long2ObjectOpenHashMap<ItemStack>()
 

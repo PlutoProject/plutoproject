@@ -3,9 +3,9 @@ package ink.pmc.interactive.inventory.layout
 import androidx.compose.runtime.Stable
 import ink.pmc.interactive.inventory.components.state.IntOffset
 import ink.pmc.interactive.inventory.components.state.IntSize
-import ink.pmc.interactive.inventory.inventory.GuiyCanvas
+import ink.pmc.interactive.inventory.canvas.Canvas
 import ink.pmc.interactive.inventory.modifiers.Constraints
-import ink.pmc.interactive.inventory.nodes.GuiyNode
+import ink.pmc.interactive.inventory.nodes.InvNode
 
 data class MeasureResult(
     val width: Int,
@@ -25,8 +25,8 @@ fun interface Placer {
 
 @Stable
 interface Renderer {
-    fun GuiyCanvas.render(node: GuiyNode) {}
-    fun GuiyCanvas.renderAfterChildren(node: GuiyNode) {}
+    fun Canvas.render(node: InvNode) {}
+    fun Canvas.renderAfterChildren(node: InvNode) {}
 }
 
 interface Measurable {

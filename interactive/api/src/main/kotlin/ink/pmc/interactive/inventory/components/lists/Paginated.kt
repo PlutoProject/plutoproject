@@ -1,14 +1,13 @@
 package ink.pmc.interactive.inventory.components.lists
 
 import androidx.compose.runtime.*
+import ink.pmc.interactive.inventory.components.Spacer
 import ink.pmc.interactive.inventory.components.Item
-import com.mineinabyss.guiy.components.Spacer
 import ink.pmc.interactive.inventory.jetpack.Arrangement
 import ink.pmc.interactive.inventory.layout.Box
 import ink.pmc.interactive.inventory.layout.Column
 import ink.pmc.interactive.inventory.layout.Row
 import ink.pmc.interactive.inventory.layout.Size
-import com.mineinabyss.guiy.modifiers.*
 import ink.pmc.interactive.inventory.modifiers.*
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
@@ -21,8 +20,10 @@ fun <T> Paginated(
     previousButton: @Composable () -> Unit,
     navbarPosition: NavbarPosition = NavbarPosition.BOTTOM,
     navbarBackground: ItemStack? = remember {
-        ItemStack(Material.GRAY_STAINED_GLASS_PANE).editItemMeta {
-            isHideTooltip = true
+        ItemStack(Material.GRAY_STAINED_GLASS_PANE).apply {
+            editMeta {
+                it.isHideTooltip = true
+            }
         }
     },
     content: @Composable (page: List<T>) -> Unit,

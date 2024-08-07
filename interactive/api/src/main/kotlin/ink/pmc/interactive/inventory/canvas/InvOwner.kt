@@ -1,23 +1,21 @@
-package ink.pmc.interactive.inventory.inventory
+package ink.pmc.interactive.inventory.canvas
 
 import androidx.compose.runtime.*
 import androidx.compose.runtime.snapshots.Snapshot
-import com.mineinabyss.guiy.inventory.GuiyScopeManager
-import com.mineinabyss.guiy.inventory.GuiyUIScopeMarker
 import ink.pmc.interactive.inventory.layout.LayoutNode
 import ink.pmc.interactive.inventory.modifiers.click.ClickScope
 import ink.pmc.interactive.inventory.modifiers.Constraints
 import ink.pmc.interactive.inventory.modifiers.drag.DragScope
-import ink.pmc.interactive.inventory.nodes.GuiyNodeApplier
+import ink.pmc.interactive.inventory.nodes.InvNodeApplier
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
 val LocalClickHandler: ProvidableCompositionLocal<ClickHandler> =
     staticCompositionLocalOf { error("No provider for local click handler") }
-val LocalCanvas: ProvidableCompositionLocal<GuiyCanvas?> =
+val LocalCanvas: ProvidableCompositionLocal<Canvas?> =
     staticCompositionLocalOf { null }
-val LocalGuiyOwner: ProvidableCompositionLocal<GuiyOwner> =
-    staticCompositionLocalOf { error("No provider for GuiyOwner") }
+val LocalInvOwner: ProvidableCompositionLocal<InvOwner> =
+    staticCompositionLocalOf { error("No provider for InvOwner") }
 
 data class ClickResult(val cancelBukkitEvent: Boolean? = null) {
 
@@ -35,22 +33,22 @@ interface ClickHandler {
 
 }
 
-@GuiyUIScopeMarker
-class GuiyOwner : CoroutineScope {
+@InvUiScopeMarker
+class InvOwner : CoroutineScope {
 
-    var hasFrameWaiters = false
-    val clock = BroadcastFrameClock { hasFrameWaiters = true }
-    val composeScope = CoroutineScope(Dispatchers.Default) + clock
+    private var hasFrameWaiters = false
+    private val clock = BroadcastFrameClock { hasFrameWaiters = true }
+    private val composeScope = CoroutineScope(Dispatchers.Default) + clock
     override val coroutineContext: CoroutineContext = composeScope.coroutineContext
 
     private val rootNode = LayoutNode()
 
-    var running = false
+    private var running = false
     private val recomposer = Recomposer(coroutineContext)
-    private val composition = Composition(GuiyNodeApplier(rootNode), recomposer)
+    private val composition = Composition(InvNodeApplier(rootNode), recomposer)
 
-    var applyScheduled = false
-    val snapshotHandle = Snapshot.registerGlobalWriteObserver {
+    private var applyScheduled = false
+    private val snapshotHandle = Snapshot.registerGlobalWriteObserver {
         if (!applyScheduled) {
             applyScheduled = true
             composeScope.launch {
@@ -60,7 +58,7 @@ class GuiyOwner : CoroutineScope {
         }
     }
 
-    var exitScheduled = false
+    private var exitScheduled = false
 
     fun exit() {
         exitScheduled = true
@@ -70,7 +68,7 @@ class GuiyOwner : CoroutineScope {
         !running || return
         running = true
 
-        GuiyScopeManager.scopes += composeScope
+        InvScopes.scopes += composeScope
         launch {
             recomposer.runRecomposeAndApplyChanges()
         }
@@ -78,7 +76,6 @@ class GuiyOwner : CoroutineScope {
         launch {
             setContent(content)
             while (!exitScheduled) {
-                //            Bukkit.getScheduler().scheduleSyncRepeatingTask(guiyPlugin, {
                 if (hasFrameWaiters) {
                     hasFrameWaiters = false
                     clock.sendFrame(System.nanoTime()) // Frame time value is not used by Compose runtime.
@@ -121,12 +118,12 @@ class GuiyOwner : CoroutineScope {
 
 }
 
-fun guiy(
+fun inv(
     content: @Composable () -> Unit
-): GuiyOwner {
-    return GuiyOwner().apply {
+): InvOwner {
+    return InvOwner().apply {
         start {
-            GuiyCompositionLocal(this) {
+            InvCompositionLocal(this) {
                 content()
             }
         }
@@ -134,9 +131,10 @@ fun guiy(
 }
 
 @Composable
-fun GuiyCompositionLocal(owner: GuiyOwner, content: @Composable () -> Unit) {
+@Suppress("FunctionName")
+fun InvCompositionLocal(owner: InvOwner, content: @Composable () -> Unit) {
     CompositionLocalProvider(
-        LocalGuiyOwner provides owner
+        LocalInvOwner provides owner
     ) {
         content()
     }
