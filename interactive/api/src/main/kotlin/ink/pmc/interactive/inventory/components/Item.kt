@@ -52,8 +52,8 @@ fun Item(
     isHideTooltip: Boolean = false,
     modifier: Modifier = Modifier,
 ) {
-    val rememberName = remember { name }
-    val rememberLore = remember { lore }
+    val rememberName = remember(name) { name }
+    val rememberLore = remember(lore) { lore }
 
     val item = remember(material, name, amount, lore) {
         ItemStack(material, amount).apply {

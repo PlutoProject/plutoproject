@@ -9,7 +9,7 @@ import ink.pmc.interactive.inventory.modifiers.onSizeChanged
 import ink.pmc.interactive.inventory.modifiers.sizeIn
 import ink.pmc.interactive.inventory.nodes.InventoryCloseScope
 import ink.pmc.interactive.inventory.nodes.StaticMeasurePolicy
-import ink.pmc.utils.inventory.updateTitle
+import ink.pmc.utils.inventory.title
 import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
@@ -62,7 +62,7 @@ fun Chest(
 
     LaunchedEffect(title) {
         // This just sends a packet, doesn't need to be on sync thread
-        inventory.viewers.forEach { it.openInventory.updateTitle(title) }
+        inventory.viewers.forEach { it.openInventory.title(title) }
     }
 
     // PMC 的应用场景大概是不需要多个 viewers 的，这里就不实现了

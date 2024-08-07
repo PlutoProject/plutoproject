@@ -368,6 +368,8 @@ allprojects {
         dep(rootProject.libs.bundles.koin)
         dep(rootProject.libs.classgraph)
         dep(provider { compose.runtime })
+        dep(provider { compose.runtimeSaveable })
+        dep(rootProject.libs.voyager.navigator)
     }
 
     tasks.shadowJar {

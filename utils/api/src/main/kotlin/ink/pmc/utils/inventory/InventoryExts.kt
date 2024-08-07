@@ -9,11 +9,13 @@ import org.bukkit.craftbukkit.inventory.CraftContainer
 import org.bukkit.entity.Player
 import org.bukkit.inventory.InventoryView
 
-fun InventoryView.updateTitle(component: Component) {
-    val player = this as Player
-    val serverPlayer = (this as CraftPlayer).handle
+fun InventoryView.title(component: Component) {
+    val player = player as Player
+    val craftPlayer = player as CraftPlayer
+    val serverPlayer = craftPlayer.handle
     val id = serverPlayer.containerMenu.containerId
     val type = CraftContainer.getNotchInventoryType(this.topInventory)
     val packet = ClientboundOpenScreenPacket(id, type, PaperAdventure.asVanilla(component))
     player.sendPacket(packet)
+    serverPlayer.containerMenu.sendAllDataToRemote()
 }
