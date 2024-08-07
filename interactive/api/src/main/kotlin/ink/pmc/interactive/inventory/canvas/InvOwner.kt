@@ -82,7 +82,7 @@ class InvOwner : CoroutineScope {
                     rootNode.measure(Constraints())
                     rootNode.render()
                 }
-                delay(50)
+                delay(5)
             }
             running = false
             recomposer.close()

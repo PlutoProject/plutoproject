@@ -1,6 +1,7 @@
 package ink.pmc.interactive.inventory.components.canvases
 
 import androidx.compose.runtime.*
+import ink.pmc.interactive.inventory.canvas.*
 import ink.pmc.interactive.inventory.components.state.IntCoordinates
 import ink.pmc.interactive.inventory.layout.Layout
 import ink.pmc.interactive.inventory.layout.Renderer
@@ -10,14 +11,12 @@ import ink.pmc.interactive.inventory.modifiers.drag.DragScope
 import ink.pmc.interactive.inventory.nodes.InvNode
 import ink.pmc.interactive.inventory.nodes.InventoryCloseScope
 import ink.pmc.interactive.inventory.nodes.StaticMeasurePolicy
-import ink.pmc.interactive.inventory.canvas.*
-import ink.pmc.utils.concurrent.submitAsync
+import ink.pmc.utils.concurrent.submitSync
 import ink.pmc.utils.concurrent.sync
 import ink.pmc.utils.time.ticks
 import kotlinx.coroutines.delay
 import org.bukkit.entity.Player
 import org.bukkit.event.Cancellable
-import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.inventory.Inventory
 
 val LocalInventory: ProvidableCompositionLocal<Inventory> =
@@ -39,26 +38,30 @@ fun Inventory(
     inventoryIndexToGrid: (Int) -> IntCoordinates,
     content: @Composable () -> Unit,
 ) {
+    // PMC: 不要关闭原 Inventory 以防闪屏
     // Close inventory when it switches to a new one
+    /*
     DisposableEffect(inventory) {
         onDispose {
-            submitAsync {
+            submitSync {
                 inventory.close()
             }
         }
     }
+     */
     // Manage opening inventory for new viewers or when inventory changes
     LaunchedEffect(viewers, inventory) {
         val oldViewers = inventory.viewers.toSet()
         sync {
             // Close inventory for removed viewers
             (oldViewers - viewers).forEach {
-                it.closeInventory(InventoryCloseEvent.Reason.PLUGIN)
+                it.closeInventory()
             }
 
             // Open inventory for new viewers
             (viewers - oldViewers).forEach {
-                it.closeInventory(InventoryCloseEvent.Reason.PLUGIN)
+                // PMC: 不要关闭原 Inventory 以防指针被归位
+                // it.closeInventory(InventoryCloseEvent.Reason.PLUGIN)
                 it.openInventory(inventory)
             }
         }
@@ -120,7 +123,7 @@ inline fun rememberInventoryHolder(
                             .forEach { it.openInventory(inventory) }
                     }
                 }
-                submitAsync {
+                submitSync {
                     delay(1.ticks)
                     onClose.invoke(scope, player)
                 }

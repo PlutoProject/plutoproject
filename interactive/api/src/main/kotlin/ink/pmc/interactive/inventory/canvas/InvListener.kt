@@ -33,7 +33,8 @@ object InvListener : Listener {
     @EventHandler
     fun InventoryCloseEvent.onClose() {
         val invHolder = inventory.holder as? InvInventoryHolder ?: return
-        if (reason != InventoryCloseEvent.Reason.PLUGIN) {
+        // PMC: 修复
+        if (reason != InventoryCloseEvent.Reason.PLUGIN && reason != InventoryCloseEvent.Reason.OPEN_NEW) {
             invHolder.onClose(player as Player)
         }
     }
