@@ -712,7 +712,7 @@ val UI_HOME_TITLE = component {
 }
 
 val UI_HOME_TITLE_SELF = component {
-    text("你的家")
+    text("家")
 }
 
 val UI_HOME_ITEM_NAME = component {
