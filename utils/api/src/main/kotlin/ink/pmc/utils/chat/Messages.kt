@@ -51,7 +51,7 @@ val UI_CLOSE = component {
 }
 
 val UI_BACK = component {
-    text("返回上一页") with mochaYellow without italic()
+    text("返回") with mochaYellow without italic()
 }
 
 val PLAYER_HAVENT_PLAYED_BEFORE = component {
