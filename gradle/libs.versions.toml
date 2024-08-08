@@ -77,6 +77,7 @@ koin-compose = { module = "io.insert-koin:koin-compose", version = "3.6.0-alpha1
 classgraph = { module = "io.github.classgraph:classgraph", version = "4.8.174" }
 vault-api = { module = "com.github.MilkBowl:VaultAPI", version = "1.7" }
 voyager-navigator = { module = "cafe.adriel.voyager:voyager-navigator", version = "1.1.0-beta02" }
+anvilGui = { module = "net.wesjd:anvilgui", version = "1.10.1-SNAPSHOT" }
 
 [bundles]
 kotlin = ["kotlin-stdlib", "kotlin-reflect", "kotlinx-coroutine-core", "kotlinx-serialization", "kotlin-scripting-common", "kotlin-scripting-jvm", "kotlin-scripting-jvm-host", "kotlin-scripting-dependencies", "kotlin-scripting-dependencies-maven"]

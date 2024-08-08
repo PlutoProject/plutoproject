@@ -87,7 +87,7 @@ class WarpViewerScreen(private val player: Player) : Screen {
         val pages by rememberSaveable { mutableStateOf(ArrayListMultimap.create<Int, Warp>()) }
 
         LaunchedEffect(Unit) {
-            when(state) {
+            when (state) {
                 LOADING -> {
                     val lookup = getPages(manager)
                     if (lookup.isEmpty) {
@@ -98,6 +98,7 @@ class WarpViewerScreen(private val player: Player) : Screen {
                     maxIndex = lookup.keySet().size - 1
                     state = VIEWING
                 }
+
                 else -> {}
             }
         }

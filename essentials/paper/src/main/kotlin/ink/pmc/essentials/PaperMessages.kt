@@ -16,7 +16,6 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.util.Ticks
 import java.time.Duration
 import java.util.*
-import javax.sound.sampled.SourceDataLine
 import kotlin.time.toKotlinDuration
 
 val GM_SURVIVAL = Component.text("生存模式")
@@ -854,7 +853,7 @@ val UI_HOME_DELETE_LORE = listOf(
 )
 
 val UI_HOME_EDIT_SUCCEED = component {
-    text("√ 已编辑") with mochaGreen without italic()
+    text("√ 已保存") with mochaGreen without italic()
 }
 
 val UI_HOME_EDIT_SUCCEED_SOUND = sound {
@@ -863,4 +862,55 @@ val UI_HOME_EDIT_SUCCEED_SOUND = sound {
 
 val UI_HOME_EDITOR_REMOVE_SOUND = sound {
     key(Key.key("block.decorated_pot.break"))
+}
+
+val UI_HOME_EDITOR_RENAME_TITLE = component {
+    text("重命名 <name>")
+}
+
+val UI_HOME_EDITOR_RENAME_SAVE = component {
+    text("保存") with mochaGreen without italic()
+}
+
+val UI_HOME_EDITOR_RENAME_NAME_INVALID = component {
+    text("名称不可用") with mochaRed without italic()
+}
+
+val UI_HOME_EDITOR_RENAME_EXIT_LORE = listOf(
+    Component.empty(),
+    component {
+        text("左键 ") with mochaLavender without italic()
+        text("退出编辑") with mochaText without italic()
+    }
+)
+
+val UI_HOME_EDITOR_RENAME_SAVE_EDITING = listOf(
+    Component.empty(),
+    component {
+        text("左键 ") with mochaLavender without italic()
+        text("保存并退出") with mochaText without italic()
+    }
+)
+
+val UI_HOME_EDITOR_RENAME_SAVE_INVALID_LORE = listOf(
+    Component.empty(),
+    component { text("仅可使用字母、数字、下划线") with mochaMaroon without italic() }
+)
+
+val UI_HOME_EDITOR_RENAME_SAVE_TOO_LONG = listOf(
+    Component.empty(),
+    component {
+        text("名称过长，最多使用 ") with mochaMaroon without italic()
+        text("${Essentials.homeManager.nameLengthLimit} ") with mochaText without italic()
+        text("个字符") with mochaMaroon without italic()
+    }
+)
+
+val UI_HOME_EDITOR_RENAME_SAVED = listOf(
+    Component.empty(),
+    UI_HOME_EDIT_SUCCEED
+)
+
+val UI_HOME_EDITOR_RENAME_INVALID_SOUND = sound {
+    key(Key.key("block.note_block.didgeridoo"))
 }

@@ -95,7 +95,7 @@ class HomeViewerScreen(
         val pages by rememberSaveable { mutableStateOf(ArrayListMultimap.create<Int, Home>()) }
 
         LaunchedEffect(Unit) {
-            when(state) {
+            when (state) {
                 LOADING -> {
                     val lookup = getPages(manager)
                     if (lookup.isEmpty) {
@@ -106,6 +106,7 @@ class HomeViewerScreen(
                     maxIndex = lookup.keySet().size - 1
                     state = VIEWING
                 }
+
                 else -> {}
             }
         }
@@ -190,7 +191,7 @@ class HomeViewerScreen(
     }
 
 
-    inner class NestedViewingScreen(private val index: Int) : Screen {
+    inner class ViewingScreen(private val index: Int) : Screen {
         override val key: ScreenKey = "essentials_home_viewer_nested_${viewing.uniqueId}"
 
         @Composable
@@ -206,7 +207,7 @@ class HomeViewerScreen(
     @Composable
     @Suppress("FunctionName")
     private fun ViewingSection() {
-        Navigator(NestedViewingScreen(localCurrIndex.current.value))
+        Navigator(ViewingScreen(localCurrIndex.current.value))
     }
 
     @Composable
@@ -292,7 +293,7 @@ class HomeViewerScreen(
                 when (clickType) {
                     ClickType.LEFT -> {
                         if (curr < max) {
-                            navigator.push(NestedViewingScreen(curr + 1))
+                            navigator.push(ViewingScreen(curr + 1))
                             whoClicked.playSound(VIEWER_PAGING_SOUND)
                         }
                     }

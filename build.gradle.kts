@@ -336,6 +336,7 @@ allprojects {
         maven(uri("https://repo.dmulloy2.net/repository/public/"))
         maven(uri("https://mvn.exceptionflug.de/repository/exceptionflug-public/"))
         maven(uri("https://repo.xenondevs.xyz/releases"))
+        maven(uri("https://repo.codemc.io/repository/maven-snapshots/"))
     }
 
     fun DependencyHandlerScope.dep(dep: Provider<*>) {
@@ -370,6 +371,7 @@ allprojects {
         dep(provider { compose.runtime })
         dep(provider { compose.runtimeSaveable })
         dep(rootProject.libs.voyager.navigator)
+        dep(rootProject.libs.anvilGui)
     }
 
     tasks.shadowJar {

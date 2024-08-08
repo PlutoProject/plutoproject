@@ -1,7 +1,10 @@
 package ink.pmc.essentials.commands.home
 
 import cafe.adriel.voyager.navigator.Navigator
-import ink.pmc.essentials.*
+import ink.pmc.essentials.Cm
+import ink.pmc.essentials.HOMES_OTHER
+import ink.pmc.essentials.TELEPORT_FAILED_SOUND
+import ink.pmc.essentials.VIEWER_PAGING_SOUND
 import ink.pmc.essentials.commands.checkPlayer
 import ink.pmc.essentials.screens.HomeViewerScreen
 import ink.pmc.interactive.inventory.canvas.inv

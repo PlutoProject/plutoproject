@@ -8,6 +8,9 @@ import org.bukkit.enchantments.Enchantment
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
+import org.bukkit.inventory.meta.ItemMeta
+
+typealias MetaModifier = ItemMeta.() -> Unit
 
 class ItemStackDsl(private var material: Material, private val amount: Int) : Builder<ItemStack> {
 
@@ -15,6 +18,7 @@ class ItemStackDsl(private var material: Material, private val amount: Int) : Bu
     private val lore = mutableListOf<Component>()
     private val enchantments = mutableMapOf<Enchantment, Int>()
     private val itemFlags = mutableSetOf<ItemFlag>()
+    private var metaModifier: MetaModifier = {}
 
     fun displayName(component: RootComponentKt.() -> Unit) {
         displayName = RootComponentKt().apply(component).build()
@@ -52,12 +56,17 @@ class ItemStackDsl(private var material: Material, private val amount: Int) : Bu
         this.itemFlags.addAll(itemFlags)
     }
 
+    fun meta(modifier: MetaModifier) {
+        this.metaModifier = modifier
+    }
+
     override fun build(): ItemStack {
         return ItemStack(material, amount)
             .apply {
                 editMeta {
                     it.displayName(displayName)
                     it.lore(this@ItemStackDsl.lore)
+                    it.metaModifier()
                 }
                 addEnchantments(this@ItemStackDsl.enchantments)
                 addItemFlags(*this@ItemStackDsl.itemFlags.toTypedArray())
