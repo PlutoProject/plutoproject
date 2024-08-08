@@ -4,6 +4,7 @@ import ink.pmc.advkt.component.*
 import ink.pmc.utils.time.formatDuration
 import ink.pmc.utils.visual.mochaMaroon
 import ink.pmc.utils.visual.mochaSubtext0
+import ink.pmc.utils.visual.mochaText
 import ink.pmc.utils.visual.mochaYellow
 import net.kyori.adventure.text.Component
 import kotlin.time.Duration
@@ -51,4 +52,10 @@ val UI_CLOSE = component {
 
 val UI_BACK = component {
     text("返回上一页") with mochaYellow without italic()
+}
+
+val PLAYER_HAVENT_PLAYED_BEFORE = component {
+    text("玩家 ") with mochaMaroon
+    text("<player> ") with mochaText
+    text("没有进入过游戏") with mochaMaroon
 }

@@ -23,6 +23,10 @@ fun Component.replace(string: String, text: String): Component {
     return this.replaceText(replaceConfig)
 }
 
+fun Component.replace(string: String, content: Any?): Component {
+    return replace(string, content.toString())
+}
+
 fun Component.replaceColor(targetColor: TextColor, newColor: TextColor): Component {
     val updatedComponent = if (this.style().color() == targetColor) {
         this.style(this.style().color(newColor))

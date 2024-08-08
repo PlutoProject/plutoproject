@@ -6,6 +6,7 @@ import ink.pmc.advkt.sound.sound
 import ink.pmc.advkt.title.*
 import ink.pmc.essentials.api.Essentials
 import ink.pmc.essentials.api.home.Home
+import ink.pmc.essentials.api.warp.Warp
 import ink.pmc.essentials.config.EssentialsConfig
 import ink.pmc.essentials.listeners.TeleportListener.getKoin
 import ink.pmc.utils.chat.DURATION
@@ -681,15 +682,15 @@ val RANDOM_TELEPORT_BALANCE_NOT_ENOUGH = component {
     text("<balance> <symbol>") with mochaText
 }
 
-val UI_HOME_LOADING_TITLE = component {
+val UI_VIEWER_LOADING_TITLE = component {
     text("正在加载数据")
 }
 
-val UI_HOME_LOADING = component {
+val UI_VIEWER_LOADING = component {
     text("正在加载数据...") with mochaSubtext0 without italic()
 }
 
-val UI_HOME_EMPTY = component {
+val UI_VIEWER_EMPTY = component {
     text("这里空空如也") with mochaText without italic()
 }
 
@@ -701,19 +702,15 @@ val UI_HOME_EMPTY_LORE = listOf(
     }
 )
 
-val UI_HOME_TITLE = component {
-    text("<player> 的家 (<curr>/<total>)")
-}
+val UI_HOME_EMPTY_LORE_OTHER = listOf(
+    component { text("该玩家未设置家") with mochaSubtext0 }
+)
 
-val UI_HOME_ONE_PAGE_TITLE = component {
+val UI_HOME_TITLE = component {
     text("<player> 的家")
 }
 
-val UI_HOME_SELF_TITILE = component {
-    text("你的家 (<curr>/<total>)")
-}
-
-val UI_HOME_ONE_PAFG_SELF_TITILE = component {
+val UI_HOME_TITLE_SELF = component {
     text("你的家")
 }
 
@@ -751,11 +748,11 @@ fun UI_HOME_ITEM_LORE(home: Home): List<Component> {
     )
 }
 
-val UI_HOME_ITEM_PAGING = component {
+val VIEWER_PAGING = component {
     text("页 <curr>/<total>") with mochaText without italic()
 }
 
-val UI_HOME_ITEM_PAGING_LORE = listOf(
+val VIEWING_PAGE_LORE = listOf(
     Component.empty(),
     component {
         text("左键 ") with mochaLavender without italic()
@@ -767,6 +764,49 @@ val UI_HOME_ITEM_PAGING_LORE = listOf(
     }
 )
 
-val UI_HOME_PAGING_SOUND = sound {
+val VIEWER_PAGING_SOUND = sound {
     key(Key.key("item.book.page_turn"))
 }
+
+val UI_WARP_TITLE = component {
+    text("地标")
+}
+
+val UI_WARP_ITEM_NAME = component {
+    text("<name>") with mochaPink without italic()
+}
+
+val UI_WARP_ITEM_NAME_ALIAS = component {
+    text("<alias> ") with mochaPink without italic()
+    text("(<name>)") with mochaSubtext0 without italic()
+}
+
+private val UI_WARP_ITEM_LORE_LOC = component {
+    text("<world> <x>, <y>, <z>") with mochaSubtext0 without italic()
+}
+
+@Suppress("FunctionName")
+fun UI_WARP_ITEM_LORE(warp: Warp): List<Component> {
+    val conf = getKoin().get<EssentialsConfig>().WorldAliases()
+    val loc = warp.location
+    return listOf(
+        component {
+            raw(
+                UI_WARP_ITEM_LORE_LOC
+                    .replace("<world>", conf[loc.world])
+                    .replace("<x>", "${loc.blockX}")
+                    .replace("<y>", "${loc.blockY}")
+                    .replace("<z>", "${loc.blockZ}")
+            )
+        },
+        Component.empty(),
+        component {
+            text("左键 ") with mochaLavender without italic()
+            text("传送到该位置") with mochaText without italic()
+        },
+    )
+}
+
+val UI_WARP_EMPTY_LORE = listOf(
+    component { text("服务器未设置地标") with mochaSubtext0 without italic() }
+)
