@@ -95,13 +95,25 @@ class HomeViewerScreen(
         val pages by rememberSaveable { mutableStateOf(ArrayListMultimap.create<Int, Home>()) }
 
         LaunchedEffect(Unit) {
-            val lookup = getPages(manager)
-            if (lookup.size() > 0) {
-                pages.putAll(lookup)
-                maxIndex = lookup.keySet().size - 1
-                state = VIEWING
-            } else {
-                state = VIEWING_EMPTY
+            when(state) {
+                LOADING -> {
+                    val lookup = getPages(manager)
+                    if (lookup.isEmpty) {
+                        state = VIEWING_EMPTY
+                        return@LaunchedEffect
+                    }
+                    pages.putAll(lookup)
+                    maxIndex = lookup.keySet().size - 1
+                    state = VIEWING
+                }
+                else -> {}
+            }
+        }
+
+        DisposableEffect(Unit) {
+            onDispose {
+                pages.clear()
+                state = LOADING
             }
         }
 
@@ -200,13 +212,20 @@ class HomeViewerScreen(
     @Composable
     @Suppress("FunctionName")
     private fun Homes(index: Int) {
+        val navigator = LocalNavigator.currentOrThrow
         val page = localPages.current.get(index)
         val rowCount = page.getRows()
+
+        if (rowCount <= 0) {
+            navigator.pop()
+            return
+        }
+
         Column(modifier = Modifier.fillMaxWidth().height(3)) {
             repeat(rowCount) {
                 Row(modifier = Modifier.fillMaxWidth().height(1)) {
                     val row = page.getRow(it)
-                    row.forEach { Home(it) }
+                    row.forEach { if (it.isLoaded) Home(it) }
                 }
             }
         }
@@ -215,6 +234,7 @@ class HomeViewerScreen(
     @Composable
     @Suppress("FunctionName")
     private fun Home(home: Home) {
+        val navigator = requireNotNull(LocalNavigator.current?.parent) { "Cannot obtain root navigator" }
         Item(
             material = Material.PAPER,
             name = UI_HOME_ITEM_NAME.replace("<name>", home.name),
@@ -226,7 +246,10 @@ class HomeViewerScreen(
                         player.closeInventory()
                     }
 
-                    ClickType.RIGHT -> {}
+                    ClickType.RIGHT -> {
+                        navigator.push(HomeEditorScreen(player, home))
+                    }
+
                     else -> {}
                 }
             }
@@ -336,7 +359,7 @@ class HomeViewerScreen(
         Item(
             material = Material.MINECART,
             name = UI_VIEWER_EMPTY,
-            lore = if (player != viewing) UI_HOME_EMPTY_LORE else UI_HOME_EMPTY_LORE_OTHER
+            lore = if (player == viewing) UI_HOME_EMPTY_LORE else UI_HOME_EMPTY_LORE_OTHER
         )
     }
 

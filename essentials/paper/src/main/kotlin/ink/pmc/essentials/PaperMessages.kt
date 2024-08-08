@@ -16,6 +16,7 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.util.Ticks
 import java.time.Duration
 import java.util.*
+import javax.sound.sampled.SourceDataLine
 import kotlin.time.toKotlinDuration
 
 val GM_SURVIVAL = Component.text("生存模式")
@@ -703,7 +704,7 @@ val UI_HOME_EMPTY_LORE = listOf(
 )
 
 val UI_HOME_EMPTY_LORE_OTHER = listOf(
-    component { text("该玩家未设置家") with mochaSubtext0 }
+    component { text("该玩家未设置家") with mochaSubtext0 without italic() }
 )
 
 val UI_HOME_TITLE = component {
@@ -810,3 +811,56 @@ fun UI_WARP_ITEM_LORE(warp: Warp): List<Component> {
 val UI_WARP_EMPTY_LORE = listOf(
     component { text("服务器未设置地标") with mochaSubtext0 without italic() }
 )
+
+val UI_HOME_EDITOR_TITLE = component {
+    text("编辑 <name>")
+}
+
+val UI_HOME_RENAME = component {
+    text("重命名") with mochaText without italic()
+}
+
+val UI_HOME_RENAME_LORE = listOf(
+    Component.empty(),
+    component {
+        text("左键 ") with mochaLavender without italic()
+        text("重命名该家") with mochaText without italic()
+    }
+)
+
+val UI_HOME_CHANGE_LOCATION = component {
+    text("迁移") with mochaText without italic()
+}
+
+val UI_HOME_CHANGE_LOCATION_LORE = listOf(
+    Component.empty(),
+    component {
+        text("左键 ") with mochaLavender without italic()
+        text("将该家迁移到你所在的位置") with mochaText without italic()
+    }
+)
+
+val UI_HOME_DELETE = component {
+    text("删除家") with mochaText without italic()
+}
+
+val UI_HOME_DELETE_LORE = listOf(
+    component { text("该操作不可撤销") with mochaRed without italic() },
+    Component.empty(),
+    component {
+        text("Shift + 左键 ") with mochaLavender without italic()
+        text("删除家") with mochaText without italic()
+    }
+)
+
+val UI_HOME_EDIT_SUCCEED = component {
+    text("√ 已编辑") with mochaGreen without italic()
+}
+
+val UI_HOME_EDIT_SUCCEED_SOUND = sound {
+    key(Key.key("block.note_block.bell"))
+}
+
+val UI_HOME_EDITOR_REMOVE_SOUND = sound {
+    key(Key.key("block.decorated_pot.break"))
+}

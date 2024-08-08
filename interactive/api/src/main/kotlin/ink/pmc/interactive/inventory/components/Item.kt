@@ -50,6 +50,7 @@ fun Item(
     amount: Int = 1,
     lore: List<Component> = listOf(),
     isHideTooltip: Boolean = false,
+    enchantmentGlint: Boolean = false,
     modifier: Modifier = Modifier,
 ) {
     val rememberName = remember(name) { name }
@@ -61,6 +62,7 @@ fun Item(
                 it.displayName(rememberName)
                 it.lore(rememberLore)
                 it.isHideTooltip = isHideTooltip
+                it.setEnchantmentGlintOverride(enchantmentGlint)
             }
         }
     }
