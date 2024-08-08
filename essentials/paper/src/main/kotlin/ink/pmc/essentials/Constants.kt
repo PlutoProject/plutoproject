@@ -11,3 +11,5 @@ const val LECTERN_PROTECT_BYPASS = "essentials.lectern.bypass"
 const val RANDOM_TELEPORT_COST_BYPASS = "essentials.rtp.bypass"
 
 const val RANDOM_TELEPORT_SPECIFIC = "essentials.rtp.specific"
+
+const val HOMES_OTHER = "essentials.home.other"
