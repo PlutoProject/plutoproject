@@ -87,13 +87,25 @@ class WarpViewerScreen(private val player: Player) : Screen {
         val pages by rememberSaveable { mutableStateOf(ArrayListMultimap.create<Int, Warp>()) }
 
         LaunchedEffect(Unit) {
-            val lookup = getPages(manager)
-            if (lookup.size() > 0) {
-                pages.putAll(lookup)
-                maxIndex = lookup.keySet().size - 1
-                state = VIEWING
-            } else {
-                state = VIEWING_EMPTY
+            when(state) {
+                LOADING -> {
+                    val lookup = getPages(manager)
+                    if (lookup.isEmpty) {
+                        state = VIEWING_EMPTY
+                        return@LaunchedEffect
+                    }
+                    pages.putAll(lookup)
+                    maxIndex = lookup.keySet().size - 1
+                    state = VIEWING
+                }
+                else -> {}
+            }
+        }
+
+        DisposableEffect(Unit) {
+            onDispose {
+                pages.clear()
+                state = LOADING
             }
         }
 
