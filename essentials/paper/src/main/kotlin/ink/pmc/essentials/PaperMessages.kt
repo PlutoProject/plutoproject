@@ -841,7 +841,7 @@ val UI_HOME_CHANGE_LOCATION_LORE = listOf(
 )
 
 val UI_HOME_DELETE = component {
-    text("删除家") with mochaText without italic()
+    text("删除") with mochaText without italic()
 }
 
 val UI_HOME_DELETE_LORE = listOf(
@@ -849,7 +849,7 @@ val UI_HOME_DELETE_LORE = listOf(
     Component.empty(),
     component {
         text("Shift + 左键 ") with mochaLavender without italic()
-        text("删除家") with mochaText without italic()
+        text("删除该家") with mochaText without italic()
     }
 )
 
