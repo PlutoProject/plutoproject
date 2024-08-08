@@ -108,4 +108,10 @@ class EssentialsConfig(private val config: Config) : Config by config {
         }
     }
 
+    inner class WorldAliases {
+        operator fun get(world: World): String {
+            return config.get<String>("world-aliases.${world.name}") ?: world.name
+        }
+    }
+
 }

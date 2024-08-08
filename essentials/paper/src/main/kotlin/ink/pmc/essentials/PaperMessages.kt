@@ -5,6 +5,9 @@ import ink.pmc.advkt.sound.key
 import ink.pmc.advkt.sound.sound
 import ink.pmc.advkt.title.*
 import ink.pmc.essentials.api.Essentials
+import ink.pmc.essentials.api.home.Home
+import ink.pmc.essentials.config.EssentialsConfig
+import ink.pmc.essentials.listeners.TeleportListener.getKoin
 import ink.pmc.utils.chat.DURATION
 import ink.pmc.utils.visual.*
 import net.kyori.adventure.key.Key
@@ -678,26 +681,92 @@ val RANDOM_TELEPORT_BALANCE_NOT_ENOUGH = component {
     text("<balance> <symbol>") with mochaText
 }
 
-val UI_HOME_LOADING = component {
+val UI_HOME_LOADING_TITLE = component {
     text("正在加载数据")
 }
 
-val UI_HOME_SELF = component {
+val UI_HOME_LOADING = component {
+    text("正在加载数据...") with mochaSubtext0 without italic()
+}
+
+val UI_HOME_EMPTY = component {
+    text("这里空空如也") with mochaText without italic()
+}
+
+val UI_HOME_EMPTY_LORE = listOf(
+    component {
+        text("通过「手账」或 ") with mochaSubtext0 without italic()
+        text("/sethome ") with mochaLavender without italic()
+        text("以留下你的足迹") with mochaSubtext0 without italic()
+    }
+)
+
+val UI_HOME_TITLE = component {
+    text("<player> 的家 (<curr>/<total>)")
+}
+
+val UI_HOME_ONE_PAGE_TITLE = component {
+    text("<player> 的家")
+}
+
+val UI_HOME_SELF_TITILE = component {
     text("你的家 (<curr>/<total>)")
 }
 
-val UI_CLOSE = component {
-    text("关闭") with mochaMaroon without italic()
+val UI_HOME_ONE_PAFG_SELF_TITILE = component {
+    text("你的家")
 }
 
-val UI_BACK = component {
-    text("返回上一页") with mochaYellow without italic()
+val UI_HOME_ITEM_NAME = component {
+    text("<name>") with mochaPink without italic()
 }
 
-val UI_HOME_PREVIOUS = component {
-    text("向前翻") with mochaYellow without italic()
+private val UI_HOME_ITEM_LORE_LOC = component {
+    text("<world> <x>, <y>, <z>") with mochaSubtext0 without italic()
 }
 
-val UI_HOME_NEXT = component {
-    text("向后翻") with mochaGreen without italic()
+@Suppress("FunctionName")
+fun UI_HOME_ITEM_LORE(home: Home): List<Component> {
+    val conf = getKoin().get<EssentialsConfig>().WorldAliases()
+    val loc = home.location
+    return listOf(
+        component {
+            raw(
+                UI_HOME_ITEM_LORE_LOC
+                    .replace("<world>", conf[loc.world])
+                    .replace("<x>", "${loc.blockX}")
+                    .replace("<y>", "${loc.blockY}")
+                    .replace("<z>", "${loc.blockZ}")
+            )
+        },
+        Component.empty(),
+        component {
+            text("左键 ") with mochaLavender without italic()
+            text("传送到该位置") with mochaText without italic()
+        },
+        component {
+            text("右键 ") with mochaLavender without italic()
+            text("编辑家") with mochaText without italic()
+        }
+    )
+}
+
+val UI_HOME_ITEM_PAGING = component {
+    text("页 <curr>/<total>") with mochaText without italic()
+}
+
+val UI_HOME_ITEM_PAGING_LORE = listOf(
+    Component.empty(),
+    component {
+        text("左键 ") with mochaLavender without italic()
+        text("下一页") with mochaText without italic()
+    },
+    component {
+        text("右键 ") with mochaLavender without italic()
+        text("上一页") with mochaText without italic()
+    }
+)
+
+val UI_HOME_PAGING_SOUND = sound {
+    key(Key.key("item.book.page_turn"))
 }

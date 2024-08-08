@@ -1,9 +1,11 @@
 package ink.pmc.essentials.commands.home
 
+import cafe.adriel.voyager.navigator.Navigator
 import ink.pmc.essentials.Cm
-import ink.pmc.essentials.TELEPORT_FAILED_SOUND
+import ink.pmc.essentials.commands.checkPlayer
+import ink.pmc.essentials.screens.HomeViewerScreen
+import ink.pmc.interactive.inventory.canvas.inv
 import ink.pmc.utils.annotation.Command
-import ink.pmc.utils.chat.IN_PROGRESS
 import ink.pmc.utils.dsl.cloud.invoke
 import ink.pmc.utils.dsl.cloud.sender
 import org.incendo.cloud.bukkit.parser.PlayerParser
@@ -15,12 +17,11 @@ fun Cm.homes(aliases: Array<String>) {
         permission("essentials.homes")
         optional("player", PlayerParser.playerParser())
         handler {
-            val sender = sender.sender
-            sender.sendMessage(IN_PROGRESS)
-            sender.playSound(TELEPORT_FAILED_SOUND)
-            return@handler
-
-            // TODO: 家 UI
+            checkPlayer(sender.sender) {
+                inv {
+                    Navigator(HomeViewerScreen(this, this))
+                }
+            }
         }
     }
 }

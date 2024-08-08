@@ -1,12 +1,10 @@
 package ink.pmc.utils.chat
 
-import ink.pmc.advkt.component.component
-import ink.pmc.advkt.component.miniMessage
-import ink.pmc.advkt.component.newline
-import ink.pmc.advkt.component.text
+import ink.pmc.advkt.component.*
 import ink.pmc.utils.time.formatDuration
 import ink.pmc.utils.visual.mochaMaroon
 import ink.pmc.utils.visual.mochaSubtext0
+import ink.pmc.utils.visual.mochaYellow
 import net.kyori.adventure.text.Component
 import kotlin.time.Duration
 import kotlin.time.toKotlinDuration
@@ -45,4 +43,12 @@ val IN_PROGRESS = component {
     text("正在施工中...") with mochaMaroon
     newline()
     text("前面的路，以后再来探索吧！") with mochaSubtext0
+}
+
+val UI_CLOSE = component {
+    text("关闭") with mochaMaroon without italic()
+}
+
+val UI_BACK = component {
+    text("返回上一页") with mochaYellow without italic()
 }
