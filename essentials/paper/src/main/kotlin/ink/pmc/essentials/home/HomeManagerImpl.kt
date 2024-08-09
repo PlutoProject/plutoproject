@@ -34,7 +34,6 @@ class HomeManagerImpl : HomeManager, KoinComponent {
     private val baseConf by inject<EssentialsConfig>()
     private val conf by lazy { baseConf.Home() }
     private val repo by inject<HomeRepository>()
-    private val preferredHomeKey = "essentials.${baseConf.serverName}.home.preferred_home"
 
     override val maxHomes: Int = conf.maxHomes
     override val nameLengthLimit: Int = conf.nameLengthLimit
@@ -100,21 +99,15 @@ class HomeManagerImpl : HomeManager, KoinComponent {
     }
 
     override suspend fun getPreferredHome(player: OfflinePlayer): Home? {
-        val member = MemberService.lookup(player.uniqueId)
-        requireNotNull(member) { "Member entry of player ${player.name} (${player.uniqueId}) is null" }
-        val data = member.dataContainer
-        val id = data.getString(preferredHomeKey)?.uuidOrNull ?: return null
-        return get(id)
+        return list(player).firstOrNull { it.isPreferred }
     }
 
-    override suspend fun setPreferredHome(player: OfflinePlayer, name: String) {
-        val home = get(player, name)
-        requireNotNull(home) { "Cannot find home of ${player.name} (${player.uniqueId}) named $name" }
-        val member = MemberService.lookup(player.uniqueId)
-        requireNotNull(member) { "Member entry of player ${player.name} (${player.uniqueId}) is null" }
-        val data = member.dataContainer
-        data[preferredHomeKey] = home.id.toString()
-        member.save()
+    override suspend fun setPreferredHome(home: Home) {
+        home.setPreferred(true)
+    }
+
+    override suspend fun unsetPreferredHome(home: Home) {
+        home.setPreferred(false)
     }
 
     override suspend fun list(player: OfflinePlayer): Collection<Home> {

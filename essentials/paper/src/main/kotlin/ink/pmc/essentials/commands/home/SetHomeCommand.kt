@@ -48,13 +48,7 @@ fun Cm.sethome(aliases: Array<String>) {
                     return@checkPlayer
                 }
 
-                submitAsync {
-                    manager.create(this@checkPlayer, name, location)
-                    if (manager.getPreferredHome(this@checkPlayer) == null) {
-                        manager.setPreferredHome(this@checkPlayer, name)
-                        sendMessage(COMMAND_SETHOME_PREFERRED.replace("<name>", name))
-                    }
-                }
+                submitAsync { manager.create(this@checkPlayer, name, location) }
                 sendMessage(COMMAND_SETHOME_SUCCEED.replace("<name>", name))
                 playSound(TELEPORT_REQUEST_RECEIVED_SOUND)
             }

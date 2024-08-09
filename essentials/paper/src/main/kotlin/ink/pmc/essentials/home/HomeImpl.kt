@@ -35,6 +35,8 @@ class HomeImpl(private val dto: HomeDto) : Home, KoinComponent {
         requireNotNull(Bukkit.getOfflinePlayer(dto.owner)) {
             loadFailed(id, "cannot obtain OfflinePlayer ${dto.owner}")
         }
+    override var isStarred: Boolean = dto.isStarred
+    override var isPreferred: Boolean = dto.isPreferred
     override val isLoaded: Boolean
         get() = manager.isLoaded(id)
 
@@ -42,6 +44,24 @@ class HomeImpl(private val dto: HomeDto) : Home, KoinComponent {
         submitAsync {
             teleportSuspend(player, prompt)
         }
+    }
+
+    override suspend fun setPreferred(state: Boolean) {
+        if (!state) {
+            if (!isPreferred) return
+            isPreferred = false
+            update()
+            return
+        }
+
+        (manager.getPreferredHome(owner) as HomeImpl?)?.let {
+            if (it == this) return
+            it.isPreferred = false
+            it.update()
+        }
+
+        isPreferred = true
+        update()
     }
 
     override suspend fun teleportSuspend(player: Player, prompt: Boolean) {
@@ -60,10 +80,29 @@ class HomeImpl(private val dto: HomeDto) : Home, KoinComponent {
         createdAt = createdAt.toEpochMilli(),
         location = location.dto,
         owner = owner.uniqueId,
+        isStarred = isStarred,
+        isPreferred = isPreferred,
     )
+
+    override fun equals(other: Any?): Boolean {
+        if (other !is Home) return false
+        return other.id == this.id
+    }
 
     override suspend fun update() {
         repo.update(toDto())
+    }
+
+    override fun hashCode(): Int {
+        var result = dto.hashCode()
+        result = 31 * result + id.hashCode()
+        result = 31 * result + name.hashCode()
+        result = 31 * result + createdAt.hashCode()
+        result = 31 * result + location.hashCode()
+        result = 31 * result + owner.hashCode()
+        result = 31 * result + isStarred.hashCode()
+        result = 31 * result + isPreferred.hashCode()
+        return result
     }
 
 }

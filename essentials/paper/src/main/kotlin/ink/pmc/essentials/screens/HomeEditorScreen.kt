@@ -8,6 +8,10 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import ink.pmc.essentials.*
 import ink.pmc.essentials.api.home.Home
 import ink.pmc.essentials.api.home.HomeManager
+import ink.pmc.essentials.screens.HomeEditorScreen.PreferState.NOT_PREFERRED
+import ink.pmc.essentials.screens.HomeEditorScreen.PreferState.PRRFERRED
+import ink.pmc.essentials.screens.HomeEditorScreen.StarState.NOT_STARRED
+import ink.pmc.essentials.screens.HomeEditorScreen.StarState.STARRED
 import ink.pmc.essentials.screens.HomeEditorScreen.State.*
 import ink.pmc.interactive.inventory.canvas.Anvil
 import ink.pmc.interactive.inventory.components.Back
@@ -89,9 +93,11 @@ class HomeEditorScreen(private val player: Player, private val home: Home) : Scr
     @Suppress("FunctionName")
     private fun Editor() {
         Row(modifier = Modifier.fillMaxHeight().width(7)) {
+            Prefer()
+            Star()
             Rename()
             ChangeLocation()
-            repeat(4) {
+            repeat(2) {
                 Placeholder()
             }
             Delete()
@@ -107,12 +113,12 @@ class HomeEditorScreen(private val player: Player, private val home: Home) : Scr
 
         @Composable
         override fun Content() {
+            val coroutineScope = rememberCoroutineScope()
             var state by remember { mutableStateOf(EDITING) }
             val navigator = LocalNavigator.currentOrThrow
             val manager = koinInject<HomeManager>()
 
             fun stateTransition(newState: State, popBack: Boolean = false) {
-                val coroutineScope = rememberCoroutineScope()
                 coroutineScope.launch {
                     val keep = state
                     state = newState
@@ -192,6 +198,115 @@ class HomeEditorScreen(private val player: Player, private val home: Home) : Scr
         }
     }
 
+    private enum class PreferState {
+        NOT_PREFERRED, PRRFERRED, SUCCEED
+    }
+
+    @Composable
+    @Suppress("FunctionName")
+    private fun Prefer() {
+        val manager = koinInject<HomeManager>()
+        val coroutineScope = rememberCoroutineScope()
+        var state by remember {
+            mutableStateOf(if (!home.isPreferred) NOT_PREFERRED else PRRFERRED)
+        }
+
+        fun stateTransition(newState: PreferState) {
+            coroutineScope.launch {
+                state = PreferState.SUCCEED
+                delay(1.seconds)
+                state = newState
+            }
+            player.playSound(UI_HOME_EDIT_SUCCEED_SOUND)
+        }
+
+        Item(
+            material = Material.SUNFLOWER,
+            name = when (state) {
+                NOT_PREFERRED -> UI_HOME_PREFER
+                PRRFERRED -> UI_HOME_PREFER_UNSET
+                PreferState.SUCCEED -> UI_HOME_EDIT_SUCCEED
+            },
+            lore = when (state) {
+                NOT_PREFERRED -> UI_HOME_PREFER_LORE
+                PRRFERRED -> UI_HOME_PREFER_UNSET_LORE
+                PreferState.SUCCEED -> listOf()
+            },
+            enchantmentGlint = state == PreferState.SUCCEED || state == PRRFERRED,
+            modifier = Modifier.clickable {
+                if (!home.isLoaded) return@clickable
+                if (state == PreferState.SUCCEED) return@clickable
+                if (clickType != ClickType.LEFT) return@clickable
+
+                if (home.isPreferred) {
+                    submitAsync { home.setPreferred(false) }
+                    stateTransition(NOT_PREFERRED)
+                    return@clickable
+                }
+
+                submitAsync { home.setPreferred(true) }
+                stateTransition(PRRFERRED)
+            }
+        )
+    }
+
+    private enum class StarState {
+        NOT_STARRED, STARRED, SUCCEED
+    }
+
+    @Composable
+    @Suppress("FunctionName")
+    private fun Star() {
+        val coroutineScope = rememberCoroutineScope()
+        var state by remember {
+            mutableStateOf(if (!home.isStarred) NOT_STARRED else STARRED)
+        }
+
+        fun stateTransition(newState: StarState) {
+            coroutineScope.launch {
+                state = StarState.SUCCEED
+                delay(1.seconds)
+                state = newState
+            }
+            player.playSound(UI_HOME_EDIT_SUCCEED_SOUND)
+        }
+
+        Item(
+            material = Material.NETHER_STAR,
+            name = when (state) {
+                NOT_STARRED -> UI_HOME_STAR
+                STARRED -> UI_HOME_STAR_UNSET
+                StarState.SUCCEED -> UI_HOME_EDIT_SUCCEED
+            },
+            lore = when (state) {
+                NOT_STARRED -> UI_HOME_STAR_LORE
+                STARRED -> UI_HOME_STAR_UNSET_LORE
+                StarState.SUCCEED -> listOf()
+            },
+            enchantmentGlint = state == StarState.SUCCEED || state == STARRED,
+            modifier = Modifier.clickable {
+                if (!home.isLoaded) return@clickable
+                if (state == StarState.SUCCEED) return@clickable
+                if (clickType != ClickType.LEFT) return@clickable
+
+                if (home.isStarred) {
+                    submitAsync {
+                        home.isStarred = false
+                        home.update()
+                    }
+                    stateTransition(NOT_STARRED)
+                    return@clickable
+                }
+
+                submitAsync {
+                    home.isStarred = true
+                    home.update()
+                }
+                stateTransition(STARRED)
+            }
+        )
+    }
+
     @Composable
     @Suppress("FunctionName")
     private fun Rename() {
@@ -241,6 +356,7 @@ class HomeEditorScreen(private val player: Player, private val home: Home) : Scr
     private fun Delete() {
         val manager = koinInject<HomeManager>()
         val navigator = LocalNavigator.currentOrThrow
+        val coroutineScope = rememberCoroutineScope()
         Item(
             material = Material.RED_STAINED_GLASS_PANE,
             name = UI_HOME_DELETE,
@@ -248,9 +364,11 @@ class HomeEditorScreen(private val player: Player, private val home: Home) : Scr
             modifier = Modifier.clickable {
                 if (!home.isLoaded) return@clickable
                 if (clickType != ClickType.SHIFT_LEFT) return@clickable
-                submitAsync { manager.remove(home.id) }
-                whoClicked.playSound(UI_HOME_EDITOR_REMOVE_SOUND)
-                navigator.pop()
+                coroutineScope.launch {
+                    manager.remove(home.id)
+                    whoClicked.playSound(UI_HOME_EDITOR_REMOVE_SOUND)
+                    navigator.pop()
+                }
             }
         )
     }

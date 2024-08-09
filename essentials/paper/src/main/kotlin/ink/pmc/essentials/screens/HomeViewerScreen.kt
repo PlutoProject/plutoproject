@@ -29,6 +29,7 @@ import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.ClickType
 import org.koin.compose.koinInject
+import java.util.*
 
 class HomeViewerScreen(
     private val player: Player,
@@ -49,10 +50,19 @@ class HomeViewerScreen(
 
     private suspend fun getPages(manager: HomeManager): Multimap<Int, Home> {
         return ArrayListMultimap.create<Int, Home>().apply {
-            val homes = manager.list(viewing) as List
+            val homes = manager.list(viewing).toMutableList()
+            val orderedHomes = LinkedList<Home>().apply {
+                homes.filter { it.isPreferred || it.isStarred }.forEach {
+                    if (it.isPreferred) addFirst(it) else add(it)
+                    homes.remove(it)
+                }
+                addAll(homes)
+            }
+
             var currentPage = 0
             var currentPageCount = 0
-            homes.forEach {
+
+            orderedHomes.forEach {
                 put(currentPage, it)
                 currentPageCount++
                 if (currentPageCount >= VIEWER_SINGLE_PAGE) {
@@ -237,9 +247,10 @@ class HomeViewerScreen(
     private fun Home(home: Home) {
         val navigator = requireNotNull(LocalNavigator.current?.parent) { "Cannot obtain root navigator" }
         Item(
-            material = Material.PAPER,
+            material = if (!home.isPreferred) Material.PAPER else Material.SUNFLOWER,
             name = UI_HOME_ITEM_NAME.replace("<name>", home.name),
             lore = UI_HOME_ITEM_LORE(home),
+            enchantmentGlint = home.isPreferred || home.isStarred,
             modifier = Modifier.clickable {
                 when (clickType) {
                     ClickType.LEFT -> {

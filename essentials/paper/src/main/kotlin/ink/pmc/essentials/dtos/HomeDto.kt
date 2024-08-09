@@ -15,5 +15,7 @@ data class HomeDto(
     val name: String,
     val createdAt: Long,
     val location: LocationDto,
-    @Serializable(UUIDSerializer::class) val owner: UUID
+    @Serializable(UUIDSerializer::class) val owner: UUID,
+    val isStarred: Boolean = false,
+    val isPreferred: Boolean = false,
 )

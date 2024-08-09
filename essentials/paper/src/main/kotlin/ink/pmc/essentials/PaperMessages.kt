@@ -718,6 +718,14 @@ val UI_HOME_ITEM_NAME = component {
     text("<name>") with mochaPink without italic()
 }
 
+private val UI_HOME_PREFERRED = component {
+    text("√ 首选的家") with mochaGreen without italic()
+}
+
+private val UI_HOME_STARRED = component {
+    text("✨ 收藏的家") with mochaFlamingo without italic()
+}
+
 private val UI_HOME_ITEM_LORE_LOC = component {
     text("<world> <x>, <y>, <z>") with mochaSubtext0 without italic()
 }
@@ -726,8 +734,8 @@ private val UI_HOME_ITEM_LORE_LOC = component {
 fun UI_HOME_ITEM_LORE(home: Home): List<Component> {
     val conf = getKoin().get<EssentialsConfig>().WorldAliases()
     val loc = home.location
-    return listOf(
-        component {
+    return mutableListOf<Component>().apply {
+        add(component {
             raw(
                 UI_HOME_ITEM_LORE_LOC
                     .replace("<world>", conf[loc.world])
@@ -735,17 +743,19 @@ fun UI_HOME_ITEM_LORE(home: Home): List<Component> {
                     .replace("<y>", "${loc.blockY}")
                     .replace("<z>", "${loc.blockZ}")
             )
-        },
-        Component.empty(),
-        component {
+        })
+        if (home.isPreferred) add(UI_HOME_PREFERRED)
+        if (home.isStarred) add(UI_HOME_STARRED)
+        add(Component.empty())
+        add(component {
             text("左键 ") with mochaLavender without italic()
             text("传送到该位置") with mochaText without italic()
-        },
-        component {
+        })
+        add(component {
             text("右键 ") with mochaLavender without italic()
             text("编辑家") with mochaText without italic()
-        }
-    )
+        })
+    }
 }
 
 val VIEWER_PAGING = component {
@@ -855,6 +865,62 @@ val UI_HOME_DELETE_LORE = listOf(
 val UI_HOME_EDIT_SUCCEED = component {
     text("√ 已保存") with mochaGreen without italic()
 }
+
+val UI_HOME_PREFER = component {
+    text("设为首选") with mochaText without italic()
+}
+
+val UI_HOME_PREFER_LORE = listOf(
+    component { text("设为首选后，") with mochaSubtext0 without italic() },
+    component {
+        text("使用 ") with mochaSubtext0 without italic()
+        text("/home ") with mochaLavender without italic()
+        text("或「手账」将默认传送该家") with mochaSubtext0 without italic()
+    },
+    Component.empty(),
+    component {
+        text("左键 ") with mochaLavender without italic()
+        text("将该家设为首选") with mochaText without italic()
+    }
+)
+
+val UI_HOME_PREFER_UNSET = component {
+    text("取消首选") with mochaText without italic()
+}
+
+
+val UI_HOME_PREFER_UNSET_LORE = listOf(
+    Component.empty(),
+    component {
+        text("左键 ") with mochaLavender without italic()
+        text("将该家取消首选") with mochaText without italic()
+    }
+)
+
+val UI_HOME_STAR = component {
+    text("收藏") with mochaText without italic()
+}
+
+val UI_HOME_STAR_LORE = listOf(
+    component { text("收藏后，该家将靠前显示") with mochaSubtext0 without italic() },
+    Component.empty(),
+    component {
+        text("左键 ") with mochaLavender without italic()
+        text("将该家收藏") with mochaText without italic()
+    }
+)
+
+val UI_HOME_STAR_UNSET = component {
+    text("取消收藏") with mochaText without italic()
+}
+
+val UI_HOME_STAR_UNSET_LORE = listOf(
+    Component.empty(),
+    component {
+        text("左键 ") with mochaLavender without italic()
+        text("将该家取消收藏") with mochaText without italic()
+    }
+)
 
 val UI_HOME_EDIT_SUCCEED_SOUND = sound {
     key(Key.key("block.note_block.bell"))

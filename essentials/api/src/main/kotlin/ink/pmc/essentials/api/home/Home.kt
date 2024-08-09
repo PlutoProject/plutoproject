@@ -14,9 +14,13 @@ interface Home {
     val createdAt: Instant
     var location: Location
     val owner: OfflinePlayer
+    var isStarred: Boolean
+    val isPreferred: Boolean
     val isLoaded: Boolean
 
     fun teleport(player: Player, prompt: Boolean = true)
+
+    suspend fun setPreferred(state: Boolean)
 
     suspend fun teleportSuspend(player: Player, prompt: Boolean = true)
 

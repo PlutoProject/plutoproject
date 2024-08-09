@@ -31,7 +31,9 @@ interface HomeManager {
 
     suspend fun getPreferredHome(player: OfflinePlayer): Home?
 
-    suspend fun setPreferredHome(player: OfflinePlayer, name: String)
+    suspend fun setPreferredHome(home: Home)
+
+    suspend fun unsetPreferredHome(home: Home)
 
     suspend fun list(player: OfflinePlayer): Collection<Home>
 
