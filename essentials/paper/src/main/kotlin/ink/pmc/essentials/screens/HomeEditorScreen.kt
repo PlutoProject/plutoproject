@@ -118,13 +118,13 @@ class HomeEditorScreen(private val player: Player, private val home: Home) : Scr
             val navigator = LocalNavigator.currentOrThrow
             val manager = koinInject<HomeManager>()
 
-            fun stateTransition(newState: State, popBack: Boolean = false) {
+            fun stateTransition(newState: State, pop: Boolean = false) {
                 coroutineScope.launch {
                     val keep = state
                     state = newState
                     delay(1.seconds)
-                    state = keep
-                    if (popBack) navigator.pop()
+                    if (!pop) state = keep
+                    if (pop) navigator.pop()
                 }
             }
 
@@ -205,7 +205,6 @@ class HomeEditorScreen(private val player: Player, private val home: Home) : Scr
     @Composable
     @Suppress("FunctionName")
     private fun Prefer() {
-        val manager = koinInject<HomeManager>()
         val coroutineScope = rememberCoroutineScope()
         var state by remember {
             mutableStateOf(if (!home.isPreferred) NOT_PREFERRED else PRRFERRED)
