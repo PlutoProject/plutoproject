@@ -1,24 +1,35 @@
 package ink.pmc.essentials.commands.warp
 
+import cafe.adriel.voyager.navigator.Navigator
 import ink.pmc.essentials.*
 import ink.pmc.essentials.api.Essentials
 import ink.pmc.essentials.commands.checkPlayer
+import ink.pmc.essentials.screens.WarpViewerScreen
+import ink.pmc.interactive.inventory.canvas.inv
 import ink.pmc.utils.annotation.Command
 import ink.pmc.utils.chat.replace
 import ink.pmc.utils.dsl.cloud.invoke
 import ink.pmc.utils.dsl.cloud.sender
 import ink.pmc.utils.player.uuidOrNull
+import kotlin.jvm.optionals.getOrNull
 
 @Command("warp")
 @Suppress("UNUSED")
 fun Cm.warp(aliases: Array<String>) {
     this("warp", *aliases) {
         permission("essentials.warp")
-        argument(warps("name").required())
+        argument(warps("name").optional())
         handler {
             checkPlayer(sender.sender) {
                 val manager = Essentials.warpManager
-                val input = get<String>("name")
+                val input = optional<String>("name").getOrNull()
+
+                if (input == null) {
+                    inv { Navigator(WarpViewerScreen(this)) }
+                    playSound(VIEWER_PAGING_SOUND)
+                    return@checkPlayer
+                }
+
                 val name = input.substringBefore('-')
                 val argUuid = name.uuidOrNull
 
