@@ -502,11 +502,6 @@ val COMMAND_SETHOME_SUCCEED = component {
     text("的家") with mochaPink
 }
 
-val COMMAND_SETHOME_PREFERRED = component {
-    text("已将你首选的家设置为 ") with mochaPink
-    text("<name> ") with mochaText
-}
-
 val COMMAND_HOME_NOT_EXISTED = component {
     text("名为 ") with mochaMaroon
     text("<name> ") with mochaText
@@ -515,10 +510,6 @@ val COMMAND_HOME_NOT_EXISTED = component {
 
 val COMMAND_HOME_NOT_EXISTED_UUID = component {
     text("无法通过指定的 ID 找到对应的家") with mochaMaroon
-}
-
-val COMMAND_HOME_FAILED_NO_PREFREED = component {
-    text("你还没有首选的家，请先设置一个家再试") with mochaMaroon
 }
 
 val COMMAND_HOME_SUCCEED = component {
@@ -932,14 +923,6 @@ val UI_HOME_EDITOR_REMOVE_SOUND = sound {
 
 val UI_HOME_EDITOR_RENAME_TITLE = component {
     text("重命名 <name>")
-}
-
-val UI_HOME_EDITOR_RENAME_SAVE = component {
-    text("保存") with mochaGreen without italic()
-}
-
-val UI_HOME_EDITOR_RENAME_NAME_INVALID = component {
-    text("名称不可用") with mochaRed without italic()
 }
 
 val UI_HOME_EDITOR_RENAME_EXIT_LORE = listOf(
