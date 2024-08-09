@@ -1,5 +1,6 @@
 package ink.pmc.essentials.commands.home
 
+import cafe.adriel.voyager.navigator.Navigator
 import ink.pmc.essentials.*
 import ink.pmc.essentials.api.Essentials
 import ink.pmc.essentials.commands.checkPlayer
@@ -45,7 +46,7 @@ fun Cm.home(aliases: Array<String>) {
                 if (name == null) {
                     val preferred = manager.getPreferredHome(this)
                     if (preferred == null) {
-                        inv { HomeViewerScreen(this, this) }
+                        inv { Navigator(HomeViewerScreen(this, this)) }
                         playSound(VIEWER_PAGING_SOUND)
                         return@checkPlayer
                     }
