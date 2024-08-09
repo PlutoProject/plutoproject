@@ -108,9 +108,20 @@ class HomeEditorScreen(private val player: Player, private val home: Home) : Scr
 
         @Composable
         override fun Content() {
-            val navigator = LocalNavigator.currentOrThrow
             var state by remember { mutableStateOf(EDITING) }
-            val coroutineScope = rememberCoroutineScope()
+            val navigator = LocalNavigator.currentOrThrow
+
+            fun stateTransition(newState: State, popBack: Boolean = false) {
+                val coroutineScope = rememberCoroutineScope()
+                coroutineScope.launch {
+                    val keep = state
+                    state = newState
+                    delay(1.seconds)
+                    state = keep
+                    if (popBack) navigator.pop()
+                }
+            }
+
             Anvil(
                 viewer = player,
                 title = UI_HOME_EDITOR_RENAME_TITLE.replace("<name>", home.name),
@@ -154,21 +165,13 @@ class HomeEditorScreen(private val player: Player, private val home: Home) : Scr
 
                             if (!input.isValidIdentifier) {
                                 player.playSound(UI_HOME_EDITOR_RENAME_INVALID_SOUND)
-                                coroutineScope.launch {
-                                    state = INVALID
-                                    delay(1.seconds)
-                                    state = EDITING
-                                }
+                                stateTransition(INVALID)
                                 return@Anvil listOf()
                             }
 
                             if (input.length > Essentials.homeManager.nameLengthLimit) {
                                 player.playSound(UI_HOME_EDITOR_RENAME_INVALID_SOUND)
-                                coroutineScope.launch {
-                                    state = TOO_LONG
-                                    delay(1.seconds)
-                                    state = EDITING
-                                }
+                                stateTransition(TOO_LONG)
                                 return@Anvil listOf()
                             }
 
@@ -177,12 +180,7 @@ class HomeEditorScreen(private val player: Player, private val home: Home) : Scr
                                 home.update()
                             }
 
-                            coroutineScope.launch {
-                                state = SUCCEED
-                                delay(1.seconds)
-                                navigator.pop()
-                            }
-
+                            stateTransition(SUCCEED, true)
                             player.playSound(UI_HOME_EDIT_SUCCEED_SOUND)
                             listOf()
                         }
