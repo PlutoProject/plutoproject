@@ -6,7 +6,6 @@ import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import ink.pmc.essentials.*
-import ink.pmc.essentials.api.Essentials
 import ink.pmc.essentials.api.home.Home
 import ink.pmc.essentials.api.home.HomeManager
 import ink.pmc.essentials.screens.HomeEditorScreen.State.*
