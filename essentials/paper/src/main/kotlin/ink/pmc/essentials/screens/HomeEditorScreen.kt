@@ -110,6 +110,7 @@ class HomeEditorScreen(private val player: Player, private val home: Home) : Scr
         override fun Content() {
             var state by remember { mutableStateOf(EDITING) }
             val navigator = LocalNavigator.currentOrThrow
+            val manager = koinInject<HomeManager>()
 
             fun stateTransition(newState: State, popBack: Boolean = false) {
                 val coroutineScope = rememberCoroutineScope()
@@ -169,7 +170,7 @@ class HomeEditorScreen(private val player: Player, private val home: Home) : Scr
                                 return@Anvil listOf()
                             }
 
-                            if (input.length > Essentials.homeManager.nameLengthLimit) {
+                            if (input.length > manager.nameLengthLimit) {
                                 player.playSound(UI_HOME_EDITOR_RENAME_INVALID_SOUND)
                                 stateTransition(TOO_LONG)
                                 return@Anvil listOf()
