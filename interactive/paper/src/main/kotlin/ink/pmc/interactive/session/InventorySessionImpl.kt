@@ -42,6 +42,7 @@ class InventorySessionImpl(
         return Composition(applier, recomposer).apply {
             setContent {
                 if (stateHolder == null) stateHolder = rememberSaveableStateHolder()
+                stateHolder?.SaveableStateProvider(id) {
                     CompositionLocalProvider(
                         LocalSessionProvider provides this@InventorySessionImpl,
                         LocalClickHandler provides object : ClickHandler {
@@ -64,6 +65,7 @@ class InventorySessionImpl(
                     ) {
                         contents()
                     }
+                }
             }
             state = SessionState.WORKING
         }
@@ -74,7 +76,7 @@ class InventorySessionImpl(
     }
 
     private fun renderLoop() {
-        interactiveScope.launch {
+        interactiveScope.launch(recomposer.effectCoroutineContext) {
             while (state == SessionState.WORKING) {
                 applier.current.apply {
                     measure(Constraints())
