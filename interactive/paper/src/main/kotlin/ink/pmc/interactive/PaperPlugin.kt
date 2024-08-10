@@ -29,6 +29,7 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
         }
         interactive // 初始化
         server.pluginManager.registerSuspendingEvents(InvListener, this)
+        server.pluginManager.registerSuspendingEvents(SessionListener, this)
     }
 
     override suspend fun onDisableAsync() {
