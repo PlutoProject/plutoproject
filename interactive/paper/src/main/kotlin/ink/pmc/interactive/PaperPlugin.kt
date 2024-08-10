@@ -8,11 +8,13 @@ import ink.pmc.utils.inject.startKoinIfNotPresent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
+import org.bukkit.plugin.java.JavaPlugin
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.dsl.module
 
 val interactiveScope = CoroutineScope(Dispatchers.Default)
+internal lateinit var plugin: JavaPlugin
 
 private val bukkitModule = module {
     single<Interactive> { InteractiveImpl() }
@@ -24,6 +26,7 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
     private val interactive by inject<Interactive>()
 
     override suspend fun onEnableAsync() {
+        plugin = this
         startKoinIfNotPresent {
             modules(bukkitModule)
         }
