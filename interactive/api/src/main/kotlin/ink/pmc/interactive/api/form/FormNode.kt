@@ -9,7 +9,7 @@ interface FormNode<B, F : Form> {
 
     val title: Component
     val children: LinkedList<FormNode<B, F>>
-    val applier: B.() -> Unit
+    val builder: B.() -> Unit
 
     fun render(player: FloodgatePlayer)
 

@@ -1,8 +1,9 @@
-package ink.pmc.interactive.form
+package ink.pmc.interactive.form.types
 
 import ink.pmc.interactive.api.form.FormNode
 import ink.pmc.interactive.api.form.FormResultHandler
 import ink.pmc.interactive.api.form.RootFormNode
+import ink.pmc.interactive.form.legacySerializer
 import ink.pmc.utils.bedrock.useFallbackColors
 import net.kyori.adventure.text.Component
 import org.geysermc.cumulus.form.ModalForm
@@ -20,7 +21,7 @@ class ModalFormNode(
 ) : RootFormNode<ModalForm.Builder, ModalForm, ModalFormResponse> {
 
     override val children: LinkedList<FormNode<ModalForm.Builder, ModalForm>> = LinkedList()
-    override val applier: ModalForm.Builder.() -> Unit = {}
+    override val builder: ModalForm.Builder.() -> Unit = {}
 
     override fun render(player: FloodgatePlayer) {
         ModalForm.builder()

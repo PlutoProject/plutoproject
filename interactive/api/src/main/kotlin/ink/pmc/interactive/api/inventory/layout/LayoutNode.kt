@@ -23,7 +23,7 @@ import kotlin.reflect.KClass
  * TODO structure is really not decided on yet.
  *  I'd really like to avoid inheritance, and have only one ComposableNode call that creates Layout.
  *  You can configure stuff through [measurePolicy], [placer], and the [modifier], but things creates some problems
- *  when trying to make your own composable nodes that interact with this Layout applier.
+ *  when trying to make your own composable nodes that interact with this Layout builder.
  */
 class LayoutNode : Measurable, Placeable, InvNode {
     override var measurePolicy: MeasurePolicy = ChildMeasurePolicy
