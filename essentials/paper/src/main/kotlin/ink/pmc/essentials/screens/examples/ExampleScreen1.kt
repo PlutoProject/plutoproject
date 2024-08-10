@@ -9,19 +9,18 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import ink.pmc.advkt.component.component
 import ink.pmc.advkt.component.italic
 import ink.pmc.advkt.component.text
-import ink.pmc.interactive.inventory.canvas.LocalInvOwner
-import ink.pmc.interactive.inventory.components.Item
-import ink.pmc.interactive.inventory.components.Spacer
-import ink.pmc.interactive.inventory.components.canvases.Chest
-import ink.pmc.interactive.inventory.jetpack.Arrangement
-import ink.pmc.interactive.inventory.layout.Box
-import ink.pmc.interactive.inventory.layout.Column
-import ink.pmc.interactive.inventory.layout.Row
-import ink.pmc.interactive.inventory.modifiers.Modifier
-import ink.pmc.interactive.inventory.modifiers.click.clickable
-import ink.pmc.interactive.inventory.modifiers.fillMaxSize
-import ink.pmc.interactive.inventory.modifiers.fillMaxWidth
-import ink.pmc.interactive.inventory.modifiers.height
+import ink.pmc.interactive.api.inventory.components.Item
+import ink.pmc.interactive.api.inventory.components.Spacer
+import ink.pmc.interactive.api.inventory.components.canvases.Chest
+import ink.pmc.interactive.api.inventory.jetpack.Arrangement
+import ink.pmc.interactive.api.inventory.layout.Box
+import ink.pmc.interactive.api.inventory.layout.Column
+import ink.pmc.interactive.api.inventory.layout.Row
+import ink.pmc.interactive.api.inventory.modifiers.Modifier
+import ink.pmc.interactive.api.inventory.modifiers.click.clickable
+import ink.pmc.interactive.api.inventory.modifiers.fillMaxSize
+import ink.pmc.interactive.api.inventory.modifiers.fillMaxWidth
+import ink.pmc.interactive.api.inventory.modifiers.height
 import ink.pmc.utils.time.ticks
 import ink.pmc.utils.visual.*
 import kotlinx.coroutines.delay
@@ -36,7 +35,6 @@ class ExampleScreen1(private val player: Player) : Screen {
 
     @Composable
     override fun Content() {
-        val owner = LocalInvOwner.current
         var title by rememberSaveable { mutableStateOf(0.0) }
 
         LaunchedEffect(Unit) {
@@ -55,7 +53,6 @@ class ExampleScreen1(private val player: Player) : Screen {
             viewers = setOf(player),
             title = Component.text("测试页面 1 | 服务器内存使用率 $title%"),
             modifier = Modifier.fillMaxSize(),
-            onClose = { owner.exit() },
         ) {
             Column(modifier = Modifier.fillMaxSize()) {
                 InnerContents()
@@ -66,7 +63,6 @@ class ExampleScreen1(private val player: Player) : Screen {
     @Composable
     @Suppress("FunctionName")
     private fun InnerContents() {
-        val owner = LocalInvOwner.current
         val navigator = LocalNavigator.currentOrThrow
         var arrange by rememberSaveable { mutableStateOf(Arrangement.Start) }
 
@@ -93,7 +89,6 @@ class ExampleScreen1(private val player: Player) : Screen {
                     name = component { text("关闭菜单") with mochaMaroon without italic() },
                     modifier = Modifier.clickable {
                         player.closeInventory()
-                        owner.exit()
                     }
                 )
                 Item(
