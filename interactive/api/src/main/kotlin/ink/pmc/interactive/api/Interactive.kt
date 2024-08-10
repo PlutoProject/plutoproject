@@ -7,7 +7,7 @@ import org.bukkit.entity.Player
 
 interface Interactive {
 
-    companion object : Interactive by inlinedGet<Interactive>()
+    companion object : Interactive by inlinedGet()
 
     fun get(player: Player): Session<*>?
 

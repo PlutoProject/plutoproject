@@ -31,7 +31,7 @@ class InteractiveImpl : Interactive {
     }
 
     init {
-        interactiveScope.launch {
+        interactiveScope.launch(coroutineContext) {
             recomposer.runRecomposeAndApplyChanges()
         }
     }

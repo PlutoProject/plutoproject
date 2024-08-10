@@ -11,7 +11,7 @@ import ink.pmc.utils.inject.inlinedGet
 @Suppress("UNUSED")
 interface Essentials {
 
-    companion object : Essentials by inlinedGet<Essentials>()
+    companion object : Essentials by inlinedGet()
 
     val teleportManager: TeleportManager
     val backManager: BackManager

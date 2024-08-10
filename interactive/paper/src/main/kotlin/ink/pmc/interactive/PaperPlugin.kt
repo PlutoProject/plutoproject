@@ -9,7 +9,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.get
+import org.koin.core.component.inject
 import org.koin.dsl.module
 
 val interactiveScope = CoroutineScope(Dispatchers.Default)
@@ -21,12 +21,13 @@ private val bukkitModule = module {
 @Suppress("UNUSED")
 class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
 
-    private val interactive = get<Interactive>()
+    private val interactive by inject<Interactive>()
 
     override suspend fun onEnableAsync() {
         startKoinIfNotPresent {
             modules(bukkitModule)
         }
+        interactive // 初始化
         server.pluginManager.registerSuspendingEvents(InvListener, this)
     }
 
