@@ -39,44 +39,47 @@ class InventorySessionImpl(
     InventorySession, KoinComponent {
 
     private val manager by lazy { get<Interactive>() }
+    private val clickHandler = object : ClickHandler {
+        val rootNode = applier.current
+        override fun processClick(scope: ClickScope): ClickResult {
+            val slot = scope.slot
+            val width = rootNode.width
+            return rootNode.children.fold(ClickResult()) { acc, node ->
+                val w = node.width
+                val x = if (w == 0) 0 else slot % width
+                val y = if (w == 0) 0 else slot / width
+                acc.mergeWith(rootNode.processClick(scope, x, y))
+            }
+        }
+
+        override fun processDrag(scope: DragScope) {
+            rootNode.processDrag(scope)
+        }
+    }
 
     override var composition: Composition = launchComposition()
 
     private fun launchComposition(): Composition {
-        return Composition(applier, recomposer).apply {
-            setContent {
-                runCatching {
-                    if (stateHolder == null) stateHolder = rememberSaveableStateHolder()
-                    stateHolder?.SaveableStateProvider(id) {
-                        CompositionLocalProvider(
-                            LocalSessionProvider provides this@InventorySessionImpl,
-                            LocalClickHandler provides object : ClickHandler {
-                                val rootNode = applier.current
-                                override fun processClick(scope: ClickScope): ClickResult {
-                                    val slot = scope.slot
-                                    val width = rootNode.width
-                                    return rootNode.children.fold(ClickResult()) { acc, node ->
-                                        val w = node.width
-                                        val x = if (w == 0) 0 else slot % width
-                                        val y = if (w == 0) 0 else slot / width
-                                        acc.mergeWith(rootNode.processClick(scope, x, y))
-                                    }
-                                }
+        val composition = Composition(applier, recomposer)
 
-                                override fun processDrag(scope: DragScope) {
-                                    rootNode.processDrag(scope)
-                                }
-                            }
-                        ) {
-                            contents()
-                        }
+        composition.setContent {
+            runCatching {
+                if (stateHolder == null) stateHolder = rememberSaveableStateHolder()
+                stateHolder?.SaveableStateProvider(id) {
+                    CompositionLocalProvider(
+                        LocalSessionProvider provides this@InventorySessionImpl,
+                        LocalClickHandler provides clickHandler
+                    ) {
+                        contents()
                     }
-                }.onFailure {
-                    renderFailedCallback(it)
                 }
+            }.onFailure {
+                renderFailedCallback(it)
             }
-            state = SessionState.WORKING
         }
+
+        state = SessionState.WORKING
+        return composition
     }
 
     init {
