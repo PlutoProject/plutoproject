@@ -1,9 +1,9 @@
-package ink.pmc.interactive.form.types
+package ink.pmc.interactive.api.form.types
 
 import ink.pmc.interactive.api.form.FormNode
 import ink.pmc.interactive.api.form.FormResultHandler
 import ink.pmc.interactive.api.form.RootFormNode
-import ink.pmc.interactive.form.legacySerializer
+import ink.pmc.interactive.api.form.legacySerializer
 import ink.pmc.utils.bedrock.useFallbackColors
 import net.kyori.adventure.text.Component
 import org.geysermc.cumulus.form.SimpleForm
@@ -12,10 +12,10 @@ import org.geysermc.floodgate.api.player.FloodgatePlayer
 import java.util.*
 
 @Suppress("UNUSED")
-class SimpleFormNode(
-    override val title: Component,
-    private val content: Component,
-    override val resultHandler: FormResultHandler<SimpleForm, SimpleFormResponse>,
+internal class SimpleFormNode(
+    override var title: Component,
+    internal var content: Component,
+    override var resultHandler: FormResultHandler<SimpleForm, SimpleFormResponse>,
 ) : RootFormNode<SimpleForm.Builder, SimpleForm, SimpleFormResponse> {
 
     override val children: LinkedList<FormNode<SimpleForm.Builder, SimpleForm>> = LinkedList()

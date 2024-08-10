@@ -9,6 +9,9 @@ import org.bukkit.entity.Player
 @Suppress("UNUSED")
 val LocalInteractiveScope: ProvidableCompositionLocal<InteractiveScope<*>> =
     staticCompositionLocalOf { error("InteractiveScope not provided") }
+@Suppress("UNUSED")
+val LocalPlayer: ProvidableCompositionLocal<Player> =
+    staticCompositionLocalOf { error("Player not provided") }
 
 @Suppress("UNUSED")
 interface InteractiveScope<T> : CoroutineScope {

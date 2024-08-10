@@ -13,7 +13,7 @@ import org.bukkit.entity.Player
 import kotlin.coroutines.CoroutineContext
 
 @Suppress("UNUSED")
-abstract class AbstractScope<T>(
+abstract class BaseScope<T>(
     override val owner: Player,
     private val contents: ComposableFunction
 ) : InteractiveScope<T> {
