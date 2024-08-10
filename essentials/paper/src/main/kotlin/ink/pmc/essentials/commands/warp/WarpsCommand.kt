@@ -5,7 +5,7 @@ import ink.pmc.essentials.Cm
 import ink.pmc.essentials.VIEWER_PAGING_SOUND
 import ink.pmc.essentials.commands.checkPlayer
 import ink.pmc.essentials.screens.WarpViewerScreen
-import ink.pmc.interactive.inventory.canvas.inv
+import ink.pmc.interactive.api.Interactive
 import ink.pmc.utils.annotation.Command
 import ink.pmc.utils.dsl.cloud.invoke
 import ink.pmc.utils.dsl.cloud.sender
@@ -17,7 +17,9 @@ fun Cm.warps(aliases: Array<String>) {
         permission("essentials.warps")
         handler {
             checkPlayer(sender.sender) {
-                inv { Navigator(WarpViewerScreen(this)) }
+                Interactive.startInventory(this) {
+                    Navigator(WarpViewerScreen(this))
+                }
                 playSound(VIEWER_PAGING_SOUND)
             }
         }

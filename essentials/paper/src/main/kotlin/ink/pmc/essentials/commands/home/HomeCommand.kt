@@ -5,7 +5,7 @@ import ink.pmc.essentials.*
 import ink.pmc.essentials.api.Essentials
 import ink.pmc.essentials.commands.checkPlayer
 import ink.pmc.essentials.screens.HomeViewerScreen
-import ink.pmc.interactive.inventory.canvas.inv
+import ink.pmc.interactive.api.Interactive
 import ink.pmc.utils.annotation.Command
 import ink.pmc.utils.chat.NO_PERMISSON
 import ink.pmc.utils.chat.replace
@@ -46,7 +46,9 @@ fun Cm.home(aliases: Array<String>) {
                 if (name == null) {
                     val preferred = manager.getPreferredHome(this)
                     if (preferred == null) {
-                        inv { Navigator(HomeViewerScreen(this, this)) }
+                        Interactive.startInventory(this) {
+                            Navigator(HomeViewerScreen(this, this))
+                        }
                         playSound(VIEWER_PAGING_SOUND)
                         return@checkPlayer
                     }

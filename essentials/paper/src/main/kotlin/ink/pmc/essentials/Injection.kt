@@ -1,7 +1,7 @@
 package ink.pmc.essentials
 
 import ink.pmc.essentials.afk.AfkManagerImpl
-import ink.pmc.essentials.api.IEssentials
+import ink.pmc.essentials.api.Essentials
 import ink.pmc.essentials.api.afk.AfkManager
 import ink.pmc.essentials.api.back.BackManager
 import ink.pmc.essentials.api.home.HomeManager
@@ -20,11 +20,11 @@ import ink.pmc.essentials.warp.WarpManagerImpl
 import org.koin.dsl.module
 import org.koin.java.KoinJavaComponent.getKoin
 
-private val ess by lazy { getKoin().get<IEssentials>() }
+private val ess by lazy { getKoin().get<Essentials>() }
 
 val appModule = module {
     single { EssentialsConfig(fileConfig) }
-    single<IEssentials> { EssentialsImpl() }
+    single<Essentials> { EssentialsImpl() }
     single<HomeRepository> { HomeRepository() }
     single<WarpRepository> { WarpRepository() }
     single<BackRepository> { BackRepository() }

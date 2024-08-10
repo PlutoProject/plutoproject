@@ -5,7 +5,7 @@ import ink.pmc.essentials.*
 import ink.pmc.essentials.api.Essentials
 import ink.pmc.essentials.commands.checkPlayer
 import ink.pmc.essentials.screens.WarpViewerScreen
-import ink.pmc.interactive.inventory.canvas.inv
+import ink.pmc.interactive.api.Interactive
 import ink.pmc.utils.annotation.Command
 import ink.pmc.utils.chat.replace
 import ink.pmc.utils.dsl.cloud.invoke
@@ -25,7 +25,9 @@ fun Cm.warp(aliases: Array<String>) {
                 val input = optional<String>("name").getOrNull()
 
                 if (input == null) {
-                    inv { Navigator(WarpViewerScreen(this)) }
+                    Interactive.startInventory(this) {
+                        Navigator(WarpViewerScreen(this))
+                    }
                     playSound(VIEWER_PAGING_SOUND)
                     return@checkPlayer
                 }

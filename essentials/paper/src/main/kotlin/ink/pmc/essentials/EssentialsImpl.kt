@@ -1,6 +1,6 @@
 package ink.pmc.essentials
 
-import ink.pmc.essentials.api.IEssentials
+import ink.pmc.essentials.api.Essentials
 import ink.pmc.essentials.api.afk.AfkManager
 import ink.pmc.essentials.api.back.BackManager
 import ink.pmc.essentials.api.home.HomeManager
@@ -12,7 +12,7 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
 @Suppress("UNUSED")
-class EssentialsImpl : IEssentials, KoinComponent {
+class EssentialsImpl : Essentials, KoinComponent {
 
     private val config by inject<EssentialsConfig>()
     override val teleportManager by inject<TeleportManager>()
