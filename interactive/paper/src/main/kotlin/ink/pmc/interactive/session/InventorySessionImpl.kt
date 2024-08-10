@@ -83,7 +83,7 @@ class InventorySessionImpl(
                     measure(Constraints())
                     render()
                 }
-                delay(5)
+                delay(1)
             }
         }
     }

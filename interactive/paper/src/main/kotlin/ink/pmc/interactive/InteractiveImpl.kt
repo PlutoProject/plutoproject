@@ -5,11 +5,11 @@ import androidx.compose.runtime.Recomposer
 import androidx.compose.runtime.snapshots.Snapshot
 import ink.pmc.interactive.api.ComposableFunction
 import ink.pmc.interactive.api.Interactive
+import ink.pmc.interactive.api.session.InventorySession
 import ink.pmc.interactive.api.session.Session
 import ink.pmc.interactive.api.session.SessionState
-import ink.pmc.interactive.api.inventory.layout.LayoutNode
-import ink.pmc.interactive.api.session.InventorySession
 import ink.pmc.interactive.session.InventorySessionImpl
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import org.bukkit.entity.Player
 
@@ -59,7 +59,9 @@ class InteractiveImpl : Interactive {
     override fun dispose() {
         sessions.forEach { it.close() }
         recomposer.close()
+        frameClock.cancel()
         observerHandle.dispose()
+        coroutineContext.cancel()
     }
 
 }
