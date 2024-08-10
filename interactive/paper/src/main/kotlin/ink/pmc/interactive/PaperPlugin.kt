@@ -21,15 +21,17 @@ private val bukkitModule = module {
 @Suppress("UNUSED")
 class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
 
+    private val interactive = get<Interactive>()
+
     override suspend fun onEnableAsync() {
         startKoinIfNotPresent {
             modules(bukkitModule)
         }
-        get<Interactive>() // 初始化 Interactive
         server.pluginManager.registerSuspendingEvents(InvListener, this)
     }
 
     override suspend fun onDisableAsync() {
+        interactive.dispose()
         interactiveScope.cancel()
     }
 

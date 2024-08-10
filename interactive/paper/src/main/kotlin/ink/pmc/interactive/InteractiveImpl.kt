@@ -30,6 +30,12 @@ class InteractiveImpl : Interactive {
         }
     }
 
+    init {
+        interactiveScope.launch {
+            recomposer.runRecomposeAndApplyChanges()
+        }
+    }
+
     override fun get(player: Player): Session<*>? {
         return sessions.firstOrNull { it.owner == player }
     }
