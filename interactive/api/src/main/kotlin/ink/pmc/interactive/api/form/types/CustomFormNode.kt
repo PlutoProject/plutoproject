@@ -23,6 +23,7 @@ internal class CustomFormNode(
     override fun render(player: FloodgatePlayer) {
         CustomForm.builder()
             .title(bedrockSerializer.serialize(title.useBedrockColors()))
+            .resultHandler(resultHandler)
             .apply { children.forEach { it.builder(this) } }
             .build()
             .also { player.sendForm(it) }

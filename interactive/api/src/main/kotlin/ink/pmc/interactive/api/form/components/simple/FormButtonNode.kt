@@ -12,6 +12,7 @@ import java.util.*
 internal class FormButtonNode(
     internal var text: Component,
     internal var image: FormImage?,
+    internal var onClick: SimpleFormButtonHandler
 ) : FormNode<SimpleForm.Builder, SimpleForm> {
 
     override val children: LinkedList<FormNode<SimpleForm.Builder, SimpleForm>> = LinkedList()

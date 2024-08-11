@@ -1,6 +1,7 @@
 package ink.pmc.interactive.form
 
 import androidx.compose.runtime.AbstractApplier
+import androidx.compose.runtime.currentComposer
 import ink.pmc.interactive.api.form.FormNode
 import org.geysermc.cumulus.form.Form
 
@@ -29,6 +30,7 @@ class FormNodeApplier<B, F : Form>(root: FormNode<B, F>, private val endChangesC
     }
 
     override fun remove(index: Int, count: Int) {
+        if (current.children.getOrNull(index) == null) return
         current.children.remove(index, count)
     }
 

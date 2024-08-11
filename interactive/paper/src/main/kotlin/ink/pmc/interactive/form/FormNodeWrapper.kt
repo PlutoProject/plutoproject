@@ -1,6 +1,7 @@
 package ink.pmc.interactive.form
 
 import ink.pmc.interactive.api.form.GeneralFormNode
+import ink.pmc.interactive.api.form.RootFormNode
 import org.geysermc.floodgate.api.player.FloodgatePlayer
 import java.util.*
 
@@ -10,7 +11,7 @@ class FormNodeWrapper : GeneralFormNode {
 
     override val children: LinkedList<GeneralFormNode> = object : LinkedList<GeneralFormNode>() {
         override fun add(element: GeneralFormNode): Boolean {
-            return if (actual == null) {
+            return if (element is RootFormNode<*, *, *>) {
                 actual = element
                 true
             } else {
@@ -19,7 +20,7 @@ class FormNodeWrapper : GeneralFormNode {
         }
 
         override fun add(index: Int, element: GeneralFormNode) {
-            if (actual == null) {
+            if (element is RootFormNode<*, *, *>) {
                 actual = element
             } else {
                 super.add(element)

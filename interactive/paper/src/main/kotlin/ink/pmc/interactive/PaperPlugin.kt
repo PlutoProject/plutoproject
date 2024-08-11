@@ -30,6 +30,7 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
         startKoinIfNotPresent {
             modules(bukkitModule)
         }
+        server.pluginManager.registerSuspendingEvents(GuiListener, this)
         server.pluginManager.registerSuspendingEvents(InventoryListener, this)
     }
 

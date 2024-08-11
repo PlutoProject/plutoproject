@@ -35,20 +35,24 @@ class GuiImpl : Gui {
         return getForm(player) != null
     }
 
-    private fun checkExistedScope(player: Player) {
-        check(!has(player)) { "Player ${player.name} has unfinished GUI scope" }
+    private fun disposeExistedScope(player: Player) {
+        if (!has(player)) return
+        plugin.logger.warning("Player ${player.name} has running Inventory/Form scope, disposing it before launch another")
+        dispose(player)
     }
 
     override fun startInventory(player: Player, contents: ComposableFunction): GuiInventoryScope {
-        checkExistedScope(player)
+        disposeExistedScope(player)
         return InventoryScope(player, contents).also {
             inventoryScopes[player] = it
         }
     }
 
     override fun startForm(player: Player, contents: ComposableFunction): GuiFormScope {
-        checkExistedScope(player)
-        return FormScope(player, contents)
+        disposeExistedScope(player)
+        return FormScope(player, contents).also {
+            formScopes[player] = it
+        }
     }
 
     override fun removeScope(scope: GuiScope<*>) {

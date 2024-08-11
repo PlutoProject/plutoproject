@@ -27,6 +27,7 @@ class FormScope(
         get() = pendingRefreshError()
     override val rootNode: GeneralFormNode = FormNodeWrapper()
     override val nodeApplier: Applier<GeneralFormNode> = FormNodeApplier(rootNode) {
+        if (isDisposed) return@FormNodeApplier
         val player = checkNotNull(floodgateApi.getPlayer(owner.uniqueId)) {
             dispose()
             "Forms can only render to a Floodgate player"

@@ -16,8 +16,9 @@ fun ModalForm(
     content: Component = Component.empty(),
     button1: Component = Component.empty(),
     button2: Component = Component.empty(),
+    onButton1: ModalResultHandler = { _, _ -> },
+    onButton2: ModalResultHandler = { _, _ -> },
     resultHandler: FormResultHandler<ModalForm, ModalFormResponse> = { _, _ -> },
-    contents: ComposableFunction
 ) {
     ComposeNode<ModalFormNode, Applier<ModalFormNode>>(
         factory = {
@@ -26,6 +27,8 @@ fun ModalForm(
                 content = content,
                 button1 = button1,
                 button2 = button2,
+                onButton1 = onButton1,
+                onButton2 = onButton2,
                 resultHandler = resultHandler
             )
         },
@@ -34,8 +37,9 @@ fun ModalForm(
             set(content) { this.content = it }
             set(button1) { this.button1 = it }
             set(button2) { this.button2 = it }
+            set(onButton1) { this.onButton1 = it }
+            set(onButton2) { this.onButton2 = it }
             set(resultHandler) { this.resultHandler = it }
-        },
-        content = contents
+        }
     )
 }

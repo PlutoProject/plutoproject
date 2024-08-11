@@ -26,7 +26,6 @@ import ink.pmc.utils.visual.mochaRed
 import ink.pmc.utils.visual.mochaSubtext0
 import net.kyori.adventure.text.Component
 import org.bukkit.Material
-import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
 class ExampleScreen2 : Screen {

@@ -27,6 +27,7 @@ class InventoryScope(owner: Player, contents: ComposableFunction) : BaseScope<In
 
     override val rootNode: InventoryNode = InventoryNode()
     override val nodeApplier: Applier<InventoryNode> = InventoryNodeApplier(rootNode) {
+        if (isDisposed) return@InventoryNodeApplier
         runCatching {
             render()
             hasFrameWaiters = false

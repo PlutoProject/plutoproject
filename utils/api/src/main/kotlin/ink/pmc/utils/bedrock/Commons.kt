@@ -65,10 +65,7 @@ val bedrockFormats = listOf(
     CharacterAndFormat.characterAndFormat('u', mochaMantle)
 )
 
-val bedrockSerializer = LegacyComponentSerializer.builder()
-    .character('§')
-    .formats(bedrockFormats)
-    .build()
+val bedrockSerializer = LegacyComponentSerializer.legacySection()
 
 fun Component.useBedrockColors(): Component {
     return bedrockColorMappings.entries.fold(this) { currentComponent, it ->

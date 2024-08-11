@@ -2,7 +2,6 @@ package ink.pmc.interactive.inventory
 
 import ink.pmc.interactive.api.inventory.canvas.GuiInventoryHolder
 import ink.pmc.interactive.api.inventory.modifiers.click.ClickScope
-import ink.pmc.utils.concurrent.submitSync
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
