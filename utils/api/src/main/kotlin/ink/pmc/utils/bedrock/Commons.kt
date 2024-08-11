@@ -12,7 +12,7 @@ import java.util.*
 
 val floodgateApi: FloodgateApi?
     get() {
-        if (!velocityHasFloodgateSupport()) return null
+        // if (!velocityHasFloodgateSupport()) return null
         return FloodgateApi.getInstance()
     }
 
