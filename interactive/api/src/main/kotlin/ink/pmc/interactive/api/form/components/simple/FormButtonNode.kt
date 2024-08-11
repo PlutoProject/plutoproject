@@ -1,4 +1,4 @@
-package ink.pmc.interactive.api.form.components
+package ink.pmc.interactive.api.form.components.simple
 
 import ink.pmc.interactive.api.form.FormNode
 import ink.pmc.interactive.api.form.legacySerializer
@@ -9,7 +9,7 @@ import org.geysermc.cumulus.util.FormImage
 import org.geysermc.floodgate.api.player.FloodgatePlayer
 import java.util.*
 
-internal class SimpleButtonNode(
+internal class FormButtonNode(
     internal var text: Component,
     internal var image: FormImage?,
 ) : FormNode<SimpleForm.Builder, SimpleForm> {

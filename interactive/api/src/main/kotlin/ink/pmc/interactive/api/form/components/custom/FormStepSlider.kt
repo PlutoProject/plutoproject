@@ -1,27 +1,29 @@
-package ink.pmc.interactive.api.form.components
+package ink.pmc.interactive.api.form.components.custom
 
 import androidx.compose.runtime.Applier
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ComposeNode
 import net.kyori.adventure.text.Component
-import org.geysermc.cumulus.util.FormImage
 
 @Composable
 @Suppress("FunctionName")
-fun SimpleButton(
+fun FormStepSlider(
     text: Component = Component.empty(),
-    image: FormImage? = null,
+    steps: Collection<String> = listOf(),
+    defaultStep: Int = 0
 ) {
-    ComposeNode<SimpleButtonNode, Applier<Any>>(
+    ComposeNode<FormStepSliderNode, Applier<Any>>(
         factory = {
-            SimpleButtonNode(
+            FormStepSliderNode(
                 text = text,
-                image = image
+                steps = steps,
+                defaultStep = defaultStep
             )
         },
         update = {
             set(text) { this.text = it }
-            set(image) { this.image = it }
+            set(steps) { this.steps = it }
+            set(defaultStep) { this.defaultStep = it }
         }
     )
 }
