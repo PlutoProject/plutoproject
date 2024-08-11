@@ -52,20 +52,29 @@ val bedrockColorMappings = mapOf(
     mochaMantle to materialAmethyst
 )
 
-val bedrockFormats = listOf(
-    CharacterAndFormat.characterAndFormat('h', mochaOverlay2),
-    CharacterAndFormat.characterAndFormat('i', mochaOverlay1),
-    CharacterAndFormat.characterAndFormat('j', mochaOverlay0),
-    CharacterAndFormat.characterAndFormat('m', mochaRosewater),
-    CharacterAndFormat.characterAndFormat('n', mochaFlamingo),
-    CharacterAndFormat.characterAndFormat('p', mochaSurface2),
-    CharacterAndFormat.characterAndFormat('q', mochaSurface1),
-    CharacterAndFormat.characterAndFormat('s', mochaSurface0),
-    CharacterAndFormat.characterAndFormat('t', mochaBase),
-    CharacterAndFormat.characterAndFormat('u', mochaMantle)
+private val customFormats = listOf(
+    CharacterAndFormat.characterAndFormat('h', mochaOverlay2, true),
+    CharacterAndFormat.characterAndFormat('i', mochaOverlay1, true),
+    CharacterAndFormat.characterAndFormat('j', mochaOverlay0, true),
+    CharacterAndFormat.characterAndFormat('m', mochaRosewater, true),
+    CharacterAndFormat.characterAndFormat('n', mochaFlamingo, true),
+    CharacterAndFormat.characterAndFormat('p', mochaSurface2, true),
+    CharacterAndFormat.characterAndFormat('q', mochaSurface1, true),
+    CharacterAndFormat.characterAndFormat('s', mochaSurface0, true),
+    CharacterAndFormat.characterAndFormat('t', mochaBase, true),
+    CharacterAndFormat.characterAndFormat('u', mochaMantle, true)
 )
 
-val bedrockSerializer = LegacyComponentSerializer.legacySection()
+val bedrockFormats = mutableListOf<CharacterAndFormat>().apply {
+    addAll(CharacterAndFormat.defaults())
+    addAll(customFormats)
+}
+
+val bedrockSerializer = LegacyComponentSerializer.builder()
+    .character('§')
+    .hexCharacter('#')
+    .formats(bedrockFormats)
+    .build()
 
 fun Component.useBedrockColors(): Component {
     return bedrockColorMappings.entries.fold(this) { currentComponent, it ->
