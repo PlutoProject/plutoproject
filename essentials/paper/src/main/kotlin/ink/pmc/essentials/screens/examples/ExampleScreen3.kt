@@ -6,7 +6,6 @@ import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.navigator.LocalNavigator
 import ink.pmc.advkt.component.component
 import ink.pmc.advkt.component.text
-import ink.pmc.interactive.api.LocalGuiScope
 import ink.pmc.interactive.api.form.components.simple.FormButton
 import ink.pmc.interactive.api.form.types.SimpleForm
 import ink.pmc.utils.visual.mochaGreen
@@ -19,14 +18,10 @@ class ExampleScreen3 : Screen {
 
     @Composable
     override fun Content() {
-        val scope = LocalGuiScope.current
         SimpleForm(
             title = component { text("你好") with mochaGreen },
-            content = component { text("欢迎使用菜单") },
-            resultHandler = { _, r ->
-                if (r.isClosed) scope.dispose()
-            }
-        ) {
+            content = component { text("欢迎使用菜单") })
+        {
             InnerContents()
         }
     }

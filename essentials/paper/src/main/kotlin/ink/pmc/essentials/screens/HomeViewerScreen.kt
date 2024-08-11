@@ -42,7 +42,7 @@ class HomeViewerScreen(private val viewing: OfflinePlayer) : Screen {
 
     override val key: ScreenKey = "essentials_home_viewer_${viewing.uniqueId}"
 
-    enum class State {
+    private enum class State {
         LOADING, VIEWING, VIEWING_EMPTY
     }
 

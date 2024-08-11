@@ -28,9 +28,6 @@ class ExampleScreen4(private val id: Int) : Screen {
             },
             onButton2 = { _, _ ->
                 scope.dispose()
-            },
-            resultHandler = { _, r ->
-                if (r.isClosed) scope.dispose()
             }
         )
     }

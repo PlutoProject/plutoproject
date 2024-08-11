@@ -685,12 +685,14 @@ val UI_VIEWER_EMPTY = component {
     text("这里空空如也") with mochaText without italic()
 }
 
+private val UI_HOME_EMPTY_PRMPT = component {
+    text("通过「手账」或 ") with mochaSubtext0 without italic()
+    text("/sethome ") with mochaLavender without italic()
+    text("以留下你的足迹") with mochaSubtext0 without italic()
+}
+
 val UI_HOME_EMPTY_LORE = listOf(
-    component {
-        text("通过「手账」或 ") with mochaSubtext0 without italic()
-        text("/sethome ") with mochaLavender without italic()
-        text("以留下你的足迹") with mochaSubtext0 without italic()
-    }
+    UI_HOME_EMPTY_PRMPT
 )
 
 val UI_HOME_EMPTY_LORE_OTHER = listOf(
@@ -962,4 +964,43 @@ val UI_HOME_EDITOR_RENAME_SAVED = listOf(
 
 val UI_HOME_EDITOR_RENAME_INVALID_SOUND = sound {
     key(Key.key("block.note_block.didgeridoo"))
+}
+
+val FORM_VIEWER_LOADING = component {
+    text("正在加载中，马上就好...") with mochaText
+}
+
+val FORM_HOME_VIEWER_HEADER = component {
+    text("你一共有 ") with mochaSubtext0
+    text("<total> ") with mochaText
+    text("个家，此处将每页展示 ") with mochaSubtext0
+    text("<page> ") with mochaText
+    text("个") with mochaSubtext0
+    newline()
+    text("页 ") with mochaSubtext0
+    text("<curr>/<max>") with mochaText
+}
+
+val FORM_VIEWER_HEADER_EMPTY = component {
+    raw(UI_VIEWER_EMPTY)
+    raw(UI_HOME_EMPTY_PRMPT)
+}
+
+val FORM_VIEWER_PREVIOUS = component {
+    text("上一页")
+}
+
+val FORM_VIEWER_NEXT = component {
+    text("下一页")
+}
+
+@Suppress("FunctionName")
+fun FORM_HOME_ITEM(home: Home) = component {
+    val conf = getKoin().get<EssentialsConfig>().WorldAliases()
+    val loc = home.location
+    text("${home.name} (<world> <x>, <y>, <z>)"
+        .replace("<world>", conf[loc.world])
+        .replace("<x>", "${loc.blockX}")
+        .replace("<y>", "${loc.blockY}")
+        .replace("<z>", "${loc.blockZ}"))
 }
