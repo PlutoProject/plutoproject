@@ -5,6 +5,7 @@ import ink.pmc.utils.visual.*
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextColor
 import net.kyori.adventure.text.serializer.legacy.CharacterAndFormat
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import java.lang.reflect.Method
 import java.util.*
 
@@ -62,22 +63,6 @@ val bedrockColorMapping = mapOf(
 )
 
 val bedrockFormats = listOf(
-    CharacterAndFormat.characterAndFormat('a', mochaGreen),
-    CharacterAndFormat.characterAndFormat('b', mochaSapphire),
-    CharacterAndFormat.characterAndFormat('c', mochaMaroon),
-    CharacterAndFormat.characterAndFormat('d', mochaMauve),
-    CharacterAndFormat.characterAndFormat('e', mochaYellow),
-    CharacterAndFormat.characterAndFormat('f', mochaText),
-    CharacterAndFormat.characterAndFormat('0', mochaCrust),
-    CharacterAndFormat.characterAndFormat('1', mochaLavender),
-    CharacterAndFormat.characterAndFormat('2', mochaTeal),
-    CharacterAndFormat.characterAndFormat('3', mochaSky),
-    CharacterAndFormat.characterAndFormat('4', mochaRed),
-    CharacterAndFormat.characterAndFormat('5', mochaPink),
-    CharacterAndFormat.characterAndFormat('6', mochaPeach),
-    CharacterAndFormat.characterAndFormat('7', mochaSubtext1),
-    CharacterAndFormat.characterAndFormat('8', mochaSubtext0),
-    CharacterAndFormat.characterAndFormat('9', mochaBlue),
     CharacterAndFormat.characterAndFormat('h', mochaOverlay2),
     CharacterAndFormat.characterAndFormat('i', mochaOverlay1),
     CharacterAndFormat.characterAndFormat('j', mochaOverlay0),
@@ -89,3 +74,8 @@ val bedrockFormats = listOf(
     CharacterAndFormat.characterAndFormat('t', mochaBase),
     CharacterAndFormat.characterAndFormat('u', mochaMantle)
 )
+
+val bedrockSerializer = LegacyComponentSerializer.builder()
+    .character('§')
+    .formats(bedrockFormats)
+    .build()

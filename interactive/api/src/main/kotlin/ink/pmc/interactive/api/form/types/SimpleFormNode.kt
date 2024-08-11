@@ -3,7 +3,7 @@ package ink.pmc.interactive.api.form.types
 import ink.pmc.interactive.api.form.FormNode
 import ink.pmc.interactive.api.form.FormResultHandler
 import ink.pmc.interactive.api.form.RootFormNode
-import ink.pmc.interactive.api.form.legacySerializer
+import ink.pmc.utils.bedrock.bedrockSerializer
 import ink.pmc.utils.bedrock.useFallbackColors
 import net.kyori.adventure.text.Component
 import org.geysermc.cumulus.form.SimpleForm
@@ -23,8 +23,8 @@ internal class SimpleFormNode(
 
     override fun render(player: FloodgatePlayer) {
         SimpleForm.builder()
-            .title(legacySerializer.serialize(title.useFallbackColors()))
-            .content(legacySerializer.serialize(content.useFallbackColors()))
+            .title(bedrockSerializer.serialize(title.useFallbackColors()))
+            .content(bedrockSerializer.serialize(content.useFallbackColors()))
             .apply { children.forEach { it.builder(this) } }
             .build()
             .also { player.sendForm(it) }
