@@ -27,7 +27,12 @@ class InventoryNodeApplier(root: InventoryNode, private val endChangesCallback: 
     }
 
     override fun onClear() {
-        current.children.clear()
+        /*
+         关闭菜单时，Compose 会使用此处的逻辑进行清理。
+         若是因点击事件关闭菜单，在遍历子节点处理点击事件时，Compose 也会异步清理掉所有子节点，
+         从而引发 ConcurrentModificationException。
+         此处的解决方法是不清理节点列表，等 Composition 退出后会自己被回收。
+        */
     }
 
     override fun remove(index: Int, count: Int) {

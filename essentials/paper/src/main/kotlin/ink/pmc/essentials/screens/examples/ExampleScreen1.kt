@@ -9,6 +9,7 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import ink.pmc.advkt.component.component
 import ink.pmc.advkt.component.italic
 import ink.pmc.advkt.component.text
+import ink.pmc.interactive.api.LocalPlayer
 import ink.pmc.interactive.api.inventory.components.Item
 import ink.pmc.interactive.api.inventory.components.Spacer
 import ink.pmc.interactive.api.inventory.components.canvases.Chest
@@ -26,10 +27,9 @@ import ink.pmc.utils.visual.*
 import kotlinx.coroutines.delay
 import net.kyori.adventure.text.Component
 import org.bukkit.Material
-import org.bukkit.entity.Player
 import kotlin.math.floor
 
-class ExampleScreen1(private val player: Player) : Screen {
+class ExampleScreen1 : Screen {
 
     override val key: ScreenKey = "essentials_example_1"
 
@@ -62,6 +62,7 @@ class ExampleScreen1(private val player: Player) : Screen {
     @Composable
     @Suppress("FunctionName")
     private fun InnerContents() {
+        val player = LocalPlayer.current
         val navigator = LocalNavigator.currentOrThrow
         var arrange by rememberSaveable { mutableStateOf(Arrangement.Start) }
 
@@ -94,7 +95,7 @@ class ExampleScreen1(private val player: Player) : Screen {
                     material = Material.GREEN_STAINED_GLASS_PANE,
                     name = component { text("去往下一页") with mochaGreen without italic() },
                     modifier = Modifier.clickable {
-                        navigator.push(ExampleScreen2(player))
+                        navigator.push(ExampleScreen2())
                     }
                 )
                 Item(

@@ -24,7 +24,7 @@ class FormScope(
 ) : BaseScope<GeneralFormNode>(owner, contents) {
 
     override val isPendingRefresh: MutableStateFlow<Boolean>
-        get() = error("Accessing refresh state of FormScope is not supported")
+        get() = pendingRefreshError()
     override val rootNode: GeneralFormNode = FormNodeWrapper()
     override val nodeApplier: Applier<GeneralFormNode> = FormNodeApplier(rootNode) {
         val player = checkNotNull(floodgateApi.getPlayer(owner.uniqueId)) {
@@ -38,6 +38,15 @@ class FormScope(
             renderExceptionCallback(it)
         }
     }
+
+    private fun pendingRefreshError(): Nothing {
+        error("Accessing refresh state of FormScope is not supported")
+    }
+
+    override fun setPendingRefreshIfNeeded(state: Boolean) {
+        pendingRefreshError()
+    }
+
     override val composition: Composition = Composition(nodeApplier, recomposer).apply {
         setContent {
             CompositionLocalProvider(

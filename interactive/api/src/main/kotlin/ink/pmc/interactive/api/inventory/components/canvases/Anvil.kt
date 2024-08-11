@@ -49,7 +49,7 @@ fun Anvil(
                 onClick(i, s)
             }
             .also {
-                scope.isPendingRefresh.value = true
+                scope.setPendingRefreshIfNeeded(true)
                 submitSync { it.open(player) }
             }
     }

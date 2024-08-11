@@ -2,6 +2,7 @@ package ink.pmc.interactive.inventory
 
 import ink.pmc.interactive.api.inventory.canvas.GuiInventoryHolder
 import ink.pmc.interactive.api.inventory.modifiers.click.ClickScope
+import ink.pmc.utils.concurrent.submitSync
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -33,14 +34,16 @@ object InventoryListener : Listener {
 
     @EventHandler
     fun InventoryCloseEvent.e() {
-        val invHolder = inventory.holder as? GuiInventoryHolder ?: return
-        val scope = invHolder.scope
-        if (!scope.isPendingRefresh.value) {
-            invHolder.onClose(player as Player)
-            scope.dispose()
+        val holder = inventory.holder as? GuiInventoryHolder ?: return
+        val scope = holder.scope
+
+        if (scope.isPendingRefresh.value) {
+            scope.setPendingRefreshIfNeeded(false)
             return
         }
-        scope.isPendingRefresh.value = false
+
+        holder.onClose(player as Player)
+        scope.dispose()
     }
 
     @EventHandler

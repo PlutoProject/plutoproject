@@ -3,7 +3,6 @@ package ink.pmc.interactive.api
 import androidx.compose.runtime.Applier
 import androidx.compose.runtime.ProvidableCompositionLocal
 import androidx.compose.runtime.staticCompositionLocalOf
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.bukkit.entity.Player
 
@@ -23,6 +22,8 @@ interface GuiScope<T> {
     val owner: Player
     val rootNode: T
     val nodeApplier: Applier<T>
+
+    fun setPendingRefreshIfNeeded(state: Boolean)
 
     fun dispose()
 

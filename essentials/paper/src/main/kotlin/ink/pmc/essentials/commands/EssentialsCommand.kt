@@ -41,7 +41,7 @@ fun Cm.essentials(aliases: Array<String>) {
             handler {
                 checkPlayer(sender.sender) {
                     Gui.startInventory(this) {
-                        Navigator(ExampleScreen1(this))
+                        Navigator(ExampleScreen1())
                     }
                 }
             }

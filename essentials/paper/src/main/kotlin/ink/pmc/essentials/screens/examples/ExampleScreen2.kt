@@ -8,6 +8,7 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import ink.pmc.advkt.component.component
 import ink.pmc.advkt.component.italic
 import ink.pmc.advkt.component.text
+import ink.pmc.interactive.api.LocalPlayer
 import ink.pmc.interactive.api.inventory.components.Item
 import ink.pmc.interactive.api.inventory.components.Spacer
 import ink.pmc.interactive.api.inventory.components.canvases.Chest
@@ -28,7 +29,7 @@ import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
-class ExampleScreen2(private val player: Player) : Screen {
+class ExampleScreen2 : Screen {
 
     override val key: ScreenKey = "essentials_example_2"
 
@@ -47,6 +48,7 @@ class ExampleScreen2(private val player: Player) : Screen {
     @Composable
     @Suppress("FunctionName")
     private fun InnerContents() {
+        val player = LocalPlayer.current
         val navigator = LocalNavigator.currentOrThrow
         Box(modifier = Modifier.fillMaxWidth().height(1)) {
             Row(modifier = Modifier.fillMaxSize()) {
