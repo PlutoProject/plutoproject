@@ -372,6 +372,7 @@ allprojects {
         dep(provider { compose.runtimeSaveable })
         dep(rootProject.libs.voyager.navigator)
         dep(rootProject.libs.anvilGui)
+        compileOnly(rootProject.libs.floodgateApi)
     }
 
     tasks.shadowJar {

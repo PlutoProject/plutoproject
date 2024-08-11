@@ -103,7 +103,7 @@ interface Modifier {
 }
 
 /**
- * A applier in a [Modifier] chain. A CombinedModifier always contains at least two elements;
+ * A builder in a [Modifier] chain. A CombinedModifier always contains at least two elements;
  * a Modifier [outer] that wraps around the Modifier [inner].
  */
 class CombinedModifier(

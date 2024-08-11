@@ -78,36 +78,48 @@ fun interface Alignment {
         // 2D Alignments.
         @Stable
         val TopStart: Alignment = BiasAlignment(-1f, -1f)
+
         @Stable
         val TopCenter: Alignment = BiasAlignment(0f, -1f)
+
         @Stable
         val TopEnd: Alignment = BiasAlignment(1f, -1f)
+
         @Stable
         val CenterStart: Alignment = BiasAlignment(-1f, 0f)
+
         @Stable
         val Center: Alignment = BiasAlignment(0f, 0f)
+
         @Stable
         val CenterEnd: Alignment = BiasAlignment(1f, 0f)
+
         @Stable
         val BottomStart: Alignment = BiasAlignment(-1f, 1f)
+
         @Stable
         val BottomCenter: Alignment = BiasAlignment(0f, 1f)
+
         @Stable
         val BottomEnd: Alignment = BiasAlignment(1f, 1f)
 
         // 1D Alignment.Verticals.
         @Stable
         val Top: Vertical = BiasAlignment.Vertical(-1f)
+
         @Stable
         val CenterVertically: Vertical = BiasAlignment.Vertical(0f)
+
         @Stable
         val Bottom: Vertical = BiasAlignment.Vertical(1f)
 
         // 1D Alignment.Horizontals.
         @Stable
         val Start: Horizontal = BiasAlignment.Horizontal(-1f)
+
         @Stable
         val CenterHorizontally: Horizontal = BiasAlignment.Horizontal(0f)
+
         @Stable
         val End: Horizontal = BiasAlignment.Horizontal(1f)
     }

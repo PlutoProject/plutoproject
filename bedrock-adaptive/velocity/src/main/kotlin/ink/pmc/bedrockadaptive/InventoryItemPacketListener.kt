@@ -8,7 +8,7 @@ import dev.simplix.protocolize.api.listener.PacketReceiveEvent
 import dev.simplix.protocolize.api.listener.PacketSendEvent
 import dev.simplix.protocolize.data.packets.WindowItems
 import ink.pmc.utils.bedrock.isFloodgatePlayer
-import ink.pmc.utils.bedrock.useFallbackColors
+import ink.pmc.utils.bedrock.useBedrockColors
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 
 @Suppress("UNUSED")
@@ -42,7 +42,7 @@ object InventoryItemPacketListener : AbstractPacketListener<WindowItems>(
 
         if (displayName != null) {
             val displayNameJson = displayName.asJson()
-            val displayNameComponent = serializer.deserialize(displayNameJson).useFallbackColors()
+            val displayNameComponent = serializer.deserialize(displayNameJson).useBedrockColors()
             val displayNameComponentJson = serializer.serialize(displayNameComponent)
             item.displayName(ChatElement.ofJson<Any>(displayNameComponentJson))
         }
@@ -51,7 +51,7 @@ object InventoryItemPacketListener : AbstractPacketListener<WindowItems>(
 
         item.lore<Any>().forEach {
             val loreJson = it.asJson()
-            val loreComponent = serializer.deserialize(loreJson).useFallbackColors()
+            val loreComponent = serializer.deserialize(loreJson).useBedrockColors()
             val loreComponentJson = serializer.serialize(loreComponent)
             lore.add(ChatElement.ofJson<Any>(loreComponentJson))
         }

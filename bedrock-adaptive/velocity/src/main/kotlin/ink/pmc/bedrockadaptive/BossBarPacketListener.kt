@@ -22,7 +22,6 @@ object BossBarPacketListener : AbstractPacketListener<BossBarPacket>(
         if (!isFloodgatePlayer(event.player().uniqueId())) {
             return
         }
-
         replaceFallbackColor(event.packet(), "name")
     }
 

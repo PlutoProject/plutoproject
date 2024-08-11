@@ -2,8 +2,8 @@ package ink.pmc.interactive
 
 import com.github.shynixn.mccoroutine.bukkit.SuspendingJavaPlugin
 import com.github.shynixn.mccoroutine.bukkit.registerSuspendingEvents
-import ink.pmc.interactive.api.Interactive
-import ink.pmc.interactive.api.inventory.canvas.InvListener
+import ink.pmc.interactive.api.Gui
+import ink.pmc.interactive.inventory.InventoryListener
 import ink.pmc.utils.inject.startKoinIfNotPresent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -17,26 +17,25 @@ val interactiveScope = CoroutineScope(Dispatchers.Default)
 internal lateinit var plugin: JavaPlugin
 
 private val bukkitModule = module {
-    single<Interactive> { InteractiveImpl() }
+    single<Gui> { GuiImpl() }
 }
 
 @Suppress("UNUSED")
 class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
 
-    private val interactive by inject<Interactive>()
+    private val gui by inject<Gui>()
 
     override suspend fun onEnableAsync() {
         plugin = this
         startKoinIfNotPresent {
             modules(bukkitModule)
         }
-        interactive // 初始化
-        server.pluginManager.registerSuspendingEvents(InvListener, this)
-        server.pluginManager.registerSuspendingEvents(SessionListener, this)
+        server.pluginManager.registerSuspendingEvents(GuiListener, this)
+        server.pluginManager.registerSuspendingEvents(InventoryListener, this)
     }
 
     override suspend fun onDisableAsync() {
-        interactive.dispose()
+        gui.disposeAll()
         interactiveScope.cancel()
     }
 

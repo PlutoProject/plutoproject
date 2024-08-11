@@ -8,7 +8,7 @@ import ink.pmc.interactive.api.inventory.layout.MeasureResult
 import ink.pmc.interactive.api.inventory.layout.Renderer
 import ink.pmc.interactive.api.inventory.modifiers.Modifier
 import ink.pmc.interactive.api.inventory.modifiers.sizeIn
-import ink.pmc.interactive.api.inventory.nodes.InvNode
+import ink.pmc.interactive.api.inventory.nodes.BaseInventoryNode
 import net.kyori.adventure.text.Component
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
@@ -25,7 +25,7 @@ fun Item(itemStack: ItemStack, modifier: Modifier = Modifier) {
             MeasureResult(constraints.minWidth, constraints.minHeight) {}
         },
         renderer = object : Renderer {
-            override fun Canvas.render(node: InvNode) {
+            override fun Canvas.render(node: BaseInventoryNode) {
                 for (x in 0 until node.width)
                     for (y in 0 until node.height)
                         set(x, y, itemStack)

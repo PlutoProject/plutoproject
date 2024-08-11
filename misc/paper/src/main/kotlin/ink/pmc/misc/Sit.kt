@@ -1,7 +1,7 @@
 package ink.pmc.misc
 
 import ink.pmc.misc.api.sit.*
-import ink.pmc.utils.bedrock.isFloodgatePlayer
+import ink.pmc.utils.bedrock.isFloodgate
 import ink.pmc.utils.concurrent.submitAsync
 import ink.pmc.utils.entity.ensureThreadSafe
 import ink.pmc.utils.world.ensureThreadSafe
@@ -38,7 +38,6 @@ import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.persistence.PersistentDataType
 import java.util.*
 import java.util.concurrent.CopyOnWriteArraySet
-import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
 /*
@@ -81,7 +80,7 @@ fun runActionBarOverrideTask() {
     submitAsync {
         while (!disabled) {
             sitManager.sitters.forEach {
-                if (isFloodgatePlayer(it.uniqueId)) {
+                if (it.isFloodgate) {
                     it.sendActionBar(STAND_UP_BE)
                     return@forEach
                 }

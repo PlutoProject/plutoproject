@@ -4,7 +4,7 @@ import com.mongodb.client.model.Filters.eq
 import com.velocitypowered.api.command.CommandSource
 import ink.pmc.member.*
 import ink.pmc.member.api.AuthType
-import ink.pmc.utils.bedrock.disconnect
+import ink.pmc.utils.bedrock.isFloodgate
 import ink.pmc.utils.bedrock.isFloodgatePlayer
 import ink.pmc.utils.bedrock.xuid
 import ink.pmc.utils.chat.replace
@@ -25,6 +25,7 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.*
 import java.util.concurrent.CompletableFuture
+import kotlin.jvm.optionals.getOrNull
 
 object MemberCommand : VelocityCommand() {
 
@@ -141,8 +142,9 @@ object MemberCommand : VelocityCommand() {
 
             val player = proxy.getPlayer(member.id)
 
-            if (player.isPresent) {
-                player.get().disconnect(MEMBER_NOT_WHITELISTED, MEMBER_NOT_WHITELISTED_BE)
+            player.getOrNull()?.let { p ->
+                val message = if (!p.isFloodgate) MEMBER_NOT_WHITELISTED else MEMBER_NOT_WHITELISTED_BE
+                p.disconnect(message)
             }
 
             sender.sendMessage(

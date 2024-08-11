@@ -59,7 +59,8 @@ fun Modifier.fillMaxHeight(percent: Double = 1.0) = then(VerticalFillModifier(pe
 
 /** Forces element width and height to a percentage between min and max width and height constraints */
 @Stable
-fun Modifier.fillMaxSize(percent: Double = 1.0) = then(HorizontalFillModifier(percent)).then(VerticalFillModifier(percent))
+fun Modifier.fillMaxSize(percent: Double = 1.0) =
+    then(HorizontalFillModifier(percent)).then(VerticalFillModifier(percent))
 
 /**
  * Sets min and max, width and height constraints for this element.
