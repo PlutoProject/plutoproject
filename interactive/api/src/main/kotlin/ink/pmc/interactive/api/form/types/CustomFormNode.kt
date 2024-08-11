@@ -4,7 +4,7 @@ import ink.pmc.interactive.api.form.FormNode
 import ink.pmc.interactive.api.form.FormResultHandler
 import ink.pmc.interactive.api.form.RootFormNode
 import ink.pmc.utils.bedrock.bedrockSerializer
-import ink.pmc.utils.bedrock.useFallbackColors
+import ink.pmc.utils.bedrock.useBedrockColors
 import net.kyori.adventure.text.Component
 import org.geysermc.cumulus.form.CustomForm
 import org.geysermc.cumulus.response.CustomFormResponse
@@ -22,7 +22,7 @@ internal class CustomFormNode(
 
     override fun render(player: FloodgatePlayer) {
         CustomForm.builder()
-            .title(bedrockSerializer.serialize(title.useFallbackColors()))
+            .title(bedrockSerializer.serialize(title.useBedrockColors()))
             .apply { children.forEach { it.builder(this) } }
             .build()
             .also { player.sendForm(it) }

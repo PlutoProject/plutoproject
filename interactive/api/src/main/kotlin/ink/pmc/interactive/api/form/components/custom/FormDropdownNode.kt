@@ -2,7 +2,7 @@ package ink.pmc.interactive.api.form.components.custom
 
 import ink.pmc.interactive.api.form.FormNode
 import ink.pmc.utils.bedrock.bedrockSerializer
-import ink.pmc.utils.bedrock.useFallbackColors
+import ink.pmc.utils.bedrock.useBedrockColors
 import net.kyori.adventure.text.Component
 import org.geysermc.cumulus.form.CustomForm
 import org.geysermc.floodgate.api.player.FloodgatePlayer
@@ -16,7 +16,7 @@ internal class FormDropdownNode(
 
     override val children: LinkedList<FormNode<CustomForm.Builder, CustomForm>> = LinkedList()
     override val builder: CustomForm.Builder.() -> Unit = {
-        dropdown(bedrockSerializer.serialize(text.useFallbackColors()), defaultOption, *options.toTypedArray())
+        dropdown(bedrockSerializer.serialize(text.useBedrockColors()), defaultOption, *options.toTypedArray())
     }
 
     override fun render(player: FloodgatePlayer) {

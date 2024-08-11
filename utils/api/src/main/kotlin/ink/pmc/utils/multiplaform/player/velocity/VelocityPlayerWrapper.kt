@@ -5,7 +5,7 @@ import ink.pmc.advkt.component.RootComponentKt
 import ink.pmc.advkt.sound.SoundKt
 import ink.pmc.advkt.title.ComponentTitleKt
 import ink.pmc.advkt.title.TitleKt
-import ink.pmc.utils.bedrock.isBedrock
+import ink.pmc.utils.bedrock.isFloodgate
 import ink.pmc.utils.multiplaform.player.PlayerWrapper
 import ink.pmc.utils.player.switchServer
 import net.kyori.adventure.sound.Sound
@@ -21,8 +21,8 @@ class VelocityPlayerWrapper(private val player: Player) : PlayerWrapper<Player>,
         get() = player.username
     override val displayName: Component
         get() = Component.text(name)
-    override val isBedrock: Boolean
-        get() = player.isBedrock
+    override val isFloodgate: Boolean
+        get() = player.isFloodgate
 
     override fun showTitle(content: Title) {
         player.showTitle(content)

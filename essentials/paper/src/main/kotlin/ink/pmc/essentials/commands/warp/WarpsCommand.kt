@@ -18,7 +18,7 @@ fun Cm.warps(aliases: Array<String>) {
         handler {
             checkPlayer(sender.sender) {
                 Gui.startInventory(this) {
-                    Navigator(WarpViewerScreen(this))
+                    Navigator(WarpViewerScreen())
                 }
                 playSound(VIEWER_PAGING_SOUND)
             }

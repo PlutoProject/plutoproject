@@ -50,14 +50,14 @@ fun Cm.homes(aliases: Array<String>) {
                         return@checkPlayer
                     }
                     Gui.startInventory(this) {
-                        Navigator(HomeViewerScreen(this, this))
+                        Navigator(HomeViewerScreen(this))
                     }
                     playSound(VIEWER_PAGING_SOUND)
                     return@checkPlayer
                 }
 
                 Gui.startInventory(this) {
-                    Navigator(HomeViewerScreen(this, this))
+                    Navigator(HomeViewerScreen(this))
                 }
                 playSound(VIEWER_PAGING_SOUND)
             }

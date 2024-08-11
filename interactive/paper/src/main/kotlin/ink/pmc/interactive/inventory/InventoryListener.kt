@@ -34,12 +34,13 @@ object InventoryListener : Listener {
     @EventHandler
     fun InventoryCloseEvent.e() {
         val invHolder = inventory.holder as? GuiInventoryHolder ?: return
-        if (invHolder.inventory.viewers.isNotEmpty()) return
         val scope = invHolder.scope
-        if (reason != InventoryCloseEvent.Reason.OPEN_NEW) {
+        if (!scope.isPendingRefresh.value) {
             invHolder.onClose(player as Player)
             scope.dispose()
+            return
         }
+        scope.isPendingRefresh.value = false
     }
 
     @EventHandler

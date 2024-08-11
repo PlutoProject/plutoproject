@@ -4,7 +4,7 @@ import ink.pmc.interactive.api.form.FormNode
 import ink.pmc.interactive.api.form.FormResultHandler
 import ink.pmc.interactive.api.form.RootFormNode
 import ink.pmc.utils.bedrock.bedrockSerializer
-import ink.pmc.utils.bedrock.useFallbackColors
+import ink.pmc.utils.bedrock.useBedrockColors
 import net.kyori.adventure.text.Component
 import org.geysermc.cumulus.form.ModalForm
 import org.geysermc.cumulus.response.ModalFormResponse
@@ -25,10 +25,10 @@ internal class ModalFormNode(
 
     override fun render(player: FloodgatePlayer) {
         ModalForm.builder()
-            .title(bedrockSerializer.serialize(title.useFallbackColors()))
-            .content(bedrockSerializer.serialize(content.useFallbackColors()))
-            .button1(bedrockSerializer.serialize(button1.useFallbackColors()))
-            .button2(bedrockSerializer.serialize(button2.useFallbackColors()))
+            .title(bedrockSerializer.serialize(title.useBedrockColors()))
+            .content(bedrockSerializer.serialize(content.useBedrockColors()))
+            .button1(bedrockSerializer.serialize(button1.useBedrockColors()))
+            .button2(bedrockSerializer.serialize(button2.useBedrockColors()))
             .resultHandler(resultHandler)
             .build()
             .also { player.sendForm(it) }

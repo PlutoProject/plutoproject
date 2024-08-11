@@ -2,6 +2,7 @@ package ink.pmc.interactive.api.inventory.components.canvases
 
 import androidx.compose.runtime.*
 import ink.pmc.interactive.api.GuiInventoryScope
+import ink.pmc.interactive.api.LocalGuiScope
 import ink.pmc.interactive.api.LocalPlayer
 import ink.pmc.interactive.api.inventory.LocalCanvas
 import ink.pmc.interactive.api.inventory.LocalClickHandler
@@ -18,6 +19,7 @@ import ink.pmc.interactive.api.inventory.nodes.BaseInventoryNode
 import ink.pmc.interactive.api.inventory.nodes.InventoryCloseScope
 import ink.pmc.interactive.api.inventory.nodes.StaticMeasurePolicy
 import ink.pmc.utils.concurrent.submitSync
+import ink.pmc.utils.concurrent.sync
 import ink.pmc.utils.time.ticks
 import kotlinx.coroutines.delay
 import org.bukkit.entity.Player
@@ -34,6 +36,7 @@ val LocalInventory: ProvidableCompositionLocal<Inventory> =
  * @param modifier The modifier to be applied to the layout.
  */
 @Composable
+@Suppress("UNCHECKED_CAST")
 fun Inventory(
     inventory: Inventory,
     modifier: Modifier = Modifier,
@@ -42,10 +45,14 @@ fun Inventory(
     content: @Composable () -> Unit,
 ) {
     val player = LocalPlayer.current
+    val scope = LocalGuiScope.current
     val canvas = remember { MapBackedCanvas() }
 
     LaunchedEffect(player) {
-        player.openInventory(inventory)
+        sync {
+            scope.isPendingRefresh.value = true
+            player.openInventory(inventory)
+        }
     }
 
     val renderer = object : Renderer {

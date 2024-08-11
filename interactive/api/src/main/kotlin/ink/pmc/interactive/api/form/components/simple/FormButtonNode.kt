@@ -2,7 +2,7 @@ package ink.pmc.interactive.api.form.components.simple
 
 import ink.pmc.interactive.api.form.FormNode
 import ink.pmc.utils.bedrock.bedrockSerializer
-import ink.pmc.utils.bedrock.useFallbackColors
+import ink.pmc.utils.bedrock.useBedrockColors
 import net.kyori.adventure.text.Component
 import org.geysermc.cumulus.form.SimpleForm
 import org.geysermc.cumulus.util.FormImage
@@ -17,9 +17,9 @@ internal class FormButtonNode(
     override val children: LinkedList<FormNode<SimpleForm.Builder, SimpleForm>> = LinkedList()
     override val builder: SimpleForm.Builder.() -> Unit = {
         if (image != null) {
-            button(bedrockSerializer.serialize(text.useFallbackColors()), image)
+            button(bedrockSerializer.serialize(text.useBedrockColors()), image)
         } else {
-            button(bedrockSerializer.serialize(text.useFallbackColors()))
+            button(bedrockSerializer.serialize(text.useBedrockColors()))
         }
     }
 

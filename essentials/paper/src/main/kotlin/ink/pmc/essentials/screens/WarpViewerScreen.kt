@@ -13,6 +13,7 @@ import ink.pmc.essentials.*
 import ink.pmc.essentials.api.warp.Warp
 import ink.pmc.essentials.api.warp.WarpManager
 import ink.pmc.essentials.screens.WarpViewerScreen.State.*
+import ink.pmc.interactive.api.LocalPlayer
 import ink.pmc.interactive.api.inventory.components.Item
 import ink.pmc.interactive.api.inventory.components.Placeholder
 import ink.pmc.interactive.api.inventory.components.canvases.Chest
@@ -29,7 +30,7 @@ import org.bukkit.entity.Player
 import org.bukkit.event.inventory.ClickType
 import org.koin.compose.koinInject
 
-class WarpViewerScreen(private val player: Player) : Screen {
+class WarpViewerScreen : Screen {
 
     private val localState: ProvidableCompositionLocal<State> = staticCompositionLocalOf { error("") }
     private val localCurrIndex: ProvidableCompositionLocal<MutableState<Int>> = staticCompositionLocalOf { error("") }
@@ -219,6 +220,7 @@ class WarpViewerScreen(private val player: Player) : Screen {
     @Composable
     @Suppress("FunctionName")
     private fun Warp(warp: Warp) {
+        val player = LocalPlayer.current
         val title = if (warp.alias == null) UI_WARP_ITEM_NAME else UI_WARP_ITEM_NAME_ALIAS
         Item(
             material = Material.PAPER,

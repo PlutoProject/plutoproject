@@ -10,17 +10,21 @@ import ink.pmc.interactive.api.LocalPlayer
 import ink.pmc.interactive.api.form.GeneralFormNode
 import ink.pmc.interactive.plugin
 import ink.pmc.interactive.scope.BaseScope
+import kotlinx.coroutines.flow.MutableStateFlow
 import org.bukkit.entity.Player
 import org.geysermc.floodgate.api.FloodgateApi
 import java.util.logging.Level
 
 internal val floodgateApi = FloodgateApi.getInstance()
 
+@Suppress("UNUSED_PARAMETER")
 class FormScope(
     owner: Player,
     contents: ComposableFunction
 ) : BaseScope<GeneralFormNode>(owner, contents) {
 
+    override val isPendingRefresh: MutableStateFlow<Boolean>
+        get() = error("Accessing refresh state of FormScope is not supported")
     override val rootNode: GeneralFormNode = FormNodeWrapper()
     override val nodeApplier: Applier<GeneralFormNode> = FormNodeApplier(rootNode) {
         val player = checkNotNull(floodgateApi.getPlayer(owner.uniqueId)) {
@@ -29,7 +33,6 @@ class FormScope(
         }
         runCatching {
             rootNode.render(player)
-            renderSignal?.complete(Unit)
             hasFrameWaiters = false
         }.onFailure {
             renderExceptionCallback(it)
@@ -51,9 +54,9 @@ class FormScope(
     }
 
     private fun renderExceptionCallback(e: Throwable) {
-        this.dispose()
         owner.sendMessage(UI_RENDER_FAILED)
         plugin.logger.log(Level.SEVERE, "Form render failed while rendering for ${owner.name}", e)
+        dispose()
     }
 
 }

@@ -13,6 +13,7 @@ import ink.pmc.essentials.screens.HomeEditorScreen.PreferState.PRRFERRED
 import ink.pmc.essentials.screens.HomeEditorScreen.StarState.NOT_STARRED
 import ink.pmc.essentials.screens.HomeEditorScreen.StarState.STARRED
 import ink.pmc.essentials.screens.HomeEditorScreen.State.*
+import ink.pmc.interactive.api.LocalPlayer
 import ink.pmc.interactive.api.inventory.components.canvases.Anvil
 import ink.pmc.interactive.api.inventory.components.Back
 import ink.pmc.interactive.api.inventory.components.Item
@@ -37,9 +38,9 @@ import org.bukkit.event.inventory.ClickType
 import org.koin.compose.koinInject
 import kotlin.time.Duration.Companion.seconds
 
-class HomeEditorScreen(private val player: Player, private val home: Home) : Screen {
+class HomeEditorScreen(private val home: Home) : Screen {
 
-    override val key: ScreenKey = "essentials_home_editor_${player.uniqueId}_${home.id}"
+    override val key: ScreenKey = "essentials_home_editor_${home.id}"
 
     @Composable
     override fun Content() {
@@ -108,10 +109,11 @@ class HomeEditorScreen(private val player: Player, private val home: Home) : Scr
     }
 
     inner class RenameScreen : Screen {
-        override val key: ScreenKey = "essentials_home_editor_rename_${player.uniqueId}_${home.id}"
+        override val key: ScreenKey = "essentials_home_editor_rename_${home.id}"
 
         @Composable
         override fun Content() {
+            val player = LocalPlayer.current
             val coroutineScope = rememberCoroutineScope()
             var state by remember { mutableStateOf(EDITING) }
             val navigator = LocalNavigator.currentOrThrow
@@ -128,7 +130,6 @@ class HomeEditorScreen(private val player: Player, private val home: Home) : Scr
             }
 
             Anvil(
-                viewer = player,
                 title = UI_HOME_EDITOR_RENAME_TITLE.replace("<name>", home.name),
                 text = home.name,
                 left = itemStack(Material.YELLOW_STAINED_GLASS_PANE) {
@@ -204,6 +205,7 @@ class HomeEditorScreen(private val player: Player, private val home: Home) : Scr
     @Composable
     @Suppress("FunctionName")
     private fun Prefer() {
+        val player = LocalPlayer.current
         val coroutineScope = rememberCoroutineScope()
         var state by remember {
             mutableStateOf(if (!home.isPreferred) NOT_PREFERRED else PRRFERRED)
@@ -255,6 +257,7 @@ class HomeEditorScreen(private val player: Player, private val home: Home) : Scr
     @Composable
     @Suppress("FunctionName")
     private fun Star() {
+        val player = LocalPlayer.current
         val coroutineScope = rememberCoroutineScope()
         var state by remember {
             mutableStateOf(if (!home.isStarred) NOT_STARRED else STARRED)
@@ -327,6 +330,7 @@ class HomeEditorScreen(private val player: Player, private val home: Home) : Scr
     @Composable
     @Suppress("FunctionName")
     private fun ChangeLocation() {
+        val player = LocalPlayer.current
         var succeed by remember { mutableStateOf(false) }
         val coroutineScope = rememberCoroutineScope()
         Item(

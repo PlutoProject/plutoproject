@@ -19,7 +19,7 @@ private val formats = run {
     list
 }
 val bedrockSerializer = LegacyComponentSerializer.legacySection().toBuilder()
-    .formats(formats)
+    .formats(bedrockFormats)
     .build()
 
 object BedrockColorSerializerReplacement {

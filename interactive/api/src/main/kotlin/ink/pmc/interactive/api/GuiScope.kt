@@ -4,6 +4,7 @@ import androidx.compose.runtime.Applier
 import androidx.compose.runtime.ProvidableCompositionLocal
 import androidx.compose.runtime.staticCompositionLocalOf
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.MutableStateFlow
 import org.bukkit.entity.Player
 
 @Suppress("UNUSED")
@@ -15,9 +16,10 @@ val LocalPlayer: ProvidableCompositionLocal<Player> =
     staticCompositionLocalOf { error("Player not provided") }
 
 @Suppress("UNUSED")
-interface GuiScope<T> : CoroutineScope {
+interface GuiScope<T> {
 
     val isDisposed: Boolean
+    val isPendingRefresh: MutableStateFlow<Boolean>
     val owner: Player
     val rootNode: T
     val nodeApplier: Applier<T>

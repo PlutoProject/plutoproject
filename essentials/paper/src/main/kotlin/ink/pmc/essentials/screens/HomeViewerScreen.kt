@@ -13,6 +13,7 @@ import ink.pmc.essentials.*
 import ink.pmc.essentials.api.home.Home
 import ink.pmc.essentials.api.home.HomeManager
 import ink.pmc.essentials.screens.HomeViewerScreen.State.*
+import ink.pmc.interactive.api.LocalPlayer
 import ink.pmc.interactive.api.inventory.components.Item
 import ink.pmc.interactive.api.inventory.components.Placeholder
 import ink.pmc.interactive.api.inventory.components.canvases.Chest
@@ -31,10 +32,7 @@ import org.bukkit.event.inventory.ClickType
 import org.koin.compose.koinInject
 import java.util.*
 
-class HomeViewerScreen(
-    private val player: Player,
-    private val viewing: OfflinePlayer,
-) : Screen {
+class HomeViewerScreen(private val viewing: OfflinePlayer) : Screen {
 
     private val localState: ProvidableCompositionLocal<State> = staticCompositionLocalOf { error("") }
     private val localCurrIndex: ProvidableCompositionLocal<MutableState<Int>> = staticCompositionLocalOf { error("") }
@@ -85,6 +83,7 @@ class HomeViewerScreen(
 
     @Composable
     override fun Content() {
+        val player = LocalPlayer.current
         val manager = koinInject<HomeManager>()
         var state by rememberSaveable { mutableStateOf(LOADING) }
         val currIndex = rememberSaveable { mutableStateOf(0) }
@@ -244,6 +243,7 @@ class HomeViewerScreen(
     @Composable
     @Suppress("FunctionName")
     private fun Home(home: Home) {
+        val player = LocalPlayer.current
         val navigator = requireNotNull(LocalNavigator.current?.parent) { "Cannot obtain root navigator" }
         Item(
             material = if (!home.isPreferred) Material.PAPER else Material.SUNFLOWER,
@@ -258,7 +258,7 @@ class HomeViewerScreen(
                     }
 
                     ClickType.RIGHT -> {
-                        navigator.push(HomeEditorScreen(player, home))
+                        navigator.push(HomeEditorScreen(home))
                     }
 
                     else -> {}
@@ -367,6 +367,7 @@ class HomeViewerScreen(
     @Composable
     @Suppress("FunctionName")
     private fun Empty() {
+        val player = LocalPlayer.current
         Item(
             material = Material.MINECART,
             name = UI_VIEWER_EMPTY,

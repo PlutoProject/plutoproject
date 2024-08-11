@@ -4,7 +4,7 @@ import ink.pmc.advkt.component.component
 import ink.pmc.advkt.component.newline
 import ink.pmc.advkt.component.raw
 import ink.pmc.advkt.component.text
-import ink.pmc.utils.bedrock.bedrockMapped
+import ink.pmc.utils.bedrock.bedrock
 import ink.pmc.utils.chat.PLUTO_PROJECT
 import ink.pmc.utils.visual.*
 
@@ -25,15 +25,15 @@ val MEMBER_NOT_WHITELISTED = component {
 }
 
 val MEMBER_NOT_WHITELISTED_BE = component {
-    text("你的游戏 ID 未获得白名单") with mochaText.bedrockMapped
+    text("你的游戏 ID 未获得白名单") with mochaText.bedrock
     newline()
-    text("请加入我们的审核群 ") with mochaText.bedrockMapped
-    text("795681231 ") with mochaYellow.bedrockMapped
-    text("进行申请") with mochaText.bedrockMapped
+    text("请加入我们的审核群 ") with mochaText.bedrock
+    text("795681231 ") with mochaYellow.bedrock
+    text("进行申请") with mochaText.bedrock
     newline()
-    text("如果你已通过申请，可能是我们忘记为你添加白名单") with mochaText.bedrockMapped
+    text("如果你已通过申请，可能是我们忘记为你添加白名单") with mochaText.bedrock
     newline()
-    text("请联系当天的审核员添加白名单") with mochaText.bedrockMapped
+    text("请联系当天的审核员添加白名单") with mochaText.bedrock
 }
 
 @Suppress("UNUSED")
@@ -153,7 +153,7 @@ val MEMBER_MODIFY_UNLINK_BE_FAILED_NOT_LINKED = component {
 }
 
 val MEMBER_MODIFY_UNLINK_BE_KICK = component {
-    text("你的基岩版账号已解绑，请使用 Java 版账号游玩") with mochaMaroon.bedrockMapped
+    text("你的基岩版账号已解绑，请使用 Java 版账号游玩") with mochaMaroon.bedrock
 }
 
 val MEMBER_MODIFY_UNLINK_BE_SUCCEED = component {

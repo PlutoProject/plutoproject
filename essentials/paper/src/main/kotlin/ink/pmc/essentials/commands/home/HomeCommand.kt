@@ -47,7 +47,7 @@ fun Cm.home(aliases: Array<String>) {
                     val preferred = manager.getPreferredHome(this)
                     if (preferred == null) {
                         Gui.startInventory(this) {
-                            Navigator(HomeViewerScreen(this, this))
+                            Navigator(HomeViewerScreen(this))
                         }
                         playSound(VIEWER_PAGING_SOUND)
                         return@checkPlayer

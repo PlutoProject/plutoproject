@@ -1,39 +1,29 @@
 package ink.pmc.utils.bedrock
 
-import ink.pmc.utils.isInDebugMode
+import ink.pmc.utils.chat.replaceColor
 import ink.pmc.utils.visual.*
+import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextColor
 import net.kyori.adventure.text.serializer.legacy.CharacterAndFormat
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
-import java.lang.reflect.Method
+import org.geysermc.floodgate.api.FloodgateApi
 import java.util.*
 
-/*
-* Floodgate 依赖问题，会与新版 Gson 冲突，
-* 见 https://github.com/GeyserMC/Floodgate/issues/495。
-* 在他们解决这个问题之前，先使用反射来判断是否为 Floodgate 玩家。
-* */
-lateinit var floodgateApiClass: Class<*>
-lateinit var floodgateApi: Any
-lateinit var isFloodgatePlayer: Method
-
-fun floodgateSupport(): Boolean {
-    return !isInDebugMode()
-}
-
-fun isFloodgatePlayer(uuid: UUID): Boolean {
-    if (isInDebugMode()) {
-        return false
+val floodgateApi: FloodgateApi?
+    get() {
+        if (!velocityHasFloodgateSupport()) return null
+        return FloodgateApi.getInstance()
     }
 
-    return isFloodgatePlayer.invoke(floodgateApi, uuid) as Boolean
+fun isFloodgatePlayer(uuid: UUID): Boolean {
+    return floodgateApi?.getPlayer(uuid) != null
 }
 
-val TextColor.bedrockMapped: TextColor
-    get() = bedrockColorMapping[this] ?: this
+val TextColor.bedrock: TextColor
+    get() = bedrockColorMappings[this] ?: this
 
-val bedrockColorMapping = mapOf(
+val bedrockColorMappings = mapOf(
     mochaGreen to NamedTextColor.GREEN,
     mochaSapphire to NamedTextColor.AQUA,
     mochaMaroon to NamedTextColor.RED,
@@ -79,3 +69,9 @@ val bedrockSerializer = LegacyComponentSerializer.builder()
     .character('§')
     .formats(bedrockFormats)
     .build()
+
+fun Component.useBedrockColors(): Component {
+    return bedrockColorMappings.entries.fold(this) { currentComponent, it ->
+        currentComponent.replaceColor(it.key, it.value)
+    }
+}
