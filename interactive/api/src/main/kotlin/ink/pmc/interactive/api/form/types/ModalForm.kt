@@ -3,6 +3,7 @@ package ink.pmc.interactive.api.form.types
 import androidx.compose.runtime.Applier
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ComposeNode
+import ink.pmc.interactive.api.ComposableFunction
 import ink.pmc.interactive.api.form.FormResultHandler
 import net.kyori.adventure.text.Component
 import org.geysermc.cumulus.form.ModalForm
@@ -15,7 +16,8 @@ fun ModalForm(
     content: Component = Component.empty(),
     button1: Component = Component.empty(),
     button2: Component = Component.empty(),
-    resultHandler: FormResultHandler<ModalForm, ModalFormResponse> = { _, _ -> }
+    resultHandler: FormResultHandler<ModalForm, ModalFormResponse> = { _, _ -> },
+    contents: ComposableFunction
 ) {
     ComposeNode<ModalFormNode, Applier<Any>>(
         factory = {
@@ -33,6 +35,7 @@ fun ModalForm(
             set(button1) { this.button1 = it }
             set(button2) { this.button2 = it }
             set(resultHandler) { this.resultHandler = it }
-        }
+        },
+        content = contents
     )
 }

@@ -3,6 +3,7 @@ package ink.pmc.interactive.api.form.types
 import androidx.compose.runtime.Applier
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ComposeNode
+import ink.pmc.interactive.api.ComposableFunction
 import ink.pmc.interactive.api.form.FormResultHandler
 import net.kyori.adventure.text.Component
 import org.geysermc.cumulus.form.CustomForm
@@ -12,7 +13,8 @@ import org.geysermc.cumulus.response.CustomFormResponse
 @Suppress("FunctionName")
 fun CustomForm(
     title: Component = Component.empty(),
-    resultHandler: FormResultHandler<CustomForm, CustomFormResponse> = { _, _ -> }
+    resultHandler: FormResultHandler<CustomForm, CustomFormResponse> = { _, _ -> },
+    contents: ComposableFunction
 ) {
     ComposeNode<CustomFormNode, Applier<Any>>(
         factory = {
@@ -24,6 +26,7 @@ fun CustomForm(
         update = {
             set(title) { this.title = it }
             set(resultHandler) { this.resultHandler = it }
-        }
+        },
+        content = contents
     )
 }
