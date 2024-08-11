@@ -6,17 +6,22 @@ import androidx.compose.runtime.Recomposer
 import androidx.compose.runtime.snapshots.ObserverHandle
 import androidx.compose.runtime.snapshots.Snapshot
 import ink.pmc.interactive.api.ComposableFunction
-import ink.pmc.interactive.api.InteractiveScope
+import ink.pmc.interactive.api.Gui
+import ink.pmc.interactive.api.GuiScope
 import kotlinx.coroutines.*
 import kotlinx.coroutines.future.asCompletableFuture
 import org.bukkit.entity.Player
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import kotlin.coroutines.CoroutineContext
 
 @Suppress("UNUSED")
 abstract class BaseScope<T>(
     override val owner: Player,
     private val contents: ComposableFunction
-) : InteractiveScope<T> {
+) : GuiScope<T>, KoinComponent {
+
+    private val manager by inject<Gui>()
 
     override var isDisposed: Boolean = false
     var hasFrameWaiters: Boolean = false
@@ -65,6 +70,7 @@ abstract class BaseScope<T>(
         frameClock.cancel()
         recomposer.cancel()
         observerHandle.dispose()
+        manager.removeScope(this)
     }
 
 }

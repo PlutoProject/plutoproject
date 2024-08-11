@@ -13,7 +13,7 @@ import ink.pmc.essentials.screens.HomeEditorScreen.PreferState.PRRFERRED
 import ink.pmc.essentials.screens.HomeEditorScreen.StarState.NOT_STARRED
 import ink.pmc.essentials.screens.HomeEditorScreen.StarState.STARRED
 import ink.pmc.essentials.screens.HomeEditorScreen.State.*
-import ink.pmc.interactive.api.inventory.canvas.Anvil
+import ink.pmc.interactive.api.inventory.components.canvases.Anvil
 import ink.pmc.interactive.api.inventory.components.Back
 import ink.pmc.interactive.api.inventory.components.Item
 import ink.pmc.interactive.api.inventory.components.Placeholder
@@ -44,7 +44,6 @@ class HomeEditorScreen(private val player: Player, private val home: Home) : Scr
     @Composable
     override fun Content() {
         Chest(
-            viewers = setOf(player),
             title = UI_HOME_EDITOR_TITLE.replace("<name>", home.name),
             modifier = Modifier.height(3)
         ) {

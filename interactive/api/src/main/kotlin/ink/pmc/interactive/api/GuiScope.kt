@@ -7,14 +7,15 @@ import kotlinx.coroutines.CoroutineScope
 import org.bukkit.entity.Player
 
 @Suppress("UNUSED")
-val LocalInteractiveScope: ProvidableCompositionLocal<InteractiveScope<*>> =
+val LocalGuiScope: ProvidableCompositionLocal<GuiScope<*>> =
     staticCompositionLocalOf { error("InteractiveScope not provided") }
+
 @Suppress("UNUSED")
 val LocalPlayer: ProvidableCompositionLocal<Player> =
     staticCompositionLocalOf { error("Player not provided") }
 
 @Suppress("UNUSED")
-interface InteractiveScope<T> : CoroutineScope {
+interface GuiScope<T> : CoroutineScope {
 
     val isDisposed: Boolean
     val owner: Player

@@ -35,7 +35,6 @@ class ExampleScreen2(private val player: Player) : Screen {
     @Composable
     override fun Content() {
         Chest(
-            viewers = setOf(player),
             title = Component.text("测试页面 2"),
             modifier = Modifier.fillMaxSize(),
         ) {

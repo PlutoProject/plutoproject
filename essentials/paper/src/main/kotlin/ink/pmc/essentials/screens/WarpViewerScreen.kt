@@ -117,7 +117,6 @@ class WarpViewerScreen(private val player: Player) : Screen {
             localPages provides pages,
         ) {
             Chest(
-                viewers = setOf(player),
                 title = title,
                 modifier = Modifier.height(5)
             ) {

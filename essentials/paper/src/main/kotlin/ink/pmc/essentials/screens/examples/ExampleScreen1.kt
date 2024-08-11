@@ -50,7 +50,6 @@ class ExampleScreen1(private val player: Player) : Screen {
         }
 
         Chest(
-            viewers = setOf(player),
             title = Component.text("测试页面 1 | 服务器内存使用率 $title%"),
             modifier = Modifier.fillMaxSize(),
         ) {

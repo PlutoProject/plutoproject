@@ -1,6 +1,6 @@
-package ink.pmc.interactive.api.inventory.canvas
+package ink.pmc.interactive.inventory
 
-import ink.pmc.interactive.api.session.SessionState
+import ink.pmc.interactive.api.inventory.canvas.GuiInventoryHolder
 import ink.pmc.interactive.api.inventory.modifiers.click.ClickScope
 import org.bukkit.Material
 import org.bukkit.entity.Player
@@ -12,11 +12,11 @@ import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.event.inventory.InventoryDragEvent
 
 @Suppress("UNUSED", "UnusedReceiverParameter")
-object InvListener : Listener {
+object InventoryListener : Listener {
 
     @EventHandler
-    fun InventoryClickEvent.onClick() {
-        val invHolder = inventory.holder as? InvInventoryHolder ?: return
+    fun InventoryClickEvent.e() {
+        val invHolder = inventory.holder as? GuiInventoryHolder ?: return
 
         // Avoid any exploits shift clicking or double-clicking into/from the GUI
         if (click !in setOf(LEFT, RIGHT, MIDDLE)) isCancelled = true
@@ -32,19 +32,19 @@ object InvListener : Listener {
     }
 
     @EventHandler
-    fun InventoryCloseEvent.onClose() {
-        val invHolder = inventory.holder as? InvInventoryHolder ?: return
+    fun InventoryCloseEvent.e() {
+        val invHolder = inventory.holder as? GuiInventoryHolder ?: return
         if (invHolder.inventory.viewers.isNotEmpty()) return
-        val session = invHolder.session
-        if (reason != InventoryCloseEvent.Reason.OPEN_NEW && session.state != SessionState.PAUSED) {
+        val scope = invHolder.scope
+        if (reason != InventoryCloseEvent.Reason.OPEN_NEW) {
             invHolder.onClose(player as Player)
-            session.close()
+            scope.dispose()
         }
     }
 
     @EventHandler
-    fun InventoryDragEvent.onInventoryDrag() {
-        val invHolder = inventory.holder as? InvInventoryHolder ?: return
+    fun InventoryDragEvent.e() {
+        val invHolder = inventory.holder as? GuiInventoryHolder ?: return
         val inInv = newItems.filter { it.key < view.topInventory.size }
         if (newItems.size == 1 && inInv.size == 1) {
             isCancelled = true

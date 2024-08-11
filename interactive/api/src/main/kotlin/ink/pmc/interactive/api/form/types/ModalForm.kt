@@ -19,7 +19,7 @@ fun ModalForm(
     resultHandler: FormResultHandler<ModalForm, ModalFormResponse> = { _, _ -> },
     contents: ComposableFunction
 ) {
-    ComposeNode<ModalFormNode, Applier<Any>>(
+    ComposeNode<ModalFormNode, Applier<ModalFormNode>>(
         factory = {
             ModalFormNode(
                 title = title,

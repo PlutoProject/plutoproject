@@ -17,7 +17,7 @@ fun SimpleForm(
     resultHandler: FormResultHandler<SimpleForm, SimpleFormResponse> = { _, _ -> },
     contents: ComposableFunction
 ) {
-    ComposeNode<SimpleFormNode, Applier<Any>>(
+    ComposeNode<SimpleFormNode, Applier<SimpleFormNode>>(
         factory = {
             SimpleFormNode(
                 title = title,
@@ -31,5 +31,5 @@ fun SimpleForm(
             set(resultHandler) { this.resultHandler = it }
         },
         content = contents
-   )
+    )
 }

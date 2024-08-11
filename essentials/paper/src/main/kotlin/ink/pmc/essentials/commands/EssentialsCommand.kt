@@ -7,7 +7,7 @@ import ink.pmc.essentials.COMMAND_ESS_RTP_PERF_START
 import ink.pmc.essentials.Cm
 import ink.pmc.essentials.screens.examples.ExampleScreen1
 import ink.pmc.essentials.teleport.random.PerfTest
-import ink.pmc.interactive.api.Interactive
+import ink.pmc.interactive.api.Gui
 import ink.pmc.utils.annotation.Command
 import ink.pmc.utils.dsl.cloud.invoke
 import ink.pmc.utils.dsl.cloud.sender
@@ -40,7 +40,7 @@ fun Cm.essentials(aliases: Array<String>) {
             permission("essentials.cmd")
             handler {
                 checkPlayer(sender.sender) {
-                    Interactive.startInventory(this) {
+                    Gui.startInventory(this) {
                         Navigator(ExampleScreen1(this))
                     }
                 }

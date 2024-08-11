@@ -135,7 +135,6 @@ class HomeViewerScreen(
             localPages provides pages,
         ) {
             Chest(
-                viewers = setOf(player),
                 title = title,
                 modifier = Modifier.height(5)
             ) {

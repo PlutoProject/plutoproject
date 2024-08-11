@@ -1,4 +1,4 @@
-package ink.pmc.interactive.api.inventory.canvas
+package ink.pmc.interactive.api.inventory.components.canvases
 
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable

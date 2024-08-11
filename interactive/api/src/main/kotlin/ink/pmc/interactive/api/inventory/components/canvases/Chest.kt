@@ -1,11 +1,10 @@
 package ink.pmc.interactive.api.inventory.components.canvases
 
 import androidx.compose.runtime.*
-import ink.pmc.interactive.api.session.LocalSessionProvider
-import ink.pmc.interactive.api.session.Session
+import ink.pmc.interactive.api.GuiInventoryScope
+import ink.pmc.interactive.api.LocalGuiScope
 import ink.pmc.interactive.api.inventory.components.state.IntCoordinates
 import ink.pmc.interactive.api.inventory.layout.Layout
-import ink.pmc.interactive.api.inventory.layout.LayoutNode
 import ink.pmc.interactive.api.inventory.layout.Size
 import ink.pmc.interactive.api.inventory.modifiers.Modifier
 import ink.pmc.interactive.api.inventory.modifiers.onSizeChanged
@@ -25,7 +24,6 @@ const val MAX_CHEST_HEIGHT = 6
 /**
  * A Chest GUI [Inventory] composable.
  *
- * @param viewers The set of players who will view the inventory.
  * @param title The title of the Chest inventory.
  * @param modifier The modifier for the Chest GUI, default is Modifier.
  * @param onClose The function to be executed when the Chest GUI is closed, default is an empty function.
@@ -34,19 +32,18 @@ const val MAX_CHEST_HEIGHT = 6
 @Composable
 @Suppress("UNCHECKED_CAST")
 fun Chest(
-    viewers: Set<Player>,
     title: Component,
     modifier: Modifier = Modifier,
     onClose: (InventoryCloseScope.(player: Player) -> Unit) = {},
     content: @Composable () -> Unit,
 ) {
-    val session = LocalSessionProvider.current
+    val scope = LocalGuiScope.current as GuiInventoryScope
     var size by remember { mutableStateOf(Size()) }
     val constrainedModifier =
         Modifier.sizeIn(CHEST_WIDTH, CHEST_WIDTH, MIN_CHEST_HEIGHT, MAX_CHEST_HEIGHT).then(modifier)
-        .onSizeChanged { if (size != it) size = it }
+            .onSizeChanged { if (size != it) size = it }
 
-    val holder = rememberInventoryHolder(viewers, session, onClose)
+    val holder = rememberInventoryHolder(scope, onClose)
 
     // Create new inventory when any appropriate value changes
 
@@ -74,7 +71,6 @@ fun Chest(
     // 原 TODO: handle sending correct title when player list changes
     Inventory(
         inventory = inventory,
-        viewers = viewers,
         modifier = constrainedModifier,
         gridToInventoryIndex = { (x, y) ->
             if (x !in 0 until CHEST_WIDTH || y !in 0 until size.height) null

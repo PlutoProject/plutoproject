@@ -16,7 +16,7 @@ fun CustomForm(
     resultHandler: FormResultHandler<CustomForm, CustomFormResponse> = { _, _ -> },
     contents: ComposableFunction
 ) {
-    ComposeNode<CustomFormNode, Applier<Any>>(
+    ComposeNode<CustomFormNode, Applier<CustomFormNode>>(
         factory = {
             CustomFormNode(
                 title = title,

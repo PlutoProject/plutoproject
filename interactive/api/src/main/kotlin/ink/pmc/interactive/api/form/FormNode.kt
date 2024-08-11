@@ -7,6 +7,8 @@ import java.util.*
 
 internal val legacySerializer = LegacyComponentSerializer.legacySection()
 
+typealias GeneralFormNode = FormNode<Any, Form>
+
 interface FormNode<B, F : Form> {
 
     val children: LinkedList<FormNode<B, F>>

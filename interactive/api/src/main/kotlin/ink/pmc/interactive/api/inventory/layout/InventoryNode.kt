@@ -1,21 +1,21 @@
 package ink.pmc.interactive.api.inventory.layout
 
+import ink.pmc.interactive.api.inventory.canvas.Canvas
+import ink.pmc.interactive.api.inventory.canvas.ClickResult
+import ink.pmc.interactive.api.inventory.canvas.OffsetCanvas
 import ink.pmc.interactive.api.inventory.components.state.IntCoordinates
 import ink.pmc.interactive.api.inventory.components.state.IntOffset
 import ink.pmc.interactive.api.inventory.components.state.IntSize
 import ink.pmc.interactive.api.inventory.components.state.ItemPositions
-import ink.pmc.interactive.api.inventory.canvas.ClickResult
-import ink.pmc.interactive.api.inventory.canvas.Canvas
-import ink.pmc.interactive.api.inventory.canvas.OffsetCanvas
-import ink.pmc.interactive.api.inventory.modifiers.click.ClickModifier
-import ink.pmc.interactive.api.inventory.modifiers.click.ClickScope
-import ink.pmc.interactive.api.inventory.modifiers.drag.DragModifier
-import ink.pmc.interactive.api.inventory.modifiers.drag.DragScope
-import ink.pmc.interactive.api.inventory.nodes.InvNode
 import ink.pmc.interactive.api.inventory.modifiers.Constraints
 import ink.pmc.interactive.api.inventory.modifiers.LayoutChangingModifier
 import ink.pmc.interactive.api.inventory.modifiers.Modifier
 import ink.pmc.interactive.api.inventory.modifiers.OnSizeChangedModifier
+import ink.pmc.interactive.api.inventory.modifiers.click.ClickModifier
+import ink.pmc.interactive.api.inventory.modifiers.click.ClickScope
+import ink.pmc.interactive.api.inventory.modifiers.drag.DragModifier
+import ink.pmc.interactive.api.inventory.modifiers.drag.DragScope
+import ink.pmc.interactive.api.inventory.nodes.BaseInventoryNode
 import org.bukkit.inventory.ItemStack
 import kotlin.reflect.KClass
 
@@ -25,12 +25,12 @@ import kotlin.reflect.KClass
  *  You can configure stuff through [measurePolicy], [placer], and the [modifier], but things creates some problems
  *  when trying to make your own composable nodes that interact with this Layout builder.
  */
-class LayoutNode : Measurable, Placeable, InvNode {
+class InventoryNode : Measurable, Placeable, BaseInventoryNode {
     override var measurePolicy: MeasurePolicy = ChildMeasurePolicy
     override var renderer: Renderer = EmptyRenderer
     override var canvas: Canvas? = null
 
-    val children = mutableListOf<LayoutNode>()
+    val children = mutableListOf<InventoryNode>()
     override var modifier: Modifier = Modifier
         set(value) {
             field = value
@@ -54,7 +54,7 @@ class LayoutNode : Measurable, Placeable, InvNode {
         return processedModifier[T::class] as T?
     }
 
-    var parent: LayoutNode? = null
+    var parent: InventoryNode? = null
 
     override var width: Int = 0
     override var height: Int = 0
@@ -62,9 +62,9 @@ class LayoutNode : Measurable, Placeable, InvNode {
     override var y: Int = 0
 
     private fun coercedConstraints(constraints: Constraints) = with(constraints) {
-        object : Placeable by this@LayoutNode {
-            override var width: Int = this@LayoutNode.width.coerceIn(minWidth..maxWidth)
-            override var height: Int = this@LayoutNode.height.coerceIn(minHeight..maxHeight)
+        object : Placeable by this@InventoryNode {
+            override var width: Int = this@InventoryNode.width.coerceIn(minWidth..maxWidth)
+            override var height: Int = this@InventoryNode.height.coerceIn(minHeight..maxHeight)
         }
     }
 
@@ -98,9 +98,9 @@ class LayoutNode : Measurable, Placeable, InvNode {
 
     override fun renderTo(canvas: Canvas?) {
         val offsetCanvas = (canvas ?: this.canvas)?.let { OffsetCanvas(x, y, it) }
-        renderer.apply { offsetCanvas?.render(this@LayoutNode) }
+        renderer.apply { offsetCanvas?.render(this@InventoryNode) }
         for (child in children) child.renderTo(offsetCanvas)
-        renderer.apply { offsetCanvas?.renderAfterChildren(this@LayoutNode) }
+        renderer.apply { offsetCanvas?.renderAfterChildren(this@InventoryNode) }
     }
 
     /**
@@ -123,7 +123,11 @@ class LayoutNode : Measurable, Placeable, InvNode {
         val itemMap: ItemPositions = ItemPositions(),
     )
 
-    fun buildDragMap(coords: IntCoordinates, item: ItemStack, dragMap: MutableMap<InvNode, DragInfo>): Boolean {
+    fun buildDragMap(
+        coords: IntCoordinates,
+        item: ItemStack,
+        dragMap: MutableMap<BaseInventoryNode, DragInfo>
+    ): Boolean {
         val (iX, iY) = coords
         if (iX !in 0 until width || iY !in 0 until height) return false
         val dragModifier = get<DragModifier>()
@@ -140,7 +144,7 @@ class LayoutNode : Measurable, Placeable, InvNode {
     }
 
     fun processDrag(scope: DragScope) {
-        val dragMap = mutableMapOf<InvNode, DragInfo>()
+        val dragMap = mutableMapOf<BaseInventoryNode, DragInfo>()
         scope.updatedItems.items.forEach { (coords, item) ->
             buildDragMap(coords, item, dragMap)
         }

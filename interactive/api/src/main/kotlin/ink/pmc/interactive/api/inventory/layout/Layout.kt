@@ -1,11 +1,11 @@
 package ink.pmc.interactive.api.inventory.layout
 
+import androidx.compose.runtime.Applier
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ComposeNode
+import ink.pmc.interactive.api.inventory.LocalCanvas
 import ink.pmc.interactive.api.inventory.modifiers.Modifier
-import ink.pmc.interactive.api.inventory.nodes.InvNode
-import ink.pmc.interactive.api.inventory.nodes.InvNodeApplier
-import ink.pmc.interactive.api.session.LocalCanvas
+import ink.pmc.interactive.api.inventory.nodes.BaseInventoryNode
 
 /**
  * The main component for layout, it measures and positions zero or more children.
@@ -18,13 +18,13 @@ inline fun Layout(
     content: @Composable () -> Unit = {}
 ) {
     val canvas = LocalCanvas.current
-    ComposeNode<InvNode, InvNodeApplier>(
-        factory = InvNode.Constructor,
+    ComposeNode<BaseInventoryNode, Applier<InventoryNode>>(
+        factory = BaseInventoryNode.Constructor,
         update = {
             set(measurePolicy) { this.measurePolicy = it }
             set(renderer) { this.renderer = it }
             //TODO dunno if this works
-            set(canvas) { this.canvas = it}
+            set(canvas) { this.canvas = it }
             set(modifier) { this.modifier = it }
         },
         content = content,

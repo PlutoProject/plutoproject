@@ -23,7 +23,7 @@ fun FormDropdown(
         update = {
             set(text) { this.text = it }
             set(options) { this.options = it }
-            set(defaultOption)  { this.defaultOption = it }
+            set(defaultOption) { this.defaultOption = it }
         }
     )
 }

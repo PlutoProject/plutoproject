@@ -5,7 +5,8 @@ import ink.pmc.interactive.api.form.FormNode
 import org.geysermc.cumulus.form.Form
 
 @Suppress("UNUSED")
-class FormNodeApplier<B, F : Form>(root: FormNode<B, F>, private val endChangesCallback: () -> Unit) : AbstractApplier<FormNode<B, F>>(root) {
+class FormNodeApplier<B, F : Form>(root: FormNode<B, F>, private val endChangesCallback: () -> Unit) :
+    AbstractApplier<FormNode<B, F>>(root) {
 
     override fun onEndChanges() {
         endChangesCallback()

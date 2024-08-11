@@ -8,6 +8,7 @@ import ink.pmc.interactive.api.inventory.jetpack.LayoutDirection
 import ink.pmc.interactive.api.inventory.modifiers.Modifier
 
 @Composable
+@Suppress("FunctionName")
 fun Box(
     modifier: Modifier = Modifier,
     contentAlignment: Alignment = Alignment.TopStart,
