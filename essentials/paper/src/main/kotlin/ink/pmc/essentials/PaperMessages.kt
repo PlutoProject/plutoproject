@@ -62,6 +62,10 @@ val COMMAND_HAT_SUCCEED = component {
     text("享受你的新帽子吧！") with mochaPink
 }
 
+val COMMAND_HAT_BEDROCK = component {
+    text("由于基岩版限制，戴在头部的非装备物品无法正常显示") with mochaSubtext0
+}
+
 val COMMAND_HAT_FAILED_EMPTY_HAND = component {
     text("你的手上似乎空空如也") with mochaMaroon
     newline()
@@ -619,6 +623,10 @@ val COMMAND_IF_FAILED_NO_FRAME = component {
 
 val COMMAND_IF_INV_ON_SUCCEED = component {
     text("已将你面前的展示框隐藏") with mochaPink
+}
+
+val COMMAND_IF_INV_BEDROCK = component {
+    text("由于基岩版限制，无法显示展示框的隐形效果") with mochaSubtext0
 }
 
 val COMMAND_IF_INV_OFF_SUCCEED = component {
