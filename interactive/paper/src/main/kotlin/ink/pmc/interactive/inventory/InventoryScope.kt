@@ -96,7 +96,11 @@ class InventoryScope(owner: Player, contents: ComposableFunction) : BaseScope<In
     }
 
     override fun dispose() {
-        submitSync { owner.closeInventory() }
+        if (isDisposed) return
+        submitSync {
+            if (!owner.isOnline) return@submitSync
+            owner.closeInventory()
+        }
         super.dispose()
     }
 
