@@ -23,20 +23,6 @@ fun <T> submitAsync(block: suspend CoroutineScope.() -> T): Deferred<T> = Global
 fun <T> submitAsync(coroutineContext: CoroutineContext, block: suspend CoroutineScope.() -> T): Deferred<T> =
     GlobalScope.async(coroutineContext) { block() }
 
-@Suppress("UNUSED")
-fun CoroutineScope.submitAsync(block: suspend CoroutineScope.() -> Unit) = launch { block() }
-
-@Suppress("UNUSED")
-fun CoroutineScope.submitAsync(coroutineContext: CoroutineContext, block: suspend CoroutineScope.() -> Unit) =
-    launch(coroutineContext) { block() }
-
-@Suppress("UNUSED")
-fun <T> CoroutineScope.submitAsync(block: suspend CoroutineScope.() -> T): Deferred<T> = async { block() }
-
-@Suppress("UNUSED")
-fun <T> CoroutineScope.submitAsync(coroutineContext: CoroutineContext, block: suspend CoroutineScope.() -> T): Deferred<T> =
-    async(coroutineContext) { block() }
-
 // submitAsync end
 
 // async start
@@ -70,13 +56,6 @@ fun submitAsyncIO(block: suspend CoroutineScope.() -> Unit) = GlobalScope.launch
 fun <T> submitAsyncIO(block: suspend CoroutineScope.() -> T): Deferred<T> =
     GlobalScope.async(Dispatchers.IO) { block() }
 
-@Suppress("UNUSED")
-fun CoroutineScope.submitAsyncIO(block: suspend CoroutineScope.() -> Unit) = launch(Dispatchers.IO) { block() }
-
-@Suppress("UNUSED")
-fun <T> CoroutineScope.submitAsyncIO(block: suspend CoroutineScope.() -> T): Deferred<T> =
-    async(Dispatchers.IO) { block() }
-
 // submitAsyncIO end
 
 // submitAsyncUnconfined start
@@ -90,14 +69,6 @@ fun submitAsyncUnconfined(block: suspend CoroutineScope.() -> Unit) =
 @OptIn(DelicateCoroutinesApi::class)
 fun <T> submitAsyncUnconfined(block: suspend CoroutineScope.() -> T) =
     GlobalScope.async(Dispatchers.Unconfined) { block() }
-
-@Suppress("UNUSED")
-fun CoroutineScope.submitAsyncUnconfined(block: suspend CoroutineScope.() -> Unit) =
-    launch(Dispatchers.Unconfined) { block() }
-
-@Suppress("UNUSED")
-fun <T> CoroutineScope.submitAsyncUnconfined(block: suspend CoroutineScope.() -> T) =
-    async(Dispatchers.Unconfined) { block() }
 
 // submitAsyncUnconfined end
 

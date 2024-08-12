@@ -11,10 +11,12 @@ import ink.pmc.essentials.dtos.HomeDto
 import ink.pmc.essentials.essentialsScope
 import ink.pmc.essentials.repositories.HomeRepository
 import ink.pmc.member.api.MemberService
+import ink.pmc.utils.chat.isValidIdentifier
 import ink.pmc.utils.concurrent.submitAsync
 import ink.pmc.utils.player.uuidOrNull
 import ink.pmc.utils.storage.entity.dto
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.bson.types.ObjectId
 import org.bukkit.Location
 import org.bukkit.OfflinePlayer
@@ -42,7 +44,7 @@ class HomeManagerImpl : HomeManager, KoinComponent {
         Multimaps.synchronizedListMultimap<OfflinePlayer, Home>(ArrayListMultimap.create())
 
     init {
-        essentialsScope.submitAsync {
+        essentialsScope.launch {
             while (!disabled) {
                 delay(5.minutes)
                 loadedHomes.entries().removeIf { !it.key.isOnline }
@@ -128,6 +130,7 @@ class HomeManagerImpl : HomeManager, KoinComponent {
 
     override suspend fun create(owner: Player, name: String, location: Location): Home {
         require(!has(owner, name)) { "Home of player ${owner.name} named $name already existed" }
+        require(name.isValidIdentifier && name.length <= nameLengthLimit) { "Name $name doesn't match the requirement" }
         val dto = HomeDto(
             ObjectId(),
             UUID.randomUUID(),

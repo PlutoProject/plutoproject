@@ -339,12 +339,12 @@ allprojects {
         maven(uri("https://repo.codemc.io/repository/maven-snapshots/"))
     }
 
-    fun DependencyHandlerScope.dep(dep: Provider<*>) {
+    fun DependencyHandlerScope.dep(dep: Provider<*>, dependencyConfiguration: Action<ExternalModuleDependency> = Action {  }) {
         if (project.name.contains("dependency-loader")) {
-            implementation(dep)
+            implementation(dep, dependencyConfiguration)
             return
         }
-        compileOnly(dep)
+        compileOnly(dep, dependencyConfiguration)
     }
 
     dependencies {

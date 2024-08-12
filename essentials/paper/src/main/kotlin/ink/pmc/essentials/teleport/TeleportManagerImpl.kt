@@ -18,13 +18,10 @@ import ink.pmc.utils.multiplaform.item.KeyedMaterial
 import ink.pmc.utils.multiplaform.item.exts.bukkit
 import ink.pmc.utils.world.ValueChunkLoc
 import ink.pmc.utils.world.getChunkViaSource
+import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.future.asCompletableFuture
 import kotlinx.coroutines.future.await
-import kotlinx.coroutines.supervisorScope
-import kotlinx.coroutines.yield
 import org.bukkit.Location
 import org.bukkit.World
 import org.bukkit.block.BlockFace
@@ -321,20 +318,20 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
 
         teleportRequests.add(request)
 
-        essentialsScope.submitAsync {
+        essentialsScope.launch {
             delay(options.expireAfter)
             if (!hasRequest(request.id) || request.isFinished) {
-                return@submitAsync
+                return@launch
             }
             request.expire()
             destination.sendMessage(TELEPORT_REQUEST_EXPIRED.replace("<player>", source.name))
             destination.playSound(TELEPORT_REQUEST_CANCELLED_SOUND)
         }
 
-        essentialsScope.submitAsync {
+        essentialsScope.launch {
             delay(options.removeAfter)
             if (!hasRequest(request.id)) {
-                return@submitAsync
+                return@launch
             }
             removeRequest(request.id)
         }
@@ -441,10 +438,10 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
             val task = TeleportTaskImpl(id, player, destination, options, prompt, prepare)
             queue.offer(task)
 
-            essentialsScope.submitAsync {
+            essentialsScope.launch {
                 delay(10.seconds)
                 if (task.isFinished) {
-                    return@submitAsync
+                    return@launch
                 }
                 task.cancel()
                 if (prompt) {

@@ -27,7 +27,6 @@ import ink.pmc.utils.chat.UI_BACK
 import ink.pmc.utils.chat.replace
 import org.bukkit.Material
 import org.bukkit.OfflinePlayer
-import org.bukkit.entity.Player
 import org.bukkit.event.inventory.ClickType
 import org.koin.compose.koinInject
 import java.util.*
@@ -270,6 +269,7 @@ class HomeViewerScreen(private val viewing: OfflinePlayer) : Screen {
     @Composable
     @Suppress("FunctionName")
     private fun NavBar() {
+        val player = LocalPlayer.current
         val max = localMaxIndex.current
         Box(modifier = Modifier.fillMaxWidth().height(1)) {
             Row(modifier = Modifier.fillMaxSize()) {
@@ -277,9 +277,14 @@ class HomeViewerScreen(private val viewing: OfflinePlayer) : Screen {
                     Placeholder()
                 }
             }
-            if (max == 0) return@Box
             Row(modifier = Modifier.fillMaxSize(), horizontalArrangement = Arrangement.Center) {
-                Paging()
+                if (player == viewing) {
+                    Create(true)
+                }
+                if (max > 0) {
+                    Placeholder()
+                    Paging()
+                }
             }
         }
     }
@@ -323,6 +328,22 @@ class HomeViewerScreen(private val viewing: OfflinePlayer) : Screen {
 
     @Composable
     @Suppress("FunctionName")
+    private fun Create(nested: Boolean = false) {
+        // 有在 ViewingScreen 和根菜单上展示两种情况
+        val navigator = if (nested) LocalNavigator.currentOrThrow.parent else LocalNavigator.currentOrThrow
+        Item(
+            material = Material.OAK_SIGN,
+            name = UI_HOME_VIEWER_CREATE,
+            lore = UI_HOME_VIEWER_CREATE_LORE,
+            modifier = Modifier.clickable {
+                if (clickType != ClickType.LEFT) return@clickable
+                navigator?.push(HomeCreatorScreen())
+            }
+        )
+    }
+
+    @Composable
+    @Suppress("FunctionName")
     private fun LoadingSection() {
         Column(modifier = Modifier.width(7).height(4)) {
             Column(modifier = Modifier.fillMaxWidth().height(3), verticalArrangement = Arrangement.Center) {
@@ -356,9 +377,14 @@ class HomeViewerScreen(private val viewing: OfflinePlayer) : Screen {
                     Empty()
                 }
             }
-            Row(modifier = Modifier.fillMaxWidth().height(1)) {
-                repeat(9) {
-                    Placeholder()
+            Box(modifier = Modifier.fillMaxWidth().height(1)) {
+                Row(modifier = Modifier.fillMaxSize()) {
+                    repeat(9) {
+                        Placeholder()
+                    }
+                }
+                Row(modifier = Modifier.fillMaxSize(), horizontalArrangement = Arrangement.Center) {
+                    Create()
                 }
             }
         }

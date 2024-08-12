@@ -28,8 +28,10 @@ import ink.pmc.utils.chat.isValidIdentifier
 import ink.pmc.utils.chat.replace
 import ink.pmc.utils.concurrent.submitAsync
 import ink.pmc.utils.dsl.itemStack
+import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import net.wesjd.anvilgui.AnvilGUI.ResponseAction
 import net.wesjd.anvilgui.AnvilGUI.Slot.INPUT_LEFT
 import net.wesjd.anvilgui.AnvilGUI.Slot.OUTPUT
 import org.bukkit.Material
@@ -105,7 +107,7 @@ class HomeEditorScreen(private val home: Home) : Screen {
     }
 
     private enum class State {
-        EDITING, INVALID, TOO_LONG, SUCCEED
+        EDITING, INVALID, TOO_LONG, EXISTED, SUCCEED
     }
 
     inner class RenameScreen : Screen {
@@ -143,9 +145,10 @@ class HomeEditorScreen(private val home: Home) : Screen {
                 output = itemStack(Material.PAPER) {
                     lore(
                         when (state) {
-                            EDITING -> UI_HOME_EDITOR_RENAME_SAVE_EDITING
+                            EDITING -> UI_HOME_EDITOR_RENAME_SAVE_EDITING(home)
                             INVALID -> UI_HOME_EDITOR_RENAME_SAVE_INVALID_LORE
                             TOO_LONG -> UI_HOME_EDITOR_RENAME_SAVE_TOO_LONG
+                            EXISTED -> UI_HOME_EDITOR_RENAME_SAVE_EXISTED
                             SUCCEED -> UI_HOME_EDITOR_RENAME_SAVED
                         }
                     )
@@ -158,8 +161,8 @@ class HomeEditorScreen(private val home: Home) : Screen {
                         )
                     }
                 },
-                onClick = { i, s ->
-                    when (i) {
+                onClick = { s, r ->
+                    when (s) {
                         INPUT_LEFT -> {
                             navigator.pop()
                             listOf()
@@ -167,7 +170,7 @@ class HomeEditorScreen(private val home: Home) : Screen {
 
                         OUTPUT -> {
                             if (state != EDITING) return@Anvil listOf()
-                            val input = s.text
+                            val input = r.text
 
                             if (!input.isValidIdentifier) {
                                 player.playSound(UI_HOME_EDITOR_RENAME_INVALID_SOUND)
@@ -181,13 +184,22 @@ class HomeEditorScreen(private val home: Home) : Screen {
                                 return@Anvil listOf()
                             }
 
-                            submitAsync {
-                                home.name = input
-                                home.update()
+                            coroutineScope.launch {
+                                if (manager.has(player, input)) {
+                                    player.playSound(UI_HOME_EDITOR_RENAME_INVALID_SOUND)
+                                    stateTransition(EXISTED)
+                                    return@launch
+                                }
+
+                                submitAsync {
+                                    home.name = input
+                                    home.update()
+                                }
+
+                                stateTransition(SUCCEED, true)
+                                player.playSound(UI_HOME_EDIT_SUCCEED_SOUND)
                             }
 
-                            stateTransition(SUCCEED, true)
-                            player.playSound(UI_HOME_EDIT_SUCCEED_SOUND)
                             listOf()
                         }
 

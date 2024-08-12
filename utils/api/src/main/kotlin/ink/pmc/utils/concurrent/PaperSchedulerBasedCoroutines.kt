@@ -51,42 +51,6 @@ fun <T> submitSync(chunk: Chunk, block: suspend CoroutineScope.() -> T) =
 fun <T> submitSync(location: Location, block: suspend CoroutineScope.() -> T) =
     GlobalScope.async(location.dispatcher) { block() }
 
-@Suppress("UNUSED")
-fun CoroutineScope.submitSync(block: suspend CoroutineScope.() -> Unit) = launch(mainThreadDispatcher) { block() }
-
-@Suppress("UNUSED")
-fun <T> CoroutineScope.submitSync(block: suspend CoroutineScope.() -> T) = async(mainThreadDispatcher) { block() }
-
-@Suppress("UNUSED")
-@JvmName("submitSyncEntity")
-fun CoroutineScope.submitSync(entity: Entity, block: suspend CoroutineScope.() -> Unit) =
-    launch(entity.dispatcher) { block() }
-
-@Suppress("UNUSED")
-@JvmName("submitSyncChunk")
-fun CoroutineScope.submitSync(chunk: Chunk, block: suspend CoroutineScope.() -> Unit) =
-    launch(chunk.dispatcher) { block() }
-
-@Suppress("UNUSED")
-@JvmName("submitSyncLocation")
-fun CoroutineScope.submitSync(location: Location, block: suspend CoroutineScope.() -> Unit) =
-    launch(location.dispatcher) { block() }
-
-@Suppress("UNUSED")
-@JvmName("submitSyncEntity")
-fun <T> CoroutineScope.submitSync(entity: Entity, block: suspend CoroutineScope.() -> T) =
-    async(entity.dispatcher) { block() }
-
-@Suppress("UNUSED")
-@JvmName("submitSyncChunk")
-fun <T> CoroutineScope.submitSync(chunk: Chunk, block: suspend CoroutineScope.() -> T) =
-    async(chunk.dispatcher) { block() }
-
-@Suppress("UNUSED")
-@JvmName("submitSyncLocation")
-fun <T> CoroutineScope.submitSync(location: Location, block: suspend CoroutineScope.() -> T) =
-    async(location.dispatcher) { block() }
-
 // submitSync end
 
 @Suppress("UNUSED")

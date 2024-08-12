@@ -53,16 +53,16 @@ val bedrockColorMappings = mapOf(
 )
 
 private val customFormats = listOf(
-    CharacterAndFormat.characterAndFormat('h', mochaOverlay2, true),
-    CharacterAndFormat.characterAndFormat('i', mochaOverlay1, true),
-    CharacterAndFormat.characterAndFormat('j', mochaOverlay0, true),
-    CharacterAndFormat.characterAndFormat('m', mochaRosewater, true),
-    CharacterAndFormat.characterAndFormat('n', mochaFlamingo, true),
-    CharacterAndFormat.characterAndFormat('p', mochaSurface2, true),
-    CharacterAndFormat.characterAndFormat('q', mochaSurface1, true),
-    CharacterAndFormat.characterAndFormat('s', mochaSurface0, true),
-    CharacterAndFormat.characterAndFormat('t', mochaBase, true),
-    CharacterAndFormat.characterAndFormat('u', mochaMantle, true)
+    CharacterAndFormat.characterAndFormat('h', mochaOverlay2),
+    CharacterAndFormat.characterAndFormat('i', mochaOverlay1),
+    CharacterAndFormat.characterAndFormat('j', mochaOverlay0),
+    CharacterAndFormat.characterAndFormat('m', mochaRosewater),
+    CharacterAndFormat.characterAndFormat('n', mochaFlamingo),
+    CharacterAndFormat.characterAndFormat('p', mochaSurface2),
+    CharacterAndFormat.characterAndFormat('q', mochaSurface1),
+    CharacterAndFormat.characterAndFormat('s', mochaSurface0),
+    CharacterAndFormat.characterAndFormat('t', mochaBase),
+    CharacterAndFormat.characterAndFormat('u', mochaMantle)
 )
 
 val bedrockFormats = mutableListOf<CharacterAndFormat>().apply {

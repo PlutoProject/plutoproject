@@ -14,6 +14,7 @@ import ink.pmc.utils.visual.*
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.util.Ticks
+import org.bukkit.Location
 import java.time.Duration
 import java.util.*
 import kotlin.time.toKotlinDuration
@@ -694,7 +695,7 @@ val UI_VIEWER_EMPTY = component {
 }
 
 private val UI_HOME_EMPTY_PRMPT = component {
-    text("通过「手账」或 ") with mochaSubtext0 without italic()
+    text("点击下方按钮或 ") with mochaSubtext0 without italic()
     text("/sethome ") with mochaLavender without italic()
     text("以留下你的足迹") with mochaSubtext0 without italic()
 }
@@ -943,13 +944,27 @@ val UI_HOME_EDITOR_RENAME_EXIT_LORE = listOf(
     }
 )
 
-val UI_HOME_EDITOR_RENAME_SAVE_EDITING = listOf(
-    Component.empty(),
-    component {
-        text("左键 ") with mochaLavender without italic()
-        text("保存并退出") with mochaText without italic()
-    }
-)
+@Suppress("FunctionName")
+fun UI_HOME_EDITOR_RENAME_SAVE_EDITING(home: Home): List<Component> {
+    val conf = getKoin().get<EssentialsConfig>().WorldAliases()
+    val loc = home.location
+    return listOf(
+        component {
+            raw(
+                UI_HOME_ITEM_LORE_LOC
+                    .replace("<world>", conf[loc.world])
+                    .replace("<x>", "${loc.blockX}")
+                    .replace("<y>", "${loc.blockY}")
+                    .replace("<z>", "${loc.blockZ}")
+            )
+        },
+        Component.empty(),
+        component {
+            text("左键 ") with mochaLavender without italic()
+            text("保存并退出") with mochaText without italic()
+        }
+    )
+}
 
 val UI_HOME_EDITOR_RENAME_SAVE_INVALID_LORE = listOf(
     Component.empty(),
@@ -962,6 +977,13 @@ val UI_HOME_EDITOR_RENAME_SAVE_TOO_LONG = listOf(
         text("名称过长，最多使用 ") with mochaMaroon without italic()
         text("${Essentials.homeManager.nameLengthLimit} ") with mochaText without italic()
         text("个字符") with mochaMaroon without italic()
+    }
+)
+
+val UI_HOME_EDITOR_RENAME_SAVE_EXISTED = listOf(
+    Component.empty(),
+    component {
+        component { text("已存在同名的家") with mochaMaroon without italic() }
     }
 )
 
@@ -1006,9 +1028,58 @@ val FORM_VIEWER_NEXT = component {
 fun FORM_HOME_ITEM(home: Home) = component {
     val conf = getKoin().get<EssentialsConfig>().WorldAliases()
     val loc = home.location
-    text("${home.name} (<world> <x>, <y>, <z>)"
-        .replace("<world>", conf[loc.world])
-        .replace("<x>", "${loc.blockX}")
-        .replace("<y>", "${loc.blockY}")
-        .replace("<z>", "${loc.blockZ}"))
+    text(
+        "${home.name} (<world> <x>, <y>, <z>)"
+            .replace("<world>", conf[loc.world])
+            .replace("<x>", "${loc.blockX}")
+            .replace("<y>", "${loc.blockY}")
+            .replace("<z>", "${loc.blockZ}")
+    )
 }
+
+val UI_HOME_CREATOR_TITLE = component {
+    text("创建家")
+}
+
+val UI_HOME_CREATOR_LEFT_LORE = listOf(
+    Component.empty(),
+    component {
+        text("左键 ") with mochaLavender without italic()
+        text("返回上一页") with mochaText without italic()
+    }
+)
+
+const val UI_HOME_CREATOR_INPUT = "输入名称..."
+
+@Suppress("FunctionName")
+fun UI_HOME_CREATOR_OUTPUT_LORE(loc: Location): List<Component> {
+    val conf = getKoin().get<EssentialsConfig>().WorldAliases()
+    return listOf(
+        component {
+            raw(
+                UI_HOME_ITEM_LORE_LOC
+                    .replace("<world>", conf[loc.world])
+                    .replace("<x>", "${loc.blockX}")
+                    .replace("<y>", "${loc.blockY}")
+                    .replace("<z>", "${loc.blockZ}")
+            )
+        },
+        Component.empty(),
+        component {
+            text("左键 ") with mochaLavender without italic()
+            text("创建家") with mochaText without italic()
+        }
+    )
+}
+
+val UI_HOME_VIEWER_CREATE = component {
+    text("创建家") with mochaText without italic()
+}
+
+val UI_HOME_VIEWER_CREATE_LORE = listOf(
+    Component.empty(),
+    component {
+        text("左键 ") with mochaLavender without italic()
+        text("在当前位置创建家") with mochaText without italic()
+    }
+)

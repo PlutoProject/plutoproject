@@ -7,8 +7,8 @@ import ink.pmc.essentials.config.EssentialsConfig
 import ink.pmc.essentials.disabled
 import ink.pmc.essentials.essentialsScope
 import ink.pmc.utils.chat.replace
-import ink.pmc.utils.concurrent.submitAsync
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.koin.core.component.KoinComponent
@@ -27,7 +27,7 @@ class AfkManagerImpl : AfkManager, KoinComponent {
     override val idleDuration: Duration = conf.idleDuration
 
     init {
-        essentialsScope.submitAsync {
+        essentialsScope.launch {
             while (!disabled) {
                 Bukkit.getOnlinePlayers().forEach {
                     val idle = it.idleDuration.toKotlinDuration()
