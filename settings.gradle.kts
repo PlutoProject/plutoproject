@@ -92,3 +92,6 @@ include("interactive")
 include("interactive:api")
 include("interactive:paper")
 include("interactive:velocity")
+include("menu")
+include("menu:paper")
+findProject(":menu:paper")?.name = "paper"

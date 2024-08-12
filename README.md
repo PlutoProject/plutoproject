@@ -16,6 +16,7 @@
 - `messages`: 消息提示相关逻辑。
 - `transfer`: 中转大厅。
 - `interactive`: 交互框架，其 `inventory` 部分基于 [guiy-compose](https://github.com/MineInAbyss/guiy-compose) 开发。
+- `menu`: 服务器菜单相关内容。
 
 ## 🔧 构建
 
