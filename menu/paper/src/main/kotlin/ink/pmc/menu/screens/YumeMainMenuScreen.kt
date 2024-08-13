@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import cafe.adriel.voyager.core.screen.Screen
 import ink.pmc.interactive.api.inventory.components.Background
 import ink.pmc.interactive.api.inventory.components.Item
+import ink.pmc.interactive.api.inventory.components.VerticalGrid
 import ink.pmc.interactive.api.inventory.components.canvases.Chest
 import ink.pmc.interactive.api.inventory.jetpack.Arrangement
 import ink.pmc.interactive.api.inventory.layout.Box
@@ -15,11 +16,15 @@ import ink.pmc.menu.messages.YUME_MAIN_TAB_LORE
 import ink.pmc.menu.messages.YUME_MAIN_TITLE
 import org.bukkit.Material
 
+private const val PANE_COLUMES = 4
+private const val PANE_COLUME_WIDTH = 7
+private const val PANE_GRIDS = PANE_COLUMES * PANE_COLUME_WIDTH
+
 class YumeMainMenuScreen : Screen {
 
     @Composable
     override fun Content() {
-        Chest(title = YUME_MAIN_TITLE) {
+        Chest(title = YUME_MAIN_TITLE, modifier = Modifier.height(6)) {
             Box(modifier = Modifier.fillMaxSize()) {
                 Background()
                 Column(modifier = Modifier.fillMaxSize()) {
@@ -39,7 +44,7 @@ class YumeMainMenuScreen : Screen {
     @Composable
     @Suppress("FunctionName")
     private fun TopBar() {
-        Row(modifier = Modifier.fillMaxWidth().height(1), horizontalArrangement = Arrangement.Center) {
+        Row(modifier = Modifier.height(1).fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
             Common()
         }
     }
@@ -60,18 +65,33 @@ class YumeMainMenuScreen : Screen {
     @Composable
     @Suppress("FunctionName")
     private fun Pane() {
-        Column(modifier = Modifier.width(7).height(4), verticalArrangement = Arrangement.Center) {
-            Row(modifier = Modifier.fillMaxWidth().height(1), horizontalArrangement = Arrangement.Center) {
-                Home()
-                Spawn()
-                Teleport()
-                RandomTeleport()
-                Lookup()
-            }
-            Row(modifier = Modifier.fillMaxWidth().height(1), horizontalArrangement = Arrangement.Center) {
-                Daily()
-                Coin()
-                Wiki()
+        Row(
+            modifier = Modifier.height(PANE_COLUMES).fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Box(modifier = Modifier.fillMaxHeight().width(PANE_COLUME_WIDTH)) {
+                VerticalGrid(modifier = Modifier.fillMaxSize()) {
+                    repeat(PANE_GRIDS) {
+                        Item(material = Material.AIR)
+                    }
+                }
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.Center,
+                ) {
+                    Row(modifier = Modifier.fillMaxWidth().height(1), horizontalArrangement = Arrangement.Center) {
+                        Home()
+                        Spawn()
+                        Teleport()
+                        RandomTeleport()
+                        Lookup()
+                    }
+                    Row(modifier = Modifier.fillMaxWidth().height(1), horizontalArrangement = Arrangement.Center) {
+                        Daily()
+                        Coin()
+                        Wiki()
+                    }
+                }
             }
         }
     }
@@ -116,7 +136,7 @@ class YumeMainMenuScreen : Screen {
     @Suppress("FunctionName")
     private fun RandomTeleport() {
         Item(
-            material = Material.MINECART,
+            material = Material.AMETHYST_SHARD,
         )
     }
 
