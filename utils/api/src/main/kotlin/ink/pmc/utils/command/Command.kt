@@ -1,5 +1,8 @@
 package ink.pmc.utils.command
 
+import ink.pmc.utils.chat.NON_PLAYER
+import org.bukkit.command.CommandSender
+import org.bukkit.entity.Player
 import org.incendo.cloud.Command
 import org.incendo.cloud.CommandManager
 
@@ -19,4 +22,12 @@ abstract class Command<C> {
         commands.add(builder)
     }
 
+}
+
+suspend fun checkPlayer(sender: CommandSender, action: suspend Player.() -> Unit) {
+    if (sender !is Player) {
+        sender.sendMessage(NON_PLAYER)
+        return
+    }
+    sender.action()
 }

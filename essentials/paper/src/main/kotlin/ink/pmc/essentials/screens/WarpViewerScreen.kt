@@ -26,7 +26,6 @@ import ink.pmc.interactive.api.inventory.modifiers.click.clickable
 import ink.pmc.utils.chat.UI_BACK
 import ink.pmc.utils.chat.replace
 import org.bukkit.Material
-import org.bukkit.entity.Player
 import org.bukkit.event.inventory.ClickType
 import org.koin.compose.koinInject
 

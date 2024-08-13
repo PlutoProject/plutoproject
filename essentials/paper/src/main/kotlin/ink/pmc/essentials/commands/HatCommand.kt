@@ -5,6 +5,7 @@ import ink.pmc.utils.annotation.Command
 import ink.pmc.utils.bedrock.isFloodgate
 import ink.pmc.utils.chat.NO_PERMISSON
 import ink.pmc.utils.chat.replace
+import ink.pmc.utils.command.checkPlayer
 import ink.pmc.utils.concurrent.sync
 import ink.pmc.utils.dsl.cloud.invoke
 import ink.pmc.utils.dsl.cloud.sender

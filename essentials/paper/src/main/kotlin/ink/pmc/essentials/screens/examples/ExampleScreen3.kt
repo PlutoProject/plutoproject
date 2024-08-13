@@ -32,7 +32,7 @@ class ExampleScreen3 : Screen {
         val navigator = LocalNavigator.current
         repeat(30) {
             FormButton(
-                text = component { text("按钮 $it") with mochaYellow  },
+                text = component { text("按钮 $it") with mochaYellow },
                 onClick = { _, _ ->
                     navigator?.push(ExampleScreen4(it))
                 }

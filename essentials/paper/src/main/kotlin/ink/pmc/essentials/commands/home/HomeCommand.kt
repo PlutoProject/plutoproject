@@ -3,12 +3,12 @@ package ink.pmc.essentials.commands.home
 import cafe.adriel.voyager.navigator.Navigator
 import ink.pmc.essentials.*
 import ink.pmc.essentials.api.Essentials
-import ink.pmc.essentials.commands.checkPlayer
 import ink.pmc.essentials.screens.HomeViewerScreen
 import ink.pmc.interactive.api.Gui
 import ink.pmc.utils.annotation.Command
 import ink.pmc.utils.chat.NO_PERMISSON
 import ink.pmc.utils.chat.replace
+import ink.pmc.utils.command.checkPlayer
 import ink.pmc.utils.dsl.cloud.invoke
 import ink.pmc.utils.dsl.cloud.sender
 import ink.pmc.utils.player.uuidOrNull

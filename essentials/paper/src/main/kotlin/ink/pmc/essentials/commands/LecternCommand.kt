@@ -3,6 +3,7 @@ package ink.pmc.essentials.commands
 import ink.pmc.essentials.*
 import ink.pmc.utils.annotation.Command
 import ink.pmc.utils.chat.replace
+import ink.pmc.utils.command.checkPlayer
 import ink.pmc.utils.concurrent.sync
 import ink.pmc.utils.dsl.cloud.invoke
 import ink.pmc.utils.dsl.cloud.sender

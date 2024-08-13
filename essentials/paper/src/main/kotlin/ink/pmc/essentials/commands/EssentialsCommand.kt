@@ -10,6 +10,7 @@ import ink.pmc.essentials.screens.examples.ExampleScreen3
 import ink.pmc.essentials.teleport.random.PerfTest
 import ink.pmc.interactive.api.Gui
 import ink.pmc.utils.annotation.Command
+import ink.pmc.utils.command.checkPlayer
 import ink.pmc.utils.dsl.cloud.invoke
 import ink.pmc.utils.dsl.cloud.sender
 

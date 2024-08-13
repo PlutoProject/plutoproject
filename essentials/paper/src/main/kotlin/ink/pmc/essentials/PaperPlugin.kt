@@ -7,6 +7,7 @@ import ink.pmc.essentials.api.Essentials
 import ink.pmc.essentials.api.afk.AfkManager
 import ink.pmc.essentials.config.EssentialsConfig
 import ink.pmc.essentials.listeners.*
+import ink.pmc.utils.command.CommandRegistrationResult
 import ink.pmc.utils.command.registerCommands
 import ink.pmc.utils.inject.startKoinIfNotPresent
 import ink.pmc.utils.storage.saveResourceIfNotExisted
@@ -54,7 +55,10 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
             .buildOnEnable(this)
 
         commandManager.registerCommands(COMMAND_PACKAGE) {
-            conf.Commands()[it] to conf.CommandAliases()[it]
+            CommandRegistrationResult(
+                enabled = conf.Commands()[it],
+                aliases = conf.CommandAliases()[it]
+            )
         }
 
         registerEvents()

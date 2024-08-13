@@ -8,7 +8,7 @@ import ink.pmc.interactive.api.inventory.modifiers.fillMaxSize
 
 @Composable
 @Suppress("FunctionName")
-fun Background(contents: ComposableFunction = ::Placeholder) {
+fun Background(contents: ComposableFunction = { Placeholder() }) {
     VerticalGrid(modifier = Modifier.fillMaxSize()) {
         val inv = LocalInventory.current
         repeat(inv.size) {

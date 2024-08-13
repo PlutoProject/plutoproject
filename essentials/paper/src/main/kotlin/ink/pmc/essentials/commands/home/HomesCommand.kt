@@ -5,13 +5,13 @@ import ink.pmc.essentials.Cm
 import ink.pmc.essentials.HOMES_OTHER
 import ink.pmc.essentials.TELEPORT_FAILED_SOUND
 import ink.pmc.essentials.VIEWER_PAGING_SOUND
-import ink.pmc.essentials.commands.checkPlayer
 import ink.pmc.essentials.screens.HomeViewerScreen
 import ink.pmc.interactive.api.Gui
 import ink.pmc.utils.annotation.Command
 import ink.pmc.utils.chat.NO_PERMISSON
 import ink.pmc.utils.chat.PLAYER_HAVENT_PLAYED_BEFORE
 import ink.pmc.utils.chat.replace
+import ink.pmc.utils.command.checkPlayer
 import ink.pmc.utils.command.suggestion.PaperPrivilegedSuggestion
 import ink.pmc.utils.dsl.cloud.invoke
 import ink.pmc.utils.dsl.cloud.sender

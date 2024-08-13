@@ -14,10 +14,10 @@ import ink.pmc.essentials.screens.HomeEditorScreen.StarState.NOT_STARRED
 import ink.pmc.essentials.screens.HomeEditorScreen.StarState.STARRED
 import ink.pmc.essentials.screens.HomeEditorScreen.State.*
 import ink.pmc.interactive.api.LocalPlayer
-import ink.pmc.interactive.api.inventory.components.canvases.Anvil
 import ink.pmc.interactive.api.inventory.components.Back
 import ink.pmc.interactive.api.inventory.components.Item
 import ink.pmc.interactive.api.inventory.components.Placeholder
+import ink.pmc.interactive.api.inventory.components.canvases.Anvil
 import ink.pmc.interactive.api.inventory.components.canvases.Chest
 import ink.pmc.interactive.api.inventory.layout.Box
 import ink.pmc.interactive.api.inventory.layout.Column
@@ -28,14 +28,11 @@ import ink.pmc.utils.chat.isValidIdentifier
 import ink.pmc.utils.chat.replace
 import ink.pmc.utils.concurrent.submitAsync
 import ink.pmc.utils.dsl.itemStack
-import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import net.wesjd.anvilgui.AnvilGUI.ResponseAction
 import net.wesjd.anvilgui.AnvilGUI.Slot.INPUT_LEFT
 import net.wesjd.anvilgui.AnvilGUI.Slot.OUTPUT
 import org.bukkit.Material
-import org.bukkit.entity.Player
 import org.bukkit.event.inventory.ClickType
 import org.koin.compose.koinInject
 import kotlin.time.Duration.Companion.seconds

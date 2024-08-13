@@ -1,26 +1,23 @@
-package ink.pmc.essentials.commands.warp
+package ink.pmc.menu.commands
 
 import cafe.adriel.voyager.navigator.Navigator
-import ink.pmc.essentials.Cm
-import ink.pmc.essentials.VIEWER_PAGING_SOUND
-import ink.pmc.essentials.screens.WarpViewerScreen
 import ink.pmc.interactive.api.Gui
+import ink.pmc.menu.screens.YumeMainMenuScreen
+import ink.pmc.utils.PaperCm
 import ink.pmc.utils.annotation.Command
 import ink.pmc.utils.command.checkPlayer
 import ink.pmc.utils.dsl.cloud.invoke
 import ink.pmc.utils.dsl.cloud.sender
 
-@Command("warps")
+@Command("menu")
 @Suppress("UNUSED")
-fun Cm.warps(aliases: Array<String>) {
-    this("warps", *aliases) {
-        permission("essentials.warps")
+fun PaperCm.menu(aliases: Array<String>) {
+    this("menu", *aliases) {
         handler {
             checkPlayer(sender.sender) {
                 Gui.startInventory(this) {
-                    Navigator(WarpViewerScreen())
+                    Navigator(YumeMainMenuScreen())
                 }
-                playSound(VIEWER_PAGING_SOUND)
             }
         }
     }
