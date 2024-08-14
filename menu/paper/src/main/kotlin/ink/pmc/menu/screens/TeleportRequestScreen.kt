@@ -214,7 +214,7 @@ class TeleportRequestScreen : Screen {
                 }
             },
             modifier = Modifier.clickable {
-                if (state.value != 0) return@clickable
+                if (state.value != 0 || globalState != 0) return@clickable
                 if (manager.hasUnfinishedRequest(current)) return@clickable
 
                 val direction = when (clickType) {
