@@ -23,6 +23,7 @@ import ink.pmc.interactive.api.inventory.modifiers.*
 import ink.pmc.interactive.api.inventory.modifiers.click.clickable
 import ink.pmc.interactive.api.inventory.stateTransition
 import ink.pmc.menu.messages.*
+import ink.pmc.utils.chat.DURATION
 import ink.pmc.utils.chat.UI_PAGING_SOUND
 import ink.pmc.utils.chat.UI_SUCCEED_SOUND
 import ink.pmc.utils.chat.replace
@@ -226,13 +227,17 @@ class TeleportRequestScreen : Screen {
                 val message = when (direction) {
                     TeleportDirection.GO -> COMMAND_TPA_SUCCEED
                     TeleportDirection.COME -> COMMAND_TPAHERE_SUCCEED
-                }.replace("<player>", player.name)
+                }
 
                 manager.createRequest(current, player, direction)
                 state.stateTransition(1, navigator = navigator, pop = true)
                 globalState = 3
                 current.playSound(UI_SUCCEED_SOUND)
-                current.sendMessage(message)
+                current.sendMessage(
+                    message
+                        .replace("<player>", player.name)
+                        .replace("<expire>", DURATION(manager.defaultRequestOptions.expireAfter))
+                )
             }
         )
     }
@@ -269,10 +274,12 @@ class TeleportRequestScreen : Screen {
                     Loading()
                     return
                 }
+
                 2 -> {
                     Empty()
                     return
                 }
+
                 else -> {}
             }
 

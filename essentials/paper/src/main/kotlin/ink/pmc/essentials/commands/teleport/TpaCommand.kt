@@ -82,8 +82,11 @@ private fun handleTpa(source: Player, destination: Player, direction: TeleportDi
         COME -> COMMAND_TPAHERE_SUCCEED
     }
 
-    source.sendMessage(message.replace("<player>", destination.name))
-    source.sendMessage(TELEPORT_EXPIRE.replace("<expire>", DURATION(manager.defaultRequestOptions.expireAfter)))
+    source.sendMessage(
+        message
+            .replace("<player>", destination.name)
+            .replace("<expire>", DURATION(manager.defaultRequestOptions.expireAfter))
+    )
     if (Essentials.isAfkEnabled() && Essentials.afkManager.isAfk(destination)) {
         source.sendMessage(COMMAND_TPA_AFK)
     }

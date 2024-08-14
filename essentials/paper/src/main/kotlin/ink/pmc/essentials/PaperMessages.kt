@@ -259,10 +259,18 @@ val TELEPORT_REQUEST_RECEIVED_SOUND = sound {
     key(Key.key("block.decorated_pot.insert"))
 }
 
+private val TELEPORT_REQUEST_OPERATION = component {
+    text("[× 取消]") with mochaYellow with showText { text("点击以取消") with mochaYellow } with runCommand("/essentials:tpcancel")
+}
+
 val COMMAND_TPA_SUCCEED = component {
     text("已向 ") with mochaPink
     text("<player> ") with mochaFlamingo
     text("请求传送至其所在位置") with mochaPink
+    newline()
+    raw(TELEPORT_EXPIRE)
+    newline()
+    raw(TELEPORT_REQUEST_OPERATION)
 }
 
 val COMMAND_TPA_FAILED_SELF = component {
@@ -287,6 +295,10 @@ val COMMAND_TPAHERE_SUCCEED = component {
     text("已向 ") with mochaPink
     text("<player> ") with mochaFlamingo
     text("请求传送到你所在的位置") with mochaPink
+    newline()
+    raw(TELEPORT_EXPIRE)
+    newline()
+    raw(TELEPORT_REQUEST_OPERATION)
 }
 
 val TELEPORT_TPA_RECEIVED = component {
