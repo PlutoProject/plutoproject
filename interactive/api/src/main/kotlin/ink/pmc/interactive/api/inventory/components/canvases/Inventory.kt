@@ -96,11 +96,11 @@ inline fun rememberInventoryHolder(
     val clickHandler = LocalClickHandler.current
     return remember(clickHandler) {
         object : GuiInventoryHolder(session) {
-            override fun processClick(scope: ClickScope, event: Cancellable) {
+            override suspend fun processClick(scope: ClickScope, event: Cancellable) {
                 val clickResult = clickHandler.processClick(scope)
             }
 
-            override fun processDrag(scope: DragScope) {
+            override suspend fun processDrag(scope: DragScope) {
                 clickHandler.processDrag(scope)
             }
 

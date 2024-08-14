@@ -39,7 +39,7 @@ class InventoryScope(owner: Player, contents: ComposableFunction) : BaseScope<In
 
     private val clickHandler = object : ClickHandler {
         val rootNode = nodeApplier.current
-        override fun processClick(scope: ClickScope): ClickResult {
+        override suspend fun processClick(scope: ClickScope): ClickResult {
             val slot = scope.slot
             val width = rootNode.width
             return rootNode.children.fold(ClickResult()) { acc, node ->
@@ -50,7 +50,7 @@ class InventoryScope(owner: Player, contents: ComposableFunction) : BaseScope<In
             }
         }
 
-        override fun processDrag(scope: DragScope) {
+        override suspend fun processDrag(scope: DragScope) {
             rootNode.processDrag(scope)
         }
     }

@@ -5,7 +5,7 @@ import ink.pmc.interactive.api.inventory.modifiers.Modifier
 open class ClickModifier(
     val merged: Boolean = false,
     val cancelClickEvent: Boolean,
-    val onClick: (ClickScope.() -> Unit),
+    val onClick: suspend (ClickScope.() -> Unit),
 ) : Modifier.Element<ClickModifier> {
     override fun mergeWith(other: ClickModifier) = ClickModifier(
         merged = true,
@@ -20,7 +20,7 @@ open class ClickModifier(
 
 fun Modifier.clickable(
     cancelClickEvent: Boolean = true,
-    onClick: ClickScope.() -> Unit
+    onClick: suspend ClickScope.() -> Unit
 ) =
     then(
         ClickModifier(

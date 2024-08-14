@@ -106,9 +106,9 @@ class InventoryNode : Measurable, Placeable, BaseInventoryNode {
     /**
      * @return Whether no elements were clickable or any element requested the bukkit click event to be cancelled.
      */
-    fun processClick(scope: ClickScope, x: Int, y: Int): ClickResult {
+    suspend fun processClick(scope: ClickScope, x: Int, y: Int): ClickResult {
         val cancelClickEvent = get<ClickModifier>()?.run {
-            onClick.invoke(scope)
+            onClick(scope)
             cancelClickEvent
         }
         return children

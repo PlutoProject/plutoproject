@@ -1,11 +1,14 @@
 package ink.pmc.utils.chat
 
 import ink.pmc.advkt.component.*
+import ink.pmc.advkt.sound.key
+import ink.pmc.advkt.sound.sound
 import ink.pmc.utils.time.formatDuration
 import ink.pmc.utils.visual.mochaMaroon
 import ink.pmc.utils.visual.mochaSubtext0
 import ink.pmc.utils.visual.mochaText
 import ink.pmc.utils.visual.mochaYellow
+import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
 import kotlin.time.Duration
 import kotlin.time.toKotlinDuration
@@ -58,4 +61,8 @@ val PLAYER_HAVENT_PLAYED_BEFORE = component {
     text("玩家 ") with mochaMaroon
     text("<player> ") with mochaText
     text("没有进入过游戏") with mochaMaroon
+}
+
+val UI_INVALID_SOUND = sound {
+    key(Key.key("block.note_block.didgeridoo"))
 }

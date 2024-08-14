@@ -19,8 +19,8 @@ abstract class GuiInventoryHolder(val scope: GuiInventoryScope) : InventoryHolde
     override fun getInventory(): Inventory =
         activeInventory ?: error("Interactive inventory is used in bukkit but has not been rendered yet.")
 
-    abstract fun processClick(scope: ClickScope, event: Cancellable)
-    abstract fun processDrag(scope: DragScope)
+    abstract suspend fun processClick(scope: ClickScope, event: Cancellable)
+    abstract suspend fun processDrag(scope: DragScope)
 
     abstract fun onClose(player: Player)
 

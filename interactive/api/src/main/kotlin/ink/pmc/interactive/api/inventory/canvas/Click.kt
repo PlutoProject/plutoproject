@@ -14,7 +14,7 @@ data class ClickResult(val cancelBukkitEvent: Boolean? = null) {
 
 interface ClickHandler {
 
-    fun processClick(scope: ClickScope): ClickResult
-    fun processDrag(scope: DragScope)
+    suspend fun processClick(scope: ClickScope): ClickResult
+    suspend fun processDrag(scope: DragScope)
 
 }

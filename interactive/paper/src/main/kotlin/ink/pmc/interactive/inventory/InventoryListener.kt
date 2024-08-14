@@ -15,7 +15,7 @@ import org.bukkit.event.inventory.InventoryDragEvent
 object InventoryListener : Listener {
 
     @EventHandler
-    fun InventoryClickEvent.e() {
+    suspend fun InventoryClickEvent.e() {
         val invHolder = inventory.holder as? GuiInventoryHolder ?: return
 
         // Avoid any exploits shift clicking or double-clicking into/from the GUI
@@ -46,7 +46,7 @@ object InventoryListener : Listener {
     }
 
     @EventHandler
-    fun InventoryDragEvent.e() {
+    suspend fun InventoryDragEvent.e() {
         val invHolder = inventory.holder as? GuiInventoryHolder ?: return
         val inInv = newItems.filter { it.key < view.topInventory.size }
         if (newItems.size == 1 && inInv.size == 1) {
