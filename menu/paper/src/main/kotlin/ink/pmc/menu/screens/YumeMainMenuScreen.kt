@@ -5,7 +5,10 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import ink.pmc.essentials.RANDOM_TELEPORT_COST_BYPASS
+import ink.pmc.essentials.TELEPORT_REQUEST_RECEIVED_SOUND
 import ink.pmc.essentials.api.home.HomeManager
+import ink.pmc.essentials.api.teleport.random.RandomTeleportManager
 import ink.pmc.essentials.screens.HomeViewerScreen
 import ink.pmc.interactive.api.LocalPlayer
 import ink.pmc.interactive.api.inventory.components.Background
@@ -18,7 +21,10 @@ import ink.pmc.interactive.api.inventory.layout.Column
 import ink.pmc.interactive.api.inventory.layout.Row
 import ink.pmc.interactive.api.inventory.modifiers.*
 import ink.pmc.interactive.api.inventory.modifiers.click.clickable
+import ink.pmc.interactive.api.inventory.stateTransition
+import ink.pmc.menu.economy
 import ink.pmc.menu.messages.*
+import ink.pmc.utils.chat.MESSAGE_SOUND
 import ink.pmc.utils.chat.UI_INVALID_SOUND
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -121,36 +127,28 @@ class YumeMainMenuScreen : Screen {
         * 0 -> 正常状态
         * 1 -> 无首选家
         * */
-        var state by remember { mutableStateOf(0) }
+        val state = remember { mutableStateOf(0) }
         val manager = koinInject<HomeManager>()
-        val coroutineScope = rememberCoroutineScope()
-
-        fun stateTransition(new: Int) {
-            coroutineScope.launch {
-                val keep = state
-                state = new
-                delay(1.seconds)
-                state = keep
-            }
-        }
 
         Item(
             material = Material.LANTERN,
             name = YUME_MAIN_ITEM_HOME,
-            lore = when (state) {
+            lore = when (state.value) {
                 0 -> YUME_MAIN_ITEM_HOME_LORE
                 1 -> YUME_MAIN_ITEM_HOME_LORE_NO_PREFER
-                else -> error("Unsupported state")
+                else -> error("Unreachable")
             },
+            enchantmentGlint = state.value > 0,
             modifier = Modifier.clickable {
+                if (state.value != 0) return@clickable
                 when (clickType) {
                     ClickType.LEFT -> {
                         manager.getPreferredHome(player)?.let {
-                            it.teleport(player)
                             player.closeInventory()
+                            it.teleport(player)
                             return@clickable
                         }
-                        stateTransition(1)
+                        state.stateTransition(1)
                         player.playSound(UI_INVALID_SOUND)
                     }
                     ClickType.RIGHT -> {
@@ -170,6 +168,8 @@ class YumeMainMenuScreen : Screen {
     private fun Spawn() {
         Item(
             material = Material.COMPASS,
+            name = YUME_MAIN_ITEM_SPAWN,
+            lore = YUME_MAIN_ITEM_SPAWN_LORE
         )
     }
 
@@ -181,6 +181,8 @@ class YumeMainMenuScreen : Screen {
     private fun Teleport() {
         Item(
             material = Material.MINECART,
+            name = YUME_MAIN_ITEM_TP,
+            lore = YUME_MAIN_ITEM_TP_LORE,
         )
     }
 
@@ -190,10 +192,47 @@ class YumeMainMenuScreen : Screen {
     @Composable
     @Suppress("FunctionName")
     private fun RandomTeleport() {
+        val player = LocalPlayer.current
+        /*
+        * 0 -> 正常状态
+        * 1 -> 货币不足
+        * 2 -> 该世界未启用
+        * */
+        val state = remember { mutableStateOf(0) }
+        val manager = koinInject<RandomTeleportManager>()
+
         Item(
             material = Material.AMETHYST_SHARD,
             name = YUME_MAIN_ITEM_HOME_RTP,
-            lore = YUME_MAIN_ITEM_HOME_RTP_LORE
+            lore = when(state.value) {
+                0 -> YUME_MAIN_ITEM_HOME_RTP_LORE
+                1 -> YUME_MAIN_ITEM_HOME_RTP_NOT_ENABLED_LORE
+                2 -> YUME_MAIN_ITEM_HOME_RTP_COIN_NOT_ENOUGH_LORE
+                else -> error("Unreachable")
+            },
+            enchantmentGlint = state.value > 0,
+            modifier = Modifier.clickable {
+                if (state.value != 0) return@clickable
+                if (clickType != ClickType.LEFT) return@clickable
+                val balance = economy.getBalance(player)
+                val cost = manager.defaultOptions.cost
+                val world = player.world
+
+                if (!manager.isEnabled(world)) {
+                    state.stateTransition(1)
+                    player.playSound(UI_INVALID_SOUND)
+                    return@clickable
+                }
+
+                if (balance < cost && !player.hasPermission(RANDOM_TELEPORT_COST_BYPASS)) {
+                    state.stateTransition(2)
+                    player.playSound(UI_INVALID_SOUND)
+                    return@clickable
+                }
+
+                player.closeInventory()
+                manager.launch(player, player.world)
+            }
         )
     }
 
@@ -205,6 +244,8 @@ class YumeMainMenuScreen : Screen {
     private fun Lookup() {
         Item(
             material = Material.SPYGLASS,
+            name = YUME_MAIN_ITEM_HOME_LOOKUP,
+            lore = YUME_MAIN_ITEM_HOME_LOOKUP_LORE,
         )
     }
 
@@ -216,6 +257,8 @@ class YumeMainMenuScreen : Screen {
     private fun Daily() {
         Item(
             material = Material.NAME_TAG,
+            name = YUME_MAIN_ITEMS_DAILY,
+            lore = YUME_MAIN_ITEMS_DAILY_LORE
         )
     }
 
@@ -225,8 +268,11 @@ class YumeMainMenuScreen : Screen {
     @Composable
     @Suppress("FunctionName")
     private fun Coin() {
+        val player = LocalPlayer.current
         Item(
             material = Material.SUNFLOWER,
+            name = YUME_MAIN_ITEM_COINS,
+            lore = YUME_MAIN_ITEM_COINS_LORE(player),
         )
     }
 
@@ -245,6 +291,7 @@ class YumeMainMenuScreen : Screen {
                 if (clickType != ClickType.LEFT) return@clickable
                 player.closeInventory()
                 player.sendMessage(YUME_MAIN_WIKI)
+                player.playSound(MESSAGE_SOUND)
             }
         )
     }

@@ -63,6 +63,10 @@ val PLAYER_HAVENT_PLAYED_BEFORE = component {
     text("没有进入过游戏") with mochaMaroon
 }
 
+val MESSAGE_SOUND = sound {
+    key(Key.key("block.decorated_pot.insert"))
+}
+
 val UI_INVALID_SOUND = sound {
     key(Key.key("block.note_block.didgeridoo"))
 }
