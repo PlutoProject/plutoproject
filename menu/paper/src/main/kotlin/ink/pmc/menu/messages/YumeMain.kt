@@ -97,7 +97,7 @@ val YUME_MAIN_ITEM_TP_EXISTED_LORE = listOf(
     },
     component {
         text("可使用 ") with mochaMaroon without italic()
-        text("/tpcancel ") with mochaLavender without italic()
+        text("/tpcancel ") with mochaText without italic()
         text("来取消") with mochaMaroon without italic()
     },
 )
