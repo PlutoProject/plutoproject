@@ -70,7 +70,7 @@ val YUME_MAIN_ITEM_SPAWN_LORE = listOf(
         text("回到首选的主城") with mochaText without italic()
     },
     component {
-        text("Shift + 左键 ") with mochaLavender without italic()
+        text("右键 ") with mochaLavender without italic()
         text("切换首选的主城") with mochaText without italic()
     },
 )
@@ -87,6 +87,18 @@ val YUME_MAIN_ITEM_TP_LORE = listOf(
     component {
         text("左键 ") with mochaLavender without italic()
         text("发起传送请求") with mochaText without italic()
+    },
+)
+
+val YUME_MAIN_ITEM_TP_EXISTED_LORE = listOf(
+    Component.empty(),
+    component {
+        text("你还有未完成的传送请求，") with mochaMaroon without italic()
+    },
+    component {
+        text("可使用 ") with mochaMaroon without italic()
+        text("/tpcancel ") with mochaLavender without italic()
+        text("来取消") with mochaMaroon without italic()
     },
 )
 
@@ -133,10 +145,7 @@ val YUME_MAIN_ITEM_HOME_LOOKUP = component {
 
 val YUME_MAIN_ITEM_HOME_LOOKUP_LORE = listOf(
     component {
-        text("发动特殊技能，") with mochaSubtext0 without italic()
-    },
-    component {
-        text("将周围的变化一览无余。") with mochaSubtext0 without italic()
+        text("将周围的变化一览无余，") with mochaSubtext0 without italic()
     },
     component {
         text("这对抓住做坏事的人特别有用。") with mochaSubtext0 without italic()
@@ -147,7 +156,7 @@ val YUME_MAIN_ITEM_HOME_LOOKUP_LORE = listOf(
         text("进入查询模式") with mochaText without italic()
     },
     component {
-        text("Shift + 左键 ") with mochaLavender without italic()
+        text("右键 ") with mochaLavender without italic()
         text("查询四周变化") with mochaText without italic()
     },
 )

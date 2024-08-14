@@ -1,18 +1,21 @@
 package ink.pmc.menu.screens
 
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import ink.pmc.essentials.RANDOM_TELEPORT_COST_BYPASS
-import ink.pmc.essentials.TELEPORT_REQUEST_RECEIVED_SOUND
+import ink.pmc.essentials.api.home.Home
 import ink.pmc.essentials.api.home.HomeManager
+import ink.pmc.essentials.api.teleport.TeleportManager
 import ink.pmc.essentials.api.teleport.random.RandomTeleportManager
 import ink.pmc.essentials.screens.HomeViewerScreen
 import ink.pmc.interactive.api.LocalPlayer
 import ink.pmc.interactive.api.inventory.components.Background
 import ink.pmc.interactive.api.inventory.components.Item
+import ink.pmc.interactive.api.inventory.components.Space
 import ink.pmc.interactive.api.inventory.components.VerticalGrid
 import ink.pmc.interactive.api.inventory.components.canvases.Chest
 import ink.pmc.interactive.api.inventory.jetpack.Arrangement
@@ -26,16 +29,13 @@ import ink.pmc.menu.economy
 import ink.pmc.menu.messages.*
 import ink.pmc.utils.chat.MESSAGE_SOUND
 import ink.pmc.utils.chat.UI_INVALID_SOUND
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import org.bukkit.Material
 import org.bukkit.event.inventory.ClickType
 import org.koin.compose.koinInject
-import kotlin.time.Duration.Companion.seconds
 
-private const val PANE_COLUMES = 4
+private const val PANE_COLUMNS = 4
 private const val PANE_COLUME_WIDTH = 7
-private const val PANE_GRIDS = PANE_COLUMES * PANE_COLUME_WIDTH
+private const val PANE_GRIDS = PANE_COLUMNS * PANE_COLUME_WIDTH
 
 class YumeMainMenuScreen : Screen {
 
@@ -85,13 +85,13 @@ class YumeMainMenuScreen : Screen {
     @Suppress("FunctionName")
     private fun Pane() {
         Row(
-            modifier = Modifier.height(PANE_COLUMES).fillMaxWidth(),
+            modifier = Modifier.height(PANE_COLUMNS).fillMaxWidth(),
             horizontalArrangement = Arrangement.Center
         ) {
             Box(modifier = Modifier.fillMaxHeight().width(PANE_COLUME_WIDTH)) {
                 VerticalGrid(modifier = Modifier.fillMaxSize()) {
                     repeat(PANE_GRIDS) {
-                        Item(material = Material.AIR)
+                        Space()
                     }
                 }
                 Column(
@@ -129,6 +129,12 @@ class YumeMainMenuScreen : Screen {
         * */
         val state = remember { mutableStateOf(0) }
         val manager = koinInject<HomeManager>()
+        var preferred by rememberSaveable { mutableStateOf<Home?>(null) }
+
+        // 预加载首选家，避免点击时等待
+        LaunchedEffect(Unit) {
+            preferred = manager.getPreferredHome(player)
+        }
 
         Item(
             material = Material.LANTERN,
@@ -143,7 +149,7 @@ class YumeMainMenuScreen : Screen {
                 if (state.value != 0) return@clickable
                 when (clickType) {
                     ClickType.LEFT -> {
-                        manager.getPreferredHome(player)?.let {
+                        preferred?.let {
                             player.closeInventory()
                             it.teleport(player)
                             return@clickable
@@ -151,9 +157,11 @@ class YumeMainMenuScreen : Screen {
                         state.stateTransition(1)
                         player.playSound(UI_INVALID_SOUND)
                     }
+
                     ClickType.RIGHT -> {
                         navigator.push(HomeViewerScreen(player))
                     }
+
                     else -> {}
                 }
             }
@@ -179,10 +187,35 @@ class YumeMainMenuScreen : Screen {
     @Composable
     @Suppress("FunctionName")
     private fun Teleport() {
+        val player = LocalPlayer.current
+        val navigator = LocalNavigator.currentOrThrow
+        val manager = koinInject<TeleportManager>()
+        /*
+        * 0 -> 正常状态
+        * 1 -> 有未接受的请求
+        * */
+        val state = remember { mutableStateOf(0) }
         Item(
             material = Material.MINECART,
             name = YUME_MAIN_ITEM_TP,
-            lore = YUME_MAIN_ITEM_TP_LORE,
+            lore = when (state.value) {
+                0 -> YUME_MAIN_ITEM_TP_LORE
+                1 -> YUME_MAIN_ITEM_TP_EXISTED_LORE
+                else -> error("Unreachable")
+            },
+            enchantmentGlint = state.value > 0,
+            modifier = Modifier.clickable {
+                if (state.value != 0) return@clickable
+                if (clickType != ClickType.LEFT) return@clickable
+
+                if (manager.hasUnfinishedRequest(player)) {
+                    state.stateTransition(1)
+                    player.playSound(UI_INVALID_SOUND)
+                    return@clickable
+                }
+
+                navigator.push(TeleportRequestScreen())
+            }
         )
     }
 
@@ -204,7 +237,7 @@ class YumeMainMenuScreen : Screen {
         Item(
             material = Material.AMETHYST_SHARD,
             name = YUME_MAIN_ITEM_HOME_RTP,
-            lore = when(state.value) {
+            lore = when (state.value) {
                 0 -> YUME_MAIN_ITEM_HOME_RTP_LORE
                 1 -> YUME_MAIN_ITEM_HOME_RTP_NOT_ENABLED_LORE
                 2 -> YUME_MAIN_ITEM_HOME_RTP_COIN_NOT_ENOUGH_LORE
