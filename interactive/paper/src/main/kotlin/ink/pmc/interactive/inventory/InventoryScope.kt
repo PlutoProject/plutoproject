@@ -99,6 +99,7 @@ class InventoryScope(owner: Player, contents: ComposableFunction) : BaseScope<In
         if (isDisposed) return
         submitSync {
             if (!owner.isOnline) return@submitSync
+            setPendingRefreshIfNeeded(true) // 防止 dispose 在事件中再次被调用造成 StackOverflowError
             owner.closeInventory()
         }
         super.dispose()
