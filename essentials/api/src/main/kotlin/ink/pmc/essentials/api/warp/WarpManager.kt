@@ -1,6 +1,7 @@
 package ink.pmc.essentials.api.warp
 
 import org.bukkit.Location
+import org.bukkit.OfflinePlayer
 import org.bukkit.World
 import java.util.*
 
@@ -10,6 +11,7 @@ interface WarpManager {
     val blacklistedWorlds: Collection<World>
     val nameLengthLimit: Int
     val loadedWarps: Map<UUID, Warp>
+    val spawns: Collection<Warp>
 
     fun isLoaded(id: UUID): Boolean
 
@@ -25,7 +27,19 @@ interface WarpManager {
 
     suspend fun get(name: String): Warp?
 
+    fun getSpawn(id: UUID): Warp?
+
+    fun getSpawn(name: String): Warp?
+
+    fun getDefaultSpawn(): Warp?
+
+    suspend fun getPreferredSpawn(player: OfflinePlayer): Warp?
+
+    suspend fun setPreferredSpawn(player: OfflinePlayer, spawn: Warp)
+
     suspend fun list(): Collection<Warp>
+
+    fun listSpawns(): Collection<Warp>
 
     suspend fun has(id: UUID): Boolean
 
