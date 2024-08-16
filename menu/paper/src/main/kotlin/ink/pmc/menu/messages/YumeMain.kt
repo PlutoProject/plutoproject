@@ -59,19 +59,10 @@ val YUME_MAIN_ITEM_SPAWN = component {
 }
 
 val YUME_MAIN_ITEM_SPAWN_LORE = listOf(
-    component {
-        text("当前已选 ") with mochaSubtext0 without italic()
-        text("Test") with mochaText without italic()
-        text("。") with mochaSubtext0 without italic()
-    },
     Component.empty(),
     component {
         text("左键 ") with mochaLavender without italic()
-        text("回到首选的主城") with mochaText without italic()
-    },
-    component {
-        text("右键 ") with mochaLavender without italic()
-        text("切换首选的主城") with mochaText without italic()
+        text("回到主城") with mochaText without italic()
     },
 )
 

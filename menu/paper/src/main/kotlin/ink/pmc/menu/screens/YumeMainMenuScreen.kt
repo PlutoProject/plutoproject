@@ -11,6 +11,8 @@ import ink.pmc.essentials.api.home.Home
 import ink.pmc.essentials.api.home.HomeManager
 import ink.pmc.essentials.api.teleport.TeleportManager
 import ink.pmc.essentials.api.teleport.random.RandomTeleportManager
+import ink.pmc.essentials.api.warp.Warp
+import ink.pmc.essentials.api.warp.WarpManager
 import ink.pmc.essentials.screens.HomeViewerScreen
 import ink.pmc.interactive.api.LocalPlayer
 import ink.pmc.interactive.api.inventory.components.Background
@@ -174,10 +176,23 @@ class YumeMainMenuScreen : Screen {
     @Composable
     @Suppress("FunctionName")
     private fun Spawn() {
+        val player = LocalPlayer.current
+        val manager = koinInject<WarpManager>()
+        var spawn by rememberSaveable { mutableStateOf<Warp?>(null) }
+
+        // 预加载
+        LaunchedEffect(Unit) {
+            spawn = manager.getPreferredSpawn(player)
+        }
+
         Item(
             material = Material.COMPASS,
             name = YUME_MAIN_ITEM_SPAWN,
-            lore = YUME_MAIN_ITEM_SPAWN_LORE
+            lore = YUME_MAIN_ITEM_SPAWN_LORE,
+            modifier = Modifier.clickable {
+                if (clickType != ClickType.LEFT) return@clickable
+                spawn?.teleport(player)
+            }
         )
     }
 

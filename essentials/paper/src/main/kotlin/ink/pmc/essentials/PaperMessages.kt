@@ -1095,3 +1095,7 @@ val UI_HOME_VIEWER_CREATE_LORE = listOf(
         text("在当前位置创建家") with mochaText without italic()
     }
 )
+
+val COMMAND_SPAWN_FAILED_NOT_SET = component {
+    text("服务器未设置出生点位置") with mochaMaroon
+}
