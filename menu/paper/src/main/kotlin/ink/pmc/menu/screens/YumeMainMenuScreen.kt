@@ -343,7 +343,7 @@ class YumeMainMenuScreen : Screen {
 
                 if (state.value == 1 && clickType == ClickType.LEFT && player.inspecting) {
                     player.inspecting = false
-                    state.stateTransition(3, 0)
+                    state.stateTransition(3, resume = 0)
                     player.playSound(UI_SUCCEED_SOUND)
                     return@clickable
                 }
