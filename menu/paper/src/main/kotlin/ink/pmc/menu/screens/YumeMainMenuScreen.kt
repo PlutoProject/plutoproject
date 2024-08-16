@@ -27,10 +27,13 @@ import ink.pmc.interactive.api.inventory.layout.Row
 import ink.pmc.interactive.api.inventory.modifiers.*
 import ink.pmc.interactive.api.inventory.modifiers.click.clickable
 import ink.pmc.interactive.api.inventory.stateTransition
+import ink.pmc.menu.CO_NEAR_COMMAND
 import ink.pmc.menu.economy
+import ink.pmc.menu.inspecting
 import ink.pmc.menu.messages.*
 import ink.pmc.utils.chat.MESSAGE_SOUND
 import ink.pmc.utils.chat.UI_INVALID_SOUND
+import ink.pmc.utils.chat.UI_SUCCEED_SOUND
 import org.bukkit.Material
 import org.bukkit.event.inventory.ClickType
 import org.koin.compose.koinInject
@@ -290,10 +293,61 @@ class YumeMainMenuScreen : Screen {
     @Composable
     @Suppress("FunctionName")
     private fun Lookup() {
+        val player = LocalPlayer.current
+        /*
+        * 0 -> 正常展示
+        * 1 -> 开启
+        * 2 -> 已开启（过渡）
+        * 3 -> 已关闭（过渡）
+        * */
+        val state = rememberSaveable { mutableStateOf(if (!player.inspecting) 0 else 1) }
         Item(
             material = Material.SPYGLASS,
-            name = YUME_MAIN_ITEM_HOME_LOOKUP,
-            lore = YUME_MAIN_ITEM_HOME_LOOKUP_LORE,
+            name = when (state.value) {
+                0 -> YUME_MAIN_ITEM_HOME_LOOKUP
+                1 -> YUME_MAIN_ITEM_HOME_LOOKUP
+                2 -> YUME_MAIN_ITEM_HOME_LOOKUP_ENABLE
+                3 -> YUME_MAIN_ITEM_HOME_LOOKUP_DISABLE
+                else -> error("Unreachable")
+            },
+            lore = when (state.value) {
+                0 -> YUME_MAIN_ITEM_HOME_LOOKUP_LORE
+                1 -> YUME_MAIN_ITEM_HOME_LOOKUP_ENABLED_LORE
+                2 -> listOf()
+                3 -> listOf()
+                else -> error("Unreachable")
+            },
+            enchantmentGlint = state.value > 0,
+            modifier = Modifier.clickable {
+                if (state.value > 1) return@clickable
+
+                if (state.value == 0) {
+                    when (clickType) {
+                        ClickType.LEFT -> {
+                            player.inspecting = true
+                            state.stateTransition(2, resume = 1)
+                            player.playSound(UI_SUCCEED_SOUND)
+                            return@clickable
+                        }
+
+                        ClickType.RIGHT -> {
+                            player.performCommand(CO_NEAR_COMMAND)
+                            player.closeInventory()
+                            player.playSound(UI_SUCCEED_SOUND)
+                        }
+
+                        else -> {}
+                    }
+                    return@clickable
+                }
+
+                if (state.value == 1 && clickType == ClickType.LEFT && player.inspecting) {
+                    player.inspecting = false
+                    state.stateTransition(3, 0)
+                    player.playSound(UI_SUCCEED_SOUND)
+                    return@clickable
+                }
+            }
         )
     }
 

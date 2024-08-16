@@ -134,6 +134,14 @@ val YUME_MAIN_ITEM_HOME_LOOKUP = component {
     text("查询模式") with mochaGreen without italic()
 }
 
+val YUME_MAIN_ITEM_HOME_LOOKUP_ENABLE = component {
+    text("√ 已开启") with mochaGreen without italic()
+}
+
+val YUME_MAIN_ITEM_HOME_LOOKUP_DISABLE = component {
+    text("× 已关闭") with mochaMaroon without italic()
+}
+
 val YUME_MAIN_ITEM_HOME_LOOKUP_LORE = listOf(
     component {
         text("将周围的变化一览无余，") with mochaSubtext0 without italic()
@@ -149,6 +157,20 @@ val YUME_MAIN_ITEM_HOME_LOOKUP_LORE = listOf(
     component {
         text("右键 ") with mochaLavender without italic()
         text("查询四周变化") with mochaText without italic()
+    },
+)
+
+val YUME_MAIN_ITEM_HOME_LOOKUP_ENABLED_LORE = listOf(
+    component {
+        text("查询模式已开启，") with mochaSubtext0 without italic()
+    },
+    component {
+        text("使用左键或右键点击来查询一个位置。") with mochaSubtext0 without italic()
+    },
+    Component.empty(),
+    component {
+        text("左键 ") with mochaLavender without italic()
+        text("退出查询模式") with mochaText without italic()
     },
 )
 

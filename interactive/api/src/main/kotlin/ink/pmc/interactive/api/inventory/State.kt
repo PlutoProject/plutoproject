@@ -9,6 +9,7 @@ import kotlin.time.Duration.Companion.seconds
 @OptIn(DelicateCoroutinesApi::class)
 fun MutableState<Int>.stateTransition(
     new: Int,
+    resume: Int? = null,
     delay: Duration = 1.seconds,
     coroutineScope: CoroutineScope = GlobalScope,
     navigator: Navigator? = null,
@@ -18,7 +19,7 @@ fun MutableState<Int>.stateTransition(
         val keep = value
         value = new
         delay(delay)
-        if(!pop || navigator == null) value = keep
+        if(!pop || navigator == null) value = resume ?: keep
         if (pop && navigator != null) navigator.pop()
     }
 }

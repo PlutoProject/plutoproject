@@ -80,6 +80,7 @@ voyager-navigator = { module = "cafe.adriel.voyager:voyager-navigator", version 
 anvilGui = { module = "net.wesjd:anvilgui", version = "1.10.1-SNAPSHOT" }
 floodgateApi = { module = "org.geysermc.floodgate:api", version = "2.2.3-SNAPSHOT" }
 adventure-legacy = { module = "net.kyori:adventure-text-serializer-legacy", version = "4.17.0" }
+coreprotect = { module = "net.coreprotect:coreprotect", version = "22.4" }
 
 [bundles]
 kotlin = ["kotlin-stdlib", "kotlin-reflect", "kotlinx-coroutine-core", "kotlinx-serialization", "kotlin-scripting-common", "kotlin-scripting-jvm", "kotlin-scripting-jvm-host", "kotlin-scripting-dependencies", "kotlin-scripting-dependencies-maven"]

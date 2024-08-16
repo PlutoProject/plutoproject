@@ -332,6 +332,7 @@ allprojects {
         maven(uri("https://oss.sonatype.org/content/repositories/snapshots/"))
         maven(uri("https://repo.papermc.io/repository/maven-public/"))
         maven(uri("https://maven.nostal.ink/repository/maven-public"))
+        maven(uri("https://maven.playpro.com/"))
         maven(uri("https://repo.opencollab.dev/main/"))
         maven(uri("https://repo.dmulloy2.net/repository/public/"))
         maven(uri("https://mvn.exceptionflug.de/repository/exceptionflug-public/"))
