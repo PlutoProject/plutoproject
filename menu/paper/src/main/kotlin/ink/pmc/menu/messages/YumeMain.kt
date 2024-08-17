@@ -175,14 +175,14 @@ val YUME_MAIN_ITEM_HOME_LOOKUP_ENABLED_LORE = listOf(
 )
 
 val YUME_MAIN_ITEMS_DAILY = component {
-    text("") with mochaText without italic()
+    text("礼记") with mochaPink without italic()
 }
 
 val YUME_MAIN_ITEMS_DAILY_LORE = listOf(
     Component.empty(),
     component {
         text("左键 ") with mochaLavender without italic()
-        text("打开 ") with mochaText without italic()
+        text("打开礼记日历") with mochaText without italic()
     }
 )
 
