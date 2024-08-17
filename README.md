@@ -1,6 +1,6 @@
 # common
 
-✨ 星社 Project 服务器的通用组件。
+✨ 星社 Project 核心代码库。
 
 ## 📦 模块说明
 
