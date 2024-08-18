@@ -81,7 +81,6 @@ class EssentialsConfig(private val config: Config) : Config by config {
         val nameLengthLimit: Int get() = get("warp.name-length-limit")
         val blacklistedWorlds: Collection<World>
             get() = get<List<String>>("warp.blacklisted-worlds").map { Bukkit.getWorld(it)!! }
-        val spawns: Collection<String> get() = get<List<String>>("warp.spawns")
     }
 
     inner class Afk {

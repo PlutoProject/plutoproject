@@ -6,7 +6,6 @@ import ink.pmc.essentials.config.EssentialsConfig
 import ink.pmc.essentials.dtos.WarpDto
 import ink.pmc.essentials.repositories.WarpRepository
 import ink.pmc.member.api.MemberService
-import ink.pmc.utils.concurrent.submitAsync
 import ink.pmc.utils.player.uuidOrNull
 import ink.pmc.utils.storage.entity.dto
 import org.bson.types.ObjectId
@@ -25,22 +24,10 @@ class WarpManagerImpl : WarpManager, KoinComponent {
 
     private val conf by lazy { get<EssentialsConfig>().Warp() }
     private val repo by inject<WarpRepository>()
-    private lateinit var _spawns: List<Warp>
 
     override val blacklistedWorlds: Collection<World> = conf.blacklistedWorlds
     override val nameLengthLimit: Int = conf.nameLengthLimit
     override val loadedWarps: MutableMap<UUID, Warp> = ConcurrentHashMap()
-    override val spawns: List<Warp>
-        get() {
-            require(::_spawns.isInitialized) { "Spawns aren't loaded yet" }
-            return _spawns
-        }
-
-    init {
-        submitAsync {
-            _spawns = list().filter { conf.spawns.contains(it.name) }
-        }
-    }
 
     override fun isLoaded(id: UUID): Boolean {
         return getLoaded(id) != null
@@ -90,16 +77,16 @@ class WarpManagerImpl : WarpManager, KoinComponent {
         return loaded
     }
 
-    override fun getSpawn(id: UUID): Warp? {
-        return spawns.firstOrNull { it.id == id }
+    override suspend fun getSpawn(id: UUID): Warp? {
+        return listSpawns().firstOrNull { it.id == id }
     }
 
-    override fun getSpawn(name: String): Warp? {
-        return spawns.firstOrNull { it.name == name }
+    override suspend fun getSpawn(name: String): Warp? {
+        return listSpawns().firstOrNull { it.name == name }
     }
 
-    override fun getDefaultSpawn(): Warp? {
-        return spawns.getOrNull(0)
+    override suspend fun getDefaultSpawn(): Warp? {
+        return listSpawns().firstOrNull { it.isDefaultSpawn }
     }
 
     override suspend fun getPreferredSpawn(player: OfflinePlayer): Warp? {
@@ -122,8 +109,8 @@ class WarpManagerImpl : WarpManager, KoinComponent {
         return homes
     }
 
-    override fun listSpawns(): Collection<Warp> {
-        return spawns
+    override suspend fun listSpawns(): Collection<Warp> {
+        return list().filter { it.isSpawn }
     }
 
     override suspend fun has(id: UUID): Boolean {
@@ -136,15 +123,32 @@ class WarpManagerImpl : WarpManager, KoinComponent {
         return repo.hasByName(name)
     }
 
+    override suspend fun unsetDefaultSpawn(spawn: Warp) {
+        if (!spawn.isSpawn) return
+        if (!spawn.isDefaultSpawn) return
+        spawn.isDefaultSpawn = false
+        spawn.update()
+    }
+
+    override suspend fun setDefaultSpawn(spawn: Warp) {
+        if (!spawn.isSpawn) return
+        if (spawn.isDefaultSpawn) return
+        getDefaultSpawn()?.let { unsetDefaultSpawn(it) }
+        spawn.isDefaultSpawn = true
+        spawn.update()
+    }
+
     override suspend fun create(name: String, location: Location, alias: String?): Warp {
         require(!has(name)) { "Warp named $name already existed" }
         val dto = WarpDto(
-            ObjectId(),
-            UUID.randomUUID(),
-            name,
-            alias,
-            System.currentTimeMillis(),
-            location.dto,
+            objectId = ObjectId(),
+            id = UUID.randomUUID(),
+            name = name,
+            alias = alias,
+            createdAt = System.currentTimeMillis(),
+            location = location.dto,
+            isSpawn = false,
+            isDefaultSpawn = false
         )
         val warp = WarpImpl(dto)
         loadedWarps[dto.id] = warp

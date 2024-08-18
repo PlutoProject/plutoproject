@@ -13,6 +13,8 @@ interface Warp {
     var alias: String?
     val createdAt: Instant
     var location: Location
+    var isSpawn: Boolean
+    var isDefaultSpawn: Boolean
     val isLoaded: Boolean
 
     fun teleport(player: Player, prompt: Boolean = true)
