@@ -2,14 +2,14 @@ package ink.pmc.daily.api
 
 import org.bukkit.OfflinePlayer
 import java.time.LocalDate
-import java.time.LocalDateTime
-import java.util.UUID
+import java.time.ZonedDateTime
+import java.util.*
 
 interface DailyHistory {
 
     val id: UUID
     val owner: OfflinePlayer
+    val time: ZonedDateTime
     val date: LocalDate
-    val time: LocalDateTime
 
 }

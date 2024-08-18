@@ -12,7 +12,7 @@ import java.util.*
 
 class DailyImpl : Daily, KoinComponent {
 
-    private val conf by inject<Daily>()
+    private val conf by inject<DailyConfig>()
 
     override suspend fun sign(player: OfflinePlayer): DailyHistory {
         TODO("Not yet implemented")
