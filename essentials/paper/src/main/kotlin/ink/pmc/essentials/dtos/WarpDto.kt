@@ -16,6 +16,4 @@ data class WarpDto(
     val alias: String?,
     val createdAt: Long,
     val location: LocationDto,
-    val isSpawn: Boolean,
-    val isDefaultSpawn: Boolean
 )

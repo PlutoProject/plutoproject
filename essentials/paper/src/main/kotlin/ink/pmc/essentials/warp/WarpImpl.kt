@@ -31,8 +31,6 @@ class WarpImpl(private val dto: WarpDto) : Warp, KoinComponent {
         requireNotNull(dto.location.location) {
             loadFailed(id, "cannot to obtain location ${dto.location}")
         }
-    override var isSpawn: Boolean = dto.isSpawn
-    override var isDefaultSpawn: Boolean = dto.isDefaultSpawn
     override val isLoaded: Boolean
         get() = manager.isLoaded(id)
 
@@ -58,8 +56,6 @@ class WarpImpl(private val dto: WarpDto) : Warp, KoinComponent {
         alias = alias,
         createdAt = createdAt.toEpochMilli(),
         location = location.dto,
-        isSpawn = isSpawn,
-        isDefaultSpawn = isDefaultSpawn
     )
 
     override suspend fun update() {
