@@ -3,9 +3,6 @@ package ink.pmc.daily
 import com.electronwill.nightconfig.core.file.FileConfig
 import com.github.shynixn.mccoroutine.bukkit.SuspendingJavaPlugin
 import com.mongodb.kotlin.client.coroutine.MongoCollection
-import ink.pmc.daily.api.Daily
-import ink.pmc.daily.repositories.HistoryRepository
-import ink.pmc.daily.repositories.PlayerRepository
 import ink.pmc.provider.ProviderService
 import ink.pmc.utils.PaperCm
 import ink.pmc.utils.command.registerCommands
@@ -23,10 +20,7 @@ private inline fun <reified T : Any> getCollection(name: String): MongoCollectio
 }
 
 private val bukkitModule = module {
-    single<Daily> { DailyImpl() }
     single<DailyConfig> { DailyConfig(fileConfig) }
-    single<HistoryRepository> { HistoryRepository(getCollection("history")) }
-    single<PlayerRepository> { PlayerRepository(getCollection("player")) }
 }
 
 internal lateinit var plugin: PaperPlugin
