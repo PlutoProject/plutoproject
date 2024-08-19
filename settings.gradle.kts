@@ -95,3 +95,12 @@ include("interactive:velocity")
 
 include("menu")
 include("menu:paper")
+include("bridge")
+include("bridge:api")
+findProject(":bridge:api")?.name = "api"
+include("bridge:proto")
+findProject(":bridge:proto")?.name = "proto"
+include("bridge:paper")
+findProject(":bridge:paper")?.name = "paper"
+include("bridge:velocity")
+findProject(":bridge:velocity")?.name = "velocity"

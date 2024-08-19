@@ -1,0 +1,12 @@
+syntax = "proto3";
+package ink.pmc.bridge.proto;
+
+import "google/protobuf/empty.proto";
+
+message PlayerIdentifier {
+  string uuid = 1;
+}
+
+service GeyserBridgeRpc {
+  rpc CloseForm(PlayerIdentifier) returns (google.protobuf.Empty);
+}

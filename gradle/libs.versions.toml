@@ -79,8 +79,8 @@ vault-api = { module = "com.github.MilkBowl:VaultAPI", version = "1.7" }
 voyager-navigator = { module = "cafe.adriel.voyager:voyager-navigator", version = "1.1.0-beta02" }
 anvilGui = { module = "net.wesjd:anvilgui", version = "1.10.1-SNAPSHOT" }
 floodgateApi = { module = "org.geysermc.floodgate:api", version = "2.2.3-SNAPSHOT" }
-adventure-legacy = { module = "net.kyori:adventure-text-serializer-legacy", version = "4.17.0" }
 coreprotect = { module = "net.coreprotect:coreprotect", version = "22.4" }
+geyserApi = { module = "org.geysermc.geyser:api", version = "2.4.2-SNAPSHOT" }
 
 [bundles]
 kotlin = ["kotlin-stdlib", "kotlin-reflect", "kotlinx-coroutine-core", "kotlinx-serialization", "kotlin-scripting-common", "kotlin-scripting-jvm", "kotlin-scripting-jvm-host", "kotlin-scripting-dependencies", "kotlin-scripting-dependencies-maven"]
