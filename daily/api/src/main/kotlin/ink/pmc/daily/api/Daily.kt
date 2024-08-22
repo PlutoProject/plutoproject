@@ -11,7 +11,7 @@ interface Daily {
 
     suspend fun checkIn(user: UUID)
 
-    suspend fun didCheckInToDay(user: UUID): Boolean
+    suspend fun isCheckedInToday(user: UUID): Boolean
 
     suspend fun getUser(id: UUID): DailyUser?
 

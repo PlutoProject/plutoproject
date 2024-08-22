@@ -8,6 +8,7 @@ import ink.pmc.daily.repositories.DailyHistoryRepository
 import ink.pmc.daily.repositories.DailyUserRepository
 import ink.pmc.utils.concurrent.submitAsync
 import ink.pmc.utils.concurrent.submitAsyncIO
+import ink.pmc.utils.player.uuid
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.future.asCompletableFuture
 import kotlinx.coroutines.future.await
@@ -18,6 +19,7 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.*
+import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.TimeUnit
 import kotlin.time.Duration.Companion.minutes
@@ -29,7 +31,7 @@ class DailyImpl : Daily, KoinComponent {
     private val userRepo by inject<DailyUserRepository>()
     private val historyRepo by inject<DailyHistoryRepository>()
 
-    private val userMap = ConcurrentHashMap<UUID, DailyUser>()
+    private val loadedUsers = ConcurrentHashMap<UUID, DailyUser>()
     private val historyCaches = Caffeine.newBuilder()
         .expireAfterAccess(10, TimeUnit.MINUTES)
         .buildAsync<UUID, DailyHistory?> { k, _ ->
@@ -40,7 +42,7 @@ class DailyImpl : Daily, KoinComponent {
         submitAsync {
             while (!isShutdown) {
                 delay(10.minutes)
-                userMap.entries.removeIf { !it.value.player.isOnline }
+                loadedUsers.entries.removeIf { !it.value.player.isOnline }
             }
         }
     }
@@ -56,15 +58,15 @@ class DailyImpl : Daily, KoinComponent {
     }
 
     override suspend fun checkIn(user: UUID) {
-        TODO("Not yet implemented")
+        getUser(user)?.checkIn()
     }
 
-    override suspend fun didCheckInToDay(user: UUID): Boolean {
-        TODO("Not yet implemented")
+    override suspend fun isCheckedInToday(user: UUID): Boolean {
+        return getUser(user)?.isCheckedInToday() ?: false
     }
 
     override suspend fun getUser(id: UUID): DailyUser? {
-        return userMap[id] ?: loadUser(id)?.also { userMap[id] = it }
+        return loadedUsers[id] ?: loadUser(id)?.also { loadedUsers[id] = it }
     }
 
     override suspend fun getUser(player: OfflinePlayer): DailyUser? {
@@ -76,27 +78,42 @@ class DailyImpl : Daily, KoinComponent {
     }
 
     override suspend fun listHistory(user: UUID): Collection<DailyHistory> {
-        TODO("Not yet implemented")
+        return historyRepo.findByOwner(user).map {
+            val uuid = it.id.uuid
+            historyCaches.getIfPresent(uuid)?.get() ?: DailyHistoryImpl(it).also { h ->
+                historyCaches.put(uuid, CompletableFuture.completedFuture(h))
+            }
+        }
     }
 
     override suspend fun getHistoryByTime(user: UUID, start: Instant, end: Instant): Collection<DailyHistory> {
-        TODO("Not yet implemented")
+        return historyRepo.findByTime(user, start, end).map {
+            val uuid = it.id.uuid
+            historyCaches.getIfPresent(uuid)?.get() ?: DailyHistoryImpl(it).also { h ->
+                historyCaches.put(uuid, CompletableFuture.completedFuture(h))
+            }
+        }
     }
 
     override suspend fun getHistoryByTime(user: UUID, start: Long, end: Long): Collection<DailyHistory> {
-        TODO("Not yet implemented")
+        return historyRepo.findByTime(user, start, end).map {
+            val uuid = it.id.uuid
+            historyCaches.getIfPresent(uuid)?.get() ?: DailyHistoryImpl(it).also { h ->
+                historyCaches.put(uuid, CompletableFuture.completedFuture(h))
+            }
+        }
     }
 
     override suspend fun getLastCheckIn(user: UUID): LocalDateTime? {
-        TODO("Not yet implemented")
+        return getUser(user)?.lastCheckIn
     }
 
     override suspend fun getLastCheckInDate(user: UUID): LocalDate? {
-        TODO("Not yet implemented")
+        return getUser(user)?.lastCheckInDate
     }
 
     override suspend fun getAccumulatedDays(user: UUID): Int {
-        TODO("Not yet implemented")
+        return getUser(user)?.accumulatedDays ?: 0
     }
 
     override fun shutdown() {

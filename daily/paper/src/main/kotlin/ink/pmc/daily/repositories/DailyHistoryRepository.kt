@@ -5,6 +5,7 @@ import com.mongodb.client.model.ReplaceOptions
 import com.mongodb.kotlin.client.coroutine.MongoCollection
 import ink.pmc.daily.models.DailyHistoryModel
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.toCollection
 import java.time.Instant
 import java.util.*
 
@@ -16,12 +17,22 @@ class DailyHistoryRepository(private val collection: MongoCollection<DailyHistor
         return collection.find(eq("_id", id.toString())).firstOrNull()
     }
 
-    suspend fun findByTime(start: Instant, end: Instant): DailyHistoryModel? {
-        return findByTime(start.toEpochMilli(), end.toEpochMilli())
+    suspend fun findByOwner(owner: UUID): List<DailyHistoryModel> {
+        return collection.find(eq("owner", owner.toString())).toCollection(mutableListOf())
     }
 
-    suspend fun findByTime(start: Long, end: Long): DailyHistoryModel? {
-        return collection.find(and(gte("createdAt", start), lte("createdAt", end))).firstOrNull()
+    suspend fun findByTime(owner: UUID, start: Instant, end: Instant): List<DailyHistoryModel> {
+        return findByTime(owner, start.toEpochMilli(), end.toEpochMilli())
+    }
+
+    suspend fun findByTime(owner: UUID, start: Long, end: Long): List<DailyHistoryModel> {
+        return collection.find(
+            and(
+                eq("owner", owner.toString()),
+                gte("createdAt", start),
+                lte("createdAt", end)
+            )
+        ).toCollection(mutableListOf())
     }
 
     suspend fun deleteById(id: UUID) {
