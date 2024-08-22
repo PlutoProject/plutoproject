@@ -4,7 +4,7 @@ import org.bukkit.OfflinePlayer
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.util.UUID
+import java.util.*
 
 @Suppress("UNUSED")
 interface Daily {
@@ -30,5 +30,7 @@ interface Daily {
     suspend fun getLastCheckInDate(user: UUID): LocalDate?
 
     suspend fun getAccumulatedDays(user: UUID): Int
+
+    fun shutdown()
 
 }
