@@ -1,13 +1,18 @@
 package ink.pmc.daily.api
 
+import ink.pmc.utils.inject.inlinedGet
 import org.bukkit.OfflinePlayer
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.*
 
+typealias PostCheckInCallback = (DailyUser) -> Unit
+
 @Suppress("UNUSED")
 interface Daily {
+
+    companion object : Daily by inlinedGet()
 
     suspend fun checkIn(user: UUID)
 
@@ -30,6 +35,10 @@ interface Daily {
     suspend fun getLastCheckInDate(user: UUID): LocalDate?
 
     suspend fun getAccumulatedDays(user: UUID): Int
+
+    fun registerPostCallback(id: String, block: PostCheckInCallback)
+
+    fun triggerPostCallback(user: DailyUser)
 
     fun shutdown()
 

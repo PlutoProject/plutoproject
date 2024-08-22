@@ -4,6 +4,7 @@ import com.github.benmanes.caffeine.cache.Caffeine
 import ink.pmc.daily.api.Daily
 import ink.pmc.daily.api.DailyHistory
 import ink.pmc.daily.api.DailyUser
+import ink.pmc.daily.api.PostCheckInCallback
 import ink.pmc.daily.repositories.DailyHistoryRepository
 import ink.pmc.daily.repositories.DailyUserRepository
 import ink.pmc.utils.concurrent.submitAsync
@@ -31,6 +32,7 @@ class DailyImpl : Daily, KoinComponent {
     private val userRepo by inject<DailyUserRepository>()
     private val historyRepo by inject<DailyHistoryRepository>()
 
+    private val postCheckInCallbacks = mutableMapOf<String, PostCheckInCallback>()
     private val loadedUsers = ConcurrentHashMap<UUID, DailyUser>()
     private val historyCaches = Caffeine.newBuilder()
         .expireAfterAccess(10, TimeUnit.MINUTES)
@@ -114,6 +116,14 @@ class DailyImpl : Daily, KoinComponent {
 
     override suspend fun getAccumulatedDays(user: UUID): Int {
         return getUser(user)?.accumulatedDays ?: 0
+    }
+
+    override fun registerPostCallback(id: String, block: PostCheckInCallback) {
+        postCheckInCallbacks[id] = block
+    }
+
+    override fun triggerPostCallback(user: DailyUser) {
+        postCheckInCallbacks.values.forEach { it(user) }
     }
 
     override fun shutdown() {

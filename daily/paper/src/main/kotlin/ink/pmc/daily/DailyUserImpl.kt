@@ -1,5 +1,6 @@
 package ink.pmc.daily
 
+import ink.pmc.daily.api.Daily
 import ink.pmc.daily.api.DailyUser
 import ink.pmc.daily.models.DailyHistoryModel
 import ink.pmc.daily.models.DailyUserModel
@@ -20,6 +21,7 @@ import java.util.*
 
 class DailyUserImpl(model: DailyUserModel) : DailyUser, KoinComponent {
 
+    private val daily by inject<Daily>()
     private val historyRepo by inject<DailyHistoryRepository>()
     private val userRepo by inject<DailyUserRepository>()
 
@@ -40,6 +42,7 @@ class DailyUserImpl(model: DailyUserModel) : DailyUser, KoinComponent {
         accumulatedDays++
         historyRepo.saveOrUpdate(history)
         update()
+        daily.triggerPostCallback(this)
     }
 
     override fun isCheckedInToday(): Boolean {
