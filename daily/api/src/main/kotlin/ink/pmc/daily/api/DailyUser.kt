@@ -13,6 +13,8 @@ interface DailyUser {
 
     suspend fun checkIn()
 
+    fun didCheckInToday(): Boolean
+
     fun accumulate()
 
 }
