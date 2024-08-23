@@ -64,6 +64,10 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
         }
     }
 
+    override suspend fun onDisableAsync() {
+        daily.shutdown()
+    }
+
     private fun File.loadConfig(): FileConfig {
         return FileConfig.builder(this)
             .async()
