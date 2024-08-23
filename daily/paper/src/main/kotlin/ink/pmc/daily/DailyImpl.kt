@@ -5,6 +5,7 @@ import ink.pmc.daily.api.Daily
 import ink.pmc.daily.api.DailyHistory
 import ink.pmc.daily.api.DailyUser
 import ink.pmc.daily.api.PostCheckInCallback
+import ink.pmc.daily.models.DailyUserModel
 import ink.pmc.daily.repositories.DailyHistoryRepository
 import ink.pmc.daily.repositories.DailyUserRepository
 import ink.pmc.utils.concurrent.submitAsync
@@ -67,6 +68,21 @@ class DailyImpl : Daily, KoinComponent {
         return getUser(user)?.isCheckedInToday() ?: false
     }
 
+    override suspend fun createUser(id: UUID): DailyUser {
+        require(getUser(id) == null) { "User with id $id already existed" }
+        val user = DailyUserModel(
+            id = id.toString(),
+            lastCheckIn = null,
+            accumulatedDays = 0
+        )
+        userRepo.saveOrUpdate(user)
+        return getUser(id) ?: error("Failed to obtain user instance of $id")
+    }
+
+    override suspend fun getUserOrCreate(id: UUID): DailyUser {
+        return getUser(id) ?: createUser(id)
+    }
+
     override suspend fun getUser(id: UUID): DailyUser? {
         return loadedUsers[id] ?: loadUser(id)?.also { loadedUsers[id] = it }
     }
@@ -124,6 +140,10 @@ class DailyImpl : Daily, KoinComponent {
 
     override fun triggerPostCallback(user: DailyUser) {
         postCheckInCallbacks.values.forEach { it(user) }
+    }
+
+    override fun unloadUser(id: UUID) {
+        loadedUsers.remove(id)
     }
 
     override fun shutdown() {

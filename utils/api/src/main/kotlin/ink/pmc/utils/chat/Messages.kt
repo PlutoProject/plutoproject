@@ -27,6 +27,8 @@ val NO_PERMISSON = component {
     text("如果你认为这是一个错误的话，请向管理组报告") with mochaSubtext0
 }
 
+const val ECONOMY_SYMBOL = "\uD83C\uDF1F"
+
 @Suppress("FunctionName")
 fun DURATION(duration: Duration): Component {
     return Component.text(duration.formatDuration())

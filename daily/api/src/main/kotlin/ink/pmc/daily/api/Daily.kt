@@ -18,6 +18,10 @@ interface Daily {
 
     suspend fun isCheckedInToday(user: UUID): Boolean
 
+    suspend fun createUser(id: UUID): DailyUser
+
+    suspend fun getUserOrCreate(id: UUID): DailyUser
+
     suspend fun getUser(id: UUID): DailyUser?
 
     suspend fun getUser(player: OfflinePlayer): DailyUser?
@@ -39,6 +43,8 @@ interface Daily {
     fun registerPostCallback(id: String, block: PostCheckInCallback)
 
     fun triggerPostCallback(user: DailyUser)
+
+    fun unloadUser(id: UUID)
 
     fun shutdown()
 

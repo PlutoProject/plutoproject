@@ -1,5 +1,8 @@
 package ink.pmc.daily
 
+import ink.pmc.advkt.component.text
+import ink.pmc.advkt.playSound
+import ink.pmc.advkt.send
 import ink.pmc.daily.api.Daily
 import ink.pmc.daily.api.DailyUser
 import ink.pmc.daily.models.DailyHistoryModel
@@ -11,6 +14,7 @@ import ink.pmc.utils.currentUnixTimestamp
 import ink.pmc.utils.player.uuid
 import ink.pmc.utils.time.currentZoneId
 import ink.pmc.utils.time.instant
+import ink.pmc.utils.visual.mochaPink
 import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
 import org.koin.core.component.KoinComponent
@@ -43,6 +47,16 @@ class DailyUserImpl(model: DailyUserModel) : DailyUser, KoinComponent {
         historyRepo.saveOrUpdate(history)
         update()
         daily.triggerPostCallback(this)
+    }
+
+    override suspend fun clearAccumulation() {
+        accumulatedDays = 0
+        update()
+    }
+
+    override suspend fun resetCheckInTime() {
+        lastCheckIn = null
+        update()
     }
 
     override fun isCheckedInToday(): Boolean {

@@ -15,6 +15,10 @@ interface DailyUser {
 
     suspend fun checkIn()
 
+    suspend fun clearAccumulation()
+
+    suspend fun resetCheckInTime()
+
     fun isCheckedInToday(): Boolean
 
     suspend fun update()
