@@ -28,8 +28,8 @@ private inline fun <reified T : Any> getCollection(name: String): MongoCollectio
 
 private val bukkitModule = module {
     single<DailyConfig> { DailyConfig(fileConfig) }
-    single<DailyUserRepository> { DailyUserRepository(getCollection("${COLLECTION_PREFIX}users")) }
-    single<DailyHistoryRepository> { DailyHistoryRepository(getCollection("${COLLECTION_PREFIX}history")) }
+    single<DailyUserRepository> { DailyUserRepository(getCollection("users")) }
+    single<DailyHistoryRepository> { DailyHistoryRepository(getCollection("history")) }
     single<Daily> { DailyImpl() }
 }
 
