@@ -64,13 +64,13 @@ class DailyUserImpl(model: DailyUserModel) : DailyUser, KoinComponent {
         update()
     }
 
-    override fun isCheckedInToday(): Boolean {
-        return lastCheckInDate == LocalDate.now()
+    override suspend fun isCheckedInToday(): Boolean {
+        return historyRepo.findByTime(id, LocalDate.now()) != null
     }
 
-    override fun isCheckedInYesterday(): Boolean {
+    override suspend fun isCheckedInYesterday(): Boolean {
         val yesterday = LocalDate.now().minusDays(1)
-        return lastCheckInDate == yesterday
+        return historyRepo.findByTime(id, yesterday) != null
     }
 
     override suspend fun update() {

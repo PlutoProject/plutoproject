@@ -19,9 +19,9 @@ interface DailyUser {
 
     suspend fun resetCheckInTime()
 
-    fun isCheckedInToday(): Boolean
+    suspend fun isCheckedInToday(): Boolean
 
-    fun isCheckedInYesterday(): Boolean
+    suspend fun isCheckedInYesterday(): Boolean
 
     suspend fun update()
 

@@ -4,6 +4,7 @@ import com.mongodb.client.model.Filters.*
 import com.mongodb.client.model.ReplaceOptions
 import com.mongodb.kotlin.client.coroutine.MongoCollection
 import ink.pmc.daily.models.DailyHistoryModel
+import ink.pmc.utils.time.atEndOfDay
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.toCollection
 import java.time.Instant
@@ -39,7 +40,7 @@ class DailyHistoryRepository(private val collection: MongoCollection<DailyHistor
 
     suspend fun findByTime(owner: UUID, date: LocalDate): DailyHistoryModel? {
         val start = date.atStartOfDay().toInstant(ZoneOffset.UTC)
-        val end = date.plusDays(1).atStartOfDay().toInstant(ZoneOffset.UTC)
+        val end = date.atEndOfDay().toInstant(ZoneOffset.UTC)
         return findByTime(owner, start, end).firstOrNull()
     }
 
@@ -47,12 +48,18 @@ class DailyHistoryRepository(private val collection: MongoCollection<DailyHistor
         collection.deleteOne(eq("_id", id.toString()))
     }
 
-    suspend fun deleteByTime(start: Instant, end: Instant) {
-        return deleteByTime(start.toEpochMilli(), end.toEpochMilli())
+    suspend fun deleteByTime(owner: UUID, start: Instant, end: Instant) {
+        return deleteByTime(owner, start.toEpochMilli(), end.toEpochMilli())
     }
 
-    suspend fun deleteByTime(start: Long, end: Long) {
-        collection.deleteOne(and(gte("createdAt", start), lte("createdAt", end)))
+    suspend fun deleteByTime(owner: UUID, start: Long, end: Long) {
+        collection.deleteMany(
+            and(
+                eq("owner", owner.toString()),
+                gte("createdAt", start),
+                lte("createdAt", end)
+            )
+        )
     }
 
     suspend fun saveOrUpdate(model: DailyHistoryModel) {
