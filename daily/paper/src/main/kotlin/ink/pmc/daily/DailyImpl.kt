@@ -10,6 +10,7 @@ import ink.pmc.daily.repositories.DailyHistoryRepository
 import ink.pmc.daily.repositories.DailyUserRepository
 import ink.pmc.utils.concurrent.submitAsync
 import ink.pmc.utils.concurrent.submitAsyncIO
+import ink.pmc.utils.platform.paper
 import ink.pmc.utils.player.uuid
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.future.asCompletableFuture
@@ -30,6 +31,7 @@ class DailyImpl : Daily, KoinComponent {
 
     private var isShutdown = false
 
+    private val conf by inject<DailyConfig>()
     private val userRepo by inject<DailyUserRepository>()
     private val historyRepo by inject<DailyHistoryRepository>()
 
@@ -42,6 +44,17 @@ class DailyImpl : Daily, KoinComponent {
         }
 
     init {
+        registerPostCallback("commands") { user ->
+            conf.postCheckInCommands.forEach {
+                val console = paper.consoleSender
+                val player = user.player.player ?: return@forEach
+                paper.dispatchCommand(
+                    console,
+                    it.replace("%player%", player.name).replace("%acc%", user.accumulatedDays.toString())
+                )
+            }
+        }
+
         submitAsync {
             while (!isShutdown) {
                 delay(10.minutes)
@@ -115,6 +128,15 @@ class DailyImpl : Daily, KoinComponent {
 
     override suspend fun getHistoryByTime(user: UUID, start: Long, end: Long): Collection<DailyHistory> {
         return historyRepo.findByTime(user, start, end).map {
+            val uuid = it.id.uuid
+            historyCaches.getIfPresent(uuid)?.get() ?: DailyHistoryImpl(it).also { h ->
+                historyCaches.put(uuid, CompletableFuture.completedFuture(h))
+            }
+        }
+    }
+
+    override suspend fun getHistoryByTime(user: UUID, date: LocalDate): DailyHistory? {
+        return historyRepo.findByTime(user, date)?.let {
             val uuid = it.id.uuid
             historyCaches.getIfPresent(uuid)?.get() ?: DailyHistoryImpl(it).also { h ->
                 historyCaches.put(uuid, CompletableFuture.completedFuture(h))

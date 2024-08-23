@@ -6,7 +6,7 @@ import java.math.RoundingMode
 val Double.roundTwoDecimals: Double
     get() = BigDecimal(this).setScale(2, RoundingMode.HALF_EVEN).toDouble()
 
-fun Double.trimDouble(): String {
+fun Double.trimmed(): String {
     // 将 Double 转换为字符串并去除末尾多余的 0
     var result = toBigDecimal().stripTrailingZeros().toPlainString()
 

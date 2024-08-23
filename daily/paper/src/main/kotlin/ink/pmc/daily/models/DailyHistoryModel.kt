@@ -2,7 +2,7 @@ package ink.pmc.daily.models
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import java.util.UUID
+import java.util.*
 
 @Serializable
 data class DailyHistoryModel(

@@ -34,6 +34,8 @@ interface Daily {
 
     suspend fun getHistoryByTime(user: UUID, start: Long, end: Long): Collection<DailyHistory>
 
+    suspend fun getHistoryByTime(user: UUID, date: LocalDate): DailyHistory?
+
     suspend fun getLastCheckIn(user: UUID): LocalDateTime?
 
     suspend fun getLastCheckInDate(user: UUID): LocalDate?

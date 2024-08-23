@@ -60,7 +60,7 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
         server.servicesManager.getRegistration(Economy::class.java)?.provider?.also { economy = it }
 
         if (::economy.isInitialized) {
-            daily.registerPostCallback("coin_claim", coinClaim)
+            daily.registerPostCallback("coin_claim", coinReward)
         }
     }
 

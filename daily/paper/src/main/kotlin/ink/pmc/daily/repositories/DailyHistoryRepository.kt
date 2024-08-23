@@ -7,6 +7,8 @@ import ink.pmc.daily.models.DailyHistoryModel
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.toCollection
 import java.time.Instant
+import java.time.LocalDate
+import java.time.ZoneOffset
 import java.util.*
 
 class DailyHistoryRepository(private val collection: MongoCollection<DailyHistoryModel>) {
@@ -33,6 +35,12 @@ class DailyHistoryRepository(private val collection: MongoCollection<DailyHistor
                 lte("createdAt", end)
             )
         ).toCollection(mutableListOf())
+    }
+
+    suspend fun findByTime(owner: UUID, date: LocalDate): DailyHistoryModel? {
+        val start = date.atStartOfDay().toInstant(ZoneOffset.UTC)
+        val end = date.plusDays(1).atStartOfDay().toInstant(ZoneOffset.UTC)
+        return findByTime(owner, start, end).firstOrNull()
     }
 
     suspend fun deleteById(id: UUID) {

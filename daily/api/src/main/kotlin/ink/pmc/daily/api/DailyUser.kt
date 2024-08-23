@@ -21,6 +21,8 @@ interface DailyUser {
 
     fun isCheckedInToday(): Boolean
 
+    fun isCheckedInYesterday(): Boolean
+
     suspend fun update()
 
 }

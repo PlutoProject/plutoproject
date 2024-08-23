@@ -1,8 +1,5 @@
 package ink.pmc.daily
 
-import ink.pmc.advkt.component.text
-import ink.pmc.advkt.playSound
-import ink.pmc.advkt.send
 import ink.pmc.daily.api.Daily
 import ink.pmc.daily.api.DailyUser
 import ink.pmc.daily.models.DailyHistoryModel
@@ -10,11 +7,11 @@ import ink.pmc.daily.models.DailyUserModel
 import ink.pmc.daily.models.toModel
 import ink.pmc.daily.repositories.DailyHistoryRepository
 import ink.pmc.daily.repositories.DailyUserRepository
+import ink.pmc.utils.chat.replace
 import ink.pmc.utils.currentUnixTimestamp
 import ink.pmc.utils.player.uuid
 import ink.pmc.utils.time.currentZoneId
 import ink.pmc.utils.time.instant
-import ink.pmc.utils.visual.mochaPink
 import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
 import org.koin.core.component.KoinComponent
@@ -42,10 +39,18 @@ class DailyUserImpl(model: DailyUserModel) : DailyUser, KoinComponent {
             owner = id.toString(),
             createdAt = currentUnixTimestamp
         )
+
+        checkCheckInDate()
+        if (lastCheckInDate?.month != LocalDate.now().month || !isCheckedInYesterday()) {
+            accumulatedDays = 0
+        }
+
         lastCheckIn = LocalDateTime.now()
         accumulatedDays++
         historyRepo.saveOrUpdate(history)
         update()
+
+        player.player?.sendMessage(CHECK_IN.replace("<acc>", accumulatedDays))
         daily.triggerPostCallback(this)
     }
 
@@ -61,6 +66,11 @@ class DailyUserImpl(model: DailyUserModel) : DailyUser, KoinComponent {
 
     override fun isCheckedInToday(): Boolean {
         return lastCheckInDate == LocalDate.now()
+    }
+
+    override fun isCheckedInYesterday(): Boolean {
+        val yesterday = LocalDate.now().minusDays(1)
+        return lastCheckInDate == yesterday
     }
 
     override suspend fun update() {
