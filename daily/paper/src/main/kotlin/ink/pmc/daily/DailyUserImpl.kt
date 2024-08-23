@@ -34,7 +34,7 @@ class DailyUserImpl(model: DailyUserModel) : DailyUser, KoinComponent {
     override var accumulatedDays: Int = model.accumulatedDays
 
     override suspend fun checkIn() {
-        require(!isCheckedInToday()) { "User $id already checked in today!" }
+        require(!isCheckedInToday()) { "User $id already checked-in today" }
         val history = DailyHistoryModel(
             owner = id.toString(),
             createdAt = currentUnixTimestamp
