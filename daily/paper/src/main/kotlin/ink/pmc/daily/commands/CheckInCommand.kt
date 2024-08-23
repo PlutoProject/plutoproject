@@ -3,7 +3,7 @@ package ink.pmc.daily.commands
 import cafe.adriel.voyager.navigator.Navigator
 import ink.pmc.daily.CHECKED_IN
 import ink.pmc.daily.api.Daily
-import ink.pmc.daily.screens.DailyScreen
+import ink.pmc.daily.screens.DailyCalenderScreen
 import ink.pmc.interactive.api.Gui
 import ink.pmc.utils.PaperCm
 import ink.pmc.utils.annotation.Command
@@ -38,7 +38,7 @@ fun PaperCm.checkIn(aliases: Array<String>) {
             handler {
                 checkPlayer(sender.sender) {
                     Gui.startInventory(this) {
-                        Navigator(DailyScreen())
+                        Navigator(DailyCalenderScreen())
                     }
                 }
             }

@@ -39,6 +39,10 @@ fun Component.replaceColor(targetColor: TextColor, newColor: TextColor): Compone
     }
 }
 
+fun Collection<Component>.replace(pattern: String, content: Any?): Collection<Component> {
+    return map { it.replace(pattern, content) }
+}
+
 private val serializer = GsonComponentSerializer.gson()
 
 val Component.json: String
