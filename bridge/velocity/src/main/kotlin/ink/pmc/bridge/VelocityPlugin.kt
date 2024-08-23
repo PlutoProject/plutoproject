@@ -1,3 +1,5 @@
+package ink.pmc.bridge
+
 import com.github.shynixn.mccoroutine.velocity.SuspendingPluginContainer
 import com.google.inject.Inject
 import com.velocitypowered.api.event.Subscribe

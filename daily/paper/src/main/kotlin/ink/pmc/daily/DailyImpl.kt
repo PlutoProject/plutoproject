@@ -74,7 +74,7 @@ class DailyImpl : Daily, KoinComponent {
     }
 
     override suspend fun checkIn(user: UUID) {
-        getUser(user)?.checkIn()
+        getUserOrCreate(user).checkIn()
     }
 
     override suspend fun isCheckedInToday(user: UUID): Boolean {

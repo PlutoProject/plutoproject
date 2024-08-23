@@ -5,11 +5,12 @@ import com.mongodb.client.model.ReplaceOptions
 import com.mongodb.kotlin.client.coroutine.MongoCollection
 import ink.pmc.daily.models.DailyHistoryModel
 import ink.pmc.utils.time.atEndOfDay
+import ink.pmc.utils.time.currentZoneId
+import ink.pmc.utils.time.toOffset
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.toCollection
 import java.time.Instant
 import java.time.LocalDate
-import java.time.ZoneOffset
 import java.util.*
 
 class DailyHistoryRepository(private val collection: MongoCollection<DailyHistoryModel>) {
@@ -39,8 +40,8 @@ class DailyHistoryRepository(private val collection: MongoCollection<DailyHistor
     }
 
     suspend fun findByTime(owner: UUID, date: LocalDate): DailyHistoryModel? {
-        val start = date.atStartOfDay().toInstant(ZoneOffset.UTC)
-        val end = date.atEndOfDay().toInstant(ZoneOffset.UTC)
+        val start = date.atStartOfDay().toInstant(currentZoneId.toOffset())
+        val end = date.atEndOfDay().toInstant(currentZoneId.toOffset())
         return findByTime(owner, start, end).firstOrNull()
     }
 
