@@ -10,8 +10,8 @@ import ink.pmc.daily.repositories.DailyUserRepository
 import ink.pmc.utils.chat.replace
 import ink.pmc.utils.currentUnixTimestamp
 import ink.pmc.utils.player.uuid
-import ink.pmc.utils.time.currentZoneId
 import ink.pmc.utils.time.instant
+import ink.pmc.utils.time.utcZoneId
 import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
 import org.koin.core.component.KoinComponent
@@ -29,7 +29,7 @@ class DailyUserImpl(model: DailyUserModel) : DailyUser, KoinComponent {
     override val id: UUID = model.id.uuid
     override val player: OfflinePlayer by lazy { Bukkit.getOfflinePlayer(id) }
     override var lastCheckIn: LocalDateTime? =
-        model.lastCheckIn?.let { LocalDateTime.ofInstant(it.instant, currentZoneId) }
+        model.lastCheckIn?.let { LocalDateTime.ofInstant(it.instant, utcZoneId) }
     override val lastCheckInDate: LocalDate? get() = lastCheckIn?.toLocalDate()
     override var accumulatedDays: Int = model.accumulatedDays
 
