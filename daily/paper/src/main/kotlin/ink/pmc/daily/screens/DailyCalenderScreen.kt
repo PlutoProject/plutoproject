@@ -170,6 +170,7 @@ class DailyCalenderScreen : Screen {
                 date.isAfter(now) -> DAY_LORE_FUTURE
                 else -> error("Unreachable")
             },
+            enchantmentGlint = date == now,
             modifier = Modifier.clickable {
                 when (clickType) {
                     ClickType.LEFT -> {
@@ -237,7 +238,7 @@ class DailyCalenderScreen : Screen {
                         whoClicked.playSound(UI_PAGING_SOUND)
                     }
 
-                    ClickType.SHIFT_LEFT -> {
+                    ClickType.MIDDLE -> {
                         navigator.replaceAll(CalenderScreen(now))
                         whoClicked.playSound(UI_PAGING_SOUND)
                     }

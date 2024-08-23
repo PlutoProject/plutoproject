@@ -43,7 +43,7 @@ private val NAVIGATE_LORE_NEXT = component {
 }
 
 private val NAVIGATE_LORE_RESET = component {
-    text("Shift + 左键 ") with mochaLavender without italic()
+    text("中键 ") with mochaLavender without italic()
     text("回到现在") with mochaText without italic()
 }
 
@@ -66,10 +66,6 @@ val NAVIGATE_LORE_PREV_REACHED = listOf(
     NAVIGATE_LORE_NEXT,
     NAVIGATE_LORE_RESET
 )
-
-val CALENDAR_LOADING = component {
-    text("正在加载...") with mochaText without italic()
-}
 
 val DAY = component {
     text("<year>/<month>/<day>") with mochaText without italic()
