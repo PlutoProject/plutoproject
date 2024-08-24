@@ -6,6 +6,7 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import ink.pmc.daily.api.Daily
 import ink.pmc.daily.screens.DailyCalenderScreen
 import ink.pmc.essentials.RANDOM_TELEPORT_COST_BYPASS
 import ink.pmc.essentials.api.home.Home
@@ -358,11 +359,26 @@ class YumeMainMenuScreen : Screen {
     @Composable
     @Suppress("FunctionName")
     private fun Daily() {
+        val player = LocalPlayer.current
         val navigator = LocalNavigator.currentOrThrow
+        /*
+        * 0 -> 未签到
+        * 1 -> 已签到
+        * */
+        var state by rememberSaveable { mutableStateOf(0) }
+
+        LaunchedEffect(Unit) {
+            state = if (Daily.isCheckedInToday(player.uniqueId)) 1 else 0
+        }
+
         Item(
             material = Material.NAME_TAG,
             name = YUME_MAIN_ITEMS_DAILY,
-            lore = YUME_MAIN_ITEMS_DAILY_LORE,
+            lore = when (state) {
+                0 -> YUME_MAIN_ITEMS_DAILY_LORE
+                1 -> YUME_MAIN_ITEMS_DAILY_LORE_CHECKED_IN
+                else -> error("Unreachable")
+            },
             modifier = Modifier.clickable {
                 if (clickType != ClickType.LEFT) return@clickable
                 navigator.push(DailyCalenderScreen())
