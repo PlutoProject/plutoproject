@@ -13,7 +13,7 @@ interface DailyUser {
     val lastCheckInDate: LocalDate?
     val accumulatedDays: Int
 
-    suspend fun checkIn()
+    suspend fun checkIn(): DailyHistory
 
     suspend fun clearAccumulation()
 

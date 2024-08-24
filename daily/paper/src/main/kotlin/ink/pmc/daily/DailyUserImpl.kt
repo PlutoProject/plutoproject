@@ -1,6 +1,7 @@
 package ink.pmc.daily
 
 import ink.pmc.daily.api.Daily
+import ink.pmc.daily.api.DailyHistory
 import ink.pmc.daily.api.DailyUser
 import ink.pmc.daily.models.DailyHistoryModel
 import ink.pmc.daily.models.DailyUserModel
@@ -12,7 +13,6 @@ import ink.pmc.utils.currentUnixTimestamp
 import ink.pmc.utils.player.uuid
 import ink.pmc.utils.time.currentZoneId
 import ink.pmc.utils.time.instant
-import ink.pmc.utils.time.utcZoneId
 import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
 import org.koin.core.component.KoinComponent
@@ -34,7 +34,7 @@ class DailyUserImpl(model: DailyUserModel) : DailyUser, KoinComponent {
     override val lastCheckInDate: LocalDate? get() = lastCheckIn?.toLocalDate()
     override var accumulatedDays: Int = model.accumulatedDays
 
-    override suspend fun checkIn() {
+    override suspend fun checkIn(): DailyHistory {
         require(!isCheckedInToday()) { "User $id already checked-in today" }
         val history = DailyHistoryModel(
             owner = id.toString(),
@@ -53,6 +53,7 @@ class DailyUserImpl(model: DailyUserModel) : DailyUser, KoinComponent {
 
         player.player?.sendMessage(CHECK_IN.replace("<acc>", accumulatedDays))
         daily.triggerPostCallback(this)
+        return DailyHistoryImpl(history).also { daily.loadHistory(it) }
     }
 
     override suspend fun clearAccumulation() {

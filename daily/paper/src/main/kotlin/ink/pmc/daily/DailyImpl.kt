@@ -12,6 +12,9 @@ import ink.pmc.utils.concurrent.submitAsync
 import ink.pmc.utils.concurrent.submitAsyncIO
 import ink.pmc.utils.platform.paper
 import ink.pmc.utils.player.uuid
+import ink.pmc.utils.time.atEndOfDay
+import ink.pmc.utils.time.currentZoneId
+import ink.pmc.utils.time.toOffset
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.future.asCompletableFuture
 import kotlinx.coroutines.future.await
@@ -73,8 +76,8 @@ class DailyImpl : Daily, KoinComponent {
         return DailyHistoryImpl(model)
     }
 
-    override suspend fun checkIn(user: UUID) {
-        getUserOrCreate(user).checkIn()
+    override suspend fun checkIn(user: UUID): DailyHistory {
+        return getUserOrCreate(user).checkIn()
     }
 
     override suspend fun isCheckedInToday(user: UUID): Boolean {
@@ -117,13 +120,20 @@ class DailyImpl : Daily, KoinComponent {
         }
     }
 
+    override suspend fun getHistoryByTime(
+        user: UUID,
+        start: LocalDateTime,
+        end: LocalDateTime
+    ): Collection<DailyHistory> {
+        return getHistoryByTime(
+            user,
+            start.toInstant(currentZoneId.toOffset()),
+            end.toInstant(currentZoneId.toOffset())
+        )
+    }
+
     override suspend fun getHistoryByTime(user: UUID, start: Instant, end: Instant): Collection<DailyHistory> {
-        return historyRepo.findByTime(user, start, end).map {
-            val uuid = it.id.uuid
-            historyCaches.getIfPresent(uuid)?.get() ?: DailyHistoryImpl(it).also { h ->
-                historyCaches.put(uuid, CompletableFuture.completedFuture(h))
-            }
-        }
+        return getHistoryByTime(user, start.toEpochMilli(), end.toEpochMilli())
     }
 
     override suspend fun getHistoryByTime(user: UUID, start: Long, end: Long): Collection<DailyHistory> {
@@ -136,12 +146,9 @@ class DailyImpl : Daily, KoinComponent {
     }
 
     override suspend fun getHistoryByTime(user: UUID, date: LocalDate): DailyHistory? {
-        return historyRepo.findByTime(user, date)?.let {
-            val uuid = it.id.uuid
-            historyCaches.getIfPresent(uuid)?.get() ?: DailyHistoryImpl(it).also { h ->
-                historyCaches.put(uuid, CompletableFuture.completedFuture(h))
-            }
-        }
+        val start = date.atStartOfDay().toInstant(currentZoneId.toOffset())
+        val end = date.atEndOfDay().toInstant(currentZoneId.toOffset())
+        return getHistoryByTime(user, start, end).firstOrNull()
     }
 
     override suspend fun getLastCheckIn(user: UUID): LocalDateTime? {
@@ -162,6 +169,10 @@ class DailyImpl : Daily, KoinComponent {
 
     override fun triggerPostCallback(user: DailyUser) {
         postCheckInCallbacks.values.forEach { it(user) }
+    }
+
+    override fun loadHistory(history: DailyHistory) {
+        historyCaches.put(history.id, CompletableFuture.completedFuture(history))
     }
 
     override fun unloadUser(id: UUID) {

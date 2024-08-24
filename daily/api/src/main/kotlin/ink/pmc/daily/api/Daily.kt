@@ -14,7 +14,7 @@ interface Daily {
 
     companion object : Daily by inlinedGet()
 
-    suspend fun checkIn(user: UUID)
+    suspend fun checkIn(user: UUID): DailyHistory
 
     suspend fun isCheckedInToday(user: UUID): Boolean
 
@@ -29,6 +29,8 @@ interface Daily {
     suspend fun getHistory(id: UUID): DailyHistory?
 
     suspend fun listHistory(user: UUID): Collection<DailyHistory>
+
+    suspend fun getHistoryByTime(user: UUID, start: LocalDateTime, end: LocalDateTime): Collection<DailyHistory>
 
     suspend fun getHistoryByTime(user: UUID, start: Instant, end: Instant): Collection<DailyHistory>
 
@@ -45,6 +47,8 @@ interface Daily {
     fun registerPostCallback(id: String, block: PostCheckInCallback)
 
     fun triggerPostCallback(user: DailyUser)
+
+    fun loadHistory(history: DailyHistory)
 
     fun unloadUser(id: UUID)
 

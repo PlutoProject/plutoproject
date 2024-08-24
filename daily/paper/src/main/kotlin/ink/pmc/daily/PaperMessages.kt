@@ -32,14 +32,14 @@ val NAVIGATE = component {
 
 private val NAVIGATE_LORE_PREV = component {
     text("左键 ") with mochaLavender without italic()
-    text("上一页 ") with mochaText without italic()
-    text("(<prevYear> 年 <prevMonth> 月)") with mochaSubtext0 without italic()
+    text("上一页") with mochaText without italic()
+    // text("(<prevYear> 年 <prevMonth> 月)") with mochaSubtext0 without italic()
 }
 
 private val NAVIGATE_LORE_NEXT = component {
     text("右键 ") with mochaLavender without italic()
-    text("下一页 ") with mochaText without italic()
-    text("(<nextYear> 年 <nextMonth> 月)") with mochaSubtext0 without italic()
+    text("下一页") with mochaText without italic()
+    // text("(<nextYear> 年 <nextMonth> 月)") with mochaSubtext0 without italic()
 }
 
 private val NAVIGATE_LORE_RESET = component {
@@ -55,7 +55,7 @@ val NAVIGATE_LORE = listOf(
 )
 
 val NAVIGATE_PREV_REACHED = component {
-    text("仅限查看最近 ") with mochaSubtext0 without italic()
+    text("仅限查看前 ") with mochaSubtext0 without italic()
     text("12 ") with mochaText without italic()
     text("个月的记录") with mochaSubtext0 without italic()
 }
@@ -72,6 +72,10 @@ val DAY = component {
 }
 
 private val DAY_UNCHECKED_IN = component {
+    text("此日未到访") with mochaSubtext0 without italic()
+}
+
+private val DAY_UNCHECKED_IN_TODAY = component {
     text("本日未到访") with mochaSubtext0 without italic()
 }
 
@@ -85,12 +89,15 @@ private val DAY_CHECK_IN_OPREATION = component {
 }
 
 val DAY_LORE = listOf(
-    DAY_UNCHECKED_IN,
+    DAY_UNCHECKED_IN_TODAY,
     Component.empty(),
     DAY_CHECK_IN_OPREATION
 )
 
 val DAY_LORE_CHECKED_IN = listOf(
+    component {
+        text("<time>") with mochaSubtext0 without italic()
+    },
     DAY_CHECKED_IN
 )
 
