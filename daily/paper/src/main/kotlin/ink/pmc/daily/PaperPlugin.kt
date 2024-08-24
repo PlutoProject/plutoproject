@@ -62,6 +62,8 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
         if (::economy.isInitialized) {
             daily.registerPostCallback("coin_claim", coinReward)
         }
+
+        redCrossHead // 初始化头颅
     }
 
     override suspend fun onDisableAsync() {

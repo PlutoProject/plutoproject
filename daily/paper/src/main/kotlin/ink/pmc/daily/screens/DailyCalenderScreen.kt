@@ -152,25 +152,37 @@ class DailyCalenderScreen : Screen {
         * */
         var state by remember(history) { mutableStateOf(if (history != null) 1 else 0) }
         val now by rememberSaveable { mutableStateOf(LocalDate.now()) }
+
+        val head = when {
+            state == 0 && date == now -> yellowExclamationHead
+            state == 0 && date.isBefore(now) -> redCrossHead
+            state == 1 -> greenCheckHead
+            date.isAfter(now) -> grayQuestionHead
+            else -> error("Unreachable")
+        }
+
         Item(
-            material = when (state) {
-                0 -> Material.WHITE_STAINED_GLASS_PANE
-                1 -> Material.GREEN_STAINED_GLASS_PANE
-                else -> error("Unreachable")
+            itemStack = head.clone().apply {
+                amount = date.dayOfMonth
+                editMeta {
+                    it.itemName(
+                        DAY
+                            .replace("<year>", date.year)
+                            .replace("<month>", date.month.value)
+                            .replace("<day>", date.dayOfMonth)
+                    )
+                    it.lore(
+                        when {
+                            state == 0 && date == now -> DAY_LORE
+                            state == 0 && date.isBefore(now) -> DAY_LORE_PAST
+                            state == 1 -> DAY_LORE_CHECKED_IN
+                            date.isAfter(now) -> DAY_LORE_FUTURE
+                            else -> error("Unreachable")
+                        }
+                    )
+                    it.setEnchantmentGlintOverride(date == now)
+                }
             },
-            name = DAY
-                .replace("<year>", date.year)
-                .replace("<month>", date.month.value)
-                .replace("<day>", date.dayOfMonth),
-            amount = date.dayOfMonth,
-            lore = when {
-                state == 0 && date == now -> DAY_LORE
-                state == 0 && date.isBefore(now) -> DAY_LORE_PAST
-                state == 1 -> DAY_LORE_CHECKED_IN
-                date.isAfter(now) -> DAY_LORE_FUTURE
-                else -> error("Unreachable")
-            },
-            enchantmentGlint = date == now,
             modifier = Modifier.clickable {
                 when (clickType) {
                     ClickType.LEFT -> {
