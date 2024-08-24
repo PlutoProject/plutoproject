@@ -1,11 +1,9 @@
 package ink.pmc.daily.screens
 
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import ink.pmc.advkt.component.italic
 import ink.pmc.advkt.component.text
@@ -38,24 +36,23 @@ import org.koin.compose.koinInject
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.ZonedDateTime
-import java.util.*
 
 class DailyCalenderScreen : Screen {
 
     override val key: ScreenKey = "daily_screen"
 
-    private val calendarYearMonth: ProvidableCompositionLocal<YearMonth> =
+    private val localYearMonth: ProvidableCompositionLocal<MutableState<YearMonth>> =
         staticCompositionLocalOf { error("Unexpected") }
     private val localLoadedHistory: ProvidableCompositionLocal<MutableMap<YearMonth, MutableList<DailyHistory>>> =
         staticCompositionLocalOf { error("Unexpected") }
     private val localCheckInDays: ProvidableCompositionLocal<Int> =
         staticCompositionLocalOf { error("Unexpected") }
-    private val localAccumulatedDays: ProvidableCompositionLocal<State<Int>> =
+    private val localAccumulatedDays: ProvidableCompositionLocal<MutableState<Int>> =
         staticCompositionLocalOf { error("Unexpected") }
 
     @Composable
     override fun Content() {
-        val date by rememberSaveable { mutableStateOf(ZonedDateTime.now()) }
+        val date by remember { mutableStateOf(ZonedDateTime.now()) }
         Chest(
             title = UI_TITLE
                 .replace("<year>", date.year)
@@ -75,18 +72,19 @@ class DailyCalenderScreen : Screen {
     @Composable
     @Suppress("FunctionName")
     private fun InnerContents() {
-        val player = LocalPlayer.current
         val daily = koinInject<Daily>()
+        val player = LocalPlayer.current
+        val yearMonth = remember { mutableStateOf(YearMonth.now()) }
+        val loadedHistory = remember { mutableStateMapOf<YearMonth, MutableList<DailyHistory>>() }
+        val checkInDays by remember(loadedHistory) { derivedStateOf { loadedHistory.size } }
+        val accumulatedDays = remember { mutableStateOf(0) } // 子组件需要修改这个 state
 
-        val loadedHistory = rememberSaveable { mutableStateMapOf<YearMonth, MutableList<DailyHistory>>() }
-        val checkInDays by rememberSaveable(loadedHistory) { derivedStateOf { loadedHistory.size } }
-        val accumulatedDays = rememberSaveable { mutableStateOf(0) } // 这里需要将 state 提供给子组件，以在数据更新时重组需要的子组件
-
-        LaunchedEffect(loadedHistory.size) {
+        LaunchedEffect(Unit) {
             accumulatedDays.value = daily.getAccumulatedDays(player.uniqueId)
         }
 
         CompositionLocalProvider(
+            localYearMonth provides yearMonth,
             localLoadedHistory provides loadedHistory,
             localCheckInDays provides checkInDays,
             localAccumulatedDays provides accumulatedDays
@@ -106,30 +104,18 @@ class DailyCalenderScreen : Screen {
         }
     }
 
-    inner class CalenderScreen(private val yearMonth: YearMonth) : Screen {
-        // 需要一个唯一的 key，否则在翻页的时候会残留老状态
-        override val key: ScreenKey = "daily_screen_calender_${UUID.randomUUID()}"
-
-        @Composable
-        override fun Content() {
-            CompositionLocalProvider(calendarYearMonth provides yearMonth) {
-                Box(modifier = Modifier.fillMaxWidth().height(4)) {
-                    VerticalGrid(modifier = Modifier.fillMaxSize()) {
-                        repeat(4 * 9) {
-                            Space()
-                        }
-                    }
-                    CalenderSection()
-                }
-                Bottom()
-            }
-        }
-    }
-
     @Composable
     @Suppress("FunctionName")
     private fun Calender() {
-        Navigator(CalenderScreen(YearMonth.now()))
+        Box(modifier = Modifier.fillMaxWidth().height(4)) {
+            VerticalGrid(modifier = Modifier.fillMaxSize()) {
+                repeat(4 * 9) {
+                    Space()
+                }
+            }
+            CalenderSection()
+        }
+        Bottom()
     }
 
     @Composable
@@ -137,44 +123,23 @@ class DailyCalenderScreen : Screen {
     private fun CalenderSection() {
         val daily = koinInject<Daily>()
         val player = LocalPlayer.current
-        val yearMonth = calendarYearMonth.current
+        val yearMonth by localYearMonth.current
         val loadedHistory = localLoadedHistory.current
 
-        /*
-        * 0 -> 正常
-        * 1 -> 加载中
-        * */
-        var state by remember { mutableStateOf(1) }
-        val histories = rememberSaveable(loadedHistory) {
-            mutableStateListOf<DailyHistory>().apply {
-                addAll(loadedHistory[yearMonth] ?: listOf()) // 先尝试直接从缓存里取
-            }
-        }
         val days = yearMonth.lengthOfMonth()
-
         val start = yearMonth.atStartOfMonth().atStartOfDay().toInstant(currentZoneId.toOffset())
         val end = yearMonth.atEndOfMonth().atEndOfDay().toInstant(currentZoneId.toOffset())
 
-        suspend fun fetchHistory(): List<DailyHistory> {
-            return loadedHistory.getOrPut(yearMonth) {
-                daily.getHistoryByTime(player.uniqueId, start, end).toMutableStateList()
-            }
-        }
-
-        LaunchedEffect(Unit) {
-            if (state != 1) return@LaunchedEffect
+        LaunchedEffect(yearMonth) {
             if (loadedHistory.containsKey(yearMonth)) return@LaunchedEffect // 如果有缓存（即上面已经读入数据）就不查数据库
-            histories.clear() // 理论上来说这个 list 里不应该有东西，但是防止意外情况
-            histories.addAll(fetchHistory())
-            // histories.addAll(daily.getHistoryByTime(player.uniqueId, start, end).toList())
-            state = 0
+            loadedHistory[yearMonth] = daily.getHistoryByTime(player.uniqueId, start, end).toMutableStateList()
         }
 
         VerticalGrid(modifier = Modifier.fillMaxSize()) {
             repeat(days) {
                 val day = it + 1
                 val date = yearMonth.atDay(day)
-                val history = histories.firstOrNull { h -> h.createdDate == date }
+                val history = loadedHistory[yearMonth]?.firstOrNull { h -> h.createdDate == date }
                 Day(date, history)
             }
         }
@@ -186,16 +151,17 @@ class DailyCalenderScreen : Screen {
         val daily = koinInject<Daily>()
         val player = LocalPlayer.current
         val loadedHistory = localLoadedHistory.current
-        val yearMonth = calendarYearMonth.current
+        val yearMonth by localYearMonth.current
+        var accumulatedDays by localAccumulatedDays.current
         val coroutineScope = rememberCoroutineScope()
 
         /*
         * 0 -> 未签到
         * 1 -> 已签到
         * */
-        var snapshotHistory by remember(history) { mutableStateOf(history) }
-        var state by remember { mutableStateOf(if (snapshotHistory != null) 1 else 0) }
-        val now by rememberSaveable { mutableStateOf(LocalDate.now()) }
+        // 可能残留状态，让它在 date 变化时重新初始化
+        var state by remember(date, history) { mutableStateOf(if (history != null) 1 else 0) }
+        val now by remember { mutableStateOf(LocalDate.now()) }
 
         val head = when {
             state == 0 && date == now -> yellowExclamationHead
@@ -219,7 +185,7 @@ class DailyCalenderScreen : Screen {
                         when {
                             state == 0 && date == now -> DAY_LORE
                             state == 0 && date.isBefore(now) -> DAY_LORE_PAST
-                            state == 1 -> snapshotHistory?.let { h ->
+                            state == 1 -> history?.let { h ->
                                 DAY_LORE_CHECKED_IN.replace("<time>", Component.text(h.createdAt.format()))
                             }?.toList() ?: listOf()
 
@@ -238,7 +204,7 @@ class DailyCalenderScreen : Screen {
                                 if (daily.isCheckedInToday(player.uniqueId)) return@launch
                                 daily.checkIn(player.uniqueId).also {
                                     loadedHistory[yearMonth]?.add(it)
-                                    snapshotHistory = it
+                                    accumulatedDays++
                                 }
                             }
                             state = 1
@@ -265,11 +231,11 @@ class DailyCalenderScreen : Screen {
     @Composable
     @Suppress("FunctionName")
     private fun Navigate() {
-        val navigator = LocalNavigator.currentOrThrow
-        val yearMonth = calendarYearMonth.current
+        // val navigator = LocalNavigator.currentOrThrow
+        var yearMonth by localYearMonth.current
 
         val prev = yearMonth.minusMonths(1)
-        val now by rememberSaveable { mutableStateOf(YearMonth.now()) }
+        val now by remember { mutableStateOf(YearMonth.now()) }
         val next = yearMonth.plusMonths(1)
 
         fun isReachedLimit(): Boolean {
@@ -293,17 +259,20 @@ class DailyCalenderScreen : Screen {
                 when (clickType) {
                     ClickType.LEFT -> {
                         if (isReachedLimit()) return@clickable
-                        navigator.replace(CalenderScreen(prev))
+                        // navigator.replace(CalenderScreen(prev))
+                        yearMonth = prev
                         whoClicked.playSound(UI_PAGING_SOUND)
                     }
 
                     ClickType.RIGHT -> {
-                        navigator.replace(CalenderScreen(next))
+                        // navigator.replace(CalenderScreen(next))
+                        yearMonth = next
                         whoClicked.playSound(UI_PAGING_SOUND)
                     }
 
                     ClickType.MIDDLE -> {
-                        navigator.replace(CalenderScreen(now))
+                        // navigator.replace(CalenderScreen(now))
+                        yearMonth = now
                         whoClicked.playSound(UI_PAGING_SOUND)
                     }
 
@@ -318,12 +287,12 @@ class DailyCalenderScreen : Screen {
     private fun Player() {
         val player = LocalPlayer.current
         val loadedHistory = localLoadedHistory.current
-        val accumulatedDays = localAccumulatedDays.current
+        val accumulatedDays by localAccumulatedDays.current
 
-        val now by rememberSaveable { mutableStateOf(LocalDate.now()) }
-        val monthStart by rememberSaveable { derivedStateOf { now.withDayOfMonth(1).atStartOfDay() } }
-        val monthEnd by rememberSaveable { derivedStateOf { now.withDayOfMonth(now.lengthOfMonth()).atEndOfDay() } }
-        val monthDays by rememberSaveable {
+        val now by remember { mutableStateOf(LocalDate.now()) }
+        val monthStart by remember { derivedStateOf { now.withDayOfMonth(1).atStartOfDay() } }
+        val monthEnd by remember { derivedStateOf { now.withDayOfMonth(now.lengthOfMonth()).atEndOfDay() } }
+        val monthDays by remember {
             derivedStateOf {
                 loadedHistory.values.flatten().filter { it.createdAt in monthStart..monthEnd }.size
             }
@@ -338,7 +307,7 @@ class DailyCalenderScreen : Screen {
                     text("本月已到访 ") with mochaSubtext0 without italic()
                     text("$monthDays ") with mochaText without italic()
                     text("天，连续 ") with mochaSubtext0 without italic()
-                    text("${accumulatedDays.value} ") with mochaText without italic()
+                    text("$accumulatedDays ") with mochaText without italic()
                     text("天") with mochaSubtext0 without italic()
                 }
                 meta {
