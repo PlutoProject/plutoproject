@@ -75,24 +75,15 @@ class DailyCalenderScreen : Screen {
     @Composable
     @Suppress("FunctionName")
     private fun InnerContents() {
-        println("Init InnerContents")
         val player = LocalPlayer.current
         val daily = koinInject<Daily>()
 
         val loadedHistory = rememberSaveable { mutableStateMapOf<YearMonth, MutableList<DailyHistory>>() }
-        val checkInDays by rememberSaveable(loadedHistory) {
-            println("CheckInDays remember")
-            derivedStateOf {
-                println("CheckInDays derived")
-                loadedHistory.size
-            }
-        }
+        val checkInDays by rememberSaveable(loadedHistory) { derivedStateOf { loadedHistory.size } }
         val accumulatedDays = rememberSaveable { mutableStateOf(0) } // 这里需要将 state 提供给子组件，以在数据更新时重组需要的子组件
 
         LaunchedEffect(loadedHistory.size) {
-            println("LaunchedEffect triggered")
             accumulatedDays.value = daily.getAccumulatedDays(player.uniqueId)
-            println("AccumulatedDays changed")
         }
 
         CompositionLocalProvider(
@@ -100,14 +91,8 @@ class DailyCalenderScreen : Screen {
             localCheckInDays provides checkInDays,
             localAccumulatedDays provides accumulatedDays
         ) {
-            println("CompositionLocalProvider begin")
-            println("Top begin")
             Top()
-            println("Top end")
-            println("Calender begin")
             Calender()
-            println("Calender end")
-            println("CompositionLocalProvider end")
         }
     }
 
@@ -150,7 +135,6 @@ class DailyCalenderScreen : Screen {
     @Composable
     @Suppress("FunctionName")
     private fun CalenderSection() {
-        println("Init CaldendarSection")
         val daily = koinInject<Daily>()
         val player = LocalPlayer.current
         val yearMonth = calendarYearMonth.current
@@ -199,7 +183,6 @@ class DailyCalenderScreen : Screen {
     @Composable
     @Suppress("FunctionName")
     private fun Day(date: LocalDate, history: DailyHistory?) {
-        println("Init Day, history: $history, date: $date")
         val daily = koinInject<Daily>()
         val player = LocalPlayer.current
         val loadedHistory = localLoadedHistory.current
@@ -210,7 +193,8 @@ class DailyCalenderScreen : Screen {
         * 0 -> 未签到
         * 1 -> 已签到
         * */
-        var state by remember { mutableStateOf(if (history != null) 1 else 0) }
+        var snapshotHistory by remember(history) { mutableStateOf(history) }
+        var state by remember { mutableStateOf(if (snapshotHistory != null) 1 else 0) }
         val now by rememberSaveable { mutableStateOf(LocalDate.now()) }
 
         val head = when {
@@ -235,7 +219,7 @@ class DailyCalenderScreen : Screen {
                         when {
                             state == 0 && date == now -> DAY_LORE
                             state == 0 && date.isBefore(now) -> DAY_LORE_PAST
-                            state == 1 -> history?.let { h ->
+                            state == 1 -> snapshotHistory?.let { h ->
                                 DAY_LORE_CHECKED_IN.replace("<time>", Component.text(h.createdAt.format()))
                             }?.toList() ?: listOf()
 
@@ -250,18 +234,13 @@ class DailyCalenderScreen : Screen {
                 when (clickType) {
                     ClickType.LEFT -> {
                         if (state == 0 && date == now) {
-                            println("Scope begin")
                             coroutineScope.launch {
-                                println("Launch begin")
                                 if (daily.isCheckedInToday(player.uniqueId)) return@launch
                                 daily.checkIn(player.uniqueId).also {
-                                    println("MonthHistory begin")
                                     loadedHistory[yearMonth]?.add(it)
-                                    println("MonthHistory end")
+                                    snapshotHistory = it
                                 }
-                                println("Launch end")
                             }
-                            println("Scope end")
                             state = 1
                             player.playSound(UI_SUCCEED_SOUND)
                         }
@@ -337,7 +316,6 @@ class DailyCalenderScreen : Screen {
     @Composable
     @Suppress("FunctionName")
     private fun Player() {
-        println("Init Player")
         val player = LocalPlayer.current
         val loadedHistory = localLoadedHistory.current
         val accumulatedDays = localAccumulatedDays.current
