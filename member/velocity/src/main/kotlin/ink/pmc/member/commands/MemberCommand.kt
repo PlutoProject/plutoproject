@@ -1,5 +1,6 @@
 package ink.pmc.member.commands
 
+import com.google.common.graph.Graphs
 import com.mongodb.client.model.Filters.eq
 import com.velocitypowered.api.command.CommandSource
 import ink.pmc.member.*
@@ -309,8 +310,10 @@ object MemberCommand : VelocityCommand() {
                 player.disconnect(MEMBER_MODIFY_UNLINK_BE_KICK)
             }
 
-            sender.sendMessage(MEMBER_MODIFY_UNLINK_BE_SUCCEED
-                .replace("<player>", Component.text(member.rawName)))
+            sender.sendMessage(
+                MEMBER_MODIFY_UNLINK_BE_SUCCEED
+                    .replace("<player>", Component.text(member.rawName))
+            )
         }
 
     private val memberModifyHide = commandManager.commandBuilder("member")

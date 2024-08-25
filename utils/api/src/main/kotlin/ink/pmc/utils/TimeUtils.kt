@@ -1,4 +1,4 @@
 package ink.pmc.utils
 
-val currentUnixTimestamp
+inline val currentUnixTimestamp
     get() = System.currentTimeMillis()

@@ -4,7 +4,7 @@ import ink.pmc.advkt.component.*
 import ink.pmc.essentials.DEFAULT_ECONOMY_SYMBOL
 import ink.pmc.essentials.api.Essentials
 import ink.pmc.menu.economy
-import ink.pmc.utils.trimDouble
+import ink.pmc.utils.trimmed
 import ink.pmc.utils.visual.*
 import net.kyori.adventure.text.Component
 import org.bukkit.entity.Player
@@ -97,7 +97,7 @@ val YUME_MAIN_ITEM_HOME_RTP = component {
     text("神奇水晶") with mochaMauve without italic()
 }
 
-val YUME_MAIN_RTP_COST = "${Essentials.randomTeleportManager.defaultOptions.cost.trimDouble()}$DEFAULT_ECONOMY_SYMBOL"
+val YUME_MAIN_RTP_COST = "${Essentials.randomTeleportManager.defaultOptions.cost.trimmed()}$DEFAULT_ECONOMY_SYMBOL"
 
 val YUME_MAIN_ITEM_HOME_RTP_LORE = listOf(
     component {
@@ -178,12 +178,31 @@ val YUME_MAIN_ITEMS_DAILY = component {
     text("礼记") with mochaPink without italic()
 }
 
+private val DAILY_LORE_OPERATION = component {
+    text("左键 ") with mochaLavender without italic()
+    text("打开礼记日历") with mochaText without italic()
+}
+
+private val DAILY_LORE_INTODUCTION = component {
+    text("时光与点滴足迹。") with mochaSubtext0 without italic()
+}
+
 val YUME_MAIN_ITEMS_DAILY_LORE = listOf(
-    Component.empty(),
     component {
-        text("左键 ") with mochaLavender without italic()
-        text("打开礼记日历") with mochaText without italic()
-    }
+        text("× 今日尚未到访") with mochaYellow without italic()
+    },
+    DAILY_LORE_INTODUCTION,
+    Component.empty(),
+    DAILY_LORE_OPERATION
+)
+
+val YUME_MAIN_ITEMS_DAILY_LORE_CHECKED_IN = listOf(
+    component {
+        text("√ 今日已到访") with mochaGreen without italic()
+    },
+    DAILY_LORE_INTODUCTION,
+    Component.empty(),
+    DAILY_LORE_OPERATION
 )
 
 val YUME_MAIN_ITEM_COINS = component {
@@ -192,7 +211,7 @@ val YUME_MAIN_ITEM_COINS = component {
 
 @Suppress("FunctionName")
 fun YUME_MAIN_ITEM_COINS_LORE(player: Player): List<Component> {
-    val balance = economy.getBalance(player).trimDouble()
+    val balance = economy.getBalance(player).trimmed()
     return listOf(
         component {
             text("你的余额: ") with mochaSubtext0 without italic()

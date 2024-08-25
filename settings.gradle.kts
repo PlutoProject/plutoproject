@@ -101,3 +101,7 @@ include("bridge:api")
 include("bridge:proto")
 include("bridge:paper")
 include("bridge:velocity")
+
+include("daily")
+include("daily:api")
+include("daily:paper")

@@ -4,6 +4,8 @@ subprojects {
         compileOnly(project(":interactive:api"))
         compileOnly(project(":essentials:api"))
         compileOnly(project(":essentials:paper"))
+        compileOnly(project(":daily:paper"))
+        compileOnly(project(":daily:api"))
         compileOnly(rootProject.libs.coreprotect)
     }
 }
