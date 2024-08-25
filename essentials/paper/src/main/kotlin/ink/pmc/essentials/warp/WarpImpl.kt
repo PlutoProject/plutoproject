@@ -4,6 +4,7 @@ import ink.pmc.essentials.api.teleport.TeleportManager
 import ink.pmc.essentials.api.warp.Warp
 import ink.pmc.essentials.api.warp.WarpManager
 import ink.pmc.essentials.api.warp.WarpTeleportEvent
+import ink.pmc.essentials.api.warp.WarpType
 import ink.pmc.essentials.dtos.WarpDto
 import ink.pmc.essentials.home.loadFailed
 import ink.pmc.essentials.repositories.WarpRepository
@@ -12,6 +13,7 @@ import ink.pmc.utils.concurrent.submitAsync
 import ink.pmc.utils.storage.entity.dto
 import org.bukkit.Location
 import org.bukkit.entity.Player
+import org.jetbrains.annotations.ApiStatus.Internal
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.time.Instant
@@ -26,6 +28,7 @@ class WarpImpl(private val dto: WarpDto) : Warp, KoinComponent {
     override val id: UUID = dto.id
     override val name: String = dto.name
     override var alias: String? = dto.alias
+    override var type: WarpType = dto.type @Internal set
     override val createdAt: Instant = Instant.ofEpochMilli(dto.createdAt)
     override var location: Location =
         requireNotNull(dto.location.location) {
@@ -33,6 +36,10 @@ class WarpImpl(private val dto: WarpDto) : Warp, KoinComponent {
         }
     override val isLoaded: Boolean
         get() = manager.isLoaded(id)
+    override val isSpawn: Boolean
+        get() = type == WarpType.SPAWN || type == WarpType.SPAWN_DEFAULT
+    override val isDefaultSpawn: Boolean
+        get() = type == WarpType.SPAWN_DEFAULT
 
     override fun teleport(player: Player, prompt: Boolean) {
         submitAsync {
@@ -54,6 +61,7 @@ class WarpImpl(private val dto: WarpDto) : Warp, KoinComponent {
         id = id,
         name = name,
         alias = alias,
+        type = type,
         createdAt = createdAt.toEpochMilli(),
         location = location.dto,
     )

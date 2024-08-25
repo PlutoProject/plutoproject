@@ -1,4 +1,4 @@
-package ink.pmc.essentials.screens
+package ink.pmc.essentials.screens.home
 
 import androidx.compose.runtime.*
 import cafe.adriel.voyager.core.screen.Screen

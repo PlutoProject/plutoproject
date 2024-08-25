@@ -1,4 +1,4 @@
-package ink.pmc.essentials.screens
+package ink.pmc.essentials.screens.home
 
 import androidx.compose.runtime.*
 import cafe.adriel.voyager.core.screen.Screen
@@ -8,11 +8,11 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import ink.pmc.essentials.*
 import ink.pmc.essentials.api.home.Home
 import ink.pmc.essentials.api.home.HomeManager
-import ink.pmc.essentials.screens.HomeEditorScreen.PreferState.NOT_PREFERRED
-import ink.pmc.essentials.screens.HomeEditorScreen.PreferState.PRRFERRED
-import ink.pmc.essentials.screens.HomeEditorScreen.StarState.NOT_STARRED
-import ink.pmc.essentials.screens.HomeEditorScreen.StarState.STARRED
-import ink.pmc.essentials.screens.HomeEditorScreen.State.*
+import ink.pmc.essentials.screens.home.HomeEditorScreen.PreferState.NOT_PREFERRED
+import ink.pmc.essentials.screens.home.HomeEditorScreen.PreferState.PRRFERRED
+import ink.pmc.essentials.screens.home.HomeEditorScreen.StarState.NOT_STARRED
+import ink.pmc.essentials.screens.home.HomeEditorScreen.StarState.STARRED
+import ink.pmc.essentials.screens.home.HomeEditorScreen.State.*
 import ink.pmc.interactive.api.LocalPlayer
 import ink.pmc.interactive.api.inventory.components.Back
 import ink.pmc.interactive.api.inventory.components.Item

@@ -6,6 +6,9 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import ink.pmc.advkt.component.component
+import ink.pmc.advkt.component.italic
+import ink.pmc.advkt.component.text
 import ink.pmc.daily.api.Daily
 import ink.pmc.daily.screens.DailyCalenderScreen
 import ink.pmc.essentials.RANDOM_TELEPORT_COST_BYPASS
@@ -15,7 +18,9 @@ import ink.pmc.essentials.api.teleport.TeleportManager
 import ink.pmc.essentials.api.teleport.random.RandomTeleportManager
 import ink.pmc.essentials.api.warp.Warp
 import ink.pmc.essentials.api.warp.WarpManager
-import ink.pmc.essentials.screens.HomeViewerScreen
+import ink.pmc.essentials.config.EssentialsConfig
+import ink.pmc.essentials.screens.home.HomeViewerScreen
+import ink.pmc.essentials.screens.warp.DefaultWarpPickerScreen
 import ink.pmc.interactive.api.LocalPlayer
 import ink.pmc.interactive.api.inventory.components.Background
 import ink.pmc.interactive.api.inventory.components.Item
@@ -36,15 +41,24 @@ import ink.pmc.menu.messages.*
 import ink.pmc.utils.chat.MESSAGE_SOUND
 import ink.pmc.utils.chat.UI_INVALID_SOUND
 import ink.pmc.utils.chat.UI_SUCCEED_SOUND
+import ink.pmc.utils.chat.replace
+import ink.pmc.utils.visual.mochaSubtext0
+import ink.pmc.utils.visual.mochaText
+import kotlinx.coroutines.delay
 import org.bukkit.Material
 import org.bukkit.event.inventory.ClickType
 import org.koin.compose.koinInject
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
+import kotlin.time.Duration.Companion.seconds
 
 private const val PANE_COLUMNS = 4
 private const val PANE_COLUME_WIDTH = 7
 private const val PANE_GRIDS = PANE_COLUMNS * PANE_COLUME_WIDTH
 
-class YumeMainMenuScreen : Screen {
+class YumeMainMenuScreen : Screen, KoinComponent {
+
+    private val conf by inject<EssentialsConfig>()
 
     override val key: ScreenKey = "menu_yume_main"
 
@@ -181,8 +195,15 @@ class YumeMainMenuScreen : Screen {
     @Composable
     @Suppress("FunctionName")
     private fun Spawn() {
+        val navigator = LocalNavigator.currentOrThrow
         val player = LocalPlayer.current
         val manager = koinInject<WarpManager>()
+
+        /*
+        * 0 -> 正常
+        * 1 -> 没有首选主城（过渡）
+        * */
+        var state by remember { mutableStateOf(0) }
         var spawn by rememberSaveable { mutableStateOf<Warp?>(null) }
 
         // 预加载
@@ -193,10 +214,45 @@ class YumeMainMenuScreen : Screen {
         Item(
             material = Material.COMPASS,
             name = YUME_MAIN_ITEM_SPAWN,
-            lore = YUME_MAIN_ITEM_SPAWN_LORE,
+            lore = when (state) {
+                0 -> {
+                    val lore = if (spawn != null) YUME_MAIN_ITEM_SPAWN_LORE else YUME_MAIN_ITEM_SPAWN_LORE_UNPICKED
+                    val name = spawn?.let {
+                        when (it.alias) {
+                            null -> component { text(it.name) with mochaText without italic() }
+                            else -> component { text(it.alias!!) with mochaText without italic() }
+                        }
+                    }
+                    val loc = spawn?.let {
+                        val world = conf.WorldAliases()[it.location.world]
+                        val x = it.location.blockX
+                        val y = it.location.blockY
+                        val z = it.location.blockZ
+                        component { text("$world $x, $y, $z") with mochaSubtext0 without italic() }
+                    }
+                    lore.replace("<spawn>", name).replace("<loc>", loc)
+                }
+
+                1 -> YUME_MAIN_ITEM_SPAWN_LORE_NO_PREFERRED
+                else -> error("Unreachable")
+            }.toList(),
             modifier = Modifier.clickable {
-                if (clickType != ClickType.LEFT) return@clickable
-                spawn?.teleport(player)
+                when (clickType) {
+                    ClickType.LEFT -> {
+                        if (spawn == null) {
+                            player.playSound(UI_INVALID_SOUND)
+                            val keep = state
+                            state = 1
+                            delay(1.seconds)
+                            state = keep
+                            return@clickable
+                        }
+                        spawn?.teleport(player)
+                    }
+
+                    ClickType.RIGHT -> navigator.push(DefaultWarpPickerScreen())
+                    else -> {}
+                }
             }
         )
     }

@@ -1,4 +1,4 @@
-package ink.pmc.essentials.screens
+package ink.pmc.essentials.screens.home
 
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable

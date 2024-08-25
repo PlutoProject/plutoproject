@@ -87,9 +87,11 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
             server.pluginManager.registerSuspendingEvents(HomeListener, this)
         }
 
+        /*
         if (Essentials.isWarpEnabled()) {
             server.pluginManager.registerSuspendingEvents(WarpListener, this)
         }
+        */
 
         if (Essentials.isBackEnabled()) {
             server.pluginManager.registerSuspendingEvents(BackListener, this)

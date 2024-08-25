@@ -1,4 +1,4 @@
-package ink.pmc.essentials.screens
+package ink.pmc.essentials.screens.warp
 
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -12,7 +12,7 @@ import com.google.common.collect.Multimap
 import ink.pmc.essentials.*
 import ink.pmc.essentials.api.warp.Warp
 import ink.pmc.essentials.api.warp.WarpManager
-import ink.pmc.essentials.screens.WarpViewerScreen.State.*
+import ink.pmc.essentials.screens.warp.WarpViewerScreen.State.*
 import ink.pmc.interactive.api.LocalPlayer
 import ink.pmc.interactive.api.inventory.components.Item
 import ink.pmc.interactive.api.inventory.components.Placeholder

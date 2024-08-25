@@ -1,4 +1,4 @@
-package ink.pmc.essentials.screens
+package ink.pmc.essentials.screens.home
 
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -12,7 +12,7 @@ import com.google.common.collect.Multimap
 import ink.pmc.essentials.*
 import ink.pmc.essentials.api.home.Home
 import ink.pmc.essentials.api.home.HomeManager
-import ink.pmc.essentials.screens.HomeViewerScreen.State.*
+import ink.pmc.essentials.screens.home.HomeViewerScreen.State.*
 import ink.pmc.interactive.api.LocalPlayer
 import ink.pmc.interactive.api.inventory.components.Item
 import ink.pmc.interactive.api.inventory.components.Placeholder

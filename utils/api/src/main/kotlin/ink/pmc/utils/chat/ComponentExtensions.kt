@@ -14,6 +14,11 @@ fun Component.replace(string: String, component: Component): Component {
     return this.replaceText(replaceConfig)
 }
 
+@JvmName("replaceNullableComponent")
+fun Component.replace(pattern: String, component: Component?): Component {
+    return replace(pattern, component ?: Component.text("null"))
+}
+
 fun Component.replace(string: String, text: String): Component {
     val replaceConfig = TextReplacementConfig.builder()
         .match(string)
@@ -45,6 +50,11 @@ fun Collection<Component>.replace(pattern: String, content: Component): Collecti
 
 fun Collection<Component>.replace(pattern: String, content: Any?): Collection<Component> {
     return map { it.replace(pattern, content) }
+}
+
+@JvmName("replaceNullableComponent")
+fun Collection<Component>.replace(pattern: String, content: Component?): Collection<Component> {
+    return map { it.replace(pattern, content ?: Component.text("null")) }
 }
 
 private val serializer = GsonComponentSerializer.gson()

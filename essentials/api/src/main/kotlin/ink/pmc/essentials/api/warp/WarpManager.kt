@@ -11,7 +11,6 @@ interface WarpManager {
     val blacklistedWorlds: Collection<World>
     val nameLengthLimit: Int
     val loadedWarps: Map<UUID, Warp>
-    val spawns: Collection<Warp>
 
     fun isLoaded(id: UUID): Boolean
 
@@ -27,11 +26,15 @@ interface WarpManager {
 
     suspend fun get(name: String): Warp?
 
-    fun getSpawn(id: UUID): Warp?
+    suspend fun getSpawn(id: UUID): Warp?
 
-    fun getSpawn(name: String): Warp?
+    suspend fun getSpawn(name: String): Warp?
 
-    fun getDefaultSpawn(): Warp?
+    suspend fun setSpawn(warp: Warp)
+
+    suspend fun getDefaultSpawn(): Warp?
+
+    suspend fun setDefaultSpawn(warp: Warp, default: Boolean)
 
     suspend fun getPreferredSpawn(player: OfflinePlayer): Warp?
 
@@ -39,7 +42,7 @@ interface WarpManager {
 
     suspend fun list(): Collection<Warp>
 
-    fun listSpawns(): Collection<Warp>
+    suspend fun listSpawns(): Collection<Warp>
 
     suspend fun has(id: UUID): Boolean
 

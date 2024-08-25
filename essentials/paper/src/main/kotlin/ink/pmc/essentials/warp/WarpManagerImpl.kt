@@ -2,6 +2,7 @@ package ink.pmc.essentials.warp
 
 import ink.pmc.essentials.api.warp.Warp
 import ink.pmc.essentials.api.warp.WarpManager
+import ink.pmc.essentials.api.warp.WarpType
 import ink.pmc.essentials.config.EssentialsConfig
 import ink.pmc.essentials.dtos.WarpDto
 import ink.pmc.essentials.repositories.WarpRepository
@@ -25,20 +26,15 @@ class WarpManagerImpl : WarpManager, KoinComponent {
 
     private val conf by lazy { get<EssentialsConfig>().Warp() }
     private val repo by inject<WarpRepository>()
-    private lateinit var _spawns: List<Warp>
 
     override val blacklistedWorlds: Collection<World> = conf.blacklistedWorlds
     override val nameLengthLimit: Int = conf.nameLengthLimit
     override val loadedWarps: MutableMap<UUID, Warp> = ConcurrentHashMap()
-    override val spawns: List<Warp>
-        get() {
-            require(::_spawns.isInitialized) { "Spawns aren't loaded yet" }
-            return _spawns
-        }
 
     init {
+        // 加载所有 Warp
         submitAsync {
-            _spawns = list().filter { conf.spawns.contains(it.name) }
+            list()
         }
     }
 
@@ -90,27 +86,46 @@ class WarpManagerImpl : WarpManager, KoinComponent {
         return loaded
     }
 
-    override fun getSpawn(id: UUID): Warp? {
-        return spawns.firstOrNull { it.id == id }
+    override suspend fun getSpawn(id: UUID): Warp? {
+        return listSpawns().firstOrNull { it.id == id }
     }
 
-    override fun getSpawn(name: String): Warp? {
-        return spawns.firstOrNull { it.name == name }
+    override suspend fun getSpawn(name: String): Warp? {
+        return listSpawns().firstOrNull { it.name == name }
     }
 
-    override fun getDefaultSpawn(): Warp? {
-        return spawns.getOrNull(0)
+    override suspend fun setSpawn(warp: Warp) {
+        if (warp.isSpawn) return
+        warp.type = WarpType.SPAWN
+        warp.update()
+    }
+
+    override suspend fun getDefaultSpawn(): Warp? {
+        return listSpawns().firstOrNull { it.isDefaultSpawn }
+    }
+
+    override suspend fun setDefaultSpawn(warp: Warp, default: Boolean) {
+        getDefaultSpawn()?.also {
+            if (it == warp) return@also
+            setDefaultSpawn(it, false)
+        }
+        warp.type = when {
+            default && !warp.isDefaultSpawn -> WarpType.SPAWN_DEFAULT
+            !default && warp.isDefaultSpawn -> WarpType.SPAWN
+            else -> return
+        }
+        warp.update()
     }
 
     override suspend fun getPreferredSpawn(player: OfflinePlayer): Warp? {
-        val member = MemberService.lookup(player.uniqueId) ?: error("Cannot obtain Member instance for ${player.name}")
+        val member = MemberService.lookup(player.uniqueId) ?: error("Cannot fetch Member instance for ${player.name}")
         val dataContainer = member.dataContainer
-        val spawnId = dataContainer.getString(PREFERRED_SPAWN_KEY)?.uuidOrNull ?: return null
+        val spawnId = dataContainer.getString(PREFERRED_SPAWN_KEY)?.uuidOrNull ?: return getDefaultSpawn()
         return get(spawnId)
     }
 
     override suspend fun setPreferredSpawn(player: OfflinePlayer, spawn: Warp) {
-        val member = MemberService.lookup(player.uniqueId) ?: error("Cannot obtain Member instance for ${player.name}")
+        val member = MemberService.lookup(player.uniqueId) ?: error("Cannot fetch Member instance for ${player.name}")
         val dataContainer = member.dataContainer
         dataContainer[PREFERRED_SPAWN_KEY] = spawn.id.toString()
         member.save()
@@ -122,8 +137,8 @@ class WarpManagerImpl : WarpManager, KoinComponent {
         return homes
     }
 
-    override fun listSpawns(): Collection<Warp> {
-        return spawns
+    override suspend fun listSpawns(): List<Warp> {
+        return list().filter { it.isSpawn }
     }
 
     override suspend fun has(id: UUID): Boolean {
@@ -143,6 +158,7 @@ class WarpManagerImpl : WarpManager, KoinComponent {
             UUID.randomUUID(),
             name,
             alias,
+            WarpType.WARP,
             System.currentTimeMillis(),
             location.dto,
         )

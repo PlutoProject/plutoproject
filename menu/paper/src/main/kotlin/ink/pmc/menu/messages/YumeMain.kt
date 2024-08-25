@@ -55,15 +55,56 @@ val YUME_MAIN_ITEM_HOME_LORE_NO_PREFER = listOf(
 )
 
 val YUME_MAIN_ITEM_SPAWN = component {
-    text("旅者的休憩处") with mochaFlamingo without italic()
+    text("伊始之处") with mochaFlamingo without italic()
+}
+
+private val SPAWN_PICKED = component {
+    text("当前已选 ") with mochaSubtext0 without italic()
+    text("<spawn>") with mochaText without italic()
+}
+
+private val SPAWN_LOC = component {
+    text("<loc>") with mochaSubtext0 without italic()
+}
+
+private val SPAWN_OPERATION_1 = component {
+    text("左键 ") with mochaLavender without italic()
+    text("回到主城") with mochaText without italic()
+}
+
+private val SPAWN_OPERATION_2 = component {
+    text("右键 ") with mochaLavender without italic()
+    text("设置首选主城") with mochaText without italic()
+}
+
+private val SPAWN_DESC = component {
+    text("于此直至天边的故事。") with mochaSubtext0 without italic()
 }
 
 val YUME_MAIN_ITEM_SPAWN_LORE = listOf(
+    SPAWN_PICKED,
+    SPAWN_LOC,
+    SPAWN_DESC,
+    Component.empty(),
+    SPAWN_OPERATION_1,
+    SPAWN_OPERATION_2
+)
+
+val YUME_MAIN_ITEM_SPAWN_LORE_UNPICKED = listOf(
+    SPAWN_DESC,
+    Component.empty(),
+    SPAWN_OPERATION_1,
+    SPAWN_OPERATION_2
+)
+
+val YUME_MAIN_ITEM_SPAWN_LORE_NO_PREFERRED = listOf(
     Component.empty(),
     component {
-        text("左键 ") with mochaLavender without italic()
-        text("回到主城") with mochaText without italic()
+        text("你还没有首选的主城，") with mochaMaroon without italic()
     },
+    component {
+        text("右键点击来设置。") with mochaMaroon without italic()
+    }
 )
 
 val YUME_MAIN_ITEM_TP = component {

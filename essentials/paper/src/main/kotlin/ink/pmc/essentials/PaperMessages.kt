@@ -737,7 +737,7 @@ private val UI_HOME_PREFERRED = component {
 }
 
 private val UI_HOME_STARRED = component {
-    text("✨ 收藏的家") with mochaFlamingo without italic()
+    text("✨ 收藏的家") with mochaYellow without italic()
 }
 
 private val UI_HOME_ITEM_LORE_LOC = component {

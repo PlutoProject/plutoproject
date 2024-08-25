@@ -1,5 +1,6 @@
 package ink.pmc.essentials.dtos
 
+import ink.pmc.essentials.api.warp.WarpType
 import ink.pmc.utils.data.UUIDSerializer
 import ink.pmc.utils.storage.entity.LocationDto
 import kotlinx.serialization.Contextual
@@ -14,6 +15,7 @@ data class WarpDto(
     val id: @Serializable(UUIDSerializer::class) UUID,
     val name: String,
     val alias: String?,
+    val type: WarpType,
     val createdAt: Long,
     val location: LocationDto,
 )
