@@ -231,7 +231,6 @@ class DailyCalenderScreen : Screen {
     @Composable
     @Suppress("FunctionName")
     private fun Navigate() {
-        // val navigator = LocalNavigator.currentOrThrow
         var yearMonth by localYearMonth.current
 
         val prev = yearMonth.minusMonths(1)
@@ -259,19 +258,16 @@ class DailyCalenderScreen : Screen {
                 when (clickType) {
                     ClickType.LEFT -> {
                         if (isReachedLimit()) return@clickable
-                        // navigator.replace(CalenderScreen(prev))
                         yearMonth = prev
                         whoClicked.playSound(UI_PAGING_SOUND)
                     }
 
                     ClickType.RIGHT -> {
-                        // navigator.replace(CalenderScreen(next))
                         yearMonth = next
                         whoClicked.playSound(UI_PAGING_SOUND)
                     }
 
                     ClickType.MIDDLE -> {
-                        // navigator.replace(CalenderScreen(now))
                         yearMonth = now
                         whoClicked.playSound(UI_PAGING_SOUND)
                     }
