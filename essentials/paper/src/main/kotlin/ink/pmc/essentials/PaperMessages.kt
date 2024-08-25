@@ -1099,3 +1099,7 @@ val UI_HOME_VIEWER_CREATE_LORE = listOf(
 val COMMAND_SPAWN_FAILED_NOT_SET = component {
     text("服务器未设置出生点位置") with mochaMaroon
 }
+
+val COMMAND_ESS_HUSKHOMES_NOT_FOUND = component {
+    text("HuskHomes 未安装，无法启动迁移") with mochaMaroon
+}

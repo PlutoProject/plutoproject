@@ -6,6 +6,8 @@ import com.github.shynixn.mccoroutine.bukkit.registerSuspendingEvents
 import ink.pmc.essentials.api.Essentials
 import ink.pmc.essentials.api.afk.AfkManager
 import ink.pmc.essentials.config.EssentialsConfig
+import ink.pmc.essentials.hooks.EconomyHook
+import ink.pmc.essentials.hooks.HuskHomesHook
 import ink.pmc.essentials.listeners.*
 import ink.pmc.utils.command.CommandRegistrationResult
 import ink.pmc.utils.command.registerCommands
@@ -15,7 +17,6 @@ import io.papermc.paper.command.brigadier.CommandSourceStack
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
-import net.milkbowl.vault.economy.Economy
 import org.bukkit.plugin.Plugin
 import org.incendo.cloud.execution.ExecutionCoordinator
 import org.incendo.cloud.paper.PaperCommandManager
@@ -27,7 +28,8 @@ import java.io.File
 typealias Cm = PaperCommandManager<CommandSourceStack>
 
 var disabled = true
-var economy: Economy? = null
+var economyHook: EconomyHook? = null
+var huskHomesHook: HuskHomesHook? = null
 lateinit var plugin: Plugin
 lateinit var fileConfig: FileConfig
 lateinit var commandManager: Cm
@@ -63,8 +65,6 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
 
         registerEvents()
         initialize()
-        economy = server.servicesManager.getRegistration(Economy::class.java)?.provider
-        if (economy == null) logger.info("Cannot obtain Economy API, certain features will be disabled")
         disabled = false
     }
 
@@ -110,8 +110,14 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
 
     private fun initialize() {
         // 初始化 AfkManager，开始后台任务
-        if (Essentials.isAfkEnabled()) {
-            get<AfkManager>()
+        if (Essentials.isAfkEnabled()) get<AfkManager>()
+
+        if (server.pluginManager.getPlugin("Vault") != null) {
+            economyHook = EconomyHook()
+        }
+
+        if (server.pluginManager.getPlugin("HuskHomes") != null) {
+            huskHomesHook = HuskHomesHook()
         }
     }
 

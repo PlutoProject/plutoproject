@@ -280,6 +280,7 @@ class RandomTeleportManagerImpl : RandomTeleportManager, KoinComponent {
             val defaultOpt = getRandomTeleportOptions(world)
             val opt = options ?: defaultOpt
 
+            val economy = economyHook?.economy
             val plural = economy?.currencyNamePlural() ?: DEFAULT_ECONOMY_SYMBOL
             val singular = economy?.currencyNameSingular() ?: DEFAULT_ECONOMY_SYMBOL
             val cost = opt.cost
@@ -287,8 +288,7 @@ class RandomTeleportManagerImpl : RandomTeleportManager, KoinComponent {
             var costed = false
 
             if (economy != null && cost > 0.0 && !player.hasPermission(RANDOM_TELEPORT_COST_BYPASS)) {
-                val eco = economy!!
-                val balance = eco.getBalance(player)
+                val balance = economy.getBalance(player)
                 if (balance < cost) {
                     player.sendMessage(
                         RANDOM_TELEPORT_BALANCE_NOT_ENOUGH
@@ -299,7 +299,7 @@ class RandomTeleportManagerImpl : RandomTeleportManager, KoinComponent {
                     player.playSound(TELEPORT_FAILED_SOUND)
                     return@async
                 }
-                eco.withdrawPlayer(player, cost)
+                economy.withdrawPlayer(player, cost)
                 costed = true
             }
 

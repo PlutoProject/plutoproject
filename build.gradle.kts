@@ -338,6 +338,7 @@ allprojects {
         maven(uri("https://mvn.exceptionflug.de/repository/exceptionflug-public/"))
         maven(uri("https://repo.xenondevs.xyz/releases"))
         maven(uri("https://repo.codemc.io/repository/maven-snapshots/"))
+        maven(uri("https://repo.william278.net/releases"))
     }
 
     fun DependencyHandlerScope.dep(dep: Provider<*>, dependencyConfiguration: Action<ExternalModuleDependency> = Action {  }) {

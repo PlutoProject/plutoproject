@@ -1,10 +1,7 @@
 package ink.pmc.essentials.commands
 
 import cafe.adriel.voyager.navigator.Navigator
-import ink.pmc.essentials.COMMAND_ESS_RTP
-import ink.pmc.essentials.COMMAND_ESS_RTP_PERF_END
-import ink.pmc.essentials.COMMAND_ESS_RTP_PERF_START
-import ink.pmc.essentials.Cm
+import ink.pmc.essentials.*
 import ink.pmc.essentials.screens.examples.ExampleScreen1
 import ink.pmc.essentials.screens.examples.ExampleScreen3
 import ink.pmc.essentials.teleport.random.PerfTest
@@ -24,6 +21,7 @@ fun Cm.essentials(aliases: Array<String>) {
                 sender.sender.sendMessage(COMMAND_ESS_RTP)
             }
         }
+
         "rtp_perf_test" {
             permission("essentials.cmd")
             handler {
@@ -38,6 +36,7 @@ fun Cm.essentials(aliases: Array<String>) {
                 }
             }
         }
+
         "example_menu" {
             permission("essentials.cmd")
             handler {
@@ -48,6 +47,7 @@ fun Cm.essentials(aliases: Array<String>) {
                 }
             }
         }
+
         "example_form" {
             permission("essentials.cmd")
             handler {
@@ -55,6 +55,34 @@ fun Cm.essentials(aliases: Array<String>) {
                     Gui.startForm(this) {
                         Navigator(ExampleScreen3())
                     }
+                }
+            }
+        }
+
+        "huskhomes_migrate" {
+            permission("essentials.cmd")
+            "warps" {
+                handler {
+                    val sender = sender.sender
+
+                    if (huskHomesHook?.huskHomesApi == null) {
+                        sender.sendMessage(COMMAND_ESS_HUSKHOMES_NOT_FOUND)
+                        return@handler
+                    }
+
+                    HuskHomesMigrator.migrateWarps()
+                }
+            }
+            "homes" {
+                handler {
+                    val sender = sender.sender
+
+                    if (huskHomesHook?.huskHomesApi == null) {
+                        sender.sendMessage(COMMAND_ESS_HUSKHOMES_NOT_FOUND)
+                        return@handler
+                    }
+
+                    HuskHomesMigrator.migrateHomes()
                 }
             }
         }

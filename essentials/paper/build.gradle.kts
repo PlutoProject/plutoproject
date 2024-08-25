@@ -2,5 +2,6 @@ bukkitPluginYaml {
     depend.add("provider")
     depend.add("member")
     depend.add("interactive")
-    softDepend.add("Vault")
+    depend.add("Vault")
+    depend.add("HuskHomes")
 }
