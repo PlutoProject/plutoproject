@@ -71,6 +71,7 @@ fun Cm.essentials(aliases: Array<String>) {
                     }
 
                     HuskHomesMigrator.migrateWarps()
+                    sender.sendMessage(COMMAND_ESS_HUSKHOMES_MIGRATE_DONE)
                 }
             }
             "homes" {
@@ -83,6 +84,7 @@ fun Cm.essentials(aliases: Array<String>) {
                     }
 
                     HuskHomesMigrator.migrateHomes()
+                    sender.sendMessage(COMMAND_ESS_HUSKHOMES_MIGRATE_DONE)
                 }
             }
         }

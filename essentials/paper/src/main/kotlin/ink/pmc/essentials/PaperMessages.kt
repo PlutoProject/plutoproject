@@ -1103,3 +1103,7 @@ val COMMAND_SPAWN_FAILED_NOT_SET = component {
 val COMMAND_ESS_HUSKHOMES_NOT_FOUND = component {
     text("HuskHomes 未安装，无法启动迁移") with mochaMaroon
 }
+
+val COMMAND_ESS_HUSKHOMES_MIGRATE_DONE = component {
+    text("迁移完成！") with mochaPink
+}
