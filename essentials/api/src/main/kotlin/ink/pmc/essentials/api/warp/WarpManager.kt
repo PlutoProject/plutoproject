@@ -30,7 +30,7 @@ interface WarpManager {
 
     suspend fun getSpawn(name: String): Warp?
 
-    suspend fun setSpawn(warp: Warp)
+    suspend fun setSpawn(warp: Warp, spawn: Boolean)
 
     suspend fun getDefaultSpawn(): Warp?
 

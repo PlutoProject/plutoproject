@@ -33,3 +33,22 @@ internal fun warps(argName: String) =
         }
         .parser(StringParser.greedyStringParser())
         .name(argName)
+
+internal fun warpsWithoutAlias(argName: String) =
+    CommandComponent.builder<CommandSourceStack, String>()
+        .suggestionProvider { ctx, _ ->
+            val manager = Essentials.warpManager
+            val sender = ctx.sender().sender
+            if (sender is Player) {
+                submitAsync<List<Suggestion>> {
+                    manager.list().map {
+                        val name = it.name
+                        Suggestion.suggestion(name)
+                    }
+                }.asCompletableFuture()
+            } else {
+                CompletableFuture.completedFuture(listOf())
+            }
+        }
+        .parser(StringParser.quotedStringParser())
+        .name(argName)

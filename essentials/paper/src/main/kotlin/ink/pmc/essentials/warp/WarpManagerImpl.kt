@@ -94,9 +94,12 @@ class WarpManagerImpl : WarpManager, KoinComponent {
         return listSpawns().firstOrNull { it.name == name }
     }
 
-    override suspend fun setSpawn(warp: Warp) {
-        if (warp.isSpawn) return
-        warp.type = WarpType.SPAWN
+    override suspend fun setSpawn(warp: Warp, spawn: Boolean) {
+        warp.type = when {
+            spawn && !warp.isSpawn -> WarpType.SPAWN
+            !spawn && warp.isSpawn -> WarpType.WARP
+            else -> return
+        }
         warp.update()
     }
 
@@ -121,10 +124,12 @@ class WarpManagerImpl : WarpManager, KoinComponent {
         val member = MemberService.lookup(player.uniqueId) ?: error("Cannot fetch Member instance for ${player.name}")
         val dataContainer = member.dataContainer
         val spawnId = dataContainer.getString(PREFERRED_SPAWN_KEY)?.uuidOrNull ?: return getDefaultSpawn()
-        return get(spawnId)
+        val spawn = get(spawnId) ?: return null
+        return if (spawn.isSpawn) spawn else null
     }
 
     override suspend fun setPreferredSpawn(player: OfflinePlayer, spawn: Warp) {
+        require(spawn.isSpawn) { "Warp ${spawn.name} isn't a spawn" }
         val member = MemberService.lookup(player.uniqueId) ?: error("Cannot fetch Member instance for ${player.name}")
         val dataContainer = member.dataContainer
         dataContainer[PREFERRED_SPAWN_KEY] = spawn.id.toString()
