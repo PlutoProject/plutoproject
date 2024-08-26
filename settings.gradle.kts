@@ -3,6 +3,7 @@ pluginManagement {
         mavenCentral()
         gradlePluginPortal()
         maven("https://repo.papermc.io/repository/maven-public/")
+        maven("https://repo.jpenilla.xyz/snapshots")
         mavenLocal()
     }
 }
