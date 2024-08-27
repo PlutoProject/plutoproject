@@ -62,6 +62,7 @@ fun Cm.essentials(aliases: Array<String>) {
         "huskhomes_migrate" {
             permission("essentials.cmd")
             "warps" {
+                permission("essentials.cmd")
                 handler {
                     val sender = sender.sender
 
@@ -75,6 +76,7 @@ fun Cm.essentials(aliases: Array<String>) {
                 }
             }
             "homes" {
+                permission("essentials.cmd")
                 handler {
                     val sender = sender.sender
 
