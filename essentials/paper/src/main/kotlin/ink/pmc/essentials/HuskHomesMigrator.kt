@@ -54,11 +54,13 @@ object HuskHomesMigrator : KoinComponent {
             logger.info("Fetched home list of ${it.name}, start migrating...")
             homes.forEach homes@{ h ->
                 val name = h.name
-                val location = it.location
+                val location = Bukkit.getWorld(h.world.name)?.let { w ->
+                    Location(w, h.x, h.y, h.z, h.yaw, h.pitch)
+                }
 
                 if (location == null) {
-                    logger.warning("Failed to migrate '$name' of ${it.name} because world is null")
-                    return@homes
+                    logger.warning("World ${h.world.name} not found, cannot migrate")
+                    return@forEach
                 }
 
                 homeManager.create(it, name, location)
