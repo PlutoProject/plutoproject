@@ -401,14 +401,14 @@ class RandomTeleportManagerImpl : RandomTeleportManager, KoinComponent {
             return
         }
 
-        if (waitedTicks != -1L && waitedTicks < conf.cacheInterval) {
-            waitedTicks++
-            return
-        }
-
         tryEmitTasks()
 
         if (cacheTasks.isEmpty()) {
+            return
+        }
+
+        if (waitedTicks != -1L && waitedTicks < conf.cacheInterval) {
+            waitedTicks++
             return
         }
 
