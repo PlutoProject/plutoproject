@@ -433,7 +433,7 @@ abstract class BaseMemberServiceImpl(
         }
 
         val updates = combine(bson)
-        dataContainers.updateOne(exists("lastMember"), updates, updateOptions)
+        statusCollection.updateOne(exists("lastMember"), updates, updateOptions)
         status = currentStatus
         return diff
     }
