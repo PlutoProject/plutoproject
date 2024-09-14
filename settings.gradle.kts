@@ -112,7 +112,6 @@ include("daily:paper")
 
 include("whitelist")
 include("whitelist:velocity")
-include("whitelist:api")
 
 include("player-database")
 include("player-database:api")
