@@ -78,9 +78,12 @@ include("transfer:shared")
 include("transfer:proto")
 */
 
+// 删除：1.2.0
+/*
 include("messages")
 include("messages:paper")
 include("messages:velocity")
+*/
 
 include("protocol-checker")
 include("protocol-checker:velocity")
