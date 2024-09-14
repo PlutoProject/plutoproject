@@ -6,18 +6,17 @@ import ink.pmc.essentials.api.teleport.TeleportDirection.COME
 import ink.pmc.essentials.api.teleport.TeleportDirection.GO
 import ink.pmc.essentials.config.ChunkPrepareMethod.*
 import ink.pmc.essentials.config.EssentialsConfig
-import ink.pmc.utils.chat.DURATION
-import ink.pmc.utils.chat.UNUSUAL_ISSUE
-import ink.pmc.utils.chat.replace
-import ink.pmc.utils.concurrent.async
-import ink.pmc.utils.concurrent.compose
-import ink.pmc.utils.concurrent.submitAsync
-import ink.pmc.utils.data.mapKv
-import ink.pmc.utils.entity.teleportSuspend
-import ink.pmc.utils.multiplaform.item.KeyedMaterial
-import ink.pmc.utils.multiplaform.item.exts.bukkit
-import ink.pmc.utils.world.ValueChunkLoc
-import ink.pmc.utils.world.getChunkViaSource
+import ink.pmc.framework.utils.chat.DURATION
+import ink.pmc.framework.utils.chat.UNUSUAL_ISSUE
+import ink.pmc.framework.utils.chat.replace
+import ink.pmc.framework.utils.concurrent.async
+import ink.pmc.framework.utils.concurrent.compose
+import ink.pmc.framework.utils.concurrent.submitAsync
+import ink.pmc.framework.utils.data.mapKv
+import ink.pmc.framework.utils.entity.teleportSuspend
+import ink.pmc.framework.utils.platform.paper
+import ink.pmc.framework.utils.world.ValueVec2
+import ink.pmc.framework.utils.world.getChunkViaSource
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.future.asCompletableFuture
@@ -33,12 +32,10 @@ import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentLinkedQueue
 import kotlin.math.floor
-import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
 class TeleportManagerImpl : TeleportManager, KoinComponent {
-
-    private val conf by lazy { get<EssentialsConfig>().Teleport() }
+    private val config by lazy { get<EssentialsConfig>().teleport }
 
     // 用于在完成队列任务时通知
     private val notifyChannel = Channel<UUID>()
@@ -46,27 +43,30 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
     override val teleportRequests: MutableList<TeleportRequest> = mutableListOf()
     override val queue: Queue<TeleportTask> = ConcurrentLinkedQueue()
     override val defaultRequestOptions: RequestOptions = RequestOptions(
-        Duration.parse(conf.requestExpireAfter),
-        Duration.parse(conf.requestRemoveAfter)
+        config.request.expireAfter,
+        config.request.removeAfter
     )
     override val defaultTeleportOptions: TeleportOptions = TeleportOptions(
         false,
-        conf.avoidVoid,
-        conf.safeLocationSearchRadius,
-        conf.chunkPrepareRadius,
-        conf.blacklistedBlocks.toSet(),
+        config.default.avoidVoid,
+        config.default.safeLocationSearchRadius,
+        config.default.chunkPrepareRadius,
+        config.default.blacklistedBlocks.toSet(),
     )
-    override val worldTeleportOptions: Map<World, TeleportOptions> = conf.worldOptions.mapKv {
-        it.key to TeleportOptions(
+    override val worldTeleportOptions: Map<World, TeleportOptions> = config.worlds.filter { (key, _) ->
+        paper.worlds.any { it.name == key }
+    }.mapKv { (key, value) ->
+        paper.getWorld(key)!! to TeleportOptions(
             false,
-            it.value.get("avoid-void") ?: defaultTeleportOptions.avoidVoid,
-            it.value.get("safe-location-search-radius") ?: defaultTeleportOptions.safeLocationSearchRadius,
-            it.value.get("chunk-prepare-radius") ?: defaultTeleportOptions.chunkPrepareRadius,
-            it.value.get<List<String>>("blacklisted-blocks")?.map { m -> KeyedMaterial(m).bukkit }?.toSet()
-                ?: defaultTeleportOptions.blacklistedBlocks
+            value.avoidVoid,
+            value.safeLocationSearchRadius,
+            value.chunkPrepareRadius,
+            value.blacklistedBlocks.toSet()
         )
     }
-    override val blacklistedWorlds: Collection<World> = conf.blacklistedWorlds
+    override val blacklistedWorlds: Collection<World> = config.blacklistedWorlds
+        .filter { name -> paper.worlds.any { it.name == name } }
+        .map { paper.getWorld(it)!! }
     override val locationCheckers: MutableMap<String, LocationChecker> = mutableMapOf()
     override var tickingTask: TeleportTask? = null
     override var tickCount = 0L
@@ -100,29 +100,29 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
     private val World.teleportOptions: TeleportOptions
         get() = worldTeleportOptions[this] ?: defaultTeleportOptions
 
-    private fun Location.chunkNeedToPrepare(radius: Int): List<ValueChunkLoc> {
-        val centerChunk = ValueChunkLoc(chunk.x, chunk.z)
+    private fun Location.chunkNeedToPrepare(radius: Int): List<ValueVec2> {
+        val centerChunk = ValueVec2(chunk.x, chunk.z)
         val chunks = (-radius..radius).flatMap { x ->
             (-radius..radius).map { z ->
                 val x1 = centerChunk.x + x
                 val y1 = centerChunk.y + z
-                ValueChunkLoc(x1, y1)
+                ValueVec2(x1, y1)
             }
         }.toMutableList()
         chunks.add(centerChunk)
         return chunks
     }
 
-    private fun List<ValueChunkLoc>.allPrepared(world: World): Boolean {
+    private fun List<ValueVec2>.allPrepared(world: World): Boolean {
         return all { it.isLoaded(world) }
     }
 
     @JvmName("internalPrepareChunk")
-    private suspend fun Collection<ValueChunkLoc>.prepareChunk(world: World) {
+    private suspend fun Collection<ValueVec2>.prepareChunk(world: World) {
         coroutineScope {
             forEach {
                 submitAsync {
-                    when (conf.chunkPrepareMethod) {
+                    when (config.chunkPrepareMethod) {
                         SYNC -> world.getChunkAt(it.x, it.y)
                         ASYNC -> world.getChunkAtAsync(it.x, it.y).await()
                         ASYNC_FAST -> world.getChunkAtAsyncUrgently(it.x, it.y).await()
@@ -215,7 +215,7 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
     ) {
         async {
             val opt = options ?: destination.world.teleportOptions
-            val loc = if (opt.bypassSafeCheck || isSafe(destination, opt)) {
+            val loc = if (opt.disableSafeCheck || isSafe(destination, opt)) {
                 destination
             } else {
                 destination.searchSafeLoc(opt)
@@ -297,7 +297,7 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
             return null
         }
 
-        if (conf.blacklistedWorlds.contains(destination.world)) {
+        if (config.blacklistedWorlds.contains(destination.world.name)) {
             return null
         }
 
@@ -312,7 +312,7 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
         destination.sendMessage(TELEPORT_OPERATION(request.id))
         destination.playSound(TELEPORT_REQUEST_RECEIVED_SOUND)
 
-        if (teleportRequests.size == conf.maxRequestsStored) {
+        if (teleportRequests.size == config.maxRequestsStored) {
             teleportRequests.removeAt(0).cancel()
         }
 
@@ -360,15 +360,15 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
         teleportRequests.clear()
     }
 
-    override fun getRequiredChunks(center: Location, radius: Int): Collection<ValueChunkLoc> {
+    override fun getRequiredChunks(center: Location, radius: Int): Collection<ValueVec2> {
         return center.chunkNeedToPrepare(radius)
     }
 
-    override fun isAllPrepared(chunks: Collection<ValueChunkLoc>, world: World): Boolean {
+    override fun isAllPrepared(chunks: Collection<ValueVec2>, world: World): Boolean {
         return chunks.toList().allPrepared(world)
     }
 
-    override suspend fun prepareChunk(chunks: Collection<ValueChunkLoc>, world: World) {
+    override suspend fun prepareChunk(chunks: Collection<ValueVec2>, world: World) {
         chunks.prepareChunk(world)
     }
 
@@ -495,7 +495,7 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
         state = TeleportManagerState.TICKING
         val start = System.currentTimeMillis()
 
-        repeat(conf.queueProcessPerTick) {
+        repeat(config.queueProcessPerTick) {
             val task = queue.poll() ?: return@repeat
             tickingTask = task
             task.tick()
@@ -508,5 +508,4 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
         tickCount++
         state = TeleportManagerState.IDLE
     }
-
 }

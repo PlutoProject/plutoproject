@@ -1,10 +1,8 @@
 package ink.pmc.daily
 
-import ink.pmc.advkt.component.component
-import ink.pmc.advkt.component.italic
-import ink.pmc.advkt.component.text
-import ink.pmc.utils.chat.ECONOMY_SYMBOL
-import ink.pmc.utils.visual.*
+import ink.pmc.advkt.component.*
+import ink.pmc.framework.utils.chat.ECONOMY_SYMBOL
+import ink.pmc.framework.utils.visual.*
 import net.kyori.adventure.text.Component
 
 val CHECK_IN = component {
@@ -33,17 +31,15 @@ val NAVIGATE = component {
 private val NAVIGATE_LORE_PREV = component {
     text("左键 ") with mochaLavender without italic()
     text("上一页") with mochaText without italic()
-    // text("(<prevYear> 年 <prevMonth> 月)") with mochaSubtext0 without italic()
 }
 
 private val NAVIGATE_LORE_NEXT = component {
     text("右键 ") with mochaLavender without italic()
     text("下一页") with mochaText without italic()
-    // text("(<nextYear> 年 <nextMonth> 月)") with mochaSubtext0 without italic()
 }
 
 private val NAVIGATE_LORE_RESET = component {
-    text("中键 ") with mochaLavender without italic()
+    text("Shift + 左键 ") with mochaLavender without italic()
     text("回到现在") with mochaText without italic()
 }
 
@@ -110,3 +106,10 @@ val DAY_LORE_FUTURE = listOf(
         text("不远的将来...") with mochaSubtext0 without italic()
     }
 )
+
+val PLAYER_NOT_CHECKIN_JOIN = component {
+    text("✨ 今日尚未到访，到访可获取货币奖励 ") with mochaText
+    text("[打开礼记]") with mochaLavender with showText {
+        text("点此打开礼记") with mochaText
+    } with runCommand("/plutoproject_daily:checkin gui")
+}

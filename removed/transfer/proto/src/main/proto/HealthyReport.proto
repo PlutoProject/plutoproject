@@ -1,8 +1,0 @@
-syntax = "proto3";
-package ink.pmc.transfer.proto;
-
-message HealthyReport {
-  string id = 1;
-  int32 playerCount = 2;
-  int32 maxPlayerCount = 3;
-}

@@ -15,8 +15,8 @@ import com.velocitypowered.api.plugin.annotation.DataDirectory
 import com.velocitypowered.api.proxy.ProxyServer
 import com.velocitypowered.api.proxy.server.ServerPing
 import com.velocitypowered.api.proxy.server.ServerPing.SamplePlayer
-import ink.pmc.utils.platform.proxy
-import ink.pmc.utils.platform.saveConfig
+import ink.pmc.framework.utils.platform.proxy
+import ink.pmc.framework.utils.platform.saveDefaultConfig
 import java.io.File
 import java.nio.file.Path
 import java.util.logging.Logger
@@ -30,6 +30,8 @@ lateinit var config: FileConfig
 lateinit var protocolRange: IntRange
 var serverBrand: String? = null
 var forwardPlayerList = false
+var samplePlayersCount = 0
+var maxPlayerCount = -1
 
 val Int.gameVersion: List<String>
     get() {
@@ -47,24 +49,17 @@ class VelocityPlugin @Inject constructor(suspendingPluginContainer: SuspendingPl
     fun velocityProtocolChecker(server: ProxyServer, logger: Logger, @DataDirectory dataDirectoryPath: Path) {
         serverLogger = logger
         dataDir = dataDirectoryPath.toFile()
-
         if (!dataDir.exists()) {
             dataDir.mkdirs()
         }
-
-        val configFile = File(dataDir, "proxy_config.conf")
-
-        if (!configFile.exists()) {
-            saveConfig(VelocityPlugin::class.java, "proxy_config.conf", configFile)
-        }
-
+        val configFile = saveDefaultConfig(this::class.java, dataDir)
         config = configFile.loadConfig()
         loadConfigValues()
     }
 
     @Subscribe
     fun proxyInitializeEvent(event: ProxyInitializeEvent) {
-        pluginContainer = proxy.pluginManager.getPlugin("protocol-checker").get()
+        pluginContainer = proxy.pluginManager.getPlugin("plutoproject_protocol-checker").get()
         disabled = false
     }
 
@@ -75,40 +70,37 @@ class VelocityPlugin @Inject constructor(suspendingPluginContainer: SuspendingPl
 
     @Subscribe(order = PostOrder.FIRST)
     fun ProxyPingEvent.e() {
-        val protocol = connection.protocolVersion.protocol
-
-        if (protocolRange.contains(protocol)) {
-            return
-        }
-
-        val version = if (serverBrand == null) {
-            ServerPing.Version(protocolRange.first, VERSION_RANGE)
-        } else {
-            ServerPing.Version(protocolRange.first, "$serverBrand $VERSION_RANGE")
-        }
-
-        val newPing = ping.asBuilder()
+        val version = ServerPing.Version(
+            protocolRange.first,
+            if (serverBrand != null) "$serverBrand $VERSION_RANGE" else VERSION_RANGE
+        )
+        ping = ping.asBuilder()
             .version(version)
             .apply {
+                if (maxPlayerCount != -1) {
+                    maximumPlayers(maxPlayerCount)
+                }
                 if (forwardPlayerList) {
-                    samplePlayers(*proxy.allPlayers.map { SamplePlayer(it.username, it.uniqueId) }.toTypedArray())
+                    val players = proxy.allPlayers
+                        .map { SamplePlayer(it.username, it.uniqueId) }
+                        .take(samplePlayersCount)
+                    samplePlayers(*players.toTypedArray())
                 }
             }
             .build()
-
-        ping = newPing
-        // result = ResultedEvent.GenericResult.denied()
     }
 
     @Subscribe(order = PostOrder.FIRST)
     fun PreLoginEvent.e() {
         val protocol = connection.protocolVersion.protocol
-
-        if (protocolRange.contains(protocol)) {
+        if (!protocolRange.contains(protocol)) {
+            result = PreLoginEvent.PreLoginComponentResult.denied(VERSION_NOT_SUPPORTED)
             return
         }
-
-        result = PreLoginEvent.PreLoginComponentResult.denied(VERSION_NOT_SUPPORTED)
+        if (proxy.playerCount + 1 > maxPlayerCount && maxPlayerCount != -1) {
+            result = PreLoginEvent.PreLoginComponentResult.denied(SERVER_IS_FULL)
+            return
+        }
     }
 
     private fun loadConfigValues() {
@@ -116,6 +108,8 @@ class VelocityPlugin @Inject constructor(suspendingPluginContainer: SuspendingPl
         protocolRange = list[0]..list[1]
         serverBrand = config.get("server-brand")
         forwardPlayerList = config.get("forward-player-list") ?: false
+        samplePlayersCount = config.get("sample-players-count") ?: 0
+        maxPlayerCount = config.get("max-player-count") ?: -1
     }
 
     private fun File.loadConfig(): FileConfig {

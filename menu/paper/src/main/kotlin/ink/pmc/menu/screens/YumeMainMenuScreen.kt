@@ -21,29 +21,26 @@ import ink.pmc.essentials.api.warp.WarpManager
 import ink.pmc.essentials.config.EssentialsConfig
 import ink.pmc.essentials.screens.home.HomeViewerScreen
 import ink.pmc.essentials.screens.warp.DefaultWarpPickerScreen
-import ink.pmc.interactive.api.LocalPlayer
-import ink.pmc.interactive.api.inventory.components.Background
-import ink.pmc.interactive.api.inventory.components.Item
-import ink.pmc.interactive.api.inventory.components.Space
-import ink.pmc.interactive.api.inventory.components.VerticalGrid
-import ink.pmc.interactive.api.inventory.components.canvases.Chest
-import ink.pmc.interactive.api.inventory.jetpack.Arrangement
-import ink.pmc.interactive.api.inventory.layout.Box
-import ink.pmc.interactive.api.inventory.layout.Column
-import ink.pmc.interactive.api.inventory.layout.Row
-import ink.pmc.interactive.api.inventory.modifiers.*
-import ink.pmc.interactive.api.inventory.modifiers.click.clickable
-import ink.pmc.interactive.api.inventory.stateTransition
+import ink.pmc.framework.interactive.LocalPlayer
+import ink.pmc.framework.interactive.inventory.*
+import ink.pmc.framework.interactive.inventory.click.clickable
+import ink.pmc.framework.interactive.inventory.components.canvases.Chest
+import ink.pmc.framework.interactive.inventory.jetpack.Arrangement
+import ink.pmc.framework.interactive.inventory.layout.Box
+import ink.pmc.framework.interactive.inventory.layout.Column
+import ink.pmc.framework.interactive.inventory.layout.Row
+import ink.pmc.framework.playerdb.PlayerDb
+import ink.pmc.framework.utils.chat.MESSAGE_SOUND
+import ink.pmc.framework.utils.chat.UI_INVALID_SOUND
+import ink.pmc.framework.utils.chat.UI_SUCCEED_SOUND
+import ink.pmc.framework.utils.chat.replace
+import ink.pmc.framework.utils.visual.mochaSubtext0
+import ink.pmc.framework.utils.visual.mochaText
+import ink.pmc.framework.utils.world.aliasOrName
 import ink.pmc.menu.CO_NEAR_COMMAND
 import ink.pmc.menu.economy
 import ink.pmc.menu.inspecting
 import ink.pmc.menu.messages.*
-import ink.pmc.utils.chat.MESSAGE_SOUND
-import ink.pmc.utils.chat.UI_INVALID_SOUND
-import ink.pmc.utils.chat.UI_SUCCEED_SOUND
-import ink.pmc.utils.chat.replace
-import ink.pmc.utils.visual.mochaSubtext0
-import ink.pmc.utils.visual.mochaText
 import kotlinx.coroutines.delay
 import org.bukkit.Material
 import org.bukkit.event.inventory.ClickType
@@ -53,8 +50,9 @@ import org.koin.core.component.inject
 import kotlin.time.Duration.Companion.seconds
 
 private const val PANE_COLUMNS = 4
-private const val PANE_COLUME_WIDTH = 7
-private const val PANE_GRIDS = PANE_COLUMNS * PANE_COLUME_WIDTH
+private const val PANE_COLUMN_WIDTH = 7
+private const val PANE_GRIDS = PANE_COLUMNS * PANE_COLUMN_WIDTH
+private const val FIRST_OPEN_PROMPT_KEY = "yume_main.showed_first_open_prompt"
 
 class YumeMainMenuScreen : Screen, KoinComponent {
 
@@ -64,6 +62,16 @@ class YumeMainMenuScreen : Screen, KoinComponent {
 
     @Composable
     override fun Content() {
+        val player = LocalPlayer.current
+
+        LaunchedEffect(Unit) {
+            val db = PlayerDb.getOrCreate(player.uniqueId)
+            if (db.getBoolean(FIRST_OPEN_PROMPT_KEY)) return@LaunchedEffect
+            player.sendMessage(YUME_MAIN_FIRST_OPEN_PROMPT)
+            db[FIRST_OPEN_PROMPT_KEY] = true
+            db.update()
+        }
+
         Chest(title = YUME_MAIN_TITLE, modifier = Modifier.height(6)) {
             Box(modifier = Modifier.fillMaxSize()) {
                 Background()
@@ -109,7 +117,7 @@ class YumeMainMenuScreen : Screen, KoinComponent {
             modifier = Modifier.height(PANE_COLUMNS).fillMaxWidth(),
             horizontalArrangement = Arrangement.Center
         ) {
-            Box(modifier = Modifier.fillMaxHeight().width(PANE_COLUME_WIDTH)) {
+            Box(modifier = Modifier.fillMaxHeight().width(PANE_COLUMN_WIDTH)) {
                 VerticalGrid(modifier = Modifier.fillMaxSize()) {
                     repeat(PANE_GRIDS) {
                         Space()
@@ -224,7 +232,7 @@ class YumeMainMenuScreen : Screen, KoinComponent {
                         }
                     }
                     val loc = spawn?.let {
-                        val world = conf.WorldAliases()[it.location.world]
+                        val world = it.location.world.aliasOrName
                         val x = it.location.blockX
                         val y = it.location.blockY
                         val z = it.location.blockZ

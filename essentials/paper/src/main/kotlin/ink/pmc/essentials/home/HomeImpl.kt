@@ -6,9 +6,9 @@ import ink.pmc.essentials.api.home.HomeTeleportEvent
 import ink.pmc.essentials.api.teleport.TeleportManager
 import ink.pmc.essentials.dtos.HomeDto
 import ink.pmc.essentials.repositories.HomeRepository
-import ink.pmc.utils.concurrent.async
-import ink.pmc.utils.concurrent.submitAsync
-import ink.pmc.utils.storage.entity.dto
+import ink.pmc.framework.utils.concurrent.async
+import ink.pmc.framework.utils.concurrent.submitAsync
+import ink.pmc.framework.utils.storage.model
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.OfflinePlayer
@@ -19,7 +19,6 @@ import java.time.Instant
 import java.util.*
 
 class HomeImpl(private val dto: HomeDto) : Home, KoinComponent {
-
     private val manager by inject<HomeManager>()
     private val repo by inject<HomeRepository>()
     private val teleport by inject<TeleportManager>()
@@ -29,11 +28,11 @@ class HomeImpl(private val dto: HomeDto) : Home, KoinComponent {
     override val createdAt: Instant = Instant.ofEpochMilli(dto.createdAt)
     override var location: Location =
         requireNotNull(dto.location.location) {
-            loadFailed(id, "cannot to obtain location ${dto.location}")
+            loadFailed(id, "failed to obtain location ${dto.location}")
         }
     override val owner: OfflinePlayer =
         requireNotNull(Bukkit.getOfflinePlayer(dto.owner)) {
-            loadFailed(id, "cannot obtain OfflinePlayer ${dto.owner}")
+            loadFailed(id, "failed obtain OfflinePlayer ${dto.owner}")
         }
     override var isStarred: Boolean = dto.isStarred
     override var isPreferred: Boolean = dto.isPreferred
@@ -66,7 +65,7 @@ class HomeImpl(private val dto: HomeDto) : Home, KoinComponent {
 
     override suspend fun teleportSuspend(player: Player, prompt: Boolean) {
         async {
-            val options = teleport.getWorldTeleportOptions(location.world).copy(bypassSafeCheck = true)
+            val options = teleport.getWorldTeleportOptions(location.world).copy(disableSafeCheck = true)
             // 必须异步触发
             val event = HomeTeleportEvent(player, player.location, this@HomeImpl).apply { callEvent() }
             if (event.isCancelled) return@async
@@ -78,7 +77,7 @@ class HomeImpl(private val dto: HomeDto) : Home, KoinComponent {
         id = id,
         name = name,
         createdAt = createdAt.toEpochMilli(),
-        location = location.dto,
+        location = location.model,
         owner = owner.uniqueId,
         isStarred = isStarred,
         isPreferred = isPreferred,
@@ -104,5 +103,4 @@ class HomeImpl(private val dto: HomeDto) : Home, KoinComponent {
         result = 31 * result + isPreferred.hashCode()
         return result
     }
-
 }

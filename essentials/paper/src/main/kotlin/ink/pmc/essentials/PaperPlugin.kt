@@ -1,69 +1,150 @@
 package ink.pmc.essentials
 
-import com.electronwill.nightconfig.core.file.FileConfig
 import com.github.shynixn.mccoroutine.bukkit.SuspendingJavaPlugin
 import com.github.shynixn.mccoroutine.bukkit.registerSuspendingEvents
-import ink.pmc.essentials.api.Essentials
+import com.sksamuel.hoplite.PropertySource
+import ink.pmc.essentials.afk.AfkManagerImpl
 import ink.pmc.essentials.api.afk.AfkManager
+import ink.pmc.essentials.api.back.BackManager
+import ink.pmc.essentials.api.home.HomeManager
+import ink.pmc.essentials.api.teleport.TeleportManager
+import ink.pmc.essentials.api.teleport.random.RandomTeleportManager
+import ink.pmc.essentials.api.warp.WarpManager
+import ink.pmc.essentials.back.BackManagerImpl
+import ink.pmc.essentials.commands.*
+import ink.pmc.essentials.commands.afk.AfkCommand
+import ink.pmc.essentials.commands.back.BackCommand
+import ink.pmc.essentials.commands.home.*
+import ink.pmc.essentials.commands.teleport.TeleportCommons
+import ink.pmc.essentials.commands.teleport.TpaCommand
+import ink.pmc.essentials.commands.teleport.TpacceptCommand
+import ink.pmc.essentials.commands.teleport.TpcancelCommand
+import ink.pmc.essentials.commands.teleport.random.RtpCommand
+import ink.pmc.essentials.commands.warp.*
 import ink.pmc.essentials.config.EssentialsConfig
+import ink.pmc.essentials.home.HomeManagerImpl
 import ink.pmc.essentials.hooks.EconomyHook
-import ink.pmc.essentials.hooks.HuskHomesHook
 import ink.pmc.essentials.listeners.*
-import ink.pmc.utils.command.CommandRegistrationResult
-import ink.pmc.utils.command.registerCommands
-import ink.pmc.utils.inject.startKoinIfNotPresent
-import ink.pmc.utils.storage.saveResourceIfNotExisted
-import io.papermc.paper.command.brigadier.CommandSourceStack
+import ink.pmc.essentials.recipes.MENU_ITEM_RECIPE
+import ink.pmc.essentials.repositories.BackRepository
+import ink.pmc.essentials.repositories.HomeRepository
+import ink.pmc.essentials.repositories.WarpRepository
+import ink.pmc.essentials.teleport.TeleportManagerImpl
+import ink.pmc.essentials.teleport.random.RandomTeleportManagerImpl
+import ink.pmc.essentials.warp.WarpManagerImpl
+import ink.pmc.framework.utils.command.annotationParser
+import ink.pmc.framework.utils.command.commandManager
+import ink.pmc.framework.utils.command.suggestion.PaperPrivilegedSuggestion
+import ink.pmc.framework.utils.config.preconfiguredConfigLoaderBuilder
+import ink.pmc.framework.utils.inject.startKoinIfNotPresent
+import ink.pmc.framework.utils.storage.saveResourceIfNotExisted
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import org.bukkit.plugin.Plugin
-import org.incendo.cloud.execution.ExecutionCoordinator
-import org.incendo.cloud.paper.PaperCommandManager
+import org.incendo.cloud.bukkit.parser.OfflinePlayerParser
+import org.incendo.cloud.bukkit.parser.WorldParser
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import org.koin.core.component.inject
-import java.io.File
-
-typealias Cm = PaperCommandManager<CommandSourceStack>
+import org.koin.dsl.module
 
 var disabled = true
 var economyHook: EconomyHook? = null
-var huskHomesHook: HuskHomesHook? = null
 lateinit var plugin: Plugin
-lateinit var fileConfig: FileConfig
-lateinit var commandManager: Cm
 
-private const val COMMAND_PACKAGE = "ink.pmc.essentials.commands"
 val essentialsScope = CoroutineScope(Dispatchers.Default)
 
 @Suppress("UNUSED")
 class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
 
-    private val conf by inject<EssentialsConfig>()
+    private val config by inject<EssentialsConfig>()
+    private val bukkitModule = module {
+        single<EssentialsConfig> {
+            preconfiguredConfigLoaderBuilder()
+                .addPropertySource(PropertySource.file(saveResourceIfNotExisted("config.conf")))
+                .build()
+                .loadConfigOrThrow()
+        }
+        single<HomeRepository> { HomeRepository() }
+        single<WarpRepository> { WarpRepository() }
+        single<BackRepository> { BackRepository() }
+        single<TeleportManager> {
+            check(config.teleport.enabled)
+            TeleportManagerImpl()
+        }
+        single<RandomTeleportManager> {
+            check(config.randomTeleport.enabled)
+            RandomTeleportManagerImpl()
+        }
+        single<HomeManager> {
+            check(config.home.enabled)
+            HomeManagerImpl()
+        }
+        single<WarpManager> {
+            check(config.warp.enabled)
+            WarpManagerImpl()
+        }
+        single<BackManager> {
+            check(config.back.enabled)
+            BackManagerImpl()
+        }
+        single<AfkManager> {
+            check(config.afk.enabled)
+            AfkManagerImpl()
+        }
+    }
 
     override suspend fun onEnableAsync() {
         plugin = this
 
         startKoinIfNotPresent {
-            modules(appModule)
+            modules(bukkitModule)
         }
 
-        val config = saveResourceIfNotExisted("config.conf")
-        fileConfig = config.loadConfig()
-
-        commandManager = PaperCommandManager.builder()
-            .executionCoordinator(ExecutionCoordinator.asyncCoordinator())
-            .buildOnEnable(this)
-
-        commandManager.registerCommands(COMMAND_PACKAGE) {
-            CommandRegistrationResult(
-                enabled = conf.Commands()[it],
-                aliases = conf.CommandAliases()[it]
-            )
+        commandManager().apply {
+            parserRegistry().apply {
+                registerSuggestionProvider(
+                    "rtp-world",
+                    PaperPrivilegedSuggestion.of(WorldParser(), RANDOM_TELEPORT_SPECIFIC)
+                )
+                registerSuggestionProvider(
+                    "homes-offlineplayer",
+                    PaperPrivilegedSuggestion.of(OfflinePlayerParser(), HOMES_OTHER)
+                )
+            }
+        }.annotationParser().apply {
+            parse(EssentialsCommand)
+            parse(AlignCommand)
+            parse(GmCommand)
+            parse(HatCommand)
+            parse(ItemFrameCommand)
+            parse(LecternCommand)
+            parse(WarpCommons)
+            parse(DelWarpCommand)
+            parse(EditWarpCommand)
+            parse(PreferredSpawnCommand)
+            parse(SetWarpCommand)
+            parse(SpawnCommand)
+            parse(WarpCommand)
+            parse(WarpsCommand)
+            parse(TeleportCommons)
+            parse(RtpCommand)
+            parse(TpacceptCommand)
+            parse(TpaCommand)
+            parse(TpcancelCommand)
+            parse(HomeCommons)
+            parse(DelHomeCommand)
+            parse(EditHomeCommand)
+            parse(HomeCommand)
+            parse(HomesCommand)
+            parse(SetHomeCommand)
+            parse(BackCommand)
+            parse(AfkCommand)
         }
 
         registerEvents()
+        registerRecipes()
         initialize()
         disabled = false
     }
@@ -71,64 +152,72 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
     override suspend fun onDisableAsync() {
         disabled = true
         essentialsScope.cancel()
-        Essentials.teleportManager.clearRequest()
+        if (config.teleport.enabled) {
+            TeleportManager.clearRequest()
+        }
     }
 
     private fun registerEvents() {
-        if (Essentials.isTeleportEnabled()) {
+        if (config.teleport.enabled) {
             server.pluginManager.registerSuspendingEvents(TeleportListener, this)
         }
 
-        if (Essentials.isRandomTeleportEnabled()) {
+        if (config.randomTeleport.enabled) {
             server.pluginManager.registerSuspendingEvents(RandomTeleportListener, this)
         }
 
-        if (Essentials.isHomeEnabled()) {
+        if (config.home.enabled) {
             server.pluginManager.registerSuspendingEvents(HomeListener, this)
         }
 
-        /*
-        if (Essentials.isWarpEnabled()) {
-            server.pluginManager.registerSuspendingEvents(WarpListener, this)
-        }
-        */
-
-        if (Essentials.isBackEnabled()) {
+        if (config.back.enabled) {
             server.pluginManager.registerSuspendingEvents(BackListener, this)
         }
 
-        if (Essentials.isAfkEnabled()) {
+        if (config.afk.enabled) {
             server.pluginManager.registerSuspendingEvents(AfkListener, this)
         }
 
-        if (Essentials.isItemFrameEnabled()) {
-            server.pluginManager.registerSuspendingEvents(ItemFrameListener, this)
+        if (config.containerProtection.enabled) {
+            if (config.containerProtection.itemframe) {
+                server.pluginManager.registerSuspendingEvents(ItemFrameListener, this)
+            }
+            if (config.containerProtection.lectern) {
+                server.pluginManager.registerSuspendingEvents(LecternListener, this)
+            }
         }
 
-        if (Essentials.isLecternEnabled()) {
-            server.pluginManager.registerSuspendingEvents(LecternListener, this)
+        if (config.action.enabled) {
+            server.pluginManager.registerSuspendingEvents(ActionListener, this)
+        }
+
+        if (config.item.enabled) {
+            server.pluginManager.registerSuspendingEvents(ItemListener, this)
+        }
+
+        if (config.join.enabled) {
+            server.pluginManager.registerSuspendingEvents(JoinListener, this)
+        }
+
+        if (config.demoWorld.enabled) {
+            server.pluginManager.registerSuspendingEvents(DemoWorldListener, this)
+        }
+    }
+
+    private fun registerRecipes() {
+        if (!config.recipe.enabled) return
+        if (config.recipe.menuItem) {
+            server.addRecipe(MENU_ITEM_RECIPE)
         }
     }
 
     private fun initialize() {
         // 初始化 AfkManager，开始后台任务
-        if (Essentials.isAfkEnabled()) get<AfkManager>()
+        if (config.afk.enabled) get<AfkManager>()
 
         if (server.pluginManager.getPlugin("Vault") != null) {
             economyHook = EconomyHook()
         }
-
-        if (server.pluginManager.getPlugin("HuskHomes") != null) {
-            huskHomesHook = HuskHomesHook()
-        }
-    }
-
-    private fun File.loadConfig(): FileConfig {
-        return FileConfig.builder(this)
-            .async()
-            .autoreload()
-            .build()
-            .apply { load() }
     }
 
 }

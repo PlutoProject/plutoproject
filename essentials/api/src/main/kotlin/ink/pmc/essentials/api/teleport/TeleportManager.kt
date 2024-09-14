@@ -1,6 +1,7 @@
 package ink.pmc.essentials.api.teleport
 
-import ink.pmc.utils.world.ValueChunkLoc
+import ink.pmc.framework.utils.inject.inlinedGet
+import ink.pmc.framework.utils.world.ValueVec2
 import org.bukkit.Location
 import org.bukkit.World
 import org.bukkit.entity.Entity
@@ -8,15 +9,14 @@ import org.bukkit.entity.Player
 import java.util.*
 
 enum class TeleportManagerState {
-
     IDLE, TICKING
-
 }
 
 typealias LocationChecker = suspend (Location, TeleportOptions) -> Boolean
 
 @Suppress("UNUSED")
 interface TeleportManager {
+    companion object : TeleportManager by inlinedGet()
 
     val teleportRequests: Collection<TeleportRequest>
     val queue: Queue<TeleportTask>
@@ -63,11 +63,11 @@ interface TeleportManager {
 
     fun clearRequest()
 
-    fun getRequiredChunks(center: Location, radius: Int): Collection<ValueChunkLoc>
+    fun getRequiredChunks(center: Location, radius: Int): Collection<ValueVec2>
 
-    fun isAllPrepared(chunks: Collection<ValueChunkLoc>, world: World): Boolean
+    fun isAllPrepared(chunks: Collection<ValueVec2>, world: World): Boolean
 
-    suspend fun prepareChunk(chunks: Collection<ValueChunkLoc>, world: World)
+    suspend fun prepareChunk(chunks: Collection<ValueVec2>, world: World)
 
     suspend fun fireTeleport(
         player: Player,
@@ -116,5 +116,4 @@ interface TeleportManager {
     fun isBlacklisted(world: World): Boolean
 
     suspend fun tick()
-
 }

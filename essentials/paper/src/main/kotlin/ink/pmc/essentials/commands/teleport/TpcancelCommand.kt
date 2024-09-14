@@ -1,72 +1,54 @@
 package ink.pmc.essentials.commands.teleport
 
 import ink.pmc.essentials.*
-import ink.pmc.essentials.api.Essentials
-import ink.pmc.utils.annotation.Command
-import ink.pmc.utils.chat.NON_PLAYER
-import ink.pmc.utils.chat.NO_PERMISSON
-import ink.pmc.utils.chat.replace
-import ink.pmc.utils.dsl.cloud.invoke
-import ink.pmc.utils.dsl.cloud.sender
+import ink.pmc.essentials.api.teleport.TeleportManager
+import ink.pmc.framework.utils.chat.NO_PERMISSON
+import ink.pmc.framework.utils.chat.replace
+import ink.pmc.framework.utils.command.ensurePlayer
+import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
-import org.incendo.cloud.bukkit.parser.PlayerParser
-import kotlin.jvm.optionals.getOrNull
+import org.incendo.cloud.annotations.Argument
+import org.incendo.cloud.annotations.Command
+import org.incendo.cloud.annotations.Permission
 
-@Command("tpcancel")
 @Suppress("UNUSED")
-fun Cm.tpcancel(aliases: Array<String>) {
-    this("tpcancel", *aliases) {
-        permission("essentials.tpcancel")
-        optional("player", PlayerParser.playerParser())
-        handler {
-            val manager = Essentials.teleportManager
-            val argPlayer = optional<Player>("player").getOrNull()
-            val argRequest = argPlayer?.let { manager.getUnfinishedRequest(it) }
-            val sender = sender.sender
-
-            if (argPlayer != null) {
-                if (!sender.hasPermission("essentials.tpcancel.other")) {
-                    sender.sendMessage(NO_PERMISSON)
-                    return@handler
-                }
-
-                if (argRequest == null) {
-                    sender.sendMessage(
-                        COMMAND_TPCANCEL_NO_REQUEST_OTHER
-                            .replace("<player>", argPlayer.name)
-                    )
-                    return@handler
-                }
-
-                argRequest.cancel()
-                sender.sendMessage(
-                    COMMAND_TPCANCEL_SUCCEED_OTHER
-                        .replace("<player>", argPlayer.name)
-                        .replace("<dest>", argRequest.destination.name)
+object TpcancelCommand {
+    @Command("tpcancel [player]")
+    @Permission("essentials.tpcancel")
+    fun CommandSender.tpcancel(@Argument("player") player: Player?) = ensurePlayer {
+        val argRequest = player?.let { TeleportManager.getUnfinishedRequest(it) }
+        if (player != null) {
+            if (!hasPermission("essentials.tpcancel.other")) {
+                sendMessage(NO_PERMISSON)
+                return
+            }
+            if (argRequest == null) {
+                sendMessage(
+                    COMMAND_TPCANCEL_NO_REQUEST_OTHER
+                        .replace("<player>", player.name)
                 )
-                argPlayer.sendMessage(
-                    COMMAND_TPCANCEL_OTHER_NOTIFY
-                        .replace("<player>", argRequest.destination.name)
-                )
-
-                return@handler
+                return
             }
-
-            if (sender !is Player) {
-                sender.sendMessage(NON_PLAYER)
-                return@handler
-            }
-
-            val request = manager.getUnfinishedRequest(sender) ?: return@handler run {
-                sender.sendMessage(COMMAND_TPCANCEL_NO_REQUEST)
-            }
-
-            request.cancel()
-            sender.sendMessage(
-                COMMAND_TPCANCEL_SUCCEED
-                    .replace("<player>", request.destination.name)
+            argRequest.cancel()
+            sendMessage(
+                COMMAND_TPCANCEL_SUCCEED_OTHER
+                    .replace("<player>", player.name)
+                    .replace("<dest>", argRequest.destination.name)
             )
-            sender.playSound(TELEPORT_REQUEST_CANCELLED_SOUND)
+            sendMessage(
+                COMMAND_TPCANCEL_OTHER_NOTIFY
+                    .replace("<player>", argRequest.destination.name)
+            )
+            return
         }
+        val request = TeleportManager.getUnfinishedRequest(this) ?: return run {
+            sendMessage(COMMAND_TPCANCEL_NO_REQUEST)
+        }
+        request.cancel()
+        sendMessage(
+            COMMAND_TPCANCEL_SUCCEED
+                .replace("<player>", request.destination.name)
+        )
+        playSound(TELEPORT_REQUEST_CANCELLED_SOUND)
     }
 }

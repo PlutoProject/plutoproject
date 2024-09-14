@@ -1,11 +1,10 @@
 package ink.pmc.misc
 
 import ink.pmc.misc.api.sit.*
-import ink.pmc.utils.bedrock.isFloodgate
-import ink.pmc.utils.concurrent.submitAsync
-import ink.pmc.utils.entity.ensureThreadSafe
-import ink.pmc.utils.world.ensureThreadSafe
-import ink.pmc.utils.world.rawLocation
+import ink.pmc.framework.utils.concurrent.submitAsync
+import ink.pmc.framework.utils.entity.ensureThreadSafe
+import ink.pmc.framework.utils.world.ensureThreadSafe
+import ink.pmc.framework.utils.world.eraseAngle
 import kotlinx.coroutines.delay
 import org.bukkit.Chunk
 import org.bukkit.Location
@@ -50,7 +49,7 @@ val armorStandDataKey = NamespacedKey(plugin, "sit-passenger")
 fun runSitCheckTask() {
     submitAsync {
         while (!disabled) {
-            sitManager.sitters.forEach {
+            SitManager.sitters.forEach {
                 val player = it
 
                 player.ensureThreadSafe {
@@ -79,12 +78,7 @@ fun runSitCheckTask() {
 fun runActionBarOverrideTask() {
     submitAsync {
         while (!disabled) {
-            sitManager.sitters.forEach {
-                if (it.isFloodgate) {
-                    it.sendActionBar(STAND_UP_BE)
-                    return@forEach
-                }
-
+            SitManager.sitters.forEach {
                 it.sendActionBar(STAND_UP)
             }
             delay(5)
@@ -117,9 +111,9 @@ fun createArmorStand(locationToSit: Location): Entity {
 
     entity.setGravity(false)
     entity.isInvisible = true
-    // entity.setAI(false)
-    // entity.isCollidable = false
-    // entity.setCanTick(false)
+    entity.setAI(false)
+    entity.isCollidable = false
+    entity.setCanTick(false)
 
     return entity
 }
@@ -232,22 +226,22 @@ fun handleSitLocationBroke(event: Event) {
 
     when (event) {
         is BlockEvent -> {
-            locations.add(event.block.location.rawLocation)
+            locations.add(event.block.location.eraseAngle())
             when(event) {
-                is BlockPistonExtendEvent -> event.blocks.map { it.location.rawLocation }.toCollection(locations)
-                is BlockPistonRetractEvent -> event.blocks.map { it.location.rawLocation }.toCollection(locations)
-                is BlockExplodeEvent -> event.blockList().map { it.location.rawLocation }.toCollection(locations)
+                is BlockPistonExtendEvent -> event.blocks.map { it.location.eraseAngle() }.toCollection(locations)
+                is BlockPistonRetractEvent -> event.blocks.map { it.location.eraseAngle() }.toCollection(locations)
+                is BlockExplodeEvent -> event.blockList().map { it.location.eraseAngle() }.toCollection(locations)
             }
         }
 
         is EntityExplodeEvent -> {
-            event.blockList().map { it.location.rawLocation }.toCollection(locations)
+            event.blockList().map { it.location.eraseAngle() }.toCollection(locations)
         }
 
         is EntitySpawnEvent -> {
             if (event.entity.type == EntityType.FALLING_BLOCK) {
-                val location = event.location.rawLocation
-                if (location.rawLocation.isSitLocation) {
+                val location = event.location.eraseAngle()
+                if (location.eraseAngle().isSitLocation) {
                     locations.add(location)
                 }
             }

@@ -1,7 +1,7 @@
 package ink.pmc.essentials.listeners
 
 import ink.pmc.essentials.api.warp.WarpManager
-import ink.pmc.utils.concurrent.submitAsync
+import ink.pmc.framework.utils.concurrent.submitAsync
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
@@ -10,7 +10,6 @@ import org.koin.core.component.inject
 
 @Suppress("UNUSED", "UnusedReceiverParameter")
 object WarpListener : Listener, KoinComponent {
-
     private val manager by inject<WarpManager>()
 
     @EventHandler
@@ -21,5 +20,4 @@ object WarpListener : Listener, KoinComponent {
             manager.setPreferredSpawn(player, default)
         }
     }
-
 }

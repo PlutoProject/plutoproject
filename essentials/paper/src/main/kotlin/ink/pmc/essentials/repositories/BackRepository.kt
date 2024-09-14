@@ -4,8 +4,8 @@ import com.mongodb.client.model.Filters.eq
 import com.mongodb.client.model.ReplaceOptions
 import ink.pmc.essentials.config.EssentialsConfig
 import ink.pmc.essentials.dtos.BackDto
-import ink.pmc.provider.ProviderService
-import ink.pmc.utils.storage.entity.dto
+import ink.pmc.framework.provider.Provider
+import ink.pmc.framework.utils.storage.model
 import kotlinx.coroutines.flow.firstOrNull
 import org.bson.types.ObjectId
 import org.bukkit.Location
@@ -14,11 +14,10 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
 class BackRepository : KoinComponent {
-
-    private val conf by inject<EssentialsConfig>()
+    private val config by inject<EssentialsConfig>()
     private val options = ReplaceOptions().upsert(true)
     private val db =
-        ProviderService.defaultMongoDatabase.getCollection<BackDto>("essentials_${conf.serverName}_backs")
+        Provider.defaultMongoDatabase.getCollection<BackDto>("essentials_${config.serverName}_backs")
 
     suspend fun find(player: Player): Location? {
         return findDto(player)?.location?.location
@@ -38,12 +37,12 @@ class BackRepository : KoinComponent {
             objectId = ObjectId(),
             owner = player.uniqueId,
             recordedAt = System.currentTimeMillis(),
-            location = location.dto
+            location = location.model
         )
 
         if (existed != null) {
             dto.recordedAt = System.currentTimeMillis()
-            dto.location = location.dto
+            dto.location = location.model
         }
 
         db.replaceOne(eq("owner", player.uniqueId.toString()), dto, options)
@@ -52,5 +51,4 @@ class BackRepository : KoinComponent {
     suspend fun delete(player: Player) {
         db.deleteOne(eq("owner", player.uniqueId.toString()))
     }
-
 }

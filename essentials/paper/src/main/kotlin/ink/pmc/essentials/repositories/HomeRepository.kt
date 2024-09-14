@@ -5,7 +5,7 @@ import com.mongodb.client.model.Filters.and
 import com.mongodb.client.model.Filters.eq
 import ink.pmc.essentials.config.EssentialsConfig
 import ink.pmc.essentials.dtos.HomeDto
-import ink.pmc.provider.ProviderService
+import ink.pmc.framework.provider.Provider
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.toCollection
 import org.bukkit.OfflinePlayer
@@ -15,13 +15,12 @@ import java.time.Duration
 import java.util.*
 
 class HomeRepository : KoinComponent {
-
     private val conf by inject<EssentialsConfig>()
     private val cache = Caffeine.newBuilder()
         .expireAfterWrite(Duration.ofMinutes(10))
         .build<UUID, HomeDto>()
     private val db =
-        ProviderService.defaultMongoDatabase.getCollection<HomeDto>("essentials_${conf.serverName}_homes")
+        Provider.defaultMongoDatabase.getCollection<HomeDto>("essentials_${conf.serverName}_homes")
 
     suspend fun findById(id: UUID): HomeDto? {
         val cached = cache.getIfPresent(id) ?: run {
@@ -82,5 +81,4 @@ class HomeRepository : KoinComponent {
         require(hasById(dto.id)) { "HomeDto with id ${dto.id} not exist" }
         db.replaceOne(eq("id", dto.id.toString()), dto)
     }
-
 }

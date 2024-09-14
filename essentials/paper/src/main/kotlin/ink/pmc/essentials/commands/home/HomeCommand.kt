@@ -1,72 +1,38 @@
 package ink.pmc.essentials.commands.home
 
 import cafe.adriel.voyager.navigator.Navigator
-import ink.pmc.essentials.*
-import ink.pmc.essentials.api.Essentials
+import ink.pmc.essentials.COMMAND_HOME_SUCCEED
+import ink.pmc.essentials.VIEWER_PAGING_SOUND
+import ink.pmc.essentials.api.home.Home
+import ink.pmc.essentials.api.home.HomeManager
 import ink.pmc.essentials.screens.home.HomeViewerScreen
-import ink.pmc.interactive.api.Gui
-import ink.pmc.utils.annotation.Command
-import ink.pmc.utils.chat.NO_PERMISSON
-import ink.pmc.utils.chat.replace
-import ink.pmc.utils.command.checkPlayer
-import ink.pmc.utils.dsl.cloud.invoke
-import ink.pmc.utils.dsl.cloud.sender
-import ink.pmc.utils.player.uuidOrNull
-import kotlin.jvm.optionals.getOrNull
+import ink.pmc.framework.interactive.GuiManager
+import ink.pmc.framework.utils.chat.replace
+import ink.pmc.framework.utils.command.ensurePlayer
+import org.bukkit.command.CommandSender
+import org.incendo.cloud.annotations.Argument
+import org.incendo.cloud.annotations.Command
+import org.incendo.cloud.annotations.Permission
 
-@Command("home")
 @Suppress("UNUSED")
-fun Cm.home(aliases: Array<String>) {
-    this("home", *aliases) {
-        permission("essentials.home")
-        argument(homes("name").optional())
-        handler {
-            checkPlayer(sender.sender) {
-                val manager = Essentials.homeManager
-                val name = optional<String>("name").getOrNull()
-                val argUuid = name?.uuidOrNull
-
-                if (argUuid != null) {
-                    val uuidHome = manager.get(argUuid)
-                    if (uuidHome?.owner != this && !hasPermission("essentials.home.other")) {
-                        sendMessage(NO_PERMISSON)
-                        return@checkPlayer
-                    }
-                    if (!manager.has(argUuid)) {
-                        sendMessage(COMMAND_HOME_NOT_EXISTED_UUID)
-                        playSound(TELEPORT_FAILED_SOUND)
-                        return@checkPlayer
-                    }
-                    val home = manager.get(argUuid)
-                    home?.teleportSuspend(this)
-                    sendMessage(COMMAND_HOME_SUCCEED.replace("<name>", home!!.name))
-                    return@checkPlayer
+object HomeCommand {
+    @Command("home [home]")
+    @Permission("essentials.home")
+    suspend fun CommandSender.home(@Argument("home", parserName = "home") home: Home?) = ensurePlayer {
+        if (home == null) {
+            val preferred = HomeManager.getPreferredHome(this)
+            if (preferred == null) {
+                GuiManager.startInventory(this) {
+                    Navigator(HomeViewerScreen(this))
                 }
-
-                if (name == null) {
-                    val preferred = manager.getPreferredHome(this)
-                    if (preferred == null) {
-                        Gui.startInventory(this) {
-                            Navigator(HomeViewerScreen(this))
-                        }
-                        playSound(VIEWER_PAGING_SOUND)
-                        return@checkPlayer
-                    }
-                    preferred.teleportSuspend(this)
-                    sendMessage(COMMAND_HOME_SUCCEED.replace("<name>", preferred.name))
-                    return@checkPlayer
-                }
-
-                if (!manager.has(this, name)) {
-                    sendMessage(COMMAND_HOME_NOT_EXISTED.replace("<name>", name))
-                    playSound(TELEPORT_FAILED_SOUND)
-                    return@checkPlayer
-                }
-
-                val home = manager.get(this, name)
-                home?.teleportSuspend(this)
-                sendMessage(COMMAND_HOME_SUCCEED.replace("<name>", name))
+                playSound(VIEWER_PAGING_SOUND)
+                return
             }
+            preferred.teleportSuspend(this)
+            sendMessage(COMMAND_HOME_SUCCEED.replace("<name>", preferred.name))
+            return
         }
+        home.teleportSuspend(this)
+        sendMessage(COMMAND_HOME_SUCCEED.replace("<name>", home.name))
     }
 }

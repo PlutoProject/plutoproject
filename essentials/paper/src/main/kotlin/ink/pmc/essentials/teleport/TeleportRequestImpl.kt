@@ -4,7 +4,8 @@ import ink.pmc.essentials.*
 import ink.pmc.essentials.api.teleport.*
 import ink.pmc.essentials.api.teleport.TeleportDirection.COME
 import ink.pmc.essentials.api.teleport.TeleportDirection.GO
-import ink.pmc.utils.chat.replace
+import ink.pmc.framework.utils.chat.replace
+import ink.pmc.framework.utils.platform.paperThread
 import org.bukkit.entity.Player
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -17,21 +18,22 @@ class TeleportRequestImpl(
     override val destination: Player,
     override val direction: TeleportDirection
 ) : TeleportRequest, KoinComponent {
-
     private val manager by inject<TeleportManager>()
 
     override val id: UUID = UUID.randomUUID()
     override val createdAt: Instant = Instant.now()
-    override var status: RequestStatus = RequestStatus.WAITING
+    override var state: RequestState = RequestState.WAITING
     override val isFinished: Boolean
-        get() = status != RequestStatus.WAITING
+        get() = state != RequestState.WAITING
 
     override fun accept(prompt: Boolean) {
+        check(Thread.currentThread() != paperThread) { "Request operations can be only performed asynchronously" }
         if (isFinished) {
             return
         }
 
-        status = RequestStatus.ACCEPTED
+        if (!RequestStateChangeEvent(this, state, RequestState.ACCEPTED).callEvent()) return
+        state = RequestState.ACCEPTED
 
         when (direction) {
             GO -> manager.teleport(source, destination, prompt = prompt)
@@ -49,11 +51,13 @@ class TeleportRequestImpl(
     }
 
     override fun deny(prompt: Boolean) {
+        check(Thread.currentThread() != paperThread) { "Request operations can be only performed asynchronously" }
         if (isFinished) {
             return
         }
 
-        status = RequestStatus.DENYED
+        if (!RequestStateChangeEvent(this, state, RequestState.DENYED).callEvent()) return
+        state = RequestState.DENYED
 
         if (!prompt) {
             return
@@ -67,11 +71,13 @@ class TeleportRequestImpl(
     }
 
     override fun expire(prompt: Boolean) {
+        check(Thread.currentThread() != paperThread) { "Request operations can be only performed asynchronously" }
         if (isFinished) {
             return
         }
 
-        status = RequestStatus.EXPIRED
+        if (!RequestStateChangeEvent(this, state, RequestState.EXPIRED).callEvent()) return
+        state = RequestState.EXPIRED
 
         if (!prompt) {
             return
@@ -85,11 +91,13 @@ class TeleportRequestImpl(
     }
 
     override fun cancel(prompt: Boolean) {
+        check(Thread.currentThread() != paperThread) { "Request operations can be only performed asynchronously" }
         if (isFinished) {
             return
         }
 
-        status = RequestStatus.CANCELED
+        if (!RequestStateChangeEvent(this, state, RequestState.CANCELED).callEvent()) return
+        state = RequestState.CANCELED
 
         if (!prompt) {
             return
@@ -101,5 +109,4 @@ class TeleportRequestImpl(
         )
         destination.playSound(TELEPORT_REQUEST_CANCELLED_SOUND)
     }
-
 }

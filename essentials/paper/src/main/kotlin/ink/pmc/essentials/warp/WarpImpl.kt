@@ -8,9 +8,9 @@ import ink.pmc.essentials.api.warp.WarpType
 import ink.pmc.essentials.dtos.WarpDto
 import ink.pmc.essentials.home.loadFailed
 import ink.pmc.essentials.repositories.WarpRepository
-import ink.pmc.utils.concurrent.async
-import ink.pmc.utils.concurrent.submitAsync
-import ink.pmc.utils.storage.entity.dto
+import ink.pmc.framework.utils.concurrent.async
+import ink.pmc.framework.utils.concurrent.submitAsync
+import ink.pmc.framework.utils.storage.model
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.jetbrains.annotations.ApiStatus.Internal
@@ -20,7 +20,6 @@ import java.time.Instant
 import java.util.*
 
 class WarpImpl(private val dto: WarpDto) : Warp, KoinComponent {
-
     private val manager by inject<WarpManager>()
     private val repo by inject<WarpRepository>()
     private val teleport by inject<TeleportManager>()
@@ -49,7 +48,7 @@ class WarpImpl(private val dto: WarpDto) : Warp, KoinComponent {
 
     override suspend fun teleportSuspend(player: Player, prompt: Boolean) {
         async {
-            val options = teleport.getWorldTeleportOptions(location.world).copy(bypassSafeCheck = true)
+            val options = teleport.getWorldTeleportOptions(location.world).copy(disableSafeCheck = true)
             // 必须异步触发
             val event = WarpTeleportEvent(player, player.location, this@WarpImpl).apply { callEvent() }
             if (event.isCancelled) return@async
@@ -63,11 +62,10 @@ class WarpImpl(private val dto: WarpDto) : Warp, KoinComponent {
         alias = alias,
         type = type,
         createdAt = createdAt.toEpochMilli(),
-        location = location.dto,
+        location = location.model,
     )
 
     override suspend fun update() {
         repo.update(toDto())
     }
-
 }

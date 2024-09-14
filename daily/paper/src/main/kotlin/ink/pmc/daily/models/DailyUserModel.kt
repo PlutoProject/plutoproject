@@ -1,8 +1,8 @@
 package ink.pmc.daily.models
 
 import ink.pmc.daily.api.DailyUser
-import ink.pmc.utils.time.currentZoneId
-import ink.pmc.utils.time.toOffset
+import ink.pmc.framework.utils.time.currentZoneId
+import ink.pmc.framework.utils.time.toOffset
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 

@@ -1,22 +1,14 @@
 package ink.pmc.essentials.commands.afk
 
-import ink.pmc.essentials.Cm
-import ink.pmc.essentials.api.Essentials
-import ink.pmc.utils.annotation.Command
-import ink.pmc.utils.command.checkPlayer
-import ink.pmc.utils.dsl.cloud.invoke
-import ink.pmc.utils.dsl.cloud.sender
+import ink.pmc.essentials.api.afk.AfkManager
+import ink.pmc.framework.utils.command.ensurePlayer
+import org.bukkit.command.CommandSender
+import org.incendo.cloud.annotations.Command
 
-@Command("afk")
 @Suppress("UNUSED")
-fun Cm.afk(aliases: Array<String>) {
-    this("afk", *aliases) {
-        permission("essentials.afk")
-        handler {
-            checkPlayer(sender.sender) {
-                val manager = Essentials.afkManager
-                manager.toggle(this, true)
-            }
-        }
+object AfkCommand {
+    @Command("afk")
+    fun CommandSender.afk() = ensurePlayer {
+        AfkManager.toggle(this, true)
     }
 }

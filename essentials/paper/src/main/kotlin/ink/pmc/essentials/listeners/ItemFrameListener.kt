@@ -7,7 +7,7 @@ import ink.pmc.essentials.ITEMFRAME_PROTECT_BYPASS
 import ink.pmc.essentials.commands.isProtected
 import ink.pmc.essentials.commands.protector
 import ink.pmc.essentials.commands.protectorName
-import ink.pmc.utils.chat.replace
+import ink.pmc.framework.utils.chat.replace
 import io.papermc.paper.event.player.PlayerItemFrameChangeEvent
 import io.papermc.paper.event.player.PlayerItemFrameChangeEvent.ItemFrameChangeAction
 import net.kyori.adventure.inventory.Book
@@ -26,7 +26,6 @@ internal val Material.isOpenableBook: Boolean
 
 @Suppress("UNUSED", "UnusedReceiverParameter")
 object ItemFrameListener : Listener {
-
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     fun PlayerItemFrameChangeEvent.e() {
         val item = itemFrame.item
@@ -72,5 +71,4 @@ object ItemFrameListener : Listener {
         remover.sendActionBar(IF_PROTECTED_ACTION.replace("<player>", frame.protectorName))
         isCancelled = true
     }
-
 }

@@ -1,63 +1,52 @@
 package ink.pmc.essentials.commands.teleport
 
 import ink.pmc.essentials.*
-import ink.pmc.essentials.api.Essentials
+import ink.pmc.essentials.api.afk.AfkManager
 import ink.pmc.essentials.api.teleport.TeleportDirection
 import ink.pmc.essentials.api.teleport.TeleportDirection.COME
 import ink.pmc.essentials.api.teleport.TeleportDirection.GO
-import ink.pmc.utils.annotation.Command
-import ink.pmc.utils.chat.DURATION
-import ink.pmc.utils.chat.replace
-import ink.pmc.utils.command.checkPlayer
-import ink.pmc.utils.dsl.cloud.invoke
-import ink.pmc.utils.dsl.cloud.sender
+import ink.pmc.essentials.api.teleport.TeleportManager
+import ink.pmc.essentials.config.EssentialsConfig
+import ink.pmc.framework.utils.chat.DURATION
+import ink.pmc.framework.utils.chat.replace
+import ink.pmc.framework.utils.command.ensurePlayer
+import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
-import org.incendo.cloud.bukkit.parser.PlayerParser
+import org.incendo.cloud.annotations.Argument
+import org.incendo.cloud.annotations.Command
+import org.incendo.cloud.annotations.Permission
+import org.koin.java.KoinJavaComponent.getKoin
 
-@Command("tpa")
 @Suppress("UNUSED")
-fun Cm.tpa(aliases: Array<String>) {
-    this("tpa", *aliases) {
-        permission("essentials.tpa")
-        required("player", PlayerParser.playerParser())
-        handler {
-            checkPlayer(sender.sender) {
-                val target = get<Player>("player")
-                handleTpa(this, target, GO)
-            }
-        }
+object TpaCommand {
+    @Command("tpa <player>")
+    @Permission("essentials.tpa")
+    fun CommandSender.tpa(@Argument("player") player: Player) = ensurePlayer {
+        handleTpa(this, player, GO)
     }
-}
 
-@Command("tpahere")
-@Suppress("UNUSED")
-fun Cm.tpahere(aliases: Array<String>) {
-    this("tpahere", *aliases) {
-        permission("essentials.tpahere")
-        required("player", PlayerParser.playerParser())
-        handler {
-            checkPlayer(sender.sender) {
-                val target = get<Player>("player")
-                handleTpa(this, target, COME)
-            }
-        }
+    @Command("tpahere <player>")
+    @Permission("essentials.tpahere")
+    fun CommandSender.tpahere(@Argument("player") player: Player) = ensurePlayer {
+        handleTpa(this, player, COME)
     }
 }
 
 private fun handleTpa(source: Player, destination: Player, direction: TeleportDirection) {
-    val manager = Essentials.teleportManager
-
     if (destination == source) {
         source.sendMessage(COMMAND_TPA_FAILED_SELF)
         return
     }
 
-    if (manager.hasPendingRequest(destination)) {
+    if (TeleportManager.hasPendingRequest(destination)) {
         source.sendMessage(COMMAND_TPA_FAILED_TARGET_BUSY)
         return
     }
 
-    if (direction == GO && manager.isBlacklisted(destination.world) && !source.hasPermission(BYPASS_WORLD_BLACKLIST)) {
+    if (direction == GO && TeleportManager.isBlacklisted(destination.world) && !source.hasPermission(
+            BYPASS_WORLD_BLACKLIST
+        )
+    ) {
         source.sendMessage(
             COMMAND_TPA_FAILED_NOT_ALLOWED_GO
                 .replace("<player>", source.name)
@@ -66,16 +55,16 @@ private fun handleTpa(source: Player, destination: Player, direction: TeleportDi
         return
     }
 
-    if (direction == COME && manager.isBlacklisted(source.world) && !source.hasPermission(BYPASS_WORLD_BLACKLIST)) {
+    if (direction == COME && TeleportManager.isBlacklisted(source.world) && !source.hasPermission(BYPASS_WORLD_BLACKLIST)) {
         source.sendMessage(COMMAND_TPA_FAILED_NOT_ALLOWED_COME)
         source.playSound(TELEPORT_FAILED_SOUND)
         return
     }
 
-    val oldRequest = manager.getUnfinishedRequest(source)
+    val oldRequest = TeleportManager.getUnfinishedRequest(source)
 
     oldRequest?.cancel()
-    manager.createRequest(source, destination, direction)
+    TeleportManager.createRequest(source, destination, direction)
 
     val message = when (direction) {
         GO -> COMMAND_TPA_SUCCEED
@@ -85,9 +74,9 @@ private fun handleTpa(source: Player, destination: Player, direction: TeleportDi
     source.sendMessage(
         message
             .replace("<player>", destination.name)
-            .replace("<expire>", DURATION(manager.defaultRequestOptions.expireAfter))
+            .replace("<expire>", DURATION(TeleportManager.defaultRequestOptions.expireAfter))
     )
-    if (Essentials.isAfkEnabled() && Essentials.afkManager.isAfk(destination)) {
+    if (getKoin().get<EssentialsConfig>().afk.enabled && AfkManager.isAfk(destination)) {
         source.sendMessage(COMMAND_TPA_AFK)
     }
     oldRequest?.let {

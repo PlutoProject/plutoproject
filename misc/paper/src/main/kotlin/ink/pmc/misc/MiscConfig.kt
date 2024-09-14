@@ -12,6 +12,5 @@ object MiscConfig {
     var chat: Boolean = false
     var commandSuicide: Boolean = false
     var commandSit: Boolean = false
-    var commandHead: Boolean = false
 
 }

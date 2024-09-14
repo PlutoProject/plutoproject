@@ -10,23 +10,22 @@ import ink.pmc.advkt.component.text
 import ink.pmc.daily.*
 import ink.pmc.daily.api.Daily
 import ink.pmc.daily.api.DailyHistory
-import ink.pmc.interactive.api.LocalPlayer
-import ink.pmc.interactive.api.inventory.components.*
-import ink.pmc.interactive.api.inventory.components.canvases.Chest
-import ink.pmc.interactive.api.inventory.jetpack.Arrangement
-import ink.pmc.interactive.api.inventory.layout.Box
-import ink.pmc.interactive.api.inventory.layout.Column
-import ink.pmc.interactive.api.inventory.layout.Row
-import ink.pmc.interactive.api.inventory.modifiers.*
-import ink.pmc.interactive.api.inventory.modifiers.click.clickable
-import ink.pmc.utils.chat.UI_PAGING_SOUND
-import ink.pmc.utils.chat.UI_SUCCEED_SOUND
-import ink.pmc.utils.chat.replace
-import ink.pmc.utils.dsl.itemStack
-import ink.pmc.utils.time.*
-import ink.pmc.utils.visual.mochaFlamingo
-import ink.pmc.utils.visual.mochaSubtext0
-import ink.pmc.utils.visual.mochaText
+import ink.pmc.framework.interactive.inventory.*
+import ink.pmc.framework.interactive.LocalPlayer
+import ink.pmc.framework.interactive.inventory.components.canvases.Chest
+import ink.pmc.framework.interactive.inventory.jetpack.Arrangement
+import ink.pmc.framework.interactive.inventory.layout.Box
+import ink.pmc.framework.interactive.inventory.layout.Column
+import ink.pmc.framework.interactive.inventory.layout.Row
+import ink.pmc.framework.interactive.inventory.click.clickable
+import ink.pmc.framework.utils.chat.UI_PAGING_SOUND
+import ink.pmc.framework.utils.chat.UI_SUCCEED_SOUND
+import ink.pmc.framework.utils.chat.replace
+import ink.pmc.framework.utils.dsl.itemStack
+import ink.pmc.framework.utils.time.*
+import ink.pmc.framework.utils.visual.mochaFlamingo
+import ink.pmc.framework.utils.visual.mochaSubtext0
+import ink.pmc.framework.utils.visual.mochaText
 import kotlinx.coroutines.launch
 import net.kyori.adventure.text.Component
 import org.bukkit.Material
@@ -267,7 +266,7 @@ class DailyCalenderScreen : Screen {
                         whoClicked.playSound(UI_PAGING_SOUND)
                     }
 
-                    ClickType.MIDDLE -> {
+                    ClickType.SHIFT_LEFT -> {
                         yearMonth = now
                         whoClicked.playSound(UI_PAGING_SOUND)
                     }

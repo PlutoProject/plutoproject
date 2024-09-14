@@ -1,24 +1,18 @@
 package ink.pmc.menu.commands
 
 import cafe.adriel.voyager.navigator.Navigator
-import ink.pmc.interactive.api.Gui
+import ink.pmc.framework.interactive.GuiManager
+import ink.pmc.framework.utils.command.ensurePlayer
 import ink.pmc.menu.screens.YumeMainMenuScreen
-import ink.pmc.utils.PaperCm
-import ink.pmc.utils.annotation.Command
-import ink.pmc.utils.command.checkPlayer
-import ink.pmc.utils.dsl.cloud.invoke
-import ink.pmc.utils.dsl.cloud.sender
+import org.bukkit.command.CommandSender
+import org.incendo.cloud.annotations.Command
 
-@Command("menu")
 @Suppress("UNUSED")
-fun PaperCm.menu(aliases: Array<String>) {
-    this("menu", *aliases) {
-        handler {
-            checkPlayer(sender.sender) {
-                Gui.startInventory(this) {
-                    Navigator(YumeMainMenuScreen())
-                }
-            }
+object MenuCommand {
+    @Command("menu")
+    fun CommandSender.menu() = ensurePlayer {
+        GuiManager.startInventory(this) {
+            Navigator(YumeMainMenuScreen())
         }
     }
 }

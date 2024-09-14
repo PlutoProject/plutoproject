@@ -1,26 +1,23 @@
 package ink.pmc.essentials.commands
 
 import ink.pmc.essentials.*
-import ink.pmc.utils.annotation.Command
-import ink.pmc.utils.bedrock.isFloodgate
-import ink.pmc.utils.chat.replace
-import ink.pmc.utils.command.checkPlayer
-import ink.pmc.utils.concurrent.sync
-import ink.pmc.utils.dsl.cloud.invoke
-import ink.pmc.utils.dsl.cloud.sender
-import ink.pmc.utils.player.uuidOrNull
+import ink.pmc.framework.utils.chat.replace
+import ink.pmc.framework.utils.command.ensurePlayer
+import ink.pmc.framework.utils.concurrent.sync
+import ink.pmc.framework.utils.player.uuidOrNull
 import org.bukkit.Bukkit
 import org.bukkit.NamespacedKey
 import org.bukkit.OfflinePlayer
 import org.bukkit.attribute.Attribute
+import org.bukkit.command.CommandSender
 import org.bukkit.entity.ItemFrame
 import org.bukkit.entity.Player
 import org.bukkit.persistence.PersistentDataType
+import org.incendo.cloud.annotations.Command
+import org.incendo.cloud.annotations.Permission
 
 private enum class Operation {
-
     INVISIBLE, PROTECT
-
 }
 
 private val invKey = NamespacedKey("essentials", "itemframe_invsible")
@@ -58,26 +55,18 @@ private fun ItemFrame.setProtect(value: Boolean, player: Player) {
     persistentDataContainer.remove(protectorKey)
 }
 
-@Command("itemframe")
 @Suppress("UNUSED")
-fun Cm.itemframe(aliases: Array<String>) {
-    this("itemframe", *aliases) {
-        "invisible" {
-            permission("essentials.itemframe.invisible")
-            handler {
-                checkPlayer(sender.sender) {
-                    sync { handleOperation(Operation.INVISIBLE) }
-                }
-            }
-        }
-        "protect" {
-            permission("essentials.itemframe.protect")
-            handler {
-                checkPlayer(sender.sender) {
-                    sync { handleOperation(Operation.PROTECT) }
-                }
-            }
-        }
+object ItemFrameCommand {
+    @Command("itemframe|if invisible")
+    @Permission("essentials.itemframe.invisible")
+    suspend fun CommandSender.invisible() = ensurePlayer {
+        sync { handleOperation(Operation.INVISIBLE) }
+    }
+
+    @Command("itemframe|if protect")
+    @Permission("essentials.itemframe.protect")
+    suspend fun CommandSender.protect() = ensurePlayer {
+        sync { handleOperation(Operation.PROTECT) }
     }
 }
 
@@ -100,9 +89,6 @@ private fun Player.handleOperation(operation: Operation) {
         if (!inv) {
             inv = true
             player.sendMessage(COMMAND_IF_INV_ON_SUCCEED)
-            if (player.isFloodgate) {
-                player.sendMessage(COMMAND_IF_INV_BEDROCK)
-            }
             return
         }
         inv = false

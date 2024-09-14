@@ -1,10 +1,13 @@
 package ink.pmc.misc.api.sit
 
+import ink.pmc.framework.utils.inject.inlinedGet
 import org.bukkit.Location
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 
 interface SitManager {
+
+    companion object : SitManager by inlinedGet()
 
     val sitters: Set<Player>
     val seats: Set<Entity>

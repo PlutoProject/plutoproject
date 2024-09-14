@@ -1,9 +1,0 @@
-syntax = "proto3";
-package ink.pmc.exchange.proto.server2lobby;
-
-import "player/Player.proto";
-
-message ExchangeEnd {
-  string service_id = 1;
-  utils.proto.player.Player player = 2;
-}

@@ -3,23 +3,17 @@ package ink.pmc.essentials.back
 import ink.pmc.essentials.api.back.BackManager
 import ink.pmc.essentials.api.back.BackTeleportEvent
 import ink.pmc.essentials.api.teleport.TeleportManager
-import ink.pmc.essentials.config.EssentialsConfig
 import ink.pmc.essentials.repositories.BackRepository
-import ink.pmc.utils.concurrent.async
-import ink.pmc.utils.concurrent.submitAsync
+import ink.pmc.framework.utils.concurrent.async
+import ink.pmc.framework.utils.concurrent.submitAsync
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.get
 import org.koin.core.component.inject
 
 class BackManagerImpl : BackManager, KoinComponent {
-
-    private val conf by lazy { get<EssentialsConfig>().Back() }
     private val teleport by inject<TeleportManager>()
     private val repo by inject<BackRepository>()
-
-    override val maxLocations: Int = conf.maxLocations
 
     override suspend fun has(player: Player): Boolean {
         return repo.has(player)
@@ -42,7 +36,7 @@ class BackManagerImpl : BackManager, KoinComponent {
             val event = BackTeleportEvent(player, player.location, loc).apply { callEvent() }
             if (event.isCancelled) return@async
             set(player, player.location)
-            val opt = teleport.getWorldTeleportOptions(loc.world).copy(bypassSafeCheck = true)
+            val opt = teleport.getWorldTeleportOptions(loc.world).copy(disableSafeCheck = true)
             teleport.teleportSuspend(player, loc, opt)
         }
     }
@@ -59,5 +53,4 @@ class BackManagerImpl : BackManager, KoinComponent {
     override suspend fun remove(player: Player) {
         repo.delete(player)
     }
-
 }

@@ -3,7 +3,7 @@ package ink.pmc.misc.impl.elevator
 import ink.pmc.misc.api.elevator.ElevatorBuilder
 import ink.pmc.misc.api.elevator.ElevatorChain
 import ink.pmc.misc.api.elevator.ElevatorManager
-import ink.pmc.utils.world.rawLocation
+import ink.pmc.framework.utils.world.eraseAngle
 import org.bukkit.Location
 import org.bukkit.Material
 
@@ -19,7 +19,7 @@ class ElevatorManagerImpl : ElevatorManager {
     }
 
     override suspend fun getChainAt(loc: Location): ElevatorChain? {
-        val offsetLoc = loc.clone().subtract(0.0, 1.0, 0.0).rawLocation
+        val offsetLoc = loc.clone().subtract(0.0, 1.0, 0.0).eraseAngle()
 
         val type = offsetLoc.block.type
 

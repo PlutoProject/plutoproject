@@ -1,32 +1,18 @@
 package ink.pmc.misc.commands
 
+import ink.pmc.framework.utils.command.ensurePlayer
+import ink.pmc.framework.utils.concurrent.sync
 import ink.pmc.misc.SUICIDE
-import ink.pmc.misc.commandManager
-import ink.pmc.utils.chat.NON_PLAYER
-import ink.pmc.utils.command.PaperCommand
-import ink.pmc.utils.concurrent.sync
-import org.bukkit.entity.Player
-import org.incendo.cloud.kotlin.coroutines.extension.suspendingHandler
+import org.bukkit.command.CommandSender
+import org.incendo.cloud.annotations.Command
 
-object SuicideCommand : PaperCommand() {
-
-    private val suicide = commandManager.commandBuilder("suicide")
-        .suspendingHandler {
-            val sender = it.sender().sender
-
-            if (sender !is Player) {
-                sender.sendMessage(NON_PLAYER)
-                return@suspendingHandler
-            }
-
-            sync {
-                sender.health = 0.0
-                sender.sendMessage(SUICIDE)
-            }
+@Suppress("UNUSED")
+object SuicideCommand {
+    @Command("suicide")
+    suspend fun CommandSender.suicide() = ensurePlayer {
+        sync {
+            this@ensurePlayer.health = 0.0
+            this@ensurePlayer.sendMessage(SUICIDE)
         }
-
-    init {
-        command(suicide)
     }
-
 }

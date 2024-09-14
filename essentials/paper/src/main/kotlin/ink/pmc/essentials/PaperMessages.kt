@@ -4,13 +4,14 @@ import ink.pmc.advkt.component.*
 import ink.pmc.advkt.sound.key
 import ink.pmc.advkt.sound.sound
 import ink.pmc.advkt.title.*
-import ink.pmc.essentials.api.Essentials
 import ink.pmc.essentials.api.home.Home
+import ink.pmc.essentials.api.home.HomeManager
+import ink.pmc.essentials.api.teleport.random.RandomTeleportManager
 import ink.pmc.essentials.api.warp.Warp
-import ink.pmc.essentials.config.EssentialsConfig
-import ink.pmc.essentials.listeners.TeleportListener.getKoin
-import ink.pmc.utils.chat.DURATION
-import ink.pmc.utils.visual.*
+import ink.pmc.essentials.api.warp.WarpManager
+import ink.pmc.framework.utils.chat.DURATION
+import ink.pmc.framework.utils.visual.*
+import ink.pmc.framework.utils.world.aliasOrName
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.util.Ticks
@@ -61,10 +62,6 @@ val COMMAND_ALIGN_VIEW_SUCCEED = component {
 
 val COMMAND_HAT_SUCCEED = component {
     text("享受你的新帽子吧！") with mochaPink
-}
-
-val COMMAND_HAT_BEDROCK = component {
-    text("由于基岩版限制，戴在头部的非装备物品无法正常显示") with mochaSubtext0
 }
 
 val COMMAND_HAT_FAILED_EMPTY_HAND = component {
@@ -260,7 +257,7 @@ val TELEPORT_REQUEST_RECEIVED_SOUND = sound {
 }
 
 private val TELEPORT_REQUEST_OPERATION = component {
-    text("[× 取消]") with mochaYellow with showText { text("点击以取消") with mochaYellow } with runCommand("/essentials:tpcancel")
+    text("[× 取消]") with mochaYellow with showText { text("点击以取消") with mochaYellow } with runCommand("/plutoproject_essentials:tpcancel")
 }
 
 val COMMAND_TPA_SUCCEED = component {
@@ -372,8 +369,8 @@ val COMMAND_TPCANCEL_NO_REQUEST_OTHER = component {
 
 @Suppress("FunctionName")
 fun TELEPORT_OPERATION(id: UUID) = component {
-    text("[✔ 接受] ") with mochaGreen with showText { text("点击以接受") with mochaGreen } with runCommand("/essentials:tpaccept $id")
-    text("[❌ 拒绝] ") with mochaMaroon with showText { text("点击以拒绝") with mochaMaroon } with runCommand("/essentials:tpdeny $id")
+    text("[✔ 接受] ") with mochaGreen with showText { text("点击以接受") with mochaGreen } with runCommand("/plutoproject_essentials:tpaccept $id")
+    text("[❌ 拒绝] ") with mochaMaroon with showText { text("点击以拒绝") with mochaMaroon } with runCommand("/plutoproject_essentials:tpdeny $id")
 }
 
 val COMMAND_ETP_SUCCEED = component {
@@ -438,7 +435,7 @@ val COMMAND_RTP_NOT_ENABLED = component {
 
 val COMMAND_ESS_RTP
     get() = component {
-        val manager = Essentials.randomTeleportManager
+        val manager = RandomTeleportManager
 
         text("随机传送状态：") with mochaFlamingo
         newline()
@@ -481,11 +478,10 @@ val COMMAND_ESS_RTP_PERF_END = component {
 
 val COMMAND_SETHOME_FAILED_REACH_LIMIT
     get() = component {
-        val manager = Essentials.homeManager
         text("你当前设置的家数量已经到达上限，请删除一些再试") with mochaMaroon
         newline()
         text("当前家上限数量为 ") with mochaSubtext0
-        text("${manager.maxHomes} ") with mochaText
+        text("${HomeManager.maxHomes} ") with mochaText
         text("个") with mochaSubtext0
     }
 
@@ -505,9 +501,8 @@ val COMMAND_SETHOME_FAILED_NOT_VALID = component {
 
 val COMMAND_SETHOME_FAILED_LENGTN_LIMIT
     get() = component {
-        val manager = Essentials.homeManager
         text("家的名字最多只能使用 ") with mochaMaroon
-        text("${manager.nameLengthLimit} ") with mochaText
+        text("${HomeManager.nameLengthLimit} ") with mochaText
         text("个字符") with mochaMaroon
         newline()
         text("请缩短一些后再试") with mochaSubtext0
@@ -523,6 +518,41 @@ val COMMAND_HOME_NOT_EXISTED = component {
     text("名为 ") with mochaMaroon
     text("<name> ") with mochaText
     text("的家不存在") with mochaMaroon
+}
+
+val COMMAND_EDITHOME_ALREADY_PREFERRED = component {
+    text("名为 ") with mochaMaroon
+    text("<name> ") with mochaText
+    text("的家已经是首选了") with mochaMaroon
+}
+
+val COMMAND_EDITHOME_PREFER_SUCCEED = component {
+    text("已将名为 ") with mochaPink
+    text("<name> ") with mochaText
+    text("的家设为首选") with mochaPink
+}
+
+val COMMAND_EDITHOME_ALREADY_STARRED = component {
+    text("名为 ") with mochaMaroon
+    text("<name> ") with mochaText
+    text("的家已经收藏过了") with mochaMaroon
+}
+
+val COMMAND_EDITHOME_STAR_SUCCEED = component {
+    text("已将名为 ") with mochaPink
+    text("<name> ") with mochaText
+    text("的家收藏") with mochaPink
+}
+
+val COMMAND_EDITHOME_RENAME_SUCCEED = component {
+    text("已将该家更名为 ") with mochaPink
+    text("<new_name>") with mochaText
+}
+
+val COMMAND_EDITHOME_MOVE_SUCCEED = component {
+    text("已将家 ") with mochaPink
+    text("<name> ") with mochaText
+    text("迁移到你所在的位置") with mochaPink
 }
 
 val COMMAND_HOME_NOT_EXISTED_UUID = component {
@@ -545,6 +575,22 @@ val COMMAND_WARP_NOT_EXISTED = component {
     text("名为 ") with mochaMaroon
     text("<name> ") with mochaText
     text("的地标不存在") with mochaMaroon
+}
+
+val COMMAND_PREFERRED_SPAWN_WARP_IS_NOT_SPAWN = component {
+    text("名为 ") with mochaMaroon
+    text("<name> ") with mochaText
+    text("的地标不是一个出生点") with mochaMaroon
+}
+
+val COMMAND_PREFERRED_SPAWN_SUCCEED = component {
+    text("已将你的默认出生点设为 ") with mochaPink
+    text("<name>") with mochaText
+}
+
+val COMMAND_PREFERRED_SPAWN_FAILED_ALREADY = component {
+    text("你的默认出生点已是 ") with mochaMaroon
+    text("<name>") with mochaText
 }
 
 val COMMAND_WARP_FAILED_NOT_EXISTED_UUID = component {
@@ -578,9 +624,8 @@ val COMMAND_SETWARP_FAILED_NOT_VALID = component {
 
 val COMMAND_SETWARP_FAILED_LENGTN_LIMIT
     get() = component {
-        val manager = Essentials.warpManager
         text("地标的名字最多只能使用 ") with mochaMaroon
-        text("${manager.nameLengthLimit} ") with mochaText
+        text("${WarpManager.nameLengthLimit} ") with mochaText
         text("个字符") with mochaMaroon
         newline()
         text("请缩短一些后再试") with mochaSubtext0
@@ -636,10 +681,6 @@ val COMMAND_IF_FAILED_NO_FRAME = component {
 
 val COMMAND_IF_INV_ON_SUCCEED = component {
     text("已将你面前的展示框隐藏") with mochaPink
-}
-
-val COMMAND_IF_INV_BEDROCK = component {
-    text("由于基岩版限制，无法显示展示框的隐形效果") with mochaSubtext0
 }
 
 val COMMAND_IF_INV_OFF_SUCCEED = component {
@@ -706,14 +747,14 @@ val UI_VIEWER_EMPTY = component {
     text("这里空空如也") with mochaText without italic()
 }
 
-private val UI_HOME_EMPTY_PRMPT = component {
+private val UI_HOME_EMPTY_PROMPT = component {
     text("点击下方按钮或 ") with mochaSubtext0 without italic()
     text("/sethome ") with mochaLavender without italic()
     text("以留下你的足迹") with mochaSubtext0 without italic()
 }
 
 val UI_HOME_EMPTY_LORE = listOf(
-    UI_HOME_EMPTY_PRMPT
+    UI_HOME_EMPTY_PROMPT
 )
 
 val UI_HOME_EMPTY_LORE_OTHER = listOf(
@@ -746,13 +787,12 @@ private val UI_HOME_ITEM_LORE_LOC = component {
 
 @Suppress("FunctionName")
 fun UI_HOME_ITEM_LORE(home: Home): List<Component> {
-    val conf = getKoin().get<EssentialsConfig>().WorldAliases()
     val loc = home.location
     return mutableListOf<Component>().apply {
         add(component {
             raw(
                 UI_HOME_ITEM_LORE_LOC
-                    .replace("<world>", conf[loc.world])
+                    .replace("<world>", loc.world.aliasOrName)
                     .replace("<x>", "${loc.blockX}")
                     .replace("<y>", "${loc.blockY}")
                     .replace("<z>", "${loc.blockZ}")
@@ -811,13 +851,12 @@ private val UI_WARP_ITEM_LORE_LOC = component {
 
 @Suppress("FunctionName")
 fun UI_WARP_ITEM_LORE(warp: Warp): List<Component> {
-    val conf = getKoin().get<EssentialsConfig>().WorldAliases()
     val loc = warp.location
     return listOf(
         component {
             raw(
                 UI_WARP_ITEM_LORE_LOC
-                    .replace("<world>", conf[loc.world])
+                    .replace("<world>", loc.world.aliasOrName)
                     .replace("<x>", "${loc.blockX}")
                     .replace("<y>", "${loc.blockY}")
                     .replace("<z>", "${loc.blockZ}")
@@ -958,13 +997,12 @@ val UI_HOME_EDITOR_RENAME_EXIT_LORE = listOf(
 
 @Suppress("FunctionName")
 fun UI_HOME_EDITOR_RENAME_SAVE_EDITING(home: Home): List<Component> {
-    val conf = getKoin().get<EssentialsConfig>().WorldAliases()
     val loc = home.location
     return listOf(
         component {
             raw(
                 UI_HOME_ITEM_LORE_LOC
-                    .replace("<world>", conf[loc.world])
+                    .replace("<world>", loc.world.aliasOrName)
                     .replace("<x>", "${loc.blockX}")
                     .replace("<y>", "${loc.blockY}")
                     .replace("<z>", "${loc.blockZ}")
@@ -987,7 +1025,7 @@ val UI_HOME_EDITOR_RENAME_SAVE_TOO_LONG = listOf(
     Component.empty(),
     component {
         text("名称过长，最多使用 ") with mochaMaroon without italic()
-        text("${Essentials.homeManager.nameLengthLimit} ") with mochaText without italic()
+        text("${HomeManager.nameLengthLimit} ") with mochaText without italic()
         text("个字符") with mochaMaroon without italic()
     }
 )
@@ -1025,7 +1063,7 @@ val FORM_HOME_VIEWER_HEADER = component {
 
 val FORM_VIEWER_HEADER_EMPTY = component {
     raw(UI_VIEWER_EMPTY)
-    raw(UI_HOME_EMPTY_PRMPT)
+    raw(UI_HOME_EMPTY_PROMPT)
 }
 
 val FORM_VIEWER_PREVIOUS = component {
@@ -1038,11 +1076,10 @@ val FORM_VIEWER_NEXT = component {
 
 @Suppress("FunctionName")
 fun FORM_HOME_ITEM(home: Home) = component {
-    val conf = getKoin().get<EssentialsConfig>().WorldAliases()
     val loc = home.location
     text(
         "${home.name} (<world> <x>, <y>, <z>)"
-            .replace("<world>", conf[loc.world])
+            .replace("<world>", loc.world.aliasOrName)
             .replace("<x>", "${loc.blockX}")
             .replace("<y>", "${loc.blockY}")
             .replace("<z>", "${loc.blockZ}")
@@ -1065,12 +1102,11 @@ const val UI_HOME_CREATOR_INPUT = "输入名称..."
 
 @Suppress("FunctionName")
 fun UI_HOME_CREATOR_OUTPUT_LORE(loc: Location): List<Component> {
-    val conf = getKoin().get<EssentialsConfig>().WorldAliases()
     return listOf(
         component {
             raw(
                 UI_HOME_ITEM_LORE_LOC
-                    .replace("<world>", conf[loc.world])
+                    .replace("<world>", loc.world.aliasOrName)
                     .replace("<x>", "${loc.blockX}")
                     .replace("<y>", "${loc.blockY}")
                     .replace("<z>", "${loc.blockZ}")
@@ -1098,12 +1134,4 @@ val UI_HOME_VIEWER_CREATE_LORE = listOf(
 
 val COMMAND_SPAWN_FAILED_NOT_SET = component {
     text("服务器未设置出生点位置") with mochaMaroon
-}
-
-val COMMAND_ESS_HUSKHOMES_NOT_FOUND = component {
-    text("HuskHomes 未安装，无法启动迁移") with mochaMaroon
-}
-
-val COMMAND_ESS_HUSKHOMES_MIGRATE_DONE = component {
-    text("迁移完成！") with mochaPink
 }

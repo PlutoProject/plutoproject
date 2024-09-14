@@ -3,7 +3,7 @@ package ink.pmc.misc
 import ink.pmc.advkt.component.*
 import ink.pmc.advkt.sound.*
 import ink.pmc.advkt.title.*
-import ink.pmc.utils.visual.*
+import ink.pmc.framework.utils.visual.*
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.sound.Sound
 import net.kyori.adventure.title.Title
@@ -18,10 +18,6 @@ val STAND_UP = component {
     text("使用 ") with mochaPink
     keybind("key.sneak") with mochaText
     text(" 键起身") with mochaPink
-}
-
-val STAND_UP_BE = component {
-    text("按下潜行键起身") with mochaPink
 }
 
 val ILLEGAL_LOC = component {

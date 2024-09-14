@@ -3,8 +3,8 @@ package ink.pmc.protocolchecker
 import ink.pmc.advkt.component.component
 import ink.pmc.advkt.component.newline
 import ink.pmc.advkt.component.text
-import ink.pmc.utils.visual.mochaMaroon
-import ink.pmc.utils.visual.mochaText
+import ink.pmc.framework.utils.visual.mochaMaroon
+import ink.pmc.framework.utils.visual.mochaText
 
 val VERSION_RANGE
     get() = if (protocolRange.first == protocolRange.last && protocolRange.first.gameVersion.size == 1) {
@@ -21,3 +21,9 @@ val VERSION_NOT_SUPPORTED
         text(VERSION_RANGE) with mochaText
         text(" 进行游玩") with mochaMaroon
     }
+
+val SERVER_IS_FULL = component {
+    text("今日服务器似乎格外热闹...") with mochaMaroon
+    newline()
+    text("当前服务器已满，请稍后再来") with mochaMaroon
+}

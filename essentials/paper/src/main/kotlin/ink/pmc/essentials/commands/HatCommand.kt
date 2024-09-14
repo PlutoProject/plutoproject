@@ -1,66 +1,51 @@
 package ink.pmc.essentials.commands
 
-import ink.pmc.essentials.*
-import ink.pmc.utils.annotation.Command
-import ink.pmc.utils.bedrock.isFloodgate
-import ink.pmc.utils.chat.NO_PERMISSON
-import ink.pmc.utils.chat.replace
-import ink.pmc.utils.command.checkPlayer
-import ink.pmc.utils.concurrent.sync
-import ink.pmc.utils.dsl.cloud.invoke
-import ink.pmc.utils.dsl.cloud.sender
+import ink.pmc.essentials.COMMAND_HAT_FAILED_EMPTY_HAND
+import ink.pmc.essentials.COMMAND_HAT_FAILED_EXISTED_OTHER
+import ink.pmc.essentials.COMMAND_HAT_SUCCEED
+import ink.pmc.essentials.COMMAND_HAT_SUCCEED_OTHER
+import ink.pmc.framework.utils.chat.NO_PERMISSON
+import ink.pmc.framework.utils.chat.replace
+import ink.pmc.framework.utils.command.ensurePlayer
+import ink.pmc.framework.utils.command.selectPlayer
+import ink.pmc.framework.utils.concurrent.sync
 import org.bukkit.Material
+import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
-import org.incendo.cloud.bukkit.parser.PlayerParser
-import kotlin.jvm.optionals.getOrNull
+import org.incendo.cloud.annotations.Argument
+import org.incendo.cloud.annotations.Command
+import org.incendo.cloud.annotations.Permission
 
-@Command("hat")
 @Suppress("UNUSED")
-fun Cm.hat(aliases: Array<String>) {
-    this("hat", *aliases) {
-        permission("essentials.hat")
-        optional("player", PlayerParser.playerParser())
-        handler {
-            checkPlayer(sender.sender) {
-                val argPlayer = optional<Player>("player").getOrNull()
-
-                if (handItem.type == Material.AIR) {
-                    sendMessage(COMMAND_HAT_FAILED_EMPTY_HAND)
-                    return@checkPlayer
-                }
-
-                if (argPlayer != null) {
-                    if (!hasPermission("essentials.hat.other")) {
-                        sendMessage(NO_PERMISSON)
-                        return@checkPlayer
-                    }
-
-                    if (argPlayer.hatItem != null) {
-                        sendMessage(COMMAND_HAT_FAILED_EXISTED_OTHER)
-                        return@checkPlayer
-                    }
-
-                    argPlayer.hat(handItem)
-                    clearHand()
-                    sendMessage(COMMAND_HAT_SUCCEED_OTHER.replace("<player>", argPlayer.name))
-                    return@checkPlayer
-                }
-
-                val keepHatItem = hatItem
-                hat(handItem)
-                clearHand()
-
-                if (keepHatItem != null) {
-                    hand(keepHatItem)
-                }
-
-                sendMessage(COMMAND_HAT_SUCCEED)
-                if (isFloodgate) {
-                    sendMessage(COMMAND_HAT_BEDROCK)
-                }
-            }
+object HatCommand {
+    @Command("hat [player]")
+    @Permission("essentials.hat")
+    suspend fun CommandSender.hat(@Argument("player") player: Player?) = ensurePlayer {
+        val target = selectPlayer(this, player)!!
+        if (handItem.type == Material.AIR) {
+            sendMessage(COMMAND_HAT_FAILED_EMPTY_HAND)
+            return
         }
+        if (this != target) {
+            if (!hasPermission("essentials.hat.other")) {
+                sendMessage(NO_PERMISSON)
+                return
+            }
+            if (target.hatItem != null) {
+                sendMessage(COMMAND_HAT_FAILED_EXISTED_OTHER)
+                return
+            }
+            target.hat(handItem)
+            clearHand()
+            sendMessage(COMMAND_HAT_SUCCEED_OTHER.replace("<player>", target.name))
+            return
+        }
+        val keepHatItem = hatItem
+        hat(handItem)
+        clearHand()
+        if (keepHatItem != null) hand(keepHatItem)
+        sendMessage(COMMAND_HAT_SUCCEED)
     }
 }
 

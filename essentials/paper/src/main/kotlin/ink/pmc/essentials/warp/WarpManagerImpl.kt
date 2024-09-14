@@ -6,10 +6,11 @@ import ink.pmc.essentials.api.warp.WarpType
 import ink.pmc.essentials.config.EssentialsConfig
 import ink.pmc.essentials.dtos.WarpDto
 import ink.pmc.essentials.repositories.WarpRepository
-import ink.pmc.member.api.MemberService
-import ink.pmc.utils.concurrent.submitAsync
-import ink.pmc.utils.player.uuidOrNull
-import ink.pmc.utils.storage.entity.dto
+import ink.pmc.framework.playerdb.PlayerDb
+import ink.pmc.framework.utils.concurrent.submitAsync
+import ink.pmc.framework.utils.platform.paper
+import ink.pmc.framework.utils.player.uuidOrNull
+import ink.pmc.framework.utils.storage.model
 import org.bson.types.ObjectId
 import org.bukkit.Location
 import org.bukkit.OfflinePlayer
@@ -23,12 +24,13 @@ import java.util.concurrent.ConcurrentHashMap
 private const val PREFERRED_SPAWN_KEY = "essentials.warp.preferred_spawn"
 
 class WarpManagerImpl : WarpManager, KoinComponent {
-
-    private val conf by lazy { get<EssentialsConfig>().Warp() }
+    private val config by lazy { get<EssentialsConfig>().warp }
     private val repo by inject<WarpRepository>()
 
-    override val blacklistedWorlds: Collection<World> = conf.blacklistedWorlds
-    override val nameLengthLimit: Int = conf.nameLengthLimit
+    override val blacklistedWorlds: Collection<World> = config.blacklistedWorlds
+        .filter { name -> paper.worlds.any { it.name == name } }
+        .map { paper.getWorld(it)!! }
+    override val nameLengthLimit: Int = config.nameLengthLimit
     override val loadedWarps: MutableMap<UUID, Warp> = ConcurrentHashMap()
 
     init {
@@ -121,19 +123,17 @@ class WarpManagerImpl : WarpManager, KoinComponent {
     }
 
     override suspend fun getPreferredSpawn(player: OfflinePlayer): Warp? {
-        val member = MemberService.lookup(player.uniqueId) ?: error("Cannot fetch Member instance for ${player.name}")
-        val dataContainer = member.dataContainer
-        val spawnId = dataContainer.getString(PREFERRED_SPAWN_KEY)?.uuidOrNull ?: return getDefaultSpawn()
+        val database = PlayerDb.getOrCreate(player.uniqueId)
+        val spawnId = database.getString(PREFERRED_SPAWN_KEY)?.uuidOrNull ?: return getDefaultSpawn()
         val spawn = get(spawnId) ?: return null
         return if (spawn.isSpawn) spawn else null
     }
 
     override suspend fun setPreferredSpawn(player: OfflinePlayer, spawn: Warp) {
         require(spawn.isSpawn) { "Warp ${spawn.name} isn't a spawn" }
-        val member = MemberService.lookup(player.uniqueId) ?: error("Cannot fetch Member instance for ${player.name}")
-        val dataContainer = member.dataContainer
-        dataContainer[PREFERRED_SPAWN_KEY] = spawn.id.toString()
-        member.save()
+        val database = PlayerDb.getOrCreate(player.uniqueId)
+        database[PREFERRED_SPAWN_KEY] = spawn.id.toString()
+        database.update()
     }
 
     override suspend fun list(): Collection<Warp> {
@@ -165,7 +165,7 @@ class WarpManagerImpl : WarpManager, KoinComponent {
             alias,
             WarpType.WARP,
             System.currentTimeMillis(),
-            location.dto,
+            location.model,
         )
         val warp = WarpImpl(dto)
         loadedWarps[dto.id] = warp
@@ -190,5 +190,4 @@ class WarpManagerImpl : WarpManager, KoinComponent {
     override fun isBlacklisted(world: World): Boolean {
         return blacklistedWorlds.contains(world)
     }
-
 }

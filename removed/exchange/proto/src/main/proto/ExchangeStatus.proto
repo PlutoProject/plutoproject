@@ -1,8 +1,0 @@
-syntax = "proto3";
-package ink.pmc.exchange.proto;
-
-enum ExchangeStatus {
-  IN_EXCHANGE = 0;
-  NOT_IN_EXCHANGE = 1;
-  OFFLINE = 2;
-}

@@ -4,26 +4,26 @@ import com.electronwill.nightconfig.core.file.FileConfig
 import com.github.shynixn.mccoroutine.bukkit.SuspendingJavaPlugin
 import com.mongodb.kotlin.client.coroutine.MongoCollection
 import ink.pmc.daily.api.Daily
+import ink.pmc.daily.commands.CheckInCommand
+import ink.pmc.daily.commands.DailyCommand
 import ink.pmc.daily.listeners.DailyListener
 import ink.pmc.daily.repositories.DailyHistoryRepository
 import ink.pmc.daily.repositories.DailyUserRepository
-import ink.pmc.provider.ProviderService
-import ink.pmc.utils.PaperCm
-import ink.pmc.utils.command.registerCommands
-import ink.pmc.utils.inject.startKoinIfNotPresent
-import ink.pmc.utils.storage.saveResourceIfNotExisted
+import ink.pmc.framework.provider.Provider
+import ink.pmc.framework.utils.command.annotationParser
+import ink.pmc.framework.utils.command.commandManager
+import ink.pmc.framework.utils.inject.startKoinIfNotPresent
+import ink.pmc.framework.utils.storage.saveResourceIfNotExisted
 import net.milkbowl.vault.economy.Economy
-import org.incendo.cloud.execution.ExecutionCoordinator
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.dsl.module
 import java.io.File
 
-internal const val COMMANDS_PACKAGE = "ink.pmc.daily.commands"
 internal const val COLLECTION_PREFIX = "daily_"
 
 private inline fun <reified T : Any> getCollection(name: String): MongoCollection<T> {
-    return ProviderService.defaultMongoDatabase.getCollection("${COLLECTION_PREFIX}$name")
+    return Provider.defaultMongoDatabase.getCollection("${COLLECTION_PREFIX}$name")
 }
 
 private val bukkitModule = module {
@@ -35,7 +35,6 @@ private val bukkitModule = module {
 
 internal lateinit var plugin: PaperPlugin
 internal lateinit var fileConfig: FileConfig
-internal lateinit var commandManager: PaperCm
 internal lateinit var economy: Economy
 
 @Suppress("UNUSED")
@@ -51,10 +50,10 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
             modules(bukkitModule)
         }
 
-        commandManager = PaperCm.builder()
-            .executionCoordinator(ExecutionCoordinator.asyncCoordinator())
-            .buildOnEnable(this)
-            .also { it.registerCommands(COMMANDS_PACKAGE) }
+        commandManager().annotationParser().apply {
+            parse(CheckInCommand)
+            parse(DailyCommand)
+        }
 
         server.pluginManager.registerEvents(DailyListener, this)
         server.servicesManager.getRegistration(Economy::class.java)?.provider?.also { economy = it }

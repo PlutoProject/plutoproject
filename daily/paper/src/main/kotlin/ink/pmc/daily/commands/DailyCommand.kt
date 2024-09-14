@@ -4,24 +4,19 @@ import ink.pmc.advkt.component.text
 import ink.pmc.advkt.send
 import ink.pmc.daily.PERMISSION_CMD_DAILY
 import ink.pmc.daily.plugin
-import ink.pmc.utils.PaperCm
-import ink.pmc.utils.annotation.Command
-import ink.pmc.utils.dsl.cloud.invoke
-import ink.pmc.utils.dsl.cloud.sender
-import ink.pmc.utils.visual.mochaPink
+import ink.pmc.framework.utils.visual.mochaPink
+import org.bukkit.command.CommandSender
+import org.incendo.cloud.annotations.Command
+import org.incendo.cloud.annotations.Permission
 
-@Command("daily")
 @Suppress("UNUSED")
-fun PaperCm.daily(aliases: Array<String>) {
-    this("daily", *aliases) {
-        "reload" {
-            permission(PERMISSION_CMD_DAILY)
-            handler {
-                plugin.reload()
-                sender.sender.send {
-                    text("已重载配置文件") with mochaPink
-                }
-            }
+object DailyCommand {
+    @Command("daily reload")
+    @Permission(PERMISSION_CMD_DAILY)
+    fun CommandSender.reload() {
+        plugin.reload()
+        send {
+            text("已重载配置文件") with mochaPink
         }
     }
 }
