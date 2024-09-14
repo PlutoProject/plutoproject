@@ -38,7 +38,7 @@ class VelocityPlugin @Inject constructor(suspendingPluginContainer: SuspendingPl
             server,
             ExecutionCoordinator.asyncCoordinator(),
             SenderMapper.identity()
-        )
+        ).apply { whitelist() }
         proxy.eventManager.registerSuspend(this, WhitelistListener)
         startKoinIfNotPresent {
             modules(velocityModule)
