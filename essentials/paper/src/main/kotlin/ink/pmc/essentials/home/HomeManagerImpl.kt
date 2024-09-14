@@ -125,6 +125,10 @@ class HomeManagerImpl : HomeManager, KoinComponent {
         return repo.hasByName(player, name)
     }
 
+    override suspend fun hasHome(player: OfflinePlayer): Boolean {
+        return list(player).isNotEmpty()
+    }
+
     override suspend fun create(owner: OfflinePlayer, name: String, location: Location): Home {
         require(!has(owner, name)) { "Home of player ${owner.name} named $name already existed" }
         require(name.isValidIdentifier && name.length <= nameLengthLimit) { "Name $name doesn't match the requirement" }

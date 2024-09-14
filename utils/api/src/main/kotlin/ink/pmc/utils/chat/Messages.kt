@@ -59,10 +59,10 @@ val UI_BACK = component {
     text("返回") with mochaYellow without italic()
 }
 
-val PLAYER_HAVENT_PLAYED_BEFORE = component {
+val PLAYER_HAS_NO_HOME = component {
     text("玩家 ") with mochaMaroon
     text("<player> ") with mochaText
-    text("没有进入过游戏") with mochaMaroon
+    text("没有设置家") with mochaMaroon
 }
 
 val MESSAGE_SOUND = sound {
