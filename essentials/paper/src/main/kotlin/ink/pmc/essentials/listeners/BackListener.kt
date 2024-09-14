@@ -19,35 +19,35 @@ object BackListener : Listener, KoinComponent {
 
     private val manager by inject<BackManager>()
 
-    @EventHandler(priority = EventPriority.MONITOR)
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     fun HomeTeleportEvent.e() {
         submitAsync {
             manager.set(player, from)
         }
     }
 
-    @EventHandler(priority = EventPriority.MONITOR)
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     fun WarpTeleportEvent.e() {
         submitAsync {
             manager.set(player, from)
         }
     }
 
-    @EventHandler(priority = EventPriority.MONITOR)
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     fun RandomTeleportEvent.e() {
         submitAsync {
             manager.set(player, from)
         }
     }
 
-    @EventHandler(priority = EventPriority.MONITOR)
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     fun PlayerDeathEvent.e() {
         submitAsync {
             manager.set(player, player.location)
         }
     }
 
-    @EventHandler(priority = EventPriority.MONITOR)
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     fun RequestStateChangeEvent.e() {
         if (after != RequestState.ACCEPTED) return
         submitAsync {
