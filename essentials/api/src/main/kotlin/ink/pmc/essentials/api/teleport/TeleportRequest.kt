@@ -13,7 +13,7 @@ interface TeleportRequest {
     val destination: Player
     val direction: TeleportDirection
     val createdAt: Instant
-    val status: RequestStatus
+    val state: RequestState
     val isFinished: Boolean
 
     fun accept(prompt: Boolean = true)

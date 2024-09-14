@@ -1,7 +1,7 @@
 package ink.pmc.essentials.api.teleport
 
 @Suppress("UNUSED")
-enum class RequestStatus {
+enum class RequestState {
 
     ACCEPTED, DENYED, WAITING, EXPIRED, CANCELED
 

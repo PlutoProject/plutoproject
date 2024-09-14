@@ -22,16 +22,17 @@ class TeleportRequestImpl(
 
     override val id: UUID = UUID.randomUUID()
     override val createdAt: Instant = Instant.now()
-    override var status: RequestStatus = RequestStatus.WAITING
+    override var state: RequestState = RequestState.WAITING
     override val isFinished: Boolean
-        get() = status != RequestStatus.WAITING
+        get() = state != RequestState.WAITING
 
     override fun accept(prompt: Boolean) {
         if (isFinished) {
             return
         }
 
-        status = RequestStatus.ACCEPTED
+        if (!RequestStateChangeEvent(this, state, RequestState.ACCEPTED).callEvent()) return
+        state = RequestState.ACCEPTED
 
         when (direction) {
             GO -> manager.teleport(source, destination, prompt = prompt)
@@ -53,7 +54,8 @@ class TeleportRequestImpl(
             return
         }
 
-        status = RequestStatus.DENYED
+        if (!RequestStateChangeEvent(this, state, RequestState.DENYED).callEvent()) return
+        state = RequestState.DENYED
 
         if (!prompt) {
             return
@@ -71,7 +73,8 @@ class TeleportRequestImpl(
             return
         }
 
-        status = RequestStatus.EXPIRED
+        if (!RequestStateChangeEvent(this, state, RequestState.EXPIRED).callEvent()) return
+        state = RequestState.EXPIRED
 
         if (!prompt) {
             return
@@ -89,7 +92,8 @@ class TeleportRequestImpl(
             return
         }
 
-        status = RequestStatus.CANCELED
+        if (!RequestStateChangeEvent(this, state, RequestState.CANCELED).callEvent()) return
+        state = RequestState.CANCELED
 
         if (!prompt) {
             return
