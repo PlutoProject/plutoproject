@@ -11,6 +11,8 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import org.bukkit.event.entity.PlayerDeathEvent
+import org.bukkit.event.player.PlayerTeleportEvent
+import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -52,6 +54,23 @@ object BackListener : Listener, KoinComponent {
         if (after != RequestState.ACCEPTED) return
         submitAsync {
             val player = request.source
+            manager.set(player, player.location)
+        }
+    }
+
+    private val validTeleportCauses = arrayOf(
+        TeleportCause.COMMAND,
+        TeleportCause.END_GATEWAY,
+        TeleportCause.END_PORTAL,
+        TeleportCause.NETHER_PORTAL,
+        TeleportCause.SPECTATE,
+        TeleportCause.UNKNOWN,
+    )
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    fun PlayerTeleportEvent.e() {
+        if (!validTeleportCauses.contains(cause)) return
+        submitAsync {
             manager.set(player, player.location)
         }
     }
