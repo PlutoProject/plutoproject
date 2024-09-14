@@ -1,10 +1,12 @@
 package ink.pmc.whitelist
 
 import com.velocitypowered.api.event.Subscribe
+import com.velocitypowered.api.event.connection.PostLoginEvent
 import com.velocitypowered.api.event.connection.PreLoginEvent
 import ink.pmc.advkt.component.component
 import ink.pmc.advkt.component.newline
 import ink.pmc.advkt.component.text
+import ink.pmc.utils.concurrent.submitAsync
 import ink.pmc.utils.visual.mochaMaroon
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -24,6 +26,16 @@ object WhitelistListener : KoinComponent {
             newline()
             text("若已通过审核，请联系当日的审核员添加") with mochaMaroon
         })
+    }
+
+    @Subscribe
+    fun PostLoginEvent.e() {
+        submitAsync {
+            val model = repo.findById(player.uniqueId) ?: return@submitAsync
+            if (model.rawName == player.username) return@submitAsync
+            model.rawName = player.username
+            repo.saveOrUpdate(model)
+        }
     }
 
 }
