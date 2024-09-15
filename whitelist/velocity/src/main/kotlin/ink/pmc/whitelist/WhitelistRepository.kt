@@ -1,5 +1,6 @@
 package ink.pmc.whitelist
 
+import com.mongodb.client.model.Filters.and
 import com.mongodb.client.model.Filters.eq
 import com.mongodb.client.model.ReplaceOptions
 import com.mongodb.kotlin.client.coroutine.MongoCollection
@@ -19,6 +20,10 @@ class WhitelistRepository(private val collection: MongoCollection<WhitelistModel
 
     suspend fun findByName(name: String): WhitelistModel? {
         return collection.find(eq("name", name.lowercase())).firstOrNull()
+    }
+
+    suspend fun findByNameAndFetcher(name: String, fetcher: ProfileFetcher): WhitelistModel? {
+        return collection.find(and(eq("name", name.lowercase()), eq("fetcher", fetcher.id))).firstOrNull()
     }
 
     suspend fun findByPlayer(player: Player): WhitelistModel? {

@@ -17,6 +17,5 @@ data class WhitelistModel(
     val addedAt: Long,
     val fetcher: String
 ) {
-    val name: String
-        get() = rawName.lowercase()
+    val name: String = rawName.lowercase()
 }

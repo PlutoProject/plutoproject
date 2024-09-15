@@ -1,5 +1,6 @@
 package ink.pmc.whitelist
 
+import com.velocitypowered.api.event.PostOrder
 import com.velocitypowered.api.event.Subscribe
 import com.velocitypowered.api.event.connection.PostLoginEvent
 import com.velocitypowered.api.event.connection.PreLoginEvent
@@ -16,7 +17,8 @@ object WhitelistListener : KoinComponent {
 
     private val repo by inject<WhitelistRepository>()
 
-    @Subscribe
+    // 最后执行，等待 Floodgate 或其他插件的 Profile 替换逻辑
+    @Subscribe(order = PostOrder.LAST)
     suspend fun PreLoginEvent.e() {
         uniqueId?.let {
             if (repo.hasById(it)) return
