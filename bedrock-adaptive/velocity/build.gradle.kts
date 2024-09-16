@@ -3,7 +3,6 @@ dependencies {
 }
 
 velocityPluginJson {
-    dependency("member")
     dependency("protocolize")
     dependency("geyser")
     dependency("floodgate")
