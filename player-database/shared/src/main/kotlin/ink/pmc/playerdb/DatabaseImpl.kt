@@ -1,43 +1,31 @@
-package ink.pmc.member.data
+package ink.pmc.playerdb
 
-import ink.pmc.member.api.Member
-import ink.pmc.member.serverLogger
-import ink.pmc.member.storage.DataContainerBean
+import ink.pmc.playerdb.api.Database
+import ink.pmc.utils.player.uuid
 import org.bson.*
-import java.time.Instant
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
+import org.koin.core.qualifier.named
+import java.util.*
 import java.util.logging.Level
+import java.util.logging.Logger
 
+/*
+* 基于 Bson 的玩家数据库。
+* 从老的 Member 系统代码分离而得。
+* 那时的代码写的有点垃圾，将就用吧（
+* */
 @Suppress("UNCHECKED_CAST")
-class DataContainerImpl(override val owner: Member, override var bean: DataContainerBean) :
-    AbstractDataContainer() {
+class DatabaseImpl(model: DatabaseModel) : Database, KoinComponent {
 
-    override val id: Long = bean.id
-    override val createdAt: Instant = Instant.ofEpochMilli(bean.createdAt)
-    override var lastModifiedAt: Instant = Instant.ofEpochMilli(bean.lastModifiedAt)
-    override var contents: BsonDocument = bean.contents.clone() // 复制原 Document，不要引用 bean 里的 Document
+    private val logger by inject<Logger>(named("player_database_logger"))
+    private val repo by inject<DatabaseRepository>()
 
-    override fun reload(storage: DataContainerBean) {
-        lastModifiedAt = Instant.ofEpochMilli(storage.lastModifiedAt)
-        contents = storage.contents.clone()
-        this.bean = storage
-    }
-
-    override fun createBean(): DataContainerBean {
-        return bean.copy(
-            id = this.id,
-            owner = this.owner.uid,
-            createdAt = this.createdAt.toEpochMilli(),
-            lastModifiedAt = this.lastModifiedAt.toEpochMilli(),
-            contents = this.contents.clone(),
-            new = false
-        )
-    }
+    override val id: UUID = model.id.uuid
+    override val contents: BsonDocument = model.contents.clone()
 
     private fun toBson(obj: Any?): BsonValue {
-        if (obj == null) {
-            return BsonNull()
-        }
-
+        if (obj == null) return BsonNull()
         return when (obj) {
             is Byte -> BsonInt32(obj.toInt())
             is Short -> BsonInt32(obj.toInt())
@@ -52,17 +40,12 @@ class DataContainerImpl(override val owner: Member, override var bean: DataConta
             is Map<*, *> -> BsonDocument(obj.entries.filter { it.key is String && it.value != null }
                 .map { BsonElement(it.key as String, toBson(it.value!!)) })
 
-            else -> {
-                throw IllegalStateException("Type not supported: ${obj::class.java.name}")
-            }
+            else -> throw IllegalStateException("Type not supported: ${obj::class.java.name}")
         }
     }
 
     private fun fromBson(value: BsonValue?): Any? {
-        if (value == null) {
-            return null
-        }
-
+        if (value == null) return null
         return when (value) {
             is BsonInt32 -> value.value
             is BsonInt64 -> value.value
@@ -72,9 +55,7 @@ class DataContainerImpl(override val owner: Member, override var bean: DataConta
             is BsonNull -> return null
             is BsonArray -> return value.values.map { fromBson(it) }
             is BsonDocument -> return value.entries.associate { it.key to fromBson(it.value) }
-            else -> {
-                throw IllegalStateException("Type not supported: ${value::class.java.name}")
-            }
+            else -> throw IllegalStateException("Type not supported: ${value::class.java.name}")
         }
     }
 
@@ -88,13 +69,12 @@ class DataContainerImpl(override val owner: Member, override var bean: DataConta
 
     private fun throwIfIllegalNestedKey(key: String) {
         if (!isLegalNestedKey(key)) {
-            throw IllegalStateException("Illegal key: $key")
+            throw IllegalStateException("Illegal nested key: $key")
         }
     }
 
     private fun setNested(key: String, value: BsonValue) {
         throwIfIllegalNestedKey(key)
-
         val keys = key.split('.')
         val range = keys.indices
         val last = range.last
@@ -107,7 +87,6 @@ class DataContainerImpl(override val owner: Member, override var bean: DataConta
             }
 
             val next = curr.computeIfAbsent(keys[i]) { BsonDocument() }
-
             if (next !is BsonDocument) {
                 throw IllegalStateException("Key ${keys.subList(0, i + 1).joinToString(".")} isn't BsonDocument")
             }
@@ -118,23 +97,17 @@ class DataContainerImpl(override val owner: Member, override var bean: DataConta
 
     private fun getNested(key: String): BsonValue? {
         throwIfIllegalNestedKey(key)
-
         val keys = key.split('.')
         val range = keys.indices
         val last = range.last
         var curr = contents
 
         for (i in range) {
-            if (i == last) {
-                return curr[keys[i]]
-            }
-
+            if (i == last) return curr[keys[i]]
             val next = curr[keys[i]] ?: return null
-
             if (next !is BsonDocument) {
                 throw IllegalStateException("Key ${keys.subList(0, i + 1).joinToString(".")} isn't BsonDocument")
             }
-
             curr = next
         }
 
@@ -144,7 +117,6 @@ class DataContainerImpl(override val owner: Member, override var bean: DataConta
 
     private fun removeNested(key: String) {
         throwIfIllegalNestedKey(key)
-
         val keys = key.split('.')
         val range = keys.indices
         val last = range.last
@@ -157,7 +129,6 @@ class DataContainerImpl(override val owner: Member, override var bean: DataConta
             }
 
             val next = curr[keys[i]] ?: return
-
             if (next !is BsonDocument) {
                 throw IllegalStateException("Key ${keys.subList(0, i + 1).joinToString(".")}} isn't BsonDocument")
             }
@@ -174,25 +145,24 @@ class DataContainerImpl(override val owner: Member, override var bean: DataConta
         try {
             setBson(key, toBson(value))
         } catch (e: Exception) {
-            serverLogger.log(
+            logger.log(
                 Level.SEVERE,
-                "Failed to set a value in UID ${owner.uid}'s data container (key=$key, value=$value)",
+                "Failed to set a value in $id's database (key=$key, value=$value)",
                 e
             )
         }
     }
 
     override fun get(key: String): Any? {
-        try {
-            return fromBson(getBson(key))
+        return try {
+            fromBson(getBson(key))
         } catch (e: Exception) {
-            serverLogger.log(
+            logger.log(
                 Level.SEVERE,
-                "Failed to get a value in UID ${owner.uid}'s data container (key=$key)",
+                "Failed to get a value in $id's database (key=$key)",
                 e
             )
-
-            return null
+            null
         }
     }
 
@@ -205,38 +175,33 @@ class DataContainerImpl(override val owner: Member, override var bean: DataConta
 
     override fun setBson(key: String, value: BsonValue) {
         try {
-            lastModifiedAt = Instant.now()
-
             if (isNestedKey(key)) {
                 setNested(key, value)
                 return
             }
-
             contents[key] = value
         } catch (e: Exception) {
-            serverLogger.log(
+            logger.log(
                 Level.SEVERE,
-                "Failed to set a value in UID ${owner.uid}'s data container (key=$key, value=$value)",
+                "Failed to set a value in $id's database (key=$key, value=$value)",
                 e
             )
         }
     }
 
     override fun getBson(key: String): BsonValue? {
-        try {
+        return try {
             if (isNestedKey(key)) {
                 return getNested(key)
             }
-
-            return contents[key]
+            contents[key]
         } catch (e: Exception) {
-            serverLogger.log(
+            logger.log(
                 Level.SEVERE,
-                "Failed to get a value in UID ${owner.uid}'s data container (key=$key)",
+                "Failed to get a value in $id's database (key=$key)",
                 e
             )
-
-            return null
+            null
         }
     }
 
@@ -246,12 +211,11 @@ class DataContainerImpl(override val owner: Member, override var bean: DataConta
                 removeNested(key)
                 return
             }
-
             contents.remove(key)
         } catch (e: Exception) {
-            serverLogger.log(
+            logger.log(
                 Level.SEVERE,
-                "Failed to remove a value in UID ${owner.uid}'s data container (key=$key)",
+                "Failed to remove a value in $id's database (key=$key)",
                 e
             )
         }
@@ -277,7 +241,6 @@ class DataContainerImpl(override val owner: Member, override var bean: DataConta
         if (get(key) is Int) {
             return getInt(key)?.toLong()
         }
-
         return get(key) as Long?
     }
 
@@ -301,12 +264,11 @@ class DataContainerImpl(override val owner: Member, override var bean: DataConta
         return try {
             get(key) as List<T>
         } catch (e: Exception) {
-            serverLogger.log(
+            logger.log(
                 Level.SEVERE,
-                "Failed to get a list in UID ${owner.uid}'s data container (key=$key)",
+                "Failed to get a list in UID $id's database (key=$key)",
                 e
             )
-
             null
         }
     }
@@ -315,12 +277,11 @@ class DataContainerImpl(override val owner: Member, override var bean: DataConta
         return try {
             get(key) as Map<String, T>
         } catch (e: Exception) {
-            serverLogger.log(
+            logger.log(
                 Level.SEVERE,
-                "Failed to get a map in UID ${owner.uid}'s data container (key=$key)",
+                "Failed to get a map in UID $id's database (key=$key)",
                 e
             )
-
             null
         }
     }
@@ -329,8 +290,15 @@ class DataContainerImpl(override val owner: Member, override var bean: DataConta
         if (isNestedKey(key)) {
             return containsNested(key)
         }
-
         return contents.containsKey(key)
+    }
+
+    override fun clear() {
+        contents.clear()
+    }
+
+    override suspend fun update() {
+        repo.saveOrUpdate(toModel())
     }
 
 }

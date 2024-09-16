@@ -115,3 +115,7 @@ include("whitelist:velocity")
 
 include("player-database")
 include("player-database:api")
+include("player-database:shared")
+include("player-database:velocity")
+include("player-database:paper")
+include("player-database:proto")
