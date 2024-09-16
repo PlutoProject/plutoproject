@@ -27,12 +27,15 @@ include("utils:velocity")
 include("utils:api")
 include("utils:proto")
 
+// 删除 1.2.0
+/*
 include("member")
 include("member:paper")
 include("member:api")
 include("member:velocity")
 include("member:proto")
 include("member:shared")
+*/
 
 include("rpc")
 include("rpc:api")
@@ -109,3 +112,13 @@ include("bridge:velocity")
 include("daily")
 include("daily:api")
 include("daily:paper")
+
+include("whitelist")
+include("whitelist:velocity")
+
+include("player-database")
+include("player-database:api")
+include("player-database:shared")
+include("player-database:velocity")
+include("player-database:paper")
+include("player-database:proto")
