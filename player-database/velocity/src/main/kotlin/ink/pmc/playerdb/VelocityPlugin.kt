@@ -7,6 +7,7 @@ import com.velocitypowered.api.event.proxy.ProxyInitializeEvent
 import com.velocitypowered.api.event.proxy.ProxyShutdownEvent
 import com.velocitypowered.api.plugin.annotation.DataDirectory
 import com.velocitypowered.api.proxy.ProxyServer
+import ink.pmc.rpc.api.RpcServer
 import ink.pmc.utils.inject.startKoinIfNotPresent
 import kotlinx.coroutines.cancel
 import org.koin.core.component.KoinComponent
@@ -32,15 +33,17 @@ class VelocityPlugin @Inject constructor(suspendingPluginContainer: SuspendingPl
     @Inject
     fun velocityPlayerDb(server: ProxyServer, logger: Logger, @DataDirectory dataDirectoryPath: Path) {
         pluginLogger = logger
+        startKoinIfNotPresent {
+            modules(sharedModule, velocityModule)
+        }
+        RpcServer.apply {
+            addService(get<Notifier>() as ProxyNotifier)
+        }
     }
 
     @Subscribe
     fun ProxyInitializeEvent.e() {
-        startKoinIfNotPresent {
-            modules(sharedModule, velocityModule)
-        }
         disabled = false
-        get<Notifier>() // 初始化 Notifier
     }
 
     @Subscribe

@@ -67,9 +67,9 @@ fun VelocityCm.whitelist() {
                     return@suspendingHandler
                 }
                 sender.send {
-                    text("已查询到名为 ") with mochaMaroon
+                    text("已查询到名为 ") with mochaPink
                     text("${model.rawName} ") with mochaText
-                    text("的玩家") with mochaMaroon
+                    text("的玩家") with mochaPink
                 }
             }
     )

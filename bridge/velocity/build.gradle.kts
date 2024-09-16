@@ -1,5 +1,6 @@
 velocityPluginJson {
     dependency("geyser")
+    dependency("rpc")
 }
 
 dependencies {
