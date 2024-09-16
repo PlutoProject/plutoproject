@@ -27,12 +27,15 @@ include("utils:velocity")
 include("utils:api")
 include("utils:proto")
 
+// 删除 1.2.0
+/*
 include("member")
 include("member:paper")
 include("member:api")
 include("member:velocity")
 include("member:proto")
 include("member:shared")
+*/
 
 include("rpc")
 include("rpc:api")
