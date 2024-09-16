@@ -314,7 +314,7 @@ allprojects {
     apply(plugin = rootProject.libs.plugins.compose.compiler.get().pluginId)
 
     this.group = packageName()
-    this.version = "1.1.0"
+    this.version = "1.2.0"
 
     java {
         toolchain.languageVersion.set(JavaLanguageVersion.of(21))
