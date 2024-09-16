@@ -24,7 +24,7 @@ fun kotlin(s: String): String {
     return "org.jetbrains.kotlin.$s"
 }
 
-val bukkitApiVersion by extra("1.20")
+val bukkitApiVersion by extra("1.21")
 val root = project
 
 fun Project.ensureParent(): Boolean {
