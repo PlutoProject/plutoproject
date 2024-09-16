@@ -20,6 +20,7 @@ class DatabaseImpl(model: DatabaseModel) : Database, KoinComponent {
 
     private val logger by inject<Logger>(named("player_database_logger"))
     private val repo by inject<DatabaseRepository>()
+    private val notifier by inject<Notifier>()
 
     override val id: UUID = model.id.uuid
     override val contents: BsonDocument = model.contents.clone()
@@ -68,9 +69,7 @@ class DatabaseImpl(model: DatabaseModel) : Database, KoinComponent {
     }
 
     private fun throwIfIllegalNestedKey(key: String) {
-        if (!isLegalNestedKey(key)) {
-            throw IllegalStateException("Illegal nested key: $key")
-        }
+        check(isLegalNestedKey(key)) { "Illegal nested key: $key" }
     }
 
     private fun setNested(key: String, value: BsonValue) {
@@ -85,12 +84,8 @@ class DatabaseImpl(model: DatabaseModel) : Database, KoinComponent {
                 curr[keys[i]] = value
                 break
             }
-
             val next = curr.computeIfAbsent(keys[i]) { BsonDocument() }
-            if (next !is BsonDocument) {
-                throw IllegalStateException("Key ${keys.subList(0, i + 1).joinToString(".")} isn't BsonDocument")
-            }
-
+            check(next is BsonDocument) { "Key ${keys.subList(0, i + 1).joinToString(".")} isn't a BsonDocument" }
             curr = next
         }
     }
@@ -105,9 +100,7 @@ class DatabaseImpl(model: DatabaseModel) : Database, KoinComponent {
         for (i in range) {
             if (i == last) return curr[keys[i]]
             val next = curr[keys[i]] ?: return null
-            if (next !is BsonDocument) {
-                throw IllegalStateException("Key ${keys.subList(0, i + 1).joinToString(".")} isn't BsonDocument")
-            }
+            check(next is BsonDocument) { "Key ${keys.subList(0, i + 1).joinToString(".")} isn't a BsonDocument" }
             curr = next
         }
 
@@ -127,12 +120,8 @@ class DatabaseImpl(model: DatabaseModel) : Database, KoinComponent {
                 curr.remove(keys[i])
                 break
             }
-
             val next = curr[keys[i]] ?: return
-            if (next !is BsonDocument) {
-                throw IllegalStateException("Key ${keys.subList(0, i + 1).joinToString(".")}} isn't BsonDocument")
-            }
-
+            check(next is BsonDocument) { "Key ${keys.subList(0, i + 1).joinToString(".")} isn't a BsonDocument" }
             curr = next
         }
     }
@@ -266,7 +255,7 @@ class DatabaseImpl(model: DatabaseModel) : Database, KoinComponent {
         } catch (e: Exception) {
             logger.log(
                 Level.SEVERE,
-                "Failed to get a list in UID $id's database (key=$key)",
+                "Failed to get a list in $id's database (key=$key)",
                 e
             )
             null
@@ -279,7 +268,7 @@ class DatabaseImpl(model: DatabaseModel) : Database, KoinComponent {
         } catch (e: Exception) {
             logger.log(
                 Level.SEVERE,
-                "Failed to get a map in UID $id's database (key=$key)",
+                "Failed to get a map in $id's database (key=$key)",
                 e
             )
             null
@@ -299,6 +288,7 @@ class DatabaseImpl(model: DatabaseModel) : Database, KoinComponent {
 
     override suspend fun update() {
         repo.saveOrUpdate(toModel())
+        notifier.notify(id)
     }
 
 }
