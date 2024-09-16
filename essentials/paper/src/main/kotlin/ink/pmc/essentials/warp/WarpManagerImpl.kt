@@ -131,7 +131,7 @@ class WarpManagerImpl : WarpManager, KoinComponent {
         require(spawn.isSpawn) { "Warp ${spawn.name} isn't a spawn" }
         val database = PlayerDb.getOrCreate(player.uniqueId)
         database[PREFERRED_SPAWN_KEY] = spawn.id.toString()
-        database.update()
+        database.saveOrUpdate()
     }
 
     override suspend fun list(): Collection<Warp> {

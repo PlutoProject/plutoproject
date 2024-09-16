@@ -286,7 +286,7 @@ class DatabaseImpl(model: DatabaseModel) : Database, KoinComponent {
         contents.clear()
     }
 
-    override suspend fun update() {
+    override suspend fun saveOrUpdate() {
         repo.saveOrUpdate(toModel())
         notifier.notify(id)
     }
