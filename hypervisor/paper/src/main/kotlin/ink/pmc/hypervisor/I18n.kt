@@ -100,24 +100,3 @@ val Double.colorizedMSPTComponent: Component
             else -> mochaMaroon
         }
     }
-
-val MUSHROOM_DETECTOR_PLAYER_PLACE = title {
-    mainTitle {
-        text(" ")
-    }
-    subTitle {
-        text("此处无法放置此类方块") with mochaMaroon
-    }
-    times {
-        fadeIn(0.seconds)
-        stay(1.seconds)
-        fadeOut(0.seconds)
-    }
-}
-
-val MUSHROOM_DETECTOR_PLAYER_PLACE_SOUND = sound {
-    key(Key.key("block.note_block.hat"))
-    source(Sound.Source.BLOCK)
-    volume(1f)
-    pitch(1f)
-}

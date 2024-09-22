@@ -1,10 +1,8 @@
 package ink.pmc.hypervisor
 
-import com.github.shynixn.mccoroutine.bukkit.registerSuspendingEvents
+import com.github.shynixn.mccoroutine.bukkit.SuspendingJavaPlugin
 import ink.pmc.hypervisor.commands.HypervisorCommand
 import ink.pmc.hypervisor.commands.StatusCommand
-import ink.pmc.hypervisor.listeners.EntityListener
-import ink.pmc.hypervisor.listeners.PlayerListener
 import ink.pmc.utils.command.init
 import io.papermc.paper.command.brigadier.CommandSourceStack
 import me.lucko.spark.api.Spark
@@ -21,7 +19,7 @@ lateinit var serverLogger: Logger
 var disabled = true
 
 @Suppress("UNUSED")
-class PaperPlugin : JavaPlugin() {
+class PaperPlugin : SuspendingJavaPlugin() {
 
     override fun onEnable() {
         plugin = this
@@ -33,14 +31,8 @@ class PaperPlugin : JavaPlugin() {
             .buildOnEnable(this)
 
         spark = SparkProvider.get()
-
-        // commandManager.registerBrigadier()
         commandManager.init(HypervisorCommand)
         commandManager.init(StatusCommand)
-        server.pluginManager.registerSuspendingEvents(PlayerListener, this)
-        server.pluginManager.registerSuspendingEvents(EntityListener, this)
-        // Risky
-        // server.pluginManager.registerSuspendingEvents(DuplicatedUuidDetector, this)
     }
 
     override fun onDisable() {
