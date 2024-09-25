@@ -1,6 +1,7 @@
 package ink.pmc.interactive
 
-import androidx.compose.runtime.Composable
+import cafe.adriel.voyager.navigator.Navigator
+import ink.pmc.interactive.api.ComposableFunction
 import ink.pmc.interactive.api.Gui
 import ink.pmc.interactive.examples.ExampleScreen1
 import ink.pmc.interactive.examples.ExampleScreen2
@@ -9,6 +10,7 @@ import ink.pmc.interactive.examples.ExampleScreen4
 import ink.pmc.interactive.examples.form.ExampleFormScreen1
 import ink.pmc.utils.PaperCm
 import ink.pmc.utils.PaperCtx
+import ink.pmc.utils.chat.NON_PLAYER
 import ink.pmc.utils.dsl.cloud.invoke
 import ink.pmc.utils.dsl.cloud.sender
 import org.bukkit.entity.Player
@@ -22,7 +24,7 @@ fun PaperCm.interactive(alias: Array<String>) {
             permission(PERMISSION)
             handler {
                 startInventory {
-                    ExampleScreen1()
+                    Navigator(ExampleScreen1())
                 }
             }
         }
@@ -31,7 +33,7 @@ fun PaperCm.interactive(alias: Array<String>) {
             permission(PERMISSION)
             handler {
                 startInventory {
-                    ExampleScreen2()
+                    Navigator(ExampleScreen2())
                 }
             }
         }
@@ -40,7 +42,7 @@ fun PaperCm.interactive(alias: Array<String>) {
             permission(PERMISSION)
             handler {
                 startInventory {
-                    ExampleScreen3()
+                    Navigator(ExampleScreen3())
                 }
             }
         }
@@ -58,22 +60,30 @@ fun PaperCm.interactive(alias: Array<String>) {
             permission(PERMISSION)
             handler {
                 startForm {
-                    ExampleFormScreen1(0)
+                    Navigator(ExampleFormScreen1(0))
                 }
             }
         }
     }
 }
 
-private fun PaperCtx.startInventory(content: @Composable  () -> Unit) {
-    val sender = sender.sender as? Player?: return
+private fun PaperCtx.startInventory(content: ComposableFunction) {
+    val sender = sender.sender
+    if (sender !is Player) {
+        sender.sendMessage(NON_PLAYER)
+        return
+    }
     Gui.startInventory(sender) {
         content()
     }
 }
 
-private fun PaperCtx.startForm(content: @Composable  () -> Unit) {
-    val sender = sender.sender as? Player?: return
+private fun PaperCtx.startForm(content: ComposableFunction) {
+    val sender = sender.sender
+    if (sender !is Player) {
+        sender.sendMessage(NON_PLAYER)
+        return
+    }
     Gui.startForm(sender) {
         content()
     }
