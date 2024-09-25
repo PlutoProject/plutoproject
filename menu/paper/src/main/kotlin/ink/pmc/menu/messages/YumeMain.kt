@@ -78,7 +78,7 @@ private val SPAWN_OPERATION_2 = component {
 }
 
 private val SPAWN_DESC = component {
-    text("于此直至天边的故事。") with mochaSubtext0 without italic()
+    text("行至云海，志在四方。") with mochaSubtext0 without italic()
 }
 
 val YUME_MAIN_ITEM_SPAWN_LORE = listOf(
@@ -193,7 +193,7 @@ val YUME_MAIN_ITEM_HOME_LOOKUP_LORE = listOf(
     Component.empty(),
     component {
         text("左键 ") with mochaLavender without italic()
-        text("进入查询模式") with mochaText without italic()
+        text("开启查询模式") with mochaText without italic()
     },
     component {
         text("右键 ") with mochaLavender without italic()
@@ -211,7 +211,7 @@ val YUME_MAIN_ITEM_HOME_LOOKUP_ENABLED_LORE = listOf(
     Component.empty(),
     component {
         text("左键 ") with mochaLavender without italic()
-        text("退出查询模式") with mochaText without italic()
+        text("关闭查询模式") with mochaText without italic()
     },
 )
 
