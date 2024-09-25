@@ -1,4 +1,4 @@
-package ink.pmc.essentials.screens.examples
+package ink.pmc.interactive.examples
 
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -31,7 +31,7 @@ import kotlin.math.floor
 
 class ExampleScreen1 : Screen {
 
-    override val key: ScreenKey = "essentials_example_1"
+    override val key: ScreenKey = "interactive_example_1"
 
     @Composable
     override fun Content() {

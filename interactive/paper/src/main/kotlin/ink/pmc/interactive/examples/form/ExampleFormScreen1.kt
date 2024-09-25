@@ -1,4 +1,4 @@
-package ink.pmc.essentials.screens.examples
+package ink.pmc.interactive.examples.form
 
 import androidx.compose.runtime.Composable
 import cafe.adriel.voyager.core.screen.Screen
@@ -10,9 +10,9 @@ import ink.pmc.interactive.api.LocalGuiScope
 import ink.pmc.interactive.api.form.types.ModalForm
 import ink.pmc.utils.visual.mochaText
 
-class ExampleScreen4(private val id: Int) : Screen {
+class ExampleFormScreen1(private val id: Int) : Screen {
 
-    override val key: ScreenKey = "essentials_example_4"
+    override val key: ScreenKey = "interactive_example_4"
 
     @Composable
     override fun Content() {

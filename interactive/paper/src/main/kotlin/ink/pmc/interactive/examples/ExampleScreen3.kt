@@ -1,4 +1,4 @@
-package ink.pmc.essentials.screens.examples
+package ink.pmc.interactive.examples
 
 import androidx.compose.runtime.Composable
 import cafe.adriel.voyager.core.screen.Screen
@@ -8,13 +8,14 @@ import ink.pmc.advkt.component.component
 import ink.pmc.advkt.component.text
 import ink.pmc.interactive.api.form.components.simple.FormButton
 import ink.pmc.interactive.api.form.types.SimpleForm
+import ink.pmc.interactive.examples.form.ExampleFormScreen1
 import ink.pmc.utils.visual.mochaGreen
 import ink.pmc.utils.visual.mochaYellow
 
 @Suppress("UNUSED")
 class ExampleScreen3 : Screen {
 
-    override val key: ScreenKey = "essentials_example_3"
+    override val key: ScreenKey = "interactive_example_3"
 
     @Composable
     override fun Content() {
@@ -34,7 +35,7 @@ class ExampleScreen3 : Screen {
             FormButton(
                 text = component { text("按钮 $it") with mochaYellow },
                 onClick = { _, _ ->
-                    navigator?.push(ExampleScreen4(it))
+                    navigator?.push(ExampleFormScreen1(it))
                 }
             )
         }

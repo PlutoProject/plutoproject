@@ -1,4 +1,4 @@
-package ink.pmc.essentials.screens.examples
+package ink.pmc.interactive.examples
 
 import androidx.compose.runtime.Composable
 import cafe.adriel.voyager.core.screen.Screen
@@ -30,7 +30,7 @@ import org.bukkit.inventory.ItemStack
 
 class ExampleScreen2 : Screen {
 
-    override val key: ScreenKey = "essentials_example_2"
+    override val key: ScreenKey = "interactive_example_2"
 
     @Composable
     override fun Content() {

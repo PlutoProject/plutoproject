@@ -1,11 +1,7 @@
 package ink.pmc.essentials.commands
 
-import cafe.adriel.voyager.navigator.Navigator
 import ink.pmc.essentials.*
-import ink.pmc.essentials.screens.examples.ExampleScreen1
-import ink.pmc.essentials.screens.examples.ExampleScreen3
 import ink.pmc.essentials.teleport.random.PerfTest
-import ink.pmc.interactive.api.Gui
 import ink.pmc.utils.annotation.Command
 import ink.pmc.utils.command.checkPlayer
 import ink.pmc.utils.dsl.cloud.invoke
@@ -32,28 +28,6 @@ fun Cm.essentials(aliases: Array<String>) {
                     } else {
                         PerfTest.endTest(this)
                         sendMessage(COMMAND_ESS_RTP_PERF_END)
-                    }
-                }
-            }
-        }
-
-        "example_menu" {
-            permission("essentials.cmd")
-            handler {
-                checkPlayer(sender.sender) {
-                    Gui.startInventory(this) {
-                        Navigator(ExampleScreen1())
-                    }
-                }
-            }
-        }
-
-        "example_form" {
-            permission("essentials.cmd")
-            handler {
-                checkPlayer(sender.sender) {
-                    Gui.startForm(this) {
-                        Navigator(ExampleScreen3())
                     }
                 }
             }
