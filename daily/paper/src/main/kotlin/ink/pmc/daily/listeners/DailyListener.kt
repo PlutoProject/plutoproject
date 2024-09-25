@@ -1,5 +1,6 @@
 package ink.pmc.daily.listeners
 
+import ink.pmc.daily.PLAYER_NOT_CHECKIN_JOIN
 import ink.pmc.daily.api.Daily
 import ink.pmc.daily.checkCheckInDate
 import ink.pmc.utils.concurrent.submitAsyncIO
@@ -28,6 +29,7 @@ object DailyListener : Listener, KoinComponent {
             if (user.lastCheckInDate?.month != now.month || !user.isCheckedInYesterday()) {
                 user.clearAccumulation()
             }
+            player.sendMessage(PLAYER_NOT_CHECKIN_JOIN)
         }
     }
 

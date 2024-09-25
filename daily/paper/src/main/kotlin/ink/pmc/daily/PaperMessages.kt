@@ -1,11 +1,12 @@
 package ink.pmc.daily
 
-import ink.pmc.advkt.component.component
-import ink.pmc.advkt.component.italic
-import ink.pmc.advkt.component.text
+import ink.pmc.advkt.component.*
+import ink.pmc.daily.screens.DailyCalenderScreen
+import ink.pmc.interactive.api.Gui
 import ink.pmc.utils.chat.ECONOMY_SYMBOL
 import ink.pmc.utils.visual.*
 import net.kyori.adventure.text.Component
+import org.bukkit.entity.Player
 
 val CHECK_IN = component {
     text("到访成功，本月已连续到访 ") with mochaPink
@@ -110,3 +111,15 @@ val DAY_LORE_FUTURE = listOf(
         text("不远的将来...") with mochaSubtext0 without italic()
     }
 )
+
+val PLAYER_NOT_CHECKIN_JOIN = component {
+    text("✨ 今日尚未到访，到访可获取货币奖励 ") with mochaText
+    text("[打开礼记]") with mochaLavender with showText {
+        text("点此打开礼记") with mochaText
+    } with callback {
+        if (it !is Player) return@callback
+        Gui.startInventory(it) {
+            DailyCalenderScreen()
+        }
+    }
+}
