@@ -35,24 +35,24 @@ fun <C> CommandManager<C>.registerCommands(
     packageName: String,
     result: (String) -> CommandRegistrationResult = { _ -> CommandRegistrationResult() }
 ) {
-    val scanResult = ClassGraph()
+    ClassGraph()
         .acceptPackages(packageName)
-        .scan()
+        .scan().use { scanResult ->
+            scanResult.allClasses.forEach {
+                val cls = Class.forName(it.name)
+                cls.declaredMethods.forEach f@{ fn ->
+                    val function = fn.kotlinFunction ?: return@f
+                    val annotation = function.findAnnotation<Command>() ?: return@f
+                    val name = annotation.name
+                    val meta = result(name)
 
-    scanResult.allClasses.forEach {
-        val cls = Class.forName(it.name)
-        cls.declaredMethods.forEach f@{ fn ->
-            val function = fn.kotlinFunction ?: return@f
-            val annotation = function.findAnnotation<Command>() ?: return@f
-            val name = annotation.name
-            val meta = result(name)
+                    if (!meta.enabled) {
+                        return@f
+                    }
 
-            if (!meta.enabled) {
-                return@f
+                    val aliases = meta.aliases
+                    function.call(this, aliases)
+                }
             }
-
-            val aliases = meta.aliases
-            function.call(this, aliases)
         }
-    }
 }

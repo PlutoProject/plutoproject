@@ -5,7 +5,9 @@ import com.github.shynixn.mccoroutine.bukkit.registerSuspendingEvents
 import ink.pmc.interactive.api.Gui
 import ink.pmc.interactive.inventory.InventoryListener
 import ink.pmc.utils.PaperCm
+import ink.pmc.utils.currentUnixTimestamp
 import ink.pmc.utils.inject.startKoinIfNotPresent
+import ink.pmc.utils.jvm.loadClassesInPackages
 import org.bukkit.plugin.java.JavaPlugin
 import org.incendo.cloud.execution.ExecutionCoordinator
 import org.koin.core.component.KoinComponent
@@ -24,6 +26,10 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
 
     private val gui by inject<Gui>()
 
+    override suspend fun onLoadAsync() {
+        preload()
+    }
+
     override suspend fun onEnableAsync() {
         plugin = this
         startKoinIfNotPresent {
@@ -39,6 +45,17 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
 
     override suspend fun onDisableAsync() {
         gui.disposeAll()
+    }
+
+    private fun preload() {
+        val start = currentUnixTimestamp
+        val depClassLoader = Class.forName("ink.pmc.deploader.PaperPlugin").classLoader
+        val classLoader = this.classLoader
+        logger.info("Preloading Compose Runtime & Voyager to improve performance...")
+        loadClassesInPackages("androidx", "cafe.adriel.voyager", classLoader = depClassLoader)
+        loadClassesInPackages("ink.pmc.interactive.api", classLoader = classLoader)
+        val end = currentUnixTimestamp
+        logger.info("Preloading finished, took ${end - start}ms")
     }
 
 }

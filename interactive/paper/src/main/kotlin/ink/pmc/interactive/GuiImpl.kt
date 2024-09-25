@@ -66,9 +66,8 @@ class GuiImpl : Gui {
     }
 
     override fun disposeAll() {
-        // 拷贝一次再操作，防止 CME
-        inventoryScopes.values.toMutableList().forEach { it.dispose() }
-        formScopes.values.toMutableList().forEach { it.dispose() }
+        inventoryScopes.values.forEach { it.dispose() }
+        formScopes.values.forEach { it.dispose() }
         inventoryScopes.clear()
         formScopes.clear()
     }

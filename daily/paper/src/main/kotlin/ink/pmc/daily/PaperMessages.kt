@@ -1,13 +1,9 @@
 package ink.pmc.daily
 
-import cafe.adriel.voyager.navigator.Navigator
 import ink.pmc.advkt.component.*
-import ink.pmc.daily.screens.DailyCalenderScreen
-import ink.pmc.interactive.api.Gui
 import ink.pmc.utils.chat.ECONOMY_SYMBOL
 import ink.pmc.utils.visual.*
 import net.kyori.adventure.text.Component
-import org.bukkit.entity.Player
 
 val CHECK_IN = component {
     text("到访成功，本月已连续到访 ") with mochaPink
@@ -35,13 +31,11 @@ val NAVIGATE = component {
 private val NAVIGATE_LORE_PREV = component {
     text("左键 ") with mochaLavender without italic()
     text("上一页") with mochaText without italic()
-    // text("(<prevYear> 年 <prevMonth> 月)") with mochaSubtext0 without italic()
 }
 
 private val NAVIGATE_LORE_NEXT = component {
     text("右键 ") with mochaLavender without italic()
     text("下一页") with mochaText without italic()
-    // text("(<nextYear> 年 <nextMonth> 月)") with mochaSubtext0 without italic()
 }
 
 private val NAVIGATE_LORE_RESET = component {
