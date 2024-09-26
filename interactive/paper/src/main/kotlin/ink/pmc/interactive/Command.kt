@@ -2,12 +2,12 @@ package ink.pmc.interactive
 
 import cafe.adriel.voyager.navigator.Navigator
 import ink.pmc.interactive.api.ComposableFunction
-import ink.pmc.interactive.api.Gui
-import ink.pmc.interactive.examples.ExampleScreen1
-import ink.pmc.interactive.examples.ExampleScreen2
-import ink.pmc.interactive.examples.ExampleScreen3
-import ink.pmc.interactive.examples.ExampleScreen4
-import ink.pmc.interactive.examples.form.ExampleFormScreen1
+import ink.pmc.interactive.api.gui.Gui
+import ink.pmc.interactive.gui.examples.ExampleScreen1
+import ink.pmc.interactive.gui.examples.ExampleScreen2
+import ink.pmc.interactive.gui.examples.ExampleScreen3
+import ink.pmc.interactive.gui.examples.ExampleScreen4
+import ink.pmc.interactive.gui.examples.form.ExampleFormScreen1
 import ink.pmc.utils.PaperCm
 import ink.pmc.utils.PaperCtx
 import ink.pmc.utils.chat.NON_PLAYER

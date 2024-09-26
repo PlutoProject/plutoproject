@@ -6,8 +6,8 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import ink.pmc.essentials.*
 import ink.pmc.essentials.api.home.HomeManager
-import ink.pmc.interactive.api.LocalPlayer
-import ink.pmc.interactive.api.inventory.components.canvases.Anvil
+import ink.pmc.interactive.api.gui.LocalPlayer
+import ink.pmc.interactive.api.gui.inventory.components.canvases.Anvil
 import ink.pmc.utils.chat.isValidIdentifier
 import ink.pmc.utils.concurrent.submitAsync
 import ink.pmc.utils.dsl.itemStack

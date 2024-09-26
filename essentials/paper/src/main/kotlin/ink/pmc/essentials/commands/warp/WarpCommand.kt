@@ -4,7 +4,7 @@ import cafe.adriel.voyager.navigator.Navigator
 import ink.pmc.essentials.*
 import ink.pmc.essentials.api.Essentials
 import ink.pmc.essentials.screens.warp.WarpViewerScreen
-import ink.pmc.interactive.api.Gui
+import ink.pmc.interactive.api.gui.Gui
 import ink.pmc.utils.annotation.Command
 import ink.pmc.utils.chat.replace
 import ink.pmc.utils.command.checkPlayer

@@ -12,11 +12,11 @@ import com.google.common.collect.Multimap
 import ink.pmc.essentials.*
 import ink.pmc.essentials.api.home.Home
 import ink.pmc.essentials.api.home.HomeManager
-import ink.pmc.interactive.api.LocalGuiScope
-import ink.pmc.interactive.api.LocalPlayer
-import ink.pmc.interactive.api.form.components.simple.FormBack
-import ink.pmc.interactive.api.form.components.simple.FormButton
-import ink.pmc.interactive.api.form.types.SimpleForm
+import ink.pmc.interactive.api.gui.LocalGuiScope
+import ink.pmc.interactive.api.gui.LocalPlayer
+import ink.pmc.interactive.api.gui.form.components.simple.FormBack
+import ink.pmc.interactive.api.gui.form.components.simple.FormButton
+import ink.pmc.interactive.api.gui.form.types.SimpleForm
 import ink.pmc.utils.chat.replace
 import net.kyori.adventure.text.Component
 import org.bukkit.OfflinePlayer

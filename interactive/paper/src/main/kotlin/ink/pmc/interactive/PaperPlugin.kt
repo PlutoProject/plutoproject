@@ -2,8 +2,10 @@ package ink.pmc.interactive
 
 import com.github.shynixn.mccoroutine.bukkit.SuspendingJavaPlugin
 import com.github.shynixn.mccoroutine.bukkit.registerSuspendingEvents
-import ink.pmc.interactive.api.Gui
-import ink.pmc.interactive.inventory.InventoryListener
+import ink.pmc.interactive.api.gui.Gui
+import ink.pmc.interactive.gui.GuiImpl
+import ink.pmc.interactive.gui.GuiListener
+import ink.pmc.interactive.gui.inventory.InventoryListener
 import ink.pmc.utils.PaperCm
 import ink.pmc.utils.currentUnixTimestamp
 import ink.pmc.utils.inject.startKoinIfNotPresent
