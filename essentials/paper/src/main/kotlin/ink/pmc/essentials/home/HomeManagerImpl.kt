@@ -25,7 +25,7 @@ import java.util.*
 import kotlin.time.Duration.Companion.minutes
 
 internal fun loadFailed(id: UUID, reason: String): String {
-    return "Failed to loadAll Home $id: $reason"
+    return "Failed to load home $id: $reason"
 }
 
 class HomeManagerImpl : HomeManager, KoinComponent {

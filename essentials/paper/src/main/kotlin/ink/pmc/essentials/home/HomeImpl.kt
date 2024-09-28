@@ -29,11 +29,11 @@ class HomeImpl(private val dto: HomeDto) : Home, KoinComponent {
     override val createdAt: Instant = Instant.ofEpochMilli(dto.createdAt)
     override var location: Location =
         requireNotNull(dto.location.location) {
-            loadFailed(id, "failed to obtain location ${dto.location}")
+            loadFailed(id, "cannot obtain location ${dto.location}")
         }
     override val owner: OfflinePlayer =
         requireNotNull(Bukkit.getOfflinePlayer(dto.owner)) {
-            loadFailed(id, "failed obtain OfflinePlayer ${dto.owner}")
+            loadFailed(id, "cannot obtain OfflinePlayer ${dto.owner}")
         }
     override var isStarred: Boolean = dto.isStarred
     override var isPreferred: Boolean = dto.isPreferred

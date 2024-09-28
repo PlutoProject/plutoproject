@@ -32,7 +32,7 @@ class WarpImpl(private val dto: WarpDto) : Warp, KoinComponent {
     override val createdAt: Instant = Instant.ofEpochMilli(dto.createdAt)
     override var location: Location =
         requireNotNull(dto.location.location) {
-            loadFailed(id, "cannot to obtain location ${dto.location}")
+            loadFailed(id, "cannot obtain location ${dto.location}")
         }
     override val isLoaded: Boolean
         get() = manager.isLoaded(id)
