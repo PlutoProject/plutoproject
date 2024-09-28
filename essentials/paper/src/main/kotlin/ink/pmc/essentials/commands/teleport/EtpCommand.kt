@@ -34,7 +34,7 @@ fun Cm.etp(aliases: Array<String>) {
             val argPlayer = optional<Player>("player").getOrNull()
             val sender = sender.sender
             val bypassSafe = optional<Boolean>("bypassSafe").getOrNull() == true
-            val options = manager.getWorldTeleportOptions(location.world).copy(bypassSafeCheck = bypassSafe)
+            val options = manager.getWorldTeleportOptions(location.world).copy(disableSafeCheck = bypassSafe)
 
             if (argPlayer != null) {
                 manager.teleportSuspend(argPlayer, location, options)

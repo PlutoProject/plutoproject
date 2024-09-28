@@ -42,7 +42,7 @@ class BackManagerImpl : BackManager, KoinComponent {
             val event = BackTeleportEvent(player, player.location, loc).apply { callEvent() }
             if (event.isCancelled) return@async
             set(player, player.location)
-            val opt = teleport.getWorldTeleportOptions(loc.world).copy(bypassSafeCheck = true)
+            val opt = teleport.getWorldTeleportOptions(loc.world).copy(disableSafeCheck = true)
             teleport.teleportSuspend(player, loc, opt)
         }
     }

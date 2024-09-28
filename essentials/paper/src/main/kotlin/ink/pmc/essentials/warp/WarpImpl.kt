@@ -49,7 +49,7 @@ class WarpImpl(private val dto: WarpDto) : Warp, KoinComponent {
 
     override suspend fun teleportSuspend(player: Player, prompt: Boolean) {
         async {
-            val options = teleport.getWorldTeleportOptions(location.world).copy(bypassSafeCheck = true)
+            val options = teleport.getWorldTeleportOptions(location.world).copy(disableSafeCheck = true)
             // 必须异步触发
             val event = WarpTeleportEvent(player, player.location, this@WarpImpl).apply { callEvent() }
             if (event.isCancelled) return@async

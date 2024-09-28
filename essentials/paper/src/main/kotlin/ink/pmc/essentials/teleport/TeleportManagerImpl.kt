@@ -215,7 +215,7 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
     ) {
         async {
             val opt = options ?: destination.world.teleportOptions
-            val loc = if (opt.bypassSafeCheck || isSafe(destination, opt)) {
+            val loc = if (opt.disableSafeCheck || isSafe(destination, opt)) {
                 destination
             } else {
                 destination.searchSafeLoc(opt)
