@@ -28,7 +28,7 @@ class TeleportRequestImpl(
         get() = state != RequestState.WAITING
 
     override fun accept(prompt: Boolean) {
-        check(Thread.currentThread() == paperThread) { "Request operations can be only performed asynchronously" }
+        check(Thread.currentThread() != paperThread) { "Request operations can be only performed asynchronously" }
         if (isFinished) {
             return
         }
@@ -52,7 +52,7 @@ class TeleportRequestImpl(
     }
 
     override fun deny(prompt: Boolean) {
-        check(Thread.currentThread() == paperThread) { "Request operations can be only performed asynchronously" }
+        check(Thread.currentThread() != paperThread) { "Request operations can be only performed asynchronously" }
         if (isFinished) {
             return
         }
@@ -72,7 +72,7 @@ class TeleportRequestImpl(
     }
 
     override fun expire(prompt: Boolean) {
-        check(Thread.currentThread() == paperThread) { "Request operations can be only performed asynchronously" }
+        check(Thread.currentThread() != paperThread) { "Request operations can be only performed asynchronously" }
         if (isFinished) {
             return
         }
@@ -92,7 +92,7 @@ class TeleportRequestImpl(
     }
 
     override fun cancel(prompt: Boolean) {
-        check(Thread.currentThread() == paperThread) { "Request operations can be only performed asynchronously" }
+        check(Thread.currentThread() != paperThread) { "Request operations can be only performed asynchronously" }
         if (isFinished) {
             return
         }
