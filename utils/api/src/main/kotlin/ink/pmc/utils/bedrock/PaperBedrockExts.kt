@@ -9,7 +9,7 @@ fun Player.asFloodgate(): FloodgatePlayer? {
 }
 
 val Player.isFloodgate: Boolean
-    get() = asFloodgate() != null
+    get() = isFloodgatePlayer(uniqueId) && asFloodgate() != null
 
 fun paperHasFloodgateSupport(): Boolean {
     return paper.pluginManager.getPlugin("floodgate") != null

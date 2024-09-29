@@ -36,4 +36,6 @@ interface Essentials {
 
     fun isLecternEnabled(): Boolean
 
+    fun isActionEnabled(): Boolean
+
 }

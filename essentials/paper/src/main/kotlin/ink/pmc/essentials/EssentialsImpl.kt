@@ -54,4 +54,8 @@ class EssentialsImpl : Essentials, KoinComponent {
         return config.Lectern().enabled
     }
 
+    override fun isActionEnabled(): Boolean {
+        return config.Action().enabled
+    }
+
 }

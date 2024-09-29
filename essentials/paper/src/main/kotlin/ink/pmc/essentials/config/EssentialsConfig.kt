@@ -101,7 +101,7 @@ class EssentialsConfig(private val config: Config) : Config by config {
         val enabled: Boolean get() = get("action.enabled")
         val sneakSwapMenu: Boolean get() = get("action.sneak-swap-menu")
         val bedrockMenu: Boolean get() = get("action.bedrock.menu")
-        val bedrockTeleportAccept: Boolean get() = get("action.bedrock.teleport-accept")
+        val bedrockTeleportOperation: Boolean get() = get("action.bedrock.teleport-operation")
     }
 
     inner class Commands {
