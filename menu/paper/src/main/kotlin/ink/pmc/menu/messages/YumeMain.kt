@@ -78,12 +78,12 @@ private val SPAWN_OPERATION_2 = component {
 }
 
 private val SPAWN_DESC = component {
-    text("行至云海，志在四方。") with mochaSubtext0 without italic()
+    text("行向云海之志。") with mochaSubtext0 without italic()
 }
 
 val YUME_MAIN_ITEM_SPAWN_LORE = listOf(
-    SPAWN_PICKED,
-    SPAWN_LOC,
+    // SPAWN_PICKED,
+    // SPAWN_LOC,
     SPAWN_DESC,
     Component.empty(),
     SPAWN_OPERATION_1,
