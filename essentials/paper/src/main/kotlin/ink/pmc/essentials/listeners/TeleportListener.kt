@@ -5,6 +5,7 @@ import ink.pmc.essentials.TELEPORT_REQUEST_CANCELED_OFFLINE
 import ink.pmc.essentials.TELEPORT_REQUEST_CANCELLED_SOUND
 import ink.pmc.essentials.api.teleport.TeleportManager
 import ink.pmc.utils.chat.replace
+import ink.pmc.utils.concurrent.submitAsync
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerQuitEvent
@@ -27,7 +28,7 @@ object TeleportListener : Listener, KoinComponent {
         val pending = manager.getPendingRequest(player)
 
         if (unfinished != null) {
-            unfinished.cancel(false)
+            submitAsync { unfinished.cancel(false) }
             unfinished.destination.sendMessage(
                 TELEPORT_REQUEST_CANCELED_OFFLINE
                     .replace("<player>", player.name)
@@ -36,7 +37,7 @@ object TeleportListener : Listener, KoinComponent {
         }
 
         if (pending != null) {
-            pending.cancel()
+            submitAsync { pending.cancel() }
             pending.source.sendMessage(
                 TELEPORT_REQUEST_CANCELED_OFFLINE
                     .replace("<player>", player.name)

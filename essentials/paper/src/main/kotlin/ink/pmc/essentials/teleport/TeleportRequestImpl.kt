@@ -5,6 +5,7 @@ import ink.pmc.essentials.api.teleport.*
 import ink.pmc.essentials.api.teleport.TeleportDirection.COME
 import ink.pmc.essentials.api.teleport.TeleportDirection.GO
 import ink.pmc.utils.chat.replace
+import ink.pmc.utils.platform.paperThread
 import org.bukkit.entity.Player
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -27,6 +28,7 @@ class TeleportRequestImpl(
         get() = state != RequestState.WAITING
 
     override fun accept(prompt: Boolean) {
+        check(Thread.currentThread() == paperThread) { "Request operations can be only performed asynchronously" }
         if (isFinished) {
             return
         }
@@ -50,6 +52,7 @@ class TeleportRequestImpl(
     }
 
     override fun deny(prompt: Boolean) {
+        check(Thread.currentThread() == paperThread) { "Request operations can be only performed asynchronously" }
         if (isFinished) {
             return
         }
@@ -69,6 +72,7 @@ class TeleportRequestImpl(
     }
 
     override fun expire(prompt: Boolean) {
+        check(Thread.currentThread() == paperThread) { "Request operations can be only performed asynchronously" }
         if (isFinished) {
             return
         }
@@ -88,6 +92,7 @@ class TeleportRequestImpl(
     }
 
     override fun cancel(prompt: Boolean) {
+        check(Thread.currentThread() == paperThread) { "Request operations can be only performed asynchronously" }
         if (isFinished) {
             return
         }

@@ -9,7 +9,7 @@ class RequestStateChangeEvent(
     val request: TeleportRequest,
     val before: RequestState,
     val after: RequestState
-) : PlayerEvent(request.source, false), Cancellable {
+) : PlayerEvent(request.source, true), Cancellable {
 
     private companion object {
         val handlers = HandlerList()

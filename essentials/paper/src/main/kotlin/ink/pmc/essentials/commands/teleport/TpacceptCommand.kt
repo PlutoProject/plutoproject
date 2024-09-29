@@ -74,35 +74,35 @@ private suspend fun CommandContext<CommandSourceStack>.handleOperation(type: Ope
                 playSound(TELEPORT_FAILED_SOUND)
                 return@checkPlayer
             }
-
-            // 只有一个 request 存在，所以只有一个会被处理
-            val choice = when (type) {
-                Operation.ACCEPT -> {
-                    uuidArgRequest?.accept()
-                    playerArgRequest?.accept()
-                    playSound(TELEPORT_SUCCEED_SOUND)
-                    COMMAND_TPACCEPT_SUCCEED
-                }
-
-                Operation.DENY -> {
-                    uuidArgRequest?.deny()
-                    playerArgRequest?.deny()
-                    playSound(TELEPORT_REQUEST_DENIED_SOUND)
-                    COMMAND_TPDENY_SUCCEED
-                }
-            }
-
-            val name = uuidArgRequest?.source?.name ?: playerArgRequest!!.source.name
-            sendMessage(choice.replace("<player>", name))
-            return@checkPlayer
         }
 
-        if (emptyArgRequest == null) {
+        if (emptyArgRequest == null && playerArgRequest == null && uuidArgRequest == null) {
             sendMessage(COMMAND_TPACCEPT_FAILED_NO_PENDING)
             return@checkPlayer
         }
 
-        emptyArgRequest.accept()
-        sendMessage(COMMAND_TPACCEPT_SUCCEED.replace("<player>", emptyArgRequest.source.name))
+        // 只有一个 request 存在，所以只有一个会被处理
+        val choice = when (type) {
+            Operation.ACCEPT -> {
+                emptyArgRequest?.accept()
+                playerArgRequest?.accept()
+                uuidArgRequest?.accept()
+                playSound(TELEPORT_SUCCEED_SOUND)
+                COMMAND_TPACCEPT_SUCCEED
+            }
+
+            Operation.DENY -> {
+                emptyArgRequest?.deny()
+                playerArgRequest?.deny()
+                uuidArgRequest?.deny()
+                playSound(TELEPORT_REQUEST_DENIED_SOUND)
+                COMMAND_TPDENY_SUCCEED
+            }
+        }
+
+        val name = emptyArgRequest?.source?.name
+            ?: playerArgRequest?.source?.name
+            ?: uuidArgRequest?.source?.name
+        sendMessage(choice.replace("<player>", name))
     }
 }
