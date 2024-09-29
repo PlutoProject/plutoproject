@@ -16,6 +16,7 @@ import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerMoveEvent
+import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.event.player.PlayerSwapHandItemsEvent
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
@@ -59,6 +60,7 @@ object ActionListener : Listener, KoinComponent {
             in -90F..-89F -> {
                 teleportManager.getPendingRequest(player)?.let {
                     if (!config.bedrockTeleportOperation) return@let
+                    bePitchAntiShake.add(player)
                     submitAsync { it.accept() }
                     player.showTitle {
                         subTitle(COMMAND_TPACCEPT_SUCCEED.replace("<player>", it.source.name))
@@ -102,6 +104,11 @@ object ActionListener : Listener, KoinComponent {
             }
         }
 
+    }
+
+    @EventHandler
+    fun PlayerQuitEvent.e() {
+        bePitchAntiShake.remove(player)
     }
 
 }
