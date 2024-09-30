@@ -9,6 +9,7 @@ import ink.pmc.essentials.config.EssentialsConfig
 import ink.pmc.essentials.hooks.EconomyHook
 import ink.pmc.essentials.hooks.HuskHomesHook
 import ink.pmc.essentials.listeners.*
+import ink.pmc.essentials.recipes.MENU_ITEM_RECIPE
 import ink.pmc.utils.command.CommandRegistrationResult
 import ink.pmc.utils.command.registerCommands
 import ink.pmc.utils.inject.startKoinIfNotPresent
@@ -64,6 +65,7 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
         }
 
         registerEvents()
+        registerRecipes()
         initialize()
         disabled = false
     }
@@ -119,6 +121,13 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
 
         if (Essentials.isJoinEnabled()) {
             server.pluginManager.registerSuspendingEvents(JoinListener, this)
+        }
+    }
+
+    private fun registerRecipes() {
+        if (!conf.Recipe().enabled) return
+        if (conf.Recipe().menuItem) {
+            server.addRecipe(MENU_ITEM_RECIPE)
         }
     }
 

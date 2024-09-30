@@ -40,6 +40,8 @@ interface Essentials {
 
     fun isItemEnabled(): Boolean
 
+    fun isRecipeEnabled(): Boolean
+
     fun isJoinEnabled(): Boolean
 
 }

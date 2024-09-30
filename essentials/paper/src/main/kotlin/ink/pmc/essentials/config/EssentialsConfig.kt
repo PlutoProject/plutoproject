@@ -109,6 +109,11 @@ class EssentialsConfig(private val config: Config) : Config by config {
         val menu: Boolean get() = get("item.menu")
     }
 
+    inner class Recipe {
+        val enabled: Boolean get() = get("recipe.enabled")
+        val menuItem: Boolean get() = get("recipe.menu-item")
+    }
+
     inner class Join {
         val enabled: Boolean get() = get("join.enabled")
         val menuItem: Boolean get() = get("join.menu-item")

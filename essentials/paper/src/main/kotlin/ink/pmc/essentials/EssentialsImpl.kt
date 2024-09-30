@@ -62,6 +62,10 @@ class EssentialsImpl : Essentials, KoinComponent {
         return config.Item().enabled
     }
 
+    override fun isRecipeEnabled(): Boolean {
+        return config.Recipe().enabled
+    }
+
     override fun isJoinEnabled(): Boolean {
         return config.Join().enabled
     }
