@@ -379,7 +379,7 @@ fun TELEPORT_OPERATION(id: UUID) = component {
 val TELEPORT_OPERATION_BEDROCK = component {
     text("✔ 下蹲并抬头至顶以接受") with mochaGreen
     newline()
-    text("❌ 下蹲并低头置底以拒绝") with mochaMaroon
+    text("× 下蹲并低头置底以拒绝") with mochaMaroon
 }
 
 val COMMAND_ETP_SUCCEED = component {

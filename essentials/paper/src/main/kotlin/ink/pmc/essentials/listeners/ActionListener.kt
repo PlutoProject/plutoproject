@@ -71,12 +71,14 @@ object ActionListener : Listener, KoinComponent {
                         }
                     }
                     player.playSound(TELEPORT_SUCCEED_SOUND)
+                    player.reset()
                     return
                 }
                 if (!config.bedrockMenu) return
                 if (bePitchAntiShake.contains(player)) return
                 bePitchAntiShake.add(player) // 菜单打开可能有延迟，提前加入防抖列表避免多次触发
                 player.performCommand("menu:menu")
+                player.reset()
             }
 
             // 低头
@@ -95,6 +97,7 @@ object ActionListener : Listener, KoinComponent {
                         }
                     }
                     player.playSound(TELEPORT_REQUEST_DENIED_SOUND)
+                    player.reset()
                     return
                 }
             }
@@ -104,6 +107,11 @@ object ActionListener : Listener, KoinComponent {
             }
         }
 
+    }
+
+    private fun Player.reset() {
+        teleport(location.clone().apply { pitch = 0F })
+        isSneaking = false
     }
 
     @EventHandler
