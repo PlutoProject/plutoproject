@@ -6,6 +6,7 @@ import ink.pmc.essentials.api.teleport.TeleportDirection.COME
 import ink.pmc.essentials.api.teleport.TeleportDirection.GO
 import ink.pmc.essentials.config.ChunkPrepareMethod.*
 import ink.pmc.essentials.config.EssentialsConfig
+import ink.pmc.utils.bedrock.isFloodgate
 import ink.pmc.utils.chat.DURATION
 import ink.pmc.utils.chat.UNUSUAL_ISSUE
 import ink.pmc.utils.chat.replace
@@ -309,7 +310,11 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
 
         destination.sendMessage(message)
         destination.sendMessage(TELEPORT_EXPIRE.replace("<expire>", DURATION(options.expireAfter)))
-        destination.sendMessage(TELEPORT_OPERATION(request.id))
+        if (!destination.isFloodgate) {
+            destination.sendMessage(TELEPORT_OPERATION(request.id))
+        } else {
+            destination.sendMessage(TELEPORT_OPERATION_BEDROCK)
+        }
         destination.playSound(TELEPORT_REQUEST_RECEIVED_SOUND)
 
         if (teleportRequests.size == conf.maxRequestsStored) {
