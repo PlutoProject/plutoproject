@@ -32,9 +32,9 @@ val MENU_ITEM = itemStack(Material.BOOK) {
 
 val ItemStack.isMenuItem: Boolean
     get() {
-        return itemMeta.persistentDataContainer.getOrDefault(
+        return itemMeta?.persistentDataContainer?.getOrDefault(
             MENU_ITEM_KEY,
             PersistentDataType.BOOLEAN,
             false
-        )
+        ) ?: false
     }
