@@ -38,4 +38,8 @@ interface Essentials {
 
     fun isActionEnabled(): Boolean
 
+    fun isItemEnabled(): Boolean
+
+    fun isJoinEnabled(): Boolean
+
 }

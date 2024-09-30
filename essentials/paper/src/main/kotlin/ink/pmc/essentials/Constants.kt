@@ -21,3 +21,5 @@ const val VIEWER_SINGLE_ROW = 7
 const val VIEWER_SINGLE_PAGE = VIEWER_SINGLE_ROW * VIEWER_ROWS
 
 const val VIEWER_FORM_SINGLE = 5
+
+const val JOIN_MENU_ITEM_GIVEN_KEY = "essentials.join.menu_item_given"

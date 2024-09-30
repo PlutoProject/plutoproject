@@ -112,6 +112,14 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
         if (Essentials.isActionEnabled()) {
             server.pluginManager.registerSuspendingEvents(ActionListener, this)
         }
+
+        if (Essentials.isItemEnabled()) {
+            server.pluginManager.registerSuspendingEvents(ItemListener, this)
+        }
+
+        if (Essentials.isJoinEnabled()) {
+            server.pluginManager.registerSuspendingEvents(JoinListener, this)
+        }
     }
 
     private fun initialize() {

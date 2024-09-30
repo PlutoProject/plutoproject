@@ -13,6 +13,28 @@ val YUME_MAIN_TITLE = component {
     text("手账")
 }
 
+val YUME_MAIN_FIRST_OPEN_PROMPT = component {
+    text("小提示: 你可以使用 ") with mochaText
+    keybind("key.sneak") with mochaLavender
+    text(" + ") with mochaLavender
+    keybind("key.swapOffhand") with mochaLavender
+    text(" 或 ") with mochaText
+    text("/menu ") with mochaLavender
+    text("来打开「手账」") with mochaText
+}
+
+val YUME_MAIN_FIRST_OPEN_PROMPT_BEDROCK = component {
+    text("小提示: 你可以使用 ") with mochaText
+    text("/menu ") with mochaLavender
+    text("来打开「手账」") with mochaText
+}
+
+val YUME_MAIN_BEDROCK_NOT_AVAILABLE = component {
+    text("正在施工中...") with mochaMaroon
+    newline()
+    text("适用于基岩版的「手账」仍在开发，将在之后的版本中加入") with mochaSubtext0
+}
+
 val YUME_MAIN_TAB_LORE = listOf(
     Component.empty(),
     component {

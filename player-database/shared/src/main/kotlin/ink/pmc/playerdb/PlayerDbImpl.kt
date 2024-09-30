@@ -62,7 +62,7 @@ class PlayerDbImpl : PlayerDb, KoinComponent {
 
     override suspend fun create(id: UUID): Database {
         return DatabaseImpl(DatabaseModel(id.toString(), BsonDocument())).also {
-            it.saveOrUpdate()
+            it.update()
             loadedDatabases.put(id, CompletableFuture.completedFuture(it))
         }
     }

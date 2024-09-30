@@ -104,6 +104,16 @@ class EssentialsConfig(private val config: Config) : Config by config {
         val bedrockTeleportOperation: Boolean get() = get("action.bedrock.teleport-operation")
     }
 
+    inner class Item {
+        val enabled: Boolean get() = get("item.enabled")
+        val menu: Boolean get() = get("item.menu")
+    }
+
+    inner class Join {
+        val enabled: Boolean get() = get("join.enabled")
+        val menuItem: Boolean get() = get("join.menu-item")
+    }
+
     inner class Commands {
         operator fun get(name: String): Boolean {
             return config.get("commands.$name") ?: false

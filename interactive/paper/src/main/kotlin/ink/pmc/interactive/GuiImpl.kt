@@ -3,6 +3,7 @@ package ink.pmc.interactive
 import ink.pmc.interactive.api.*
 import ink.pmc.interactive.form.FormScope
 import ink.pmc.interactive.inventory.InventoryScope
+import ink.pmc.utils.bedrock.isFloodgate
 import org.bukkit.entity.Player
 import java.util.concurrent.ConcurrentHashMap
 

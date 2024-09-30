@@ -47,6 +47,6 @@ interface Database {
 
     fun clear()
 
-    suspend fun saveOrUpdate()
+    suspend fun update()
 
 }

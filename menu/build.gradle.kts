@@ -6,6 +6,7 @@ subprojects {
         compileOnly(project(":essentials:paper"))
         compileOnly(project(":daily:paper"))
         compileOnly(project(":daily:api"))
+        compileOnly(project(":player-database:api"))
         compileOnly(rootProject.libs.coreprotect)
     }
 }
