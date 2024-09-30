@@ -39,7 +39,7 @@ private val NAVIGATE_LORE_NEXT = component {
 }
 
 private val NAVIGATE_LORE_RESET = component {
-    text("中键 ") with mochaLavender without italic()
+    text("Shift + 左键 ") with mochaLavender without italic()
     text("回到现在") with mochaText without italic()
 }
 

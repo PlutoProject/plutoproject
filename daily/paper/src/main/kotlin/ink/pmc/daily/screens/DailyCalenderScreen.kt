@@ -267,7 +267,7 @@ class DailyCalenderScreen : Screen {
                         whoClicked.playSound(UI_PAGING_SOUND)
                     }
 
-                    ClickType.MIDDLE -> {
+                    ClickType.SHIFT_LEFT -> {
                         yearMonth = now
                         whoClicked.playSound(UI_PAGING_SOUND)
                     }
