@@ -3,7 +3,6 @@ package ink.pmc.essentials.item
 import ink.pmc.advkt.component.italic
 import ink.pmc.advkt.component.text
 import ink.pmc.essentials.plugin
-import ink.pmc.utils.dsl.ItemStackDsl
 import ink.pmc.utils.dsl.itemStack
 import ink.pmc.utils.visual.mochaLavender
 import ink.pmc.utils.visual.mochaSubtext0

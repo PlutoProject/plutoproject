@@ -55,8 +55,8 @@ import org.koin.core.component.inject
 import kotlin.time.Duration.Companion.seconds
 
 private const val PANE_COLUMNS = 4
-private const val PANE_COLUME_WIDTH = 7
-private const val PANE_GRIDS = PANE_COLUMNS * PANE_COLUME_WIDTH
+private const val PANE_COLUMN_WIDTH = 7
+private const val PANE_GRIDS = PANE_COLUMNS * PANE_COLUMN_WIDTH
 private const val FIRST_OPEN_PROMPT_KEY = "yume_main.showed_first_open_prompt"
 
 class YumeMainMenuScreen : Screen, KoinComponent {
@@ -131,7 +131,7 @@ class YumeMainMenuScreen : Screen, KoinComponent {
             modifier = Modifier.height(PANE_COLUMNS).fillMaxWidth(),
             horizontalArrangement = Arrangement.Center
         ) {
-            Box(modifier = Modifier.fillMaxHeight().width(PANE_COLUME_WIDTH)) {
+            Box(modifier = Modifier.fillMaxHeight().width(PANE_COLUMN_WIDTH)) {
                 VerticalGrid(modifier = Modifier.fillMaxSize()) {
                     repeat(PANE_GRIDS) {
                         Space()
