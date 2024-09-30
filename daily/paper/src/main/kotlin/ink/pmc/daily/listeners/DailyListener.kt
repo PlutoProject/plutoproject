@@ -21,8 +21,19 @@ object DailyListener : Listener, KoinComponent {
 
     @EventHandler
     fun PlayerJoinEvent.e() {
+        fun sendPrompt() {
+            if (!player.isFloodgate) {
+                player.sendMessage(PLAYER_NOT_CHECKIN_JOIN)
+            } else {
+                player.sendMessage(PLAYER_NOT_CHECKIN_JOIN_BEDROCK)
+            }
+        }
+
         submitAsyncIO {
-            val user = daily.getUser(player) ?: return@submitAsyncIO
+            val user = daily.getUser(player) ?: run {
+                sendPrompt()
+                return@submitAsyncIO
+            }
             val now = LocalDate.now()
 
             if (user.isCheckedInToday()) return@submitAsyncIO
@@ -31,11 +42,7 @@ object DailyListener : Listener, KoinComponent {
             if (user.lastCheckInDate?.month != now.month || !user.isCheckedInYesterday()) {
                 user.clearAccumulation()
             }
-            if (!player.isFloodgate) {
-                player.sendMessage(PLAYER_NOT_CHECKIN_JOIN)
-            } else {
-                player.sendMessage(PLAYER_NOT_CHECKIN_JOIN_BEDROCK)
-            }
+            sendPrompt()
         }
     }
 

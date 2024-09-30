@@ -115,7 +115,7 @@ val PLAYER_NOT_CHECKIN_JOIN = component {
 }
 
 val PLAYER_NOT_CHECKIN_JOIN_BEDROCK = component {
-    text("✨ 今日尚未到访，到访可获取货币奖励") with mochaText
+    text("今日尚未到访，到访可获取货币奖励") with mochaText
     newline()
     text("输入 ") with mochaText
     text("/checkin ") with mochaLavender
