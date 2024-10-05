@@ -10,7 +10,6 @@ import ink.pmc.utils.visual.mochaMaroon
 import ink.pmc.utils.visual.mochaPink
 import ink.pmc.utils.visual.mochaSubtext0
 import ink.pmc.utils.visual.mochaText
-import ink.pmc.whitelist.profile.BedrockProfileFetcher
 import ink.pmc.whitelist.profile.MojangProfileFetcher
 import ink.pmc.whitelist.profile.ProfileFetcher
 import kotlinx.coroutines.TimeoutCancellationException
@@ -76,19 +75,9 @@ fun VelocityCm.whitelist() {
 
     command(
         addBuilder
-            .literal("mojang")
             .required("name", StringParser.stringParser())
             .suspendingHandler {
                 it.handleAdd(it.get("name"), MojangProfileFetcher)
-            }
-    )
-
-    command(
-        addBuilder
-            .literal("bedrock")
-            .required("name", StringParser.stringParser())
-            .suspendingHandler {
-                it.handleAdd(it.get("name"), BedrockProfileFetcher)
             }
     )
 }

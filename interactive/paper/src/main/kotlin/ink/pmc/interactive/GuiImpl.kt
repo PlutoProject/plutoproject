@@ -1,27 +1,20 @@
 package ink.pmc.interactive
 
 import ink.pmc.interactive.api.*
-import ink.pmc.interactive.form.FormScope
 import ink.pmc.interactive.inventory.InventoryScope
-import ink.pmc.utils.bedrock.isFloodgate
 import org.bukkit.entity.Player
 import java.util.concurrent.ConcurrentHashMap
 
 class GuiImpl : Gui {
 
     private val inventoryScopes = ConcurrentHashMap<Player, GuiInventoryScope>()
-    private val formScopes = ConcurrentHashMap<Player, GuiFormScope>()
 
     override fun get(player: Player): GuiScope<*>? {
-        return inventoryScopes[player] ?: return formScopes[player]
+        return inventoryScopes[player]
     }
 
     override fun getInventory(player: Player): GuiInventoryScope? {
         return inventoryScopes[player]
-    }
-
-    override fun getForm(player: Player): GuiFormScope? {
-        return formScopes[player]
     }
 
     override fun has(player: Player): Boolean {
@@ -32,9 +25,6 @@ class GuiImpl : Gui {
         return getInventory(player) != null
     }
 
-    override fun hasForm(player: Player): Boolean {
-        return getForm(player) != null
-    }
 
     private fun disposeExistedScope(player: Player) {
         if (!has(player)) return
@@ -49,17 +39,9 @@ class GuiImpl : Gui {
         }
     }
 
-    override fun startForm(player: Player, contents: ComposableFunction): GuiFormScope {
-        disposeExistedScope(player)
-        return FormScope(player, contents).also {
-            formScopes[player] = it
-        }
-    }
-
     override fun removeScope(scope: GuiScope<*>) {
         if (!scope.isDisposed) scope.dispose()
         inventoryScopes.values.remove(scope)
-        formScopes.values.remove(scope)
     }
 
     override fun dispose(player: Player) {
@@ -68,9 +50,7 @@ class GuiImpl : Gui {
 
     override fun disposeAll() {
         inventoryScopes.values.forEach { it.dispose() }
-        formScopes.values.forEach { it.dispose() }
         inventoryScopes.clear()
-        formScopes.clear()
     }
 
 }

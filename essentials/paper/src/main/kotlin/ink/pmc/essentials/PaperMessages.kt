@@ -63,10 +63,6 @@ val COMMAND_HAT_SUCCEED = component {
     text("享受你的新帽子吧！") with mochaPink
 }
 
-val COMMAND_HAT_BEDROCK = component {
-    text("由于基岩版限制，戴在头部的非装备物品无法正常显示") with mochaSubtext0
-}
-
 val COMMAND_HAT_FAILED_EMPTY_HAND = component {
     text("你的手上似乎空空如也") with mochaMaroon
     newline()
@@ -376,12 +372,6 @@ fun TELEPORT_OPERATION(id: UUID) = component {
     text("[❌ 拒绝] ") with mochaMaroon with showText { text("点击以拒绝") with mochaMaroon } with runCommand("/essentials:tpdeny $id")
 }
 
-val TELEPORT_OPERATION_BEDROCK = component {
-    text("✔ 下蹲并抬头至顶以接受") with mochaGreen
-    newline()
-    text("× 下蹲并低头置底以拒绝") with mochaMaroon
-}
-
 val COMMAND_ETP_SUCCEED = component {
     text("已传送至 ") with mochaPink
     text("<location> ") with mochaText
@@ -642,10 +632,6 @@ val COMMAND_IF_FAILED_NO_FRAME = component {
 
 val COMMAND_IF_INV_ON_SUCCEED = component {
     text("已将你面前的展示框隐藏") with mochaPink
-}
-
-val COMMAND_IF_INV_BEDROCK = component {
-    text("由于基岩版限制，无法显示展示框的隐形效果") with mochaSubtext0
 }
 
 val COMMAND_IF_INV_OFF_SUCCEED = component {
