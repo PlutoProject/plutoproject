@@ -23,12 +23,6 @@ val YUME_MAIN_FIRST_OPEN_PROMPT = component {
     text("来打开「手账」") with mochaText
 }
 
-val YUME_MAIN_FIRST_OPEN_PROMPT_BEDROCK = component {
-    text("小提示: 你可以使用 ") with mochaText
-    text("/menu ") with mochaLavender
-    text("来打开「手账」") with mochaText
-}
-
 val YUME_MAIN_TAB_LORE = listOf(
     Component.empty(),
     component {

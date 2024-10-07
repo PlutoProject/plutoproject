@@ -66,6 +66,16 @@ class YumeMainMenuScreen : Screen, KoinComponent {
 
     @Composable
     override fun Content() {
+        val player = LocalPlayer.current
+
+        LaunchedEffect(Unit) {
+            val db = PlayerDb.getOrCreate(player.uniqueId)
+            if (db.getBoolean(FIRST_OPEN_PROMPT_KEY)) return@LaunchedEffect
+            player.sendMessage(YUME_MAIN_FIRST_OPEN_PROMPT)
+            db[FIRST_OPEN_PROMPT_KEY] = true
+            db.update()
+        }
+
         Chest(title = YUME_MAIN_TITLE, modifier = Modifier.height(6)) {
             Box(modifier = Modifier.fillMaxSize()) {
                 Background()
