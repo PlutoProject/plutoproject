@@ -15,7 +15,6 @@ interface PlayerWrapper<T> : SenderWrapper<T> {
     val uuid: UUID
     val name: String
     val displayName: Component
-    val isFloodgate: Boolean
 
     fun showTitle(content: Title)
 

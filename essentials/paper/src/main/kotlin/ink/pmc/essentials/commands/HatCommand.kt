@@ -2,7 +2,6 @@ package ink.pmc.essentials.commands
 
 import ink.pmc.essentials.*
 import ink.pmc.utils.annotation.Command
-import ink.pmc.utils.bedrock.isFloodgate
 import ink.pmc.utils.chat.NO_PERMISSON
 import ink.pmc.utils.chat.replace
 import ink.pmc.utils.command.checkPlayer
@@ -56,9 +55,6 @@ fun Cm.hat(aliases: Array<String>) {
                 }
 
                 sendMessage(COMMAND_HAT_SUCCEED)
-                if (isFloodgate) {
-                    sendMessage(COMMAND_HAT_BEDROCK)
-                }
             }
         }
     }

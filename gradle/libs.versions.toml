@@ -64,7 +64,6 @@ ktor-serialization = { module = "io.ktor:ktor-serialization-kotlinx-json-jvm", v
 ktor-netty = { module = "io.ktor:ktor-server-netty-jvm", version.ref = "ktor" }
 ktor-config = { module = "io.ktor:ktor-server-config-yaml", version.ref = "ktor" }
 adventure-kt = { module = "ink.pmc.advkt:core", version = "1.0.0-20240615.071613-4" }
-floodgate = { module = "org.geysermc.floodgate:floodgate", version = "1.0.0" }
 kotlin-scripting-common = { module = "org.jetbrains.kotlin:kotlin-scripting-common", version.ref = "kotlin" }
 kotlin-scripting-jvm = { module = "org.jetbrains.kotlin:kotlin-scripting-jvm", version.ref = "kotlin" }
 kotlin-scripting-jvm-host = { module = "org.jetbrains.kotlin:kotlin-scripting-jvm-host", version.ref = "kotlin" }
@@ -78,9 +77,7 @@ classgraph = { module = "io.github.classgraph:classgraph", version = "4.8.176" }
 vault-api = { module = "com.github.MilkBowl:VaultAPI", version = "1.7" }
 voyager-navigator = { module = "cafe.adriel.voyager:voyager-navigator", version = "1.1.0-beta02" }
 anvilGui = { module = "net.wesjd:anvilgui", version = "1.10.1-SNAPSHOT" }
-floodgateApi = { module = "org.geysermc.floodgate:api", version = "2.2.3-SNAPSHOT" }
 coreprotect = { module = "net.coreprotect:coreprotect", version = "22.4" }
-geyserApi = { module = "org.geysermc.geyser:api", version = "2.4.2-SNAPSHOT" }
 huskHomes = { module = "net.william278.huskhomes:huskhomes-bukkit", version = "4.7" }
 
 [bundles]

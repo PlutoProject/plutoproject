@@ -1,10 +1,8 @@
 package ink.pmc.daily.listeners
 
 import ink.pmc.daily.PLAYER_NOT_CHECKIN_JOIN
-import ink.pmc.daily.PLAYER_NOT_CHECKIN_JOIN_BEDROCK
 import ink.pmc.daily.api.Daily
 import ink.pmc.daily.checkCheckInDate
-import ink.pmc.utils.bedrock.isFloodgate
 import ink.pmc.utils.concurrent.submitAsyncIO
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -22,11 +20,7 @@ object DailyListener : Listener, KoinComponent {
     @EventHandler
     fun PlayerJoinEvent.e() {
         fun sendPrompt() {
-            if (!player.isFloodgate) {
-                player.sendMessage(PLAYER_NOT_CHECKIN_JOIN)
-            } else {
-                player.sendMessage(PLAYER_NOT_CHECKIN_JOIN_BEDROCK)
-            }
+            player.sendMessage(PLAYER_NOT_CHECKIN_JOIN)
         }
 
         submitAsyncIO {

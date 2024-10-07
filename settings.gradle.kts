@@ -14,8 +14,10 @@ plugins {
 
 rootProject.name = "plutoproject"
 
+/*
 include("bedrock-adaptive")
 include("bedrock-adaptive:velocity")
+*/
 
 include("dependency-loader")
 include("dependency-loader:paper")

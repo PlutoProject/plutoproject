@@ -20,10 +20,6 @@ val STAND_UP = component {
     text(" 键起身") with mochaPink
 }
 
-val STAND_UP_BE = component {
-    text("按下潜行键起身") with mochaPink
-}
-
 val ILLEGAL_LOC = component {
     text("无法在此处坐下，请检查是否有实体方块以及足够的空间") with mochaMaroon
 }

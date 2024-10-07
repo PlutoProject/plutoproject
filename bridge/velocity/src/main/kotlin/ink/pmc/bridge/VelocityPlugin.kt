@@ -7,8 +7,6 @@ import com.velocitypowered.api.event.proxy.ProxyInitializeEvent
 import com.velocitypowered.api.plugin.PluginContainer
 import com.velocitypowered.api.plugin.annotation.DataDirectory
 import com.velocitypowered.api.proxy.ProxyServer
-import ink.pmc.bridge.proto.GeyserBridgeRpc
-import ink.pmc.rpc.api.RpcServer
 import ink.pmc.utils.platform.proxy
 import java.nio.file.Path
 import java.util.logging.Logger
@@ -24,9 +22,6 @@ class VelocityPlugin @Inject constructor(suspendingPluginContainer: SuspendingPl
 
     @Inject
     fun bridgePluginVelocity(server: ProxyServer, logger: Logger, @DataDirectory dataDirectoryPath: Path) {
-        RpcServer.apply {
-            addService(GeyserBridgeRpc())
-        }
     }
 
     @Subscribe

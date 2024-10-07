@@ -39,7 +39,6 @@ import ink.pmc.menu.economy
 import ink.pmc.menu.inspecting
 import ink.pmc.menu.messages.*
 import ink.pmc.playerdb.api.PlayerDb
-import ink.pmc.utils.bedrock.isFloodgate
 import ink.pmc.utils.chat.MESSAGE_SOUND
 import ink.pmc.utils.chat.UI_INVALID_SOUND
 import ink.pmc.utils.chat.UI_SUCCEED_SOUND
@@ -67,25 +66,6 @@ class YumeMainMenuScreen : Screen, KoinComponent {
 
     @Composable
     override fun Content() {
-        val player = LocalPlayer.current
-
-        if (player.isFloodgate) {
-            player.sendMessage(YUME_MAIN_BEDROCK_NOT_AVAILABLE)
-            return
-        }
-
-        LaunchedEffect(Unit) {
-            val db = PlayerDb.getOrCreate(player.uniqueId)
-            if (db.getBoolean(FIRST_OPEN_PROMPT_KEY)) return@LaunchedEffect
-            if (!player.isFloodgate) {
-                player.sendMessage(YUME_MAIN_FIRST_OPEN_PROMPT)
-            } else {
-                player.sendMessage(YUME_MAIN_FIRST_OPEN_PROMPT_BEDROCK)
-            }
-            db[FIRST_OPEN_PROMPT_KEY] = true
-            db.update()
-        }
-
         Chest(title = YUME_MAIN_TITLE, modifier = Modifier.height(6)) {
             Box(modifier = Modifier.fillMaxSize()) {
                 Background()

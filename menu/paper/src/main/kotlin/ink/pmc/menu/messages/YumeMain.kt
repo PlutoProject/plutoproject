@@ -29,12 +29,6 @@ val YUME_MAIN_FIRST_OPEN_PROMPT_BEDROCK = component {
     text("来打开「手账」") with mochaText
 }
 
-val YUME_MAIN_BEDROCK_NOT_AVAILABLE = component {
-    text("正在施工中...") with mochaMaroon
-    newline()
-    text("适用于基岩版的「手账」仍在开发，将在之后的版本中加入") with mochaSubtext0
-}
-
 val YUME_MAIN_TAB_LORE = listOf(
     Component.empty(),
     component {

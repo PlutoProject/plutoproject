@@ -4,7 +4,6 @@ import ink.pmc.advkt.component.RootComponentKt
 import ink.pmc.advkt.sound.SoundKt
 import ink.pmc.advkt.title.ComponentTitleKt
 import ink.pmc.advkt.title.TitleKt
-import ink.pmc.utils.bedrock.isFloodgate
 import ink.pmc.utils.multiplaform.player.PlayerWrapper
 import ink.pmc.utils.player.switchServer
 import net.kyori.adventure.sound.Sound
@@ -21,8 +20,6 @@ class PaperPlayerWrapper(private val player: Player) : PlayerWrapper<Player>, Pa
         get() = player.name
     override val displayName: Component
         get() = player.displayName()
-    override val isFloodgate: Boolean
-        get() = player.isFloodgate
 
     override fun showTitle(content: Title) {
         player.showTitle(content)

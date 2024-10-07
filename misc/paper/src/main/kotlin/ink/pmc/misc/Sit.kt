@@ -1,7 +1,6 @@
 package ink.pmc.misc
 
 import ink.pmc.misc.api.sit.*
-import ink.pmc.utils.bedrock.isFloodgate
 import ink.pmc.utils.concurrent.submitAsync
 import ink.pmc.utils.entity.ensureThreadSafe
 import ink.pmc.utils.world.ensureThreadSafe
@@ -80,11 +79,6 @@ fun runActionBarOverrideTask() {
     submitAsync {
         while (!disabled) {
             sitManager.sitters.forEach {
-                if (it.isFloodgate) {
-                    it.sendActionBar(STAND_UP_BE)
-                    return@forEach
-                }
-
                 it.sendActionBar(STAND_UP)
             }
             delay(5)

@@ -2,7 +2,6 @@ package ink.pmc.essentials.commands
 
 import ink.pmc.essentials.*
 import ink.pmc.utils.annotation.Command
-import ink.pmc.utils.bedrock.isFloodgate
 import ink.pmc.utils.chat.replace
 import ink.pmc.utils.command.checkPlayer
 import ink.pmc.utils.concurrent.sync
@@ -100,9 +99,6 @@ private fun Player.handleOperation(operation: Operation) {
         if (!inv) {
             inv = true
             player.sendMessage(COMMAND_IF_INV_ON_SUCCEED)
-            if (player.isFloodgate) {
-                player.sendMessage(COMMAND_IF_INV_BEDROCK)
-            }
             return
         }
         inv = false
