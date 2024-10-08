@@ -13,4 +13,6 @@ interface OptionsContainer {
     fun <T : Any> setEntry(descriptor: OptionDescriptor<T>, value: T)
 
     fun removeEntry(descriptor: OptionDescriptor<*>)
+
+    suspend fun save()
 }
