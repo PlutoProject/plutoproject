@@ -12,7 +12,7 @@ import java.util.*
 
 class OptionsContainerImpl(
     override val owner: UUID,
-    private val entriesMap: Map<String, OptionEntry<*>>
+    private val entriesMap: MutableMap<String, OptionEntry<*>>
 ) : OptionsContainer, KoinComponent {
     private val repo by inject<OptionsContainerRepository>()
     override val entries: List<OptionEntry<*>>

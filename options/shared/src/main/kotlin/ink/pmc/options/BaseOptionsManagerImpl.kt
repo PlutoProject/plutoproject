@@ -48,7 +48,7 @@ abstract class BaseOptionsManagerImpl : OptionsManager, KoinComponent {
 
     override suspend fun createContainer(uuid: UUID): OptionsContainer {
         check(getContainer(uuid) == null) { "OptionContainer for $uuid already existed" }
-        return OptionsContainerImpl(uuid, mapOf()).also {
+        return OptionsContainerImpl(uuid, mutableMapOf()).also {
             save(it)
         }
     }
