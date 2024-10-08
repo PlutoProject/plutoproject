@@ -126,3 +126,7 @@ include("player-database:paper")
 include("player-database:proto")
 
 include("options")
+include("options:api")
+include("options:shared")
+include("options:paper")
+include("options:velocity")
