@@ -1,6 +1,6 @@
 package ink.pmc.options.api
 
-interface OptionEntry<T> {
+interface OptionEntry<T : Any> {
     val descriptor: OptionDescriptor<T>
     val value: T
 

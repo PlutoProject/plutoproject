@@ -4,7 +4,7 @@ import ink.pmc.options.api.EntryValueType
 import ink.pmc.options.api.OptionDescriptor
 import ink.pmc.options.api.OptionEntry
 
-class OptionEntryImpl<T>(
+class OptionEntryImpl<T : Any>(
     override val descriptor: OptionDescriptor<T>,
     override val value: T
 ) : OptionEntry<T> {
@@ -50,7 +50,7 @@ class OptionEntryImpl<T>(
 
     override fun objectValue(): T {
         val objClass = descriptor.objectClass
-        check(objClass != null) { "Object class cannot be null: ${descriptor.key}" }
+        checkNotNull(objClass) { "Object class cannot be null: ${descriptor.key}" }
         check(descriptor.type == EntryValueType.OBJECT && objClass.isInstance(value)) { "${typeCheckMsg(descriptor.key)} ${objClass.name}" }
         return value
     }

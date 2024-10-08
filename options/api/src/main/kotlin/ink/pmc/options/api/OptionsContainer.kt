@@ -1,11 +1,16 @@
 package ink.pmc.options.api
 
+import java.util.UUID
+
 interface OptionsContainer {
-    fun <T> contains(descriptor: OptionDescriptor<T>): Boolean
+    val owner: UUID
+    val entries: List<OptionEntry<*>>
 
-    fun <T> getEntry(descriptor: OptionDescriptor<T>): OptionEntry<T>?
+    fun <T : Any> contains(descriptor: OptionDescriptor<T>): Boolean
 
-    fun <T> setEntry(descriptor: OptionDescriptor<T>, value: T)
+    fun <T : Any> getEntry(descriptor: OptionDescriptor<T>): OptionEntry<T>?
+
+    fun <T : Any> setEntry(descriptor: OptionDescriptor<T>, value: T)
 
     fun removeEntry(descriptor: OptionDescriptor<*>)
 }
