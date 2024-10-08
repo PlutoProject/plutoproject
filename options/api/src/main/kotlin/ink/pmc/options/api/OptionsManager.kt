@@ -31,5 +31,7 @@ interface OptionsManager {
 
     fun registerOptionDescriptor(descriptor: OptionDescriptor<*>)
 
+    fun getOptionDescriptor(key: String): OptionDescriptor<*>?
+
     fun close()
 }

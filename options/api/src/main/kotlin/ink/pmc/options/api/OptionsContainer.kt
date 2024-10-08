@@ -14,5 +14,7 @@ interface OptionsContainer {
 
     fun removeEntry(descriptor: OptionDescriptor<*>)
 
+    suspend fun reloadEntry(descriptor: OptionDescriptor<*>)
+
     suspend fun save()
 }

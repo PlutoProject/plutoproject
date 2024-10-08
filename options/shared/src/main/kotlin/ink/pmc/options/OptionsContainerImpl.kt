@@ -43,6 +43,16 @@ class OptionsContainerImpl(
         entriesMap.remove(descriptor.key)
     }
 
+    override suspend fun reloadEntry(descriptor: OptionDescriptor<*>) {
+        val key = descriptor.key
+        val model = checkNotNull(repo.findById(owner)) { "Entry reloading failed, cannot fetch model of $owner" }
+        val entryModel = model.entries.firstOrNull { it.key == key }
+        checkNotNull(entryModel) { "Entry reloading failed, cannot fetch entry $key" }
+        val entry = checkNotNull(createEntryFromModel(entryModel)) { "Entry reloading failed, cannot load entry: $key" }
+        entriesMap.remove(key)
+        entriesMap[key] = entry
+    }
+
     override suspend fun save() {
         repo.saveOrUpdate(this.toModel())
     }
