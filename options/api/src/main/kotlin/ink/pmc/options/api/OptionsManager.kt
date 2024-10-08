@@ -15,5 +15,5 @@ interface OptionsManager {
 
     suspend fun getContainerOrCreate(player: PlayerWrapper<*>): OptionsContainer
 
-    fun registerOptionDescriptor(descriptor: OptionsDescriptor<*>)
+    fun registerOptionDescriptor(descriptor: OptionDescriptor<*>)
 }

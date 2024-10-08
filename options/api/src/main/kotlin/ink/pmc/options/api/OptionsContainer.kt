@@ -1,11 +1,11 @@
 package ink.pmc.options.api
 
 interface OptionsContainer {
-    fun contains(descriptor: OptionsDescriptor<*>)
+    fun <T> contains(descriptor: OptionDescriptor<T>): Boolean
 
-    fun getEntry(descriptor: OptionsDescriptor<*>): OptionEntry<*>?
+    fun <T> getEntry(descriptor: OptionDescriptor<T>): OptionEntry<T>?
 
-    fun <T> setEntry(descriptor: OptionsDescriptor<T>, value: T)
+    fun <T> setEntry(descriptor: OptionDescriptor<T>, value: T)
 
-    fun removeEntry(descriptor: OptionsDescriptor<*>)
+    fun removeEntry(descriptor: OptionDescriptor<*>)
 }

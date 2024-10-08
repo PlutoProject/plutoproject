@@ -1,7 +1,7 @@
 package ink.pmc.options.api
 
 interface OptionEntry<T> {
-    val key: String
+    val descriptor: OptionDescriptor<T>
     val value: T
 
     fun intValue(): Int
@@ -20,5 +20,5 @@ interface OptionEntry<T> {
 
     fun stringValue(): String
 
-    fun <T> objectValue(): T
+    fun objectValue(): T
 }
