@@ -7,10 +7,8 @@ import ink.pmc.options.api.OptionsContainer
 import ink.pmc.options.api.OptionsManager
 import ink.pmc.options.models.OptionEntryModel
 import ink.pmc.options.repositories.OptionsContainerRepository
-import ink.pmc.utils.concurrent.submitAsync
 import ink.pmc.utils.json.toObject
 import ink.pmc.utils.multiplaform.player.PlayerWrapper
-import kotlinx.coroutines.delay
 import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.serializerOrNull
@@ -18,14 +16,13 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
-import kotlin.time.Duration.Companion.minutes
 
 @OptIn(InternalSerializationApi::class)
 @Suppress("UNCHECKED_CAST")
 internal fun createEntryFromModel(model: OptionEntryModel): OptionEntry<*>? {
     val descriptor = OptionsManager.getOptionDescriptor(model.key)
     if (descriptor == null) {
-        logger.warning("Descriptor not found for ${model.key}")
+        // logger.warning("Descriptor not found for ${model.key}")
         return null
     }
     return when (descriptor.type) {
@@ -53,31 +50,34 @@ internal fun createEntryFromModel(model: OptionEntryModel): OptionEntry<*>? {
     }
 }
 
-abstract class BaseOptionsManagerImpl : OptionsManager, KoinComponent {
-    private var isClosed = false
+class OptionsManagerImpl : OptionsManager, KoinComponent {
     private val repo by inject<OptionsContainerRepository>()
     private val registeredDescriptors = mutableMapOf<String, OptionDescriptor<*>>()
-    private val loadedContainers = ConcurrentHashMap<UUID, OptionsContainer>()
-
-    init {
-        submitAsync {
-            while (!isClosed) {
-                delay(10.minutes)
-                loadedContainers.entries.removeIf {
-                    !isPlayerOnline(it.key)
-                }
-            }
-        }
-    }
-
-    abstract fun isPlayerOnline(uuid: UUID): Boolean
+    private val loadedContainersMap = ConcurrentHashMap<UUID, OptionsContainer>()
+    override val loadedContainers
+        get() = loadedContainersMap.values.toList()
 
     override fun isContainerLoaded(uuid: UUID): Boolean {
-        return loadedContainers.containsKey(uuid)
+        return loadedContainersMap.containsKey(uuid)
     }
 
     override fun unloadContainer(uuid: UUID) {
-        loadedContainers.remove(uuid)
+        loadedContainersMap.remove(uuid)
+    }
+
+    override fun getLoadedContainer(uuid: UUID): OptionsContainer? {
+        return loadedContainersMap[uuid]
+    }
+
+    private suspend fun loadContainer(uuid: UUID): OptionsContainer? {
+        val model = repo.findById(uuid) ?: return null
+        val entriesMap = mutableMapOf<String, OptionEntry<*>>()
+        model.entries.forEach {
+            createEntryFromModel(it)?.let { entry -> entriesMap[entry.descriptor.key] = entry }
+        }
+        return OptionsContainerImpl(uuid, entriesMap).also {
+            loadedContainersMap[uuid] = it
+        }
     }
 
     override suspend fun createContainer(uuid: UUID): OptionsContainer {
@@ -90,14 +90,9 @@ abstract class BaseOptionsManagerImpl : OptionsManager, KoinComponent {
     override suspend fun createContainer(player: PlayerWrapper<*>): OptionsContainer {
         return createContainer(player.uuid)
     }
-    
+
     override suspend fun getContainer(uuid: UUID): OptionsContainer? {
-        val model = repo.findById(uuid) ?: return null
-        val entriesMap = mutableMapOf<String, OptionEntry<*>>()
-        model.entries.forEach {
-            createEntryFromModel(it)?.let { entry -> entriesMap[entry.descriptor.key] = entry }
-        }
-        return OptionsContainerImpl(uuid, entriesMap)
+        return loadedContainersMap[uuid] ?: loadContainer(uuid)
     }
 
     override suspend fun getContainer(player: PlayerWrapper<*>): OptionsContainer? {
@@ -125,6 +120,14 @@ abstract class BaseOptionsManagerImpl : OptionsManager, KoinComponent {
         container.save()
     }
 
+    override suspend fun save(uuid: UUID) {
+        loadedContainersMap[uuid]?.save()
+    }
+
+    override suspend fun save(player: PlayerWrapper<*>) {
+        save(player.uuid)
+    }
+
     override fun registerOptionDescriptor(descriptor: OptionDescriptor<*>) {
         require(!registeredDescriptors.containsKey(descriptor.key)) { "Descriptor for ${descriptor.key} already registered" }
         registeredDescriptors[descriptor.key] = descriptor
@@ -132,10 +135,5 @@ abstract class BaseOptionsManagerImpl : OptionsManager, KoinComponent {
 
     override fun getOptionDescriptor(key: String): OptionDescriptor<*>? {
         return registeredDescriptors[key]
-    }
-
-    override fun close() {
-        check(!isClosed) { "OptionsManager already closed" }
-        isClosed = true
     }
 }

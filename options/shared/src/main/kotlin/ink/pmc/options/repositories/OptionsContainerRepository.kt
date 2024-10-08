@@ -5,7 +5,7 @@ import com.mongodb.client.model.ReplaceOptions
 import com.mongodb.kotlin.client.coroutine.MongoCollection
 import ink.pmc.options.models.OptionsContainerModel
 import kotlinx.coroutines.flow.firstOrNull
-import java.util.UUID
+import java.util.*
 
 class OptionsContainerRepository(private val collection: MongoCollection<OptionsContainerModel>) {
     private val upsert = ReplaceOptions().upsert(true)
