@@ -14,6 +14,7 @@ plugins {
 
 rootProject.name = "plutoproject"
 
+// 删除 1.2.0
 /*
 include("bedrock-adaptive")
 include("bedrock-adaptive:velocity")
