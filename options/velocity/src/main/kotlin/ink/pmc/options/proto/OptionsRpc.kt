@@ -2,19 +2,19 @@ package ink.pmc.options.proto
 
 import com.google.protobuf.Empty
 import ink.pmc.options.api.OptionsManager
-import ink.pmc.options.proto.ContainerUpdateNotifyOuterClass.ContainerUpdateNotify
+import ink.pmc.options.proto.OptionsUpdateNotifyOuterClass.OptionsUpdateNotify
 import ink.pmc.utils.concurrent.submitAsyncIO
 import ink.pmc.utils.player.uuid
 import ink.pmc.utils.proto.empty
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
-import java.util.UUID
+import java.util.*
 
 object OptionsRpc : OptionsRpcGrpcKt.OptionsRpcCoroutineImplBase() {
     private val id: UUID = UUID.randomUUID()
-    private val broadcast = MutableSharedFlow<ContainerUpdateNotify>()
+    private val broadcast = MutableSharedFlow<OptionsUpdateNotify>()
 
-    override suspend fun notifyContainerUpdate(request: ContainerUpdateNotify): Empty {
+    override suspend fun notifyOptionsUpdate(request: OptionsUpdateNotify): Empty {
         val player = request.player.uuid
         if (OptionsManager.isPlayerLoaded(player)) {
             OptionsManager.reloadOptions(player)
@@ -23,13 +23,13 @@ object OptionsRpc : OptionsRpcGrpcKt.OptionsRpcCoroutineImplBase() {
         return empty
     }
 
-    override fun monitorContainerUpdate(request: Empty): Flow<ContainerUpdateNotify> {
+    override fun monitorOptionsUpdate(request: Empty): Flow<OptionsUpdateNotify> {
         return broadcast
     }
 
     fun notifyBackendContainerUpdate(player: UUID) {
         submitAsyncIO {
-            broadcast.emit(containerUpdateNotify {
+            broadcast.emit(optionsUpdateNotify {
                 serverId = id.toString()
                 this.player = player.toString()
             })
