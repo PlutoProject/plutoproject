@@ -22,6 +22,7 @@ class VelocityPlugin @Inject constructor(suspendingPluginContainer: SuspendingPl
 
     @Inject
     fun velocityOptions(server: ProxyServer, logger: Logger, @DataDirectory dataDirectoryPath: Path) {
+        pluginLogger = logger
         startKoinIfNotPresent {
             modules(commonModule)
         }

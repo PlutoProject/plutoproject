@@ -1,5 +1,5 @@
 package ink.pmc.options
 
-import kotlinx.coroutines.Job
+import java.util.logging.Logger
 
-lateinit var cleanerJob: Job
+lateinit var pluginLogger: Logger

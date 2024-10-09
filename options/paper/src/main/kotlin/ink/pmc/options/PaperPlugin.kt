@@ -9,6 +9,7 @@ import org.koin.core.component.KoinComponent
 @Suppress("UNUSED")
 class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
     override suspend fun onEnableAsync() {
+        pluginLogger = logger
         startKoinIfNotPresent {
             modules(commonModule)
         }
