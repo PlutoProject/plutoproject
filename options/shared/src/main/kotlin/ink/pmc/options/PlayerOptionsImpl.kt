@@ -43,7 +43,7 @@ class PlayerOptionsImpl(
             require(objClass.isInstance(value)) { "Value must be a instance of ${objClass.name}" }
         }
         descriptor.limitation?.let {
-            require(it.match(value)) { "Passed value don't match limitation: $value" }
+            require(it.match(value)) { "Value doesn't match limitation: $value" }
         }
         entriesMap[descriptor.key] = OptionEntryImpl(descriptor, value)
     }
@@ -53,7 +53,7 @@ class PlayerOptionsImpl(
     }
 
     override suspend fun reload() {
-        val model = checkNotNull(repo.findById(player)) { "Options reloading failed, cannot fetch model" }
+        val model = checkNotNull(repo.findById(player)) { "Options reloading failed: Cannot fetch model" }
         entriesMap.clear()
         model.entries.forEach {
             createEntryFromModel(it)?.also { entry -> entriesMap[it.key] = entry }
