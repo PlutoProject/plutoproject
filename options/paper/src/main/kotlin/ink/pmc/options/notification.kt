@@ -32,7 +32,9 @@ fun startMonitorContainerUpdate() {
     monitorJob = submitAsync {
         while (true) {
             try {
-                stub.monitorOptionsUpdate(empty).collect {
+                stub.monitorOptionsUpdate(empty).also {
+                    pluginLogger.info("Monitor stream connected")
+                }.collect {
                     val serverId = it.serverId.uuid
                     val player = it.player.uuid
                     if (!player.isBukkitOnline || serverId == id) {

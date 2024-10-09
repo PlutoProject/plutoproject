@@ -1,6 +1,6 @@
 package ink.pmc.options
 
-import java.util.UUID
+import java.util.*
 
 interface OptionsUpdateNotifier {
     fun notify(player: UUID)

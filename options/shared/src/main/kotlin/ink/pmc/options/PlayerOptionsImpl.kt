@@ -1,9 +1,6 @@
 package ink.pmc.options
 
-import ink.pmc.options.api.EntryValueType
-import ink.pmc.options.api.OptionDescriptor
-import ink.pmc.options.api.OptionEntry
-import ink.pmc.options.api.PlayerOptions
+import ink.pmc.options.api.*
 import ink.pmc.options.models.toModel
 import ink.pmc.options.repositories.OptionsContainerRepository
 import org.koin.core.component.KoinComponent
@@ -25,10 +22,16 @@ class PlayerOptionsImpl(
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : Any> getEntry(descriptor: OptionDescriptor<T>): OptionEntry<T>? {
-        return if (contains(descriptor)) {
-            entriesMap[descriptor.key] as? OptionEntry<T>
-        } else if (descriptor.defaultValue != null) {
-            OptionEntryImpl(descriptor, descriptor.defaultValue!!)
+        val registeredDescriptor = requireNotNull(OptionsManager.getOptionDescriptor(descriptor.key)) {
+            "Descriptor for ${descriptor.key} not registered"
+        } as OptionDescriptor<T>
+        require(registeredDescriptor == descriptor) {
+            "Descriptor for ${descriptor.key} was registered, but not equal to given one"
+        }
+        return if (contains(registeredDescriptor)) {
+            entriesMap[registeredDescriptor.key] as? OptionEntry<T>
+        } else if (registeredDescriptor.defaultValue != null) {
+            OptionEntryImpl(registeredDescriptor, registeredDescriptor.defaultValue!!)
         } else {
             null
         }

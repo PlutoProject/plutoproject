@@ -1,6 +1,6 @@
 package ink.pmc.options.api
 
-import java.util.UUID
+import java.util.*
 
 interface PlayerOptions {
     val player: UUID
