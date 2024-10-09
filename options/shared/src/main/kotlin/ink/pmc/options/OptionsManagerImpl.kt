@@ -69,15 +69,17 @@ class OptionsManagerImpl : OptionsManager, KoinComponent {
         return loadedContainersMap[uuid]
     }
 
-    private suspend fun loadContainer(uuid: UUID): OptionsContainer? {
+    private suspend fun fetchFromDatabase(uuid: UUID): OptionsContainer? {
         val model = repo.findById(uuid) ?: return null
         val entriesMap = mutableMapOf<String, OptionEntry<*>>()
         model.entries.forEach {
             createEntryFromModel(it)?.also { entry -> entriesMap[entry.descriptor.key] = entry }
         }
-        return OptionsContainerImpl(uuid, entriesMap).also {
-            loadedContainersMap[uuid] = it
-        }
+        return OptionsContainerImpl(uuid, entriesMap)
+    }
+
+    override suspend fun loadContainer(uuid: UUID): OptionsContainer? {
+        return fetchFromDatabase(uuid)?.also { loadedContainersMap[uuid] = it }
     }
 
     override suspend fun createContainer(uuid: UUID): OptionsContainer {
@@ -91,8 +93,11 @@ class OptionsManagerImpl : OptionsManager, KoinComponent {
         return createContainer(player.uuid)
     }
 
+    /*
+    * 非在线玩家的 OptionsContainer 不会被持久加载。
+    * */
     override suspend fun getContainer(uuid: UUID): OptionsContainer? {
-        return loadedContainersMap[uuid] ?: loadContainer(uuid)
+        return loadedContainersMap[uuid] ?: fetchFromDatabase(uuid)
     }
 
     override suspend fun getContainer(player: PlayerWrapper<*>): OptionsContainer? {

@@ -15,6 +15,8 @@ interface OptionsManager {
 
     fun getLoadedContainer(uuid: UUID): OptionsContainer?
 
+    suspend fun loadContainer(uuid: UUID): OptionsContainer?
+
     suspend fun createContainer(uuid: UUID): OptionsContainer
 
     suspend fun createContainer(player: PlayerWrapper<*>): OptionsContainer
