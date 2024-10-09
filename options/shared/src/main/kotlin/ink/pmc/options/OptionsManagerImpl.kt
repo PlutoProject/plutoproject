@@ -8,7 +8,6 @@ import ink.pmc.options.api.OptionsManager
 import ink.pmc.options.models.OptionEntryModel
 import ink.pmc.options.repositories.OptionsContainerRepository
 import ink.pmc.utils.json.toObject
-import ink.pmc.utils.multiplaform.player.PlayerWrapper
 import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.serializerOrNull
@@ -89,10 +88,6 @@ class OptionsManagerImpl : OptionsManager, KoinComponent {
         }
     }
 
-    override suspend fun createContainer(player: PlayerWrapper<*>): OptionsContainer {
-        return createContainer(player.uuid)
-    }
-
     /*
     * 非在线玩家的 OptionsContainer 不会被持久加载。
     * */
@@ -100,25 +95,13 @@ class OptionsManagerImpl : OptionsManager, KoinComponent {
         return loadedContainersMap[uuid] ?: fetchFromDatabase(uuid)
     }
 
-    override suspend fun getContainer(player: PlayerWrapper<*>): OptionsContainer? {
-        return getContainer(player.uuid)
-    }
-
     override suspend fun getContainerOrCreate(uuid: UUID): OptionsContainer {
         return getContainer(uuid) ?: createContainer(uuid)
-    }
-
-    override suspend fun getContainerOrCreate(player: PlayerWrapper<*>): OptionsContainer {
-        return getContainerOrCreate(player.uuid)
     }
 
     override suspend fun deleteContainer(uuid: UUID) {
         unloadContainer(uuid)
         repo.deleteById(uuid)
-    }
-
-    override suspend fun deleteContainer(player: PlayerWrapper<*>) {
-        return deleteContainer(player.uuid)
     }
 
     override suspend fun save(container: OptionsContainer) {
@@ -127,10 +110,6 @@ class OptionsManagerImpl : OptionsManager, KoinComponent {
 
     override suspend fun save(uuid: UUID) {
         loadedContainersMap[uuid]?.save()
-    }
-
-    override suspend fun save(player: PlayerWrapper<*>) {
-        save(player.uuid)
     }
 
     override fun registerOptionDescriptor(descriptor: OptionDescriptor<*>) {
