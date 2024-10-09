@@ -2,8 +2,8 @@ package ink.pmc.options.api
 
 import java.util.UUID
 
-interface OptionsContainer {
-    val owner: UUID
+interface PlayerOptions {
+    val player: UUID
     val entries: List<OptionEntry<*>>
 
     fun <T : Any> contains(descriptor: OptionDescriptor<T>): Boolean

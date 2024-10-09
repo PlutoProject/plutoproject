@@ -3,17 +3,17 @@ package ink.pmc.options
 import ink.pmc.options.api.EntryValueType
 import ink.pmc.options.api.OptionDescriptor
 import ink.pmc.options.api.OptionEntry
-import ink.pmc.options.api.OptionsContainer
+import ink.pmc.options.api.PlayerOptions
 import ink.pmc.options.models.toModel
 import ink.pmc.options.repositories.OptionsContainerRepository
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.*
 
-class OptionsContainerImpl(
-    override val owner: UUID,
+class PlayerOptionsImpl(
+    override val player: UUID,
     private val entriesMap: MutableMap<String, OptionEntry<*>>
-) : OptionsContainer, KoinComponent {
+) : PlayerOptions, KoinComponent {
     private val repo by inject<OptionsContainerRepository>()
     override val entries: List<OptionEntry<*>>
         get() = entriesMap.values.toList()
@@ -49,7 +49,7 @@ class OptionsContainerImpl(
     }
 
     override suspend fun reload() {
-        val model = checkNotNull(repo.findById(owner)) { "Container reloading failed, cannot fetch model" }
+        val model = checkNotNull(repo.findById(player)) { "Container reloading failed, cannot fetch model" }
         entriesMap.clear()
         model.entries.forEach {
             createEntryFromModel(it)?.also { entry -> entriesMap[it.key] = entry }

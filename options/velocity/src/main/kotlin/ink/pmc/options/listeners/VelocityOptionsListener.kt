@@ -11,13 +11,13 @@ import org.koin.core.component.KoinComponent
 object VelocityOptionsListener : KoinComponent {
     @Subscribe(order = PostOrder.FIRST)
     suspend fun PostLoginEvent.e() {
-        OptionsManager.getContainer(player.uniqueId)
+        OptionsManager.getOptions(player.uniqueId)
     }
 
     @Subscribe(order = PostOrder.LAST)
     suspend fun DisconnectEvent.e() {
-        if (!OptionsManager.isContainerLoaded(player.uniqueId)) return
+        if (!OptionsManager.isPlayerLoaded(player.uniqueId)) return
         OptionsManager.save(player.uniqueId)
-        OptionsManager.unloadContainer(player.uniqueId)
+        OptionsManager.unloadPlayer(player.uniqueId)
     }
 }

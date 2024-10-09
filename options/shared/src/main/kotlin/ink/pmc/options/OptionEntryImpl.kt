@@ -1,8 +1,48 @@
 package ink.pmc.options
 
 import ink.pmc.options.api.EntryValueType
+import ink.pmc.options.api.EntryValueType.*
 import ink.pmc.options.api.OptionDescriptor
 import ink.pmc.options.api.OptionEntry
+import ink.pmc.options.api.OptionsManager
+import ink.pmc.options.models.OptionEntryModel
+import ink.pmc.utils.json.toObject
+import kotlinx.serialization.InternalSerializationApi
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.serializerOrNull
+
+@OptIn(InternalSerializationApi::class)
+@Suppress("UNCHECKED_CAST")
+internal fun createEntryFromModel(model: OptionEntryModel): OptionEntry<*>? {
+    val descriptor = OptionsManager.getOptionDescriptor(model.key)
+    if (descriptor == null) {
+        // logger.warning("Descriptor not found for ${model.key}")
+        return null
+    }
+    return when (descriptor.type) {
+        INT -> OptionEntryImpl(descriptor as OptionDescriptor<Int>, Json.decodeFromString(model.value))
+        LONG -> OptionEntryImpl(descriptor as OptionDescriptor<Long>, Json.decodeFromString(model.value))
+        SHORT -> OptionEntryImpl(descriptor as OptionDescriptor<Short>, Json.decodeFromString(model.value))
+        BYTE -> OptionEntryImpl(descriptor as OptionDescriptor<Byte>, Json.decodeFromString(model.value))
+        DOUBLE -> OptionEntryImpl(descriptor as OptionDescriptor<Double>, Json.decodeFromString(model.value))
+        FLOAT -> OptionEntryImpl(descriptor as OptionDescriptor<Float>, Json.decodeFromString(model.value))
+        BOOLEAN -> OptionEntryImpl(descriptor as OptionDescriptor<Boolean>, Json.decodeFromString(model.value))
+        STRING -> OptionEntryImpl(descriptor as OptionDescriptor<String>, Json.decodeFromString(model.value))
+        OBJECT -> {
+            val objClass =
+                checkNotNull(descriptor.objectClass) { "Object class cannot be null: ${descriptor.key}" }
+            val kSerializer = objClass.kotlin.serializerOrNull()
+            if (kSerializer != null) {
+                OptionEntryImpl(
+                    descriptor as OptionDescriptor<Any>,
+                    Json.decodeFromString(kSerializer, model.value)
+                )
+            } else {
+                OptionEntryImpl(descriptor as OptionDescriptor<Any>, model.value.toObject(objClass))
+            }
+        }
+    }
+}
 
 class OptionEntryImpl<T : Any>(
     override val descriptor: OptionDescriptor<T>,

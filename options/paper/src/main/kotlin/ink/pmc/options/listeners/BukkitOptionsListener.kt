@@ -11,13 +11,13 @@ import org.bukkit.event.player.PlayerQuitEvent
 object BukkitOptionsListener : Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     suspend fun PlayerJoinEvent.e() {
-        OptionsManager.getContainer(player.uniqueId)
+        OptionsManager.getOptions(player.uniqueId)
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
     suspend fun PlayerQuitEvent.e() {
-        if (!OptionsManager.isContainerLoaded(player.uniqueId)) return
+        if (!OptionsManager.isPlayerLoaded(player.uniqueId)) return
         OptionsManager.save(player.uniqueId)
-        OptionsManager.unloadContainer(player.uniqueId)
+        OptionsManager.unloadPlayer(player.uniqueId)
     }
 }

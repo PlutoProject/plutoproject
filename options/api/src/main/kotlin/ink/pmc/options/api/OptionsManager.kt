@@ -6,25 +6,25 @@ import java.util.*
 interface OptionsManager {
     companion object : OptionsManager by inlinedGet()
 
-    val loadedContainers: List<OptionsContainer>
+    val loadedPlayers: List<PlayerOptions>
 
-    fun isContainerLoaded(uuid: UUID): Boolean
+    fun isPlayerLoaded(uuid: UUID): Boolean
 
-    fun unloadContainer(uuid: UUID)
+    fun unloadPlayer(uuid: UUID)
 
-    fun getLoadedContainer(uuid: UUID): OptionsContainer?
+    fun getLoadedOptions(uuid: UUID): PlayerOptions?
 
-    suspend fun loadContainer(uuid: UUID): OptionsContainer?
+    suspend fun loadOptions(uuid: UUID): PlayerOptions?
 
-    suspend fun createContainer(uuid: UUID): OptionsContainer
+    suspend fun createOptions(uuid: UUID): PlayerOptions
 
-    suspend fun getContainer(uuid: UUID): OptionsContainer?
+    suspend fun getOptions(uuid: UUID): PlayerOptions?
 
-    suspend fun getContainerOrCreate(uuid: UUID): OptionsContainer
+    suspend fun getOptionsOrCreate(uuid: UUID): PlayerOptions
 
-    suspend fun deleteContainer(uuid: UUID)
+    suspend fun deleteOptions(uuid: UUID)
 
-    suspend fun save(container: OptionsContainer)
+    suspend fun save(options: PlayerOptions)
 
     suspend fun save(uuid: UUID)
 
