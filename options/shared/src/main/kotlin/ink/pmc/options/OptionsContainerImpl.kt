@@ -26,6 +26,8 @@ class OptionsContainerImpl(
     override fun <T : Any> getEntry(descriptor: OptionDescriptor<T>): OptionEntry<T>? {
         return if (contains(descriptor)) {
             entriesMap[descriptor.key] as? OptionEntry<T>
+        } else if (descriptor.defaultValue != null) {
+            OptionEntryImpl(descriptor, descriptor.defaultValue!!)
         } else {
             null
         }
@@ -36,6 +38,9 @@ class OptionsContainerImpl(
             val objClass = checkNotNull(descriptor.objectClass) { "Object class cannot be null: ${descriptor.key}" }
             require(objClass.isInstance(value)) { "Value must be a instance of ${objClass.name}" }
         }
+        descriptor.limitation?.let {
+            require(it.match(value)) { "Passed value don't match limitation: $value" }
+        }
         entriesMap[descriptor.key] = OptionEntryImpl(descriptor, value)
     }
 
@@ -43,14 +48,12 @@ class OptionsContainerImpl(
         entriesMap.remove(descriptor.key)
     }
 
-    override suspend fun reloadEntry(descriptor: OptionDescriptor<*>) {
-        val key = descriptor.key
-        val model = checkNotNull(repo.findById(owner)) { "Entry reloading failed, cannot fetch model of $owner" }
-        val entryModel = model.entries.firstOrNull { it.key == key }
-        checkNotNull(entryModel) { "Entry reloading failed, cannot fetch entry $key" }
-        val entry = checkNotNull(createEntryFromModel(entryModel)) { "Entry reloading failed, cannot load entry: $key" }
-        entriesMap.remove(key)
-        entriesMap[key] = entry
+    override suspend fun reload() {
+        val model = checkNotNull(repo.findById(owner)) { "Container reloading failed, cannot fetch model" }
+        entriesMap.clear()
+        model.entries.forEach {
+            createEntryFromModel(it)?.also { entry -> entriesMap[it.key] = entry }
+        }
     }
 
     override suspend fun save() {

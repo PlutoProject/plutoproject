@@ -73,7 +73,7 @@ class OptionsManagerImpl : OptionsManager, KoinComponent {
         val model = repo.findById(uuid) ?: return null
         val entriesMap = mutableMapOf<String, OptionEntry<*>>()
         model.entries.forEach {
-            createEntryFromModel(it)?.let { entry -> entriesMap[entry.descriptor.key] = entry }
+            createEntryFromModel(it)?.also { entry -> entriesMap[entry.descriptor.key] = entry }
         }
         return OptionsContainerImpl(uuid, entriesMap).also {
             loadedContainersMap[uuid] = it
