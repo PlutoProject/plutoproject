@@ -15,6 +15,7 @@ class PlayerOptionsImpl(
     private val entriesMap: MutableMap<String, OptionEntry<*>>
 ) : PlayerOptions, KoinComponent {
     private val repo by inject<OptionsContainerRepository>()
+    private val notifier by inject<OptionsUpdateNotifier>()
     override val entries: List<OptionEntry<*>>
         get() = entriesMap.values.toList()
 
@@ -49,7 +50,7 @@ class PlayerOptionsImpl(
     }
 
     override suspend fun reload() {
-        val model = checkNotNull(repo.findById(player)) { "Container reloading failed, cannot fetch model" }
+        val model = checkNotNull(repo.findById(player)) { "Options reloading failed, cannot fetch model" }
         entriesMap.clear()
         model.entries.forEach {
             createEntryFromModel(it)?.also { entry -> entriesMap[it.key] = entry }
@@ -58,5 +59,6 @@ class PlayerOptionsImpl(
 
     override suspend fun save() {
         repo.saveOrUpdate(this.toModel())
+        notifier.notify(player)
     }
 }

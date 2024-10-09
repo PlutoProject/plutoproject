@@ -29,6 +29,10 @@ class OptionsManagerImpl : OptionsManager, KoinComponent {
         return loadedOptionsMap[uuid]
     }
 
+    override suspend fun reloadOptions(uuid: UUID) {
+        getLoadedOptions(uuid)?.reload()
+    }
+
     private suspend fun fetchFromDatabase(uuid: UUID): PlayerOptions? {
         val model = repo.findById(uuid) ?: return null
         val entriesMap = mutableMapOf<String, OptionEntry<*>>()

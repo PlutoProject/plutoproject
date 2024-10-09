@@ -9,10 +9,17 @@ import com.velocitypowered.api.event.proxy.ProxyShutdownEvent
 import com.velocitypowered.api.plugin.annotation.DataDirectory
 import com.velocitypowered.api.proxy.ProxyServer
 import ink.pmc.options.listeners.VelocityOptionsListener
+import ink.pmc.options.proto.OptionsRpc
+import ink.pmc.rpc.api.RpcServer
 import ink.pmc.utils.inject.startKoinIfNotPresent
 import ink.pmc.utils.platform.proxy
+import org.koin.dsl.module
 import java.nio.file.Path
 import java.util.logging.Logger
+
+private val velocityModule = module {
+    single<OptionsUpdateNotifier> { ProxyOptionsUpdateNotifier() }
+}
 
 @Suppress("UNUSED", "UNUSED_PARAMETER", "UnusedReceiverParameter")
 class VelocityPlugin @Inject constructor(suspendingPluginContainer: SuspendingPluginContainer) {
@@ -24,7 +31,10 @@ class VelocityPlugin @Inject constructor(suspendingPluginContainer: SuspendingPl
     fun velocityOptions(server: ProxyServer, logger: Logger, @DataDirectory dataDirectoryPath: Path) {
         pluginLogger = logger
         startKoinIfNotPresent {
-            modules(commonModule)
+            modules(commonModule, velocityModule)
+        }
+        RpcServer.apply {
+            addService(OptionsRpc)
         }
     }
 

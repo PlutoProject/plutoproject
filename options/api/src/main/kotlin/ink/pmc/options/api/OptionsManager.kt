@@ -14,6 +14,8 @@ interface OptionsManager {
 
     fun getLoadedOptions(uuid: UUID): PlayerOptions?
 
+    suspend fun reloadOptions(uuid: UUID)
+
     suspend fun loadOptions(uuid: UUID): PlayerOptions?
 
     suspend fun createOptions(uuid: UUID): PlayerOptions
