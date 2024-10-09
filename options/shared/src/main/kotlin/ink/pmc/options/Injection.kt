@@ -2,6 +2,7 @@ package ink.pmc.options
 
 import com.mongodb.kotlin.client.coroutine.MongoCollection
 import ink.pmc.options.api.OptionsManager
+import ink.pmc.options.api.factory.OptionDescriptorFactory
 import ink.pmc.options.models.OptionsContainerModel
 import ink.pmc.options.repositories.OptionsContainerRepository
 import ink.pmc.provider.ProviderService
@@ -16,4 +17,5 @@ internal fun getCollection(): MongoCollection<OptionsContainerModel> {
 val commonModule = module {
     single<OptionsContainerRepository> { OptionsContainerRepository(getCollection()) }
     single<OptionsManager> { OptionsManagerImpl() }
+    single<OptionDescriptorFactory> { OptionDescriptorFactoryImpl() }
 }
