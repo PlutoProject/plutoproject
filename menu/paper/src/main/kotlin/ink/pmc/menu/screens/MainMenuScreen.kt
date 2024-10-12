@@ -56,9 +56,9 @@ import kotlin.time.Duration.Companion.seconds
 private const val PANE_COLUMNS = 4
 private const val PANE_COLUMN_WIDTH = 7
 private const val PANE_GRIDS = PANE_COLUMNS * PANE_COLUMN_WIDTH
-private const val FIRST_OPEN_PROMPT_KEY = "yume_main.showed_first_open_prompt"
+private const val FIRST_OPEN_PROMPT_KEY = "main_menu.showed_first_open_prompt"
 
-class YumeMainMenuScreen : Screen, KoinComponent {
+class MainMenuScreen : Screen, KoinComponent {
 
     private val conf by inject<EssentialsConfig>()
 
@@ -367,8 +367,6 @@ class YumeMainMenuScreen : Screen, KoinComponent {
         /*
         * 0 -> 正常展示
         * 1 -> 开启
-        * 2 -> 已开启（过渡）
-        * 3 -> 已关闭（过渡）
         * */
         val state = rememberSaveable { mutableStateOf(if (!player.inspecting) 0 else 1) }
         Item(
@@ -376,15 +374,11 @@ class YumeMainMenuScreen : Screen, KoinComponent {
             name = when (state.value) {
                 0 -> YUME_MAIN_ITEM_HOME_LOOKUP
                 1 -> YUME_MAIN_ITEM_HOME_LOOKUP
-                2 -> YUME_MAIN_ITEM_HOME_LOOKUP_ENABLE
-                3 -> YUME_MAIN_ITEM_HOME_LOOKUP_DISABLE
                 else -> error("Unreachable")
             },
             lore = when (state.value) {
                 0 -> YUME_MAIN_ITEM_HOME_LOOKUP_LORE
                 1 -> YUME_MAIN_ITEM_HOME_LOOKUP_ENABLED_LORE
-                2 -> listOf()
-                3 -> listOf()
                 else -> error("Unreachable")
             },
             enchantmentGlint = state.value > 0,
@@ -395,7 +389,6 @@ class YumeMainMenuScreen : Screen, KoinComponent {
                     when (clickType) {
                         ClickType.LEFT -> {
                             player.inspecting = true
-                            state.stateTransition(2, resume = 1)
                             player.playSound(UI_SUCCEED_SOUND)
                             return@clickable
                         }
@@ -413,7 +406,6 @@ class YumeMainMenuScreen : Screen, KoinComponent {
 
                 if (state.value == 1 && clickType == ClickType.LEFT && player.inspecting) {
                     player.inspecting = false
-                    state.stateTransition(3, resume = 0)
                     player.playSound(UI_SUCCEED_SOUND)
                     return@clickable
                 }

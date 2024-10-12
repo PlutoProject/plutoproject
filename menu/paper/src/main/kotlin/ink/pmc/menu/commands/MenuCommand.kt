@@ -2,7 +2,7 @@ package ink.pmc.menu.commands
 
 import cafe.adriel.voyager.navigator.Navigator
 import ink.pmc.interactive.api.GuiManager
-import ink.pmc.menu.screens.YumeMainMenuScreen
+import ink.pmc.menu.screens.MainMenuScreen
 import ink.pmc.utils.PaperCm
 import ink.pmc.utils.annotation.Command
 import ink.pmc.utils.command.checkPlayer
@@ -16,7 +16,7 @@ fun PaperCm.menu(aliases: Array<String>) {
         handler {
             checkPlayer(sender.sender) {
                 GuiManager.startInventory(this) {
-                    Navigator(YumeMainMenuScreen())
+                    Navigator(MainMenuScreen())
                 }
             }
         }
