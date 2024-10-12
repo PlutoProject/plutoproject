@@ -367,7 +367,7 @@ allprojects {
         dep(rootProject.libs.classgraph)
         dep(provider { compose.runtime })
         dep(provider { compose.runtimeSaveable })
-        dep(rootProject.libs.voyager.navigator)
+        dep(rootProject.libs.bundles.voyager)
         dep(rootProject.libs.anvilGui)
         compileOnly(rootProject.libs.vault.api) {
             isTransitive = false
