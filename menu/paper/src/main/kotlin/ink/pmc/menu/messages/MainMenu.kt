@@ -148,12 +148,12 @@ val YUME_MAIN_ITEM_TP_LORE = listOf(
 val YUME_MAIN_ITEM_TP_EXISTED_LORE = listOf(
     Component.empty(),
     component {
-        text("你还有未完成的传送请求，") with mochaMaroon without italic()
+        text("你还有未完成的传送请求，") with mochaSubtext0 without italic()
     },
     component {
-        text("可使用 ") with mochaMaroon without italic()
-        text("/tpcancel ") with mochaText without italic()
-        text("来取消") with mochaMaroon without italic()
+        text("可使用 ") with mochaSubtext0 without italic()
+        text("/tpcancel ") with mochaLavender without italic()
+        text("来取消") with mochaSubtext0 without italic()
     },
 )
 
@@ -181,17 +181,17 @@ val YUME_MAIN_ITEM_HOME_RTP_LORE = listOf(
 val YUME_MAIN_ITEM_HOME_RTP_COIN_NOT_ENOUGH_LORE = listOf(
     Component.empty(),
     component {
-        text("货币不足，") with mochaMaroon without italic()
+        text("货币不足，") with mochaSubtext0 without italic()
     },
     component {
-        text("进行随机传送需要 ") with mochaMaroon without italic()
+        text("进行随机传送需要 ") with mochaSubtext0 without italic()
         text(YUME_MAIN_RTP_COST) with mochaText without italic()
     },
 )
 
 val YUME_MAIN_ITEM_HOME_RTP_NOT_ENABLED_LORE = listOf(
     Component.empty(),
-    component { text("该世界未启用随机传送") with mochaMaroon without italic() },
+    component { text("该世界未启用随机传送。") with mochaSubtext0 without italic() },
 )
 
 val YUME_MAIN_ITEM_HOME_LOOKUP = component {

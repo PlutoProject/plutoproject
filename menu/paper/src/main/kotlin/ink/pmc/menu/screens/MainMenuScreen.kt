@@ -1,7 +1,6 @@
 package ink.pmc.menu.screens
 
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.core.screen.ScreenKey
@@ -10,11 +9,9 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import ink.pmc.advkt.component.component
 import ink.pmc.advkt.component.italic
 import ink.pmc.advkt.component.text
-import ink.pmc.daily.api.Daily
 import ink.pmc.daily.screens.DailyCalenderScreen
 import ink.pmc.essentials.RANDOM_TELEPORT_COST_BYPASS
-import ink.pmc.essentials.api.teleport.TeleportManager
-import ink.pmc.essentials.api.teleport.random.RandomTeleportManager
+import ink.pmc.essentials.api.Essentials
 import ink.pmc.essentials.config.EssentialsConfig
 import ink.pmc.essentials.screens.home.HomeViewerScreen
 import ink.pmc.essentials.screens.warp.DefaultWarpPickerScreen
@@ -30,7 +27,6 @@ import ink.pmc.interactive.api.inventory.layout.Column
 import ink.pmc.interactive.api.inventory.layout.Row
 import ink.pmc.interactive.api.inventory.modifiers.*
 import ink.pmc.interactive.api.inventory.modifiers.click.clickable
-import ink.pmc.interactive.api.inventory.stateTransition
 import ink.pmc.menu.CO_NEAR_COMMAND
 import ink.pmc.menu.economy
 import ink.pmc.menu.inspecting
@@ -40,14 +36,12 @@ import ink.pmc.menu.screens.models.MainMenuModel.PreferredHomeState
 import ink.pmc.menu.screens.models.MainMenuModel.PreferredSpawnState
 import ink.pmc.playerdb.api.PlayerDb
 import ink.pmc.utils.chat.MESSAGE_SOUND
-import ink.pmc.utils.chat.UI_INVALID_SOUND
 import ink.pmc.utils.chat.UI_SUCCEED_SOUND
 import ink.pmc.utils.chat.replace
 import ink.pmc.utils.visual.mochaSubtext0
 import ink.pmc.utils.visual.mochaText
 import org.bukkit.Material
 import org.bukkit.event.inventory.ClickType
-import org.koin.compose.koinInject
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -73,6 +67,7 @@ class MainMenuScreen : Screen, KoinComponent {
         LaunchedEffect(Unit) {
             screenModel.refreshPreferredHome()
             screenModel.refreshPreferredSpawn()
+            screenModel.refreshCheckInState()
         }
 
         LaunchedEffect(Unit) {
@@ -249,34 +244,24 @@ class MainMenuScreen : Screen, KoinComponent {
     private fun Teleport() {
         val player = LocalPlayer.current
         val navigator = LocalNavigator.currentOrThrow
-        val manager = koinInject<TeleportManager>()
-        /*
-        * 0 -> 正常状态
-        * 1 -> 有未接受的请求
-        * */
-        val state = remember { mutableStateOf(0) }
+        val hasUnfinishedTpRequest = Essentials.teleportManager.hasUnfinishedRequest(player)
+
         Item(
             material = Material.MINECART,
             name = YUME_MAIN_ITEM_TP,
-            lore = when (state.value) {
-                0 -> YUME_MAIN_ITEM_TP_LORE
-                1 -> YUME_MAIN_ITEM_TP_EXISTED_LORE
-                else -> error("Unreachable")
-            },
-            enchantmentGlint = state.value > 0,
+            lore = if (!hasUnfinishedTpRequest) YUME_MAIN_ITEM_TP_LORE else YUME_MAIN_ITEM_TP_EXISTED_LORE,
+            enchantmentGlint = hasUnfinishedTpRequest,
             modifier = Modifier.clickable {
-                if (state.value != 0) return@clickable
+                if (hasUnfinishedTpRequest) return@clickable
                 if (clickType != ClickType.LEFT) return@clickable
-
-                if (manager.hasUnfinishedRequest(player)) {
-                    state.stateTransition(1)
-                    player.playSound(UI_INVALID_SOUND)
-                    return@clickable
-                }
-
                 navigator.push(TeleportRequestScreen())
             }
         )
+    }
+
+    // 可用，货币不足，该世界不可用
+    private enum class RandomTeleportState {
+        AVAILABLE, COIN_NOT_ENOUGH, NOT_AVAILABLE
     }
 
     /*
@@ -286,45 +271,29 @@ class MainMenuScreen : Screen, KoinComponent {
     @Suppress("FunctionName")
     private fun RandomTeleport() {
         val player = LocalPlayer.current
-        /*
-        * 0 -> 正常状态
-        * 1 -> 货币不足
-        * 2 -> 该世界未启用
-        * */
-        val state = remember { mutableStateOf(0) }
-        val manager = koinInject<RandomTeleportManager>()
+        val world = player.world
+        val balance = economy.getBalance(player)
+        val requirement = Essentials.randomTeleportManager.getRandomTeleportOptions(world).cost
+
+        val state = when {
+            !player.hasPermission(RANDOM_TELEPORT_COST_BYPASS) && balance < requirement -> RandomTeleportState.COIN_NOT_ENOUGH
+            !Essentials.randomTeleportManager.isEnabled(world) -> RandomTeleportState.NOT_AVAILABLE
+            else -> RandomTeleportState.AVAILABLE
+        }
 
         Item(
             material = Material.AMETHYST_SHARD,
             name = YUME_MAIN_ITEM_HOME_RTP,
-            lore = when (state.value) {
-                0 -> YUME_MAIN_ITEM_HOME_RTP_LORE
-                1 -> YUME_MAIN_ITEM_HOME_RTP_NOT_ENABLED_LORE
-                2 -> YUME_MAIN_ITEM_HOME_RTP_COIN_NOT_ENOUGH_LORE
-                else -> error("Unreachable")
+            lore = when (state) {
+                RandomTeleportState.AVAILABLE -> YUME_MAIN_ITEM_HOME_RTP_LORE
+                RandomTeleportState.NOT_AVAILABLE -> YUME_MAIN_ITEM_HOME_RTP_NOT_ENABLED_LORE
+                RandomTeleportState.COIN_NOT_ENOUGH -> YUME_MAIN_ITEM_HOME_RTP_COIN_NOT_ENOUGH_LORE
             },
-            enchantmentGlint = state.value > 0,
             modifier = Modifier.clickable {
-                if (state.value != 0) return@clickable
+                if (state != RandomTeleportState.AVAILABLE) return@clickable
                 if (clickType != ClickType.LEFT) return@clickable
-                val balance = economy.getBalance(player)
-                val cost = manager.defaultOptions.cost
-                val world = player.world
-
-                if (!manager.isEnabled(world)) {
-                    state.stateTransition(1)
-                    player.playSound(UI_INVALID_SOUND)
-                    return@clickable
-                }
-
-                if (balance < cost && !player.hasPermission(RANDOM_TELEPORT_COST_BYPASS)) {
-                    state.stateTransition(2)
-                    player.playSound(UI_INVALID_SOUND)
-                    return@clickable
-                }
-
                 player.closeInventory()
-                manager.launch(player, player.world)
+                Essentials.randomTeleportManager.launch(player, player.world)
             }
         )
     }
@@ -380,26 +349,13 @@ class MainMenuScreen : Screen, KoinComponent {
     @Composable
     @Suppress("FunctionName")
     private fun Daily() {
-        val player = LocalPlayer.current
         val navigator = LocalNavigator.currentOrThrow
-        /*
-        * 0 -> 未签到
-        * 1 -> 已签到
-        * */
-        var state by rememberSaveable { mutableStateOf(0) }
-
-        LaunchedEffect(Unit) {
-            state = if (Daily.isCheckedInToday(player.uniqueId)) 1 else 0
-        }
+        val screenModel = localScreenModel.current
 
         Item(
             material = Material.NAME_TAG,
             name = YUME_MAIN_ITEMS_DAILY,
-            lore = when (state) {
-                0 -> YUME_MAIN_ITEMS_DAILY_LORE
-                1 -> YUME_MAIN_ITEMS_DAILY_LORE_CHECKED_IN
-                else -> error("Unreachable")
-            },
+            lore = if (!screenModel.isCheckedInToday) YUME_MAIN_ITEMS_DAILY_LORE else YUME_MAIN_ITEMS_DAILY_LORE_CHECKED_IN,
             modifier = Modifier.clickable {
                 if (clickType != ClickType.LEFT) return@clickable
                 navigator.push(DailyCalenderScreen())
