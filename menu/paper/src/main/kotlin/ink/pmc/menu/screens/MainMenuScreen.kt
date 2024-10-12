@@ -73,13 +73,13 @@ class MainMenuScreen : Screen, KoinComponent {
         LaunchedEffect(Unit) {
             val db = PlayerDb.getOrCreate(player.uniqueId)
             if (db.getBoolean(FIRST_OPEN_PROMPT_KEY)) return@LaunchedEffect
-            player.sendMessage(YUME_MAIN_FIRST_OPEN_PROMPT)
+            player.sendMessage(MAIN_MENU_FIRST_OPEN_PROMPT)
             db[FIRST_OPEN_PROMPT_KEY] = true
             db.update()
         }
 
         CompositionLocalProvider(localScreenModel provides screenModel) {
-            Chest(title = YUME_MAIN_TITLE, modifier = Modifier.height(6)) {
+            Chest(title = MAIN_MENU_TITLE, modifier = Modifier.height(6)) {
                 Box(modifier = Modifier.fillMaxSize()) {
                     Background()
                     Column(modifier = Modifier.fillMaxSize()) {
@@ -113,8 +113,8 @@ class MainMenuScreen : Screen, KoinComponent {
     private fun Common() {
         Item(
             material = Material.CAMPFIRE,
-            name = YUME_MAIN_ITEM_COMMON,
-            lore = YUME_MAIN_TAB_LORE
+            name = MAIN_MENU_ITEM_COMMON,
+            lore = MAIN_MENU_TAB_LORE
         )
     }
 
@@ -164,11 +164,11 @@ class MainMenuScreen : Screen, KoinComponent {
 
         Item(
             material = Material.LANTERN,
-            name = YUME_MAIN_ITEM_HOME,
+            name = MAIN_MENU_ITEM_HOME,
             lore = when (model.preferredHomeState) {
                 is PreferredHomeState.Loading -> LOADING_LORE
-                is PreferredHomeState.Ready -> YUME_MAIN_ITEM_HOME_LORE
-                is PreferredHomeState.None -> YUME_MAIN_ITEM_HOME_LORE_NO_PREFER
+                is PreferredHomeState.Ready -> MAIN_MENU_ITEM_HOME_LORE
+                is PreferredHomeState.None -> MAIN_MENU_ITEM_HOME_LORE_NO_PREFER
             },
             // enchantmentGlint = state.value > 0,
             modifier = Modifier.clickable {
@@ -200,12 +200,12 @@ class MainMenuScreen : Screen, KoinComponent {
 
         Item(
             material = Material.COMPASS,
-            name = YUME_MAIN_ITEM_SPAWN,
+            name = MAIN_MENU_ITEM_SPAWN,
             lore = when (model.preferredSpawnState) {
                 is PreferredSpawnState.Loading -> LOADING_LORE
                 is PreferredSpawnState.Ready -> {
                     val spawn = (model.preferredSpawnState as PreferredSpawnState.Ready).spawn
-                    val lore = YUME_MAIN_ITEM_SPAWN_LORE
+                    val lore = MAIN_MENU_ITEM_SPAWN_LORE
                     val name = when (spawn.alias) {
                         null -> component { text(spawn.name) with mochaText without italic() }
                         else -> component { text(spawn.alias!!) with mochaText without italic() }
@@ -220,7 +220,7 @@ class MainMenuScreen : Screen, KoinComponent {
                     lore.replace("<spawn>", name).replace("<loc>", loc)
                 }
 
-                is PreferredSpawnState.None -> YUME_MAIN_ITEM_SPAWN_LORE_NO_PREFERRED
+                is PreferredSpawnState.None -> MAIN_MENU_ITEM_SPAWN_LORE_NO_PREFERRED
             }.toList(),
             modifier = Modifier.clickable {
                 when (clickType) {
@@ -248,8 +248,8 @@ class MainMenuScreen : Screen, KoinComponent {
 
         Item(
             material = Material.MINECART,
-            name = YUME_MAIN_ITEM_TP,
-            lore = if (!hasUnfinishedTpRequest) YUME_MAIN_ITEM_TP_LORE else YUME_MAIN_ITEM_TP_EXISTED_LORE,
+            name = MAIN_MENU_ITEM_TP,
+            lore = if (!hasUnfinishedTpRequest) MAIN_MENU_ITEM_TP_LORE else MAIN_MENU_ITEM_TP_EXISTED_LORE,
             enchantmentGlint = hasUnfinishedTpRequest,
             modifier = Modifier.clickable {
                 if (hasUnfinishedTpRequest) return@clickable
@@ -283,11 +283,11 @@ class MainMenuScreen : Screen, KoinComponent {
 
         Item(
             material = Material.AMETHYST_SHARD,
-            name = YUME_MAIN_ITEM_HOME_RTP,
+            name = MAIN_MENU_ITEM_HOME_RTP,
             lore = when (state) {
-                RandomTeleportState.AVAILABLE -> YUME_MAIN_ITEM_HOME_RTP_LORE
-                RandomTeleportState.NOT_AVAILABLE -> YUME_MAIN_ITEM_HOME_RTP_NOT_ENABLED_LORE
-                RandomTeleportState.COIN_NOT_ENOUGH -> YUME_MAIN_ITEM_HOME_RTP_COIN_NOT_ENOUGH_LORE
+                RandomTeleportState.AVAILABLE -> MAIN_MENU_ITEM_HOME_RTP_LORE
+                RandomTeleportState.NOT_AVAILABLE -> MAIN_MENU_ITEM_HOME_RTP_NOT_ENABLED_LORE
+                RandomTeleportState.COIN_NOT_ENOUGH -> MAIN_MENU_ITEM_HOME_RTP_COIN_NOT_ENOUGH_LORE
             },
             modifier = Modifier.clickable {
                 if (state != RandomTeleportState.AVAILABLE) return@clickable
@@ -309,8 +309,8 @@ class MainMenuScreen : Screen, KoinComponent {
 
         Item(
             material = Material.SPYGLASS,
-            name = YUME_MAIN_ITEM_HOME_LOOKUP,
-            lore = if (!model.lookupModeEnabled) YUME_MAIN_ITEM_HOME_LOOKUP_LORE else YUME_MAIN_ITEM_HOME_LOOKUP_ENABLED_LORE,
+            name = MAIN_MENU_ITEM_HOME_LOOKUP,
+            lore = if (!model.lookupModeEnabled) MAIN_MENU_ITEM_HOME_LOOKUP_LORE else MAIN_MENU_ITEM_HOME_LOOKUP_ENABLED_LORE,
             enchantmentGlint = model.lookupModeEnabled,
             modifier = Modifier.clickable {
                 if (!model.lookupModeEnabled) {
@@ -354,8 +354,8 @@ class MainMenuScreen : Screen, KoinComponent {
 
         Item(
             material = Material.NAME_TAG,
-            name = YUME_MAIN_ITEMS_DAILY,
-            lore = if (!screenModel.isCheckedInToday) YUME_MAIN_ITEMS_DAILY_LORE else YUME_MAIN_ITEMS_DAILY_LORE_CHECKED_IN,
+            name = MAIN_MENU_ITEMS_DAILY,
+            lore = if (!screenModel.isCheckedInToday) MAIN_MENU_ITEMS_DAILY_LORE else MAIN_MENU_ITEMS_DAILY_LORE_CHECKED_IN,
             modifier = Modifier.clickable {
                 if (clickType != ClickType.LEFT) return@clickable
                 navigator.push(DailyCalenderScreen())
@@ -372,8 +372,8 @@ class MainMenuScreen : Screen, KoinComponent {
         val player = LocalPlayer.current
         Item(
             material = Material.SUNFLOWER,
-            name = YUME_MAIN_ITEM_COINS,
-            lore = YUME_MAIN_ITEM_COINS_LORE(player),
+            name = MAIN_MENU_ITEM_COINS,
+            lore = MAIN_MENU_ITEM_COINS_LORE(player),
         )
     }
 
@@ -386,12 +386,12 @@ class MainMenuScreen : Screen, KoinComponent {
         val player = LocalPlayer.current
         Item(
             material = Material.BOOK,
-            name = YUME_MAIN_ITEM_WIKI,
-            lore = YUME_MAIN_ITEM_WIKI_LORE,
+            name = MAIN_MENU_ITEM_WIKI,
+            lore = MAIN_MENU_ITEM_WIKI_LORE,
             modifier = Modifier.clickable {
                 if (clickType != ClickType.LEFT) return@clickable
                 player.closeInventory()
-                player.sendMessage(YUME_MAIN_WIKI)
+                player.sendMessage(MAIN_MENU_WIKI)
                 player.playSound(MESSAGE_SOUND)
             }
         )
