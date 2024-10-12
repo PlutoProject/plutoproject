@@ -18,7 +18,7 @@ private val base = commandManager.commandBuilder("edithome")
     .permission("essentials.edithome")
     .argument(homes("home"))
 
-private suspend fun PaperCtx.preProcess(): Pair<CommandSender, Home>? {
+private suspend fun PaperCtx.preprocess(): Pair<CommandSender, Home>? {
     val sender = this.sender.sender
     if (sender !is Player) {
         sender.sendMessage(NON_PLAYER)
@@ -34,7 +34,7 @@ private suspend fun PaperCtx.preProcess(): Pair<CommandSender, Home>? {
 
 private val preferred = base.literal("prefer")
     .suspendingHandler {
-        val (sender, home) = it.preProcess() ?: return@suspendingHandler
+        val (sender, home) = it.preprocess() ?: return@suspendingHandler
         if (home.isPreferred) {
             sender.sendMessage(COMMAND_EDITHOME_ALREADY_PREFERRED.replace("<name>", home.name))
             return@suspendingHandler
@@ -47,7 +47,7 @@ private val preferred = base.literal("prefer")
 
 private val star = base.literal("star")
     .suspendingHandler {
-        val (sender, home) = it.preProcess() ?: return@suspendingHandler
+        val (sender, home) = it.preprocess() ?: return@suspendingHandler
         if (home.isStarred) {
             sender.sendMessage(COMMAND_EDITHOME_ALREADY_STARRED.replace("<name>", home.name))
             return@suspendingHandler
@@ -62,7 +62,7 @@ private val star = base.literal("star")
 private val rename = base.literal("rename")
     .required("new_name", StringParser.greedyStringParser())
     .suspendingHandler {
-        val (sender, home) = it.preProcess() ?: return@suspendingHandler
+        val (sender, home) = it.preprocess() ?: return@suspendingHandler
         val newName = it.get<String>("new_name")
         if (!newName.isValidIdentifier) {
             sender.sendMessage(COMMAND_SETHOME_FAILED_NOT_VALID)
@@ -81,7 +81,7 @@ private val rename = base.literal("rename")
 
 private val move = base.literal("move")
     .suspendingHandler {
-        val (sender, home) = it.preProcess() ?: return@suspendingHandler
+        val (sender, home) = it.preprocess() ?: return@suspendingHandler
         submitAsync {
             home.location = (sender as Player).location
             home.update()
