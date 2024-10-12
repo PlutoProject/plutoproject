@@ -7,7 +7,7 @@ import ink.pmc.essentials.TELEPORT_FAILED_SOUND
 import ink.pmc.essentials.VIEWER_PAGING_SOUND
 import ink.pmc.essentials.api.home.HomeManager
 import ink.pmc.essentials.screens.home.HomeViewerScreen
-import ink.pmc.interactive.api.Gui
+import ink.pmc.interactive.api.GuiManager
 import ink.pmc.utils.annotation.Command
 import ink.pmc.utils.chat.NO_PERMISSON
 import ink.pmc.utils.chat.PLAYER_HAS_NO_HOME
@@ -54,7 +54,7 @@ fun Cm.homes(aliases: Array<String>) {
                         return@checkPlayer
                     }
 
-                    Gui.startInventory(this) {
+                    GuiManager.startInventory(this) {
                         Navigator(HomeViewerScreen(argPlayer))
                     }
 
@@ -62,7 +62,7 @@ fun Cm.homes(aliases: Array<String>) {
                     return@checkPlayer
                 }
 
-                Gui.startInventory(this) {
+                GuiManager.startInventory(this) {
                     Navigator(HomeViewerScreen(this))
                 }
                 playSound(VIEWER_PAGING_SOUND)

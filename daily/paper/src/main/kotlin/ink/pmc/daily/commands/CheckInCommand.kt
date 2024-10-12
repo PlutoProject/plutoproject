@@ -4,7 +4,7 @@ import cafe.adriel.voyager.navigator.Navigator
 import ink.pmc.daily.CHECKED_IN
 import ink.pmc.daily.api.Daily
 import ink.pmc.daily.screens.DailyCalenderScreen
-import ink.pmc.interactive.api.Gui
+import ink.pmc.interactive.api.GuiManager
 import ink.pmc.utils.PaperCm
 import ink.pmc.utils.annotation.Command
 import ink.pmc.utils.chat.UI_SUCCEED_SOUND
@@ -37,7 +37,7 @@ fun PaperCm.checkIn(aliases: Array<String>) {
             permission("daily.checkin.gui")
             handler {
                 checkPlayer(sender.sender) {
-                    Gui.startInventory(this) {
+                    GuiManager.startInventory(this) {
                         Navigator(DailyCalenderScreen())
                     }
                 }

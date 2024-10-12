@@ -1,10 +1,13 @@
 package ink.pmc.misc.api.elevator
 
+import ink.pmc.utils.inject.inlinedGet
 import org.bukkit.Location
 import org.bukkit.Material
 
 @Suppress("UNUSED")
 interface ElevatorManager {
+
+    companion object : ElevatorManager by inlinedGet()
 
     val builders: Map<Material, ElevatorBuilder>
 

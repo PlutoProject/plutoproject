@@ -4,7 +4,7 @@ import cafe.adriel.voyager.navigator.Navigator
 import ink.pmc.essentials.*
 import ink.pmc.essentials.api.Essentials
 import ink.pmc.essentials.screens.warp.WarpViewerScreen
-import ink.pmc.interactive.api.Gui
+import ink.pmc.interactive.api.GuiManager
 import ink.pmc.utils.annotation.Command
 import ink.pmc.utils.chat.replace
 import ink.pmc.utils.command.checkPlayer
@@ -25,7 +25,7 @@ fun Cm.warp(aliases: Array<String>) {
                 val input = optional<String>("name").getOrNull()
 
                 if (input == null) {
-                    Gui.startInventory(this) {
+                    GuiManager.startInventory(this) {
                         Navigator(WarpViewerScreen())
                     }
                     playSound(VIEWER_PAGING_SOUND)

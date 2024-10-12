@@ -6,7 +6,7 @@ import androidx.compose.runtime.Recomposer
 import androidx.compose.runtime.snapshots.ObserverHandle
 import androidx.compose.runtime.snapshots.Snapshot
 import ink.pmc.interactive.api.ComposableFunction
-import ink.pmc.interactive.api.Gui
+import ink.pmc.interactive.api.GuiManager
 import ink.pmc.interactive.api.GuiScope
 import kotlinx.coroutines.*
 import org.bukkit.entity.Player
@@ -22,7 +22,7 @@ abstract class BaseScope<T>(
 
     var hasFrameWaiters: Boolean = false
     private val coroutineScope = CoroutineScope(Dispatchers.Default)
-    private val manager by inject<Gui>()
+    private val manager by inject<GuiManager>()
     private var hasSnapshotNotifications: Boolean = false
     private val frameClock: BroadcastFrameClock = BroadcastFrameClock { hasFrameWaiters = true }
     private val coroutineContext: CoroutineContext = Dispatchers.Default + frameClock

@@ -4,7 +4,7 @@ import cafe.adriel.voyager.navigator.Navigator
 import ink.pmc.essentials.Cm
 import ink.pmc.essentials.VIEWER_PAGING_SOUND
 import ink.pmc.essentials.screens.warp.WarpViewerScreen
-import ink.pmc.interactive.api.Gui
+import ink.pmc.interactive.api.GuiManager
 import ink.pmc.utils.annotation.Command
 import ink.pmc.utils.command.checkPlayer
 import ink.pmc.utils.dsl.cloud.invoke
@@ -17,7 +17,7 @@ fun Cm.warps(aliases: Array<String>) {
         permission("essentials.warps")
         handler {
             checkPlayer(sender.sender) {
-                Gui.startInventory(this) {
+                GuiManager.startInventory(this) {
                     Navigator(WarpViewerScreen())
                 }
                 playSound(VIEWER_PAGING_SOUND)

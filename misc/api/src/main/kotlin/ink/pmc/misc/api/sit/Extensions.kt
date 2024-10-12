@@ -1,21 +1,20 @@
 package ink.pmc.misc.api.sit
 
-import ink.pmc.misc.api.MiscAPI
 import org.bukkit.Location
 import org.bukkit.Server
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 
 fun Player.sit(location: Location) {
-    MiscAPI.instance.sitManager.sit(this, location)
+    SitManager.sit(this, location)
 }
 
 val Player.seat: Entity?
-    get() = MiscAPI.instance.sitManager.getSeat(this)
+    get() = SitManager.getSeat(this)
 val Player.sitLocation: Location?
-    get() = MiscAPI.instance.sitManager.getSitLocation(this)
+    get() = SitManager.getSitLocation(this)
 var Player.isSitting: Boolean
-    get() = MiscAPI.instance.sitManager.isSitting(this)
+    get() = SitManager.isSitting(this)
     set(value) {
         if (!value) {
             this.stand()
@@ -23,21 +22,21 @@ var Player.isSitting: Boolean
     }
 
 fun Player.stand() {
-    MiscAPI.instance.sitManager.stand(this)
+    SitManager.stand(this)
 }
 
 val Location.sitter: Player?
-    get() = MiscAPI.instance.sitManager.getSitterByLocation(this)
+    get() = SitManager.getSitterByLocation(this)
 
 val Entity.sitter: Player?
-    get() = MiscAPI.instance.sitManager.getSitterBySeat(this)
+    get() = SitManager.getSitterBySeat(this)
 
 val Entity.isSeat: Boolean
-    get() = MiscAPI.instance.sitManager.isSeat(this)
+    get() = SitManager.isSeat(this)
 
 val Location.isSitLocation: Boolean
-    get() = MiscAPI.instance.sitManager.isSitLocation(this)
+    get() = SitManager.isSitLocation(this)
 
 fun Server.standAll() {
-    MiscAPI.instance.sitManager.standAll()
+    SitManager.standAll()
 }

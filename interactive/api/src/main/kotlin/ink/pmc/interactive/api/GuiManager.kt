@@ -6,9 +6,9 @@ import org.bukkit.entity.Player
 
 typealias GuiInventoryScope = GuiScope<InventoryNode>
 
-interface Gui {
+interface GuiManager {
 
-    companion object : Gui by inlinedGet()
+    companion object : GuiManager by inlinedGet()
 
     fun get(player: Player): GuiScope<*>?
 

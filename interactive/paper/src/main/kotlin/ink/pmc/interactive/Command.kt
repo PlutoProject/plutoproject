@@ -2,7 +2,7 @@ package ink.pmc.interactive
 
 import cafe.adriel.voyager.navigator.Navigator
 import ink.pmc.interactive.api.ComposableFunction
-import ink.pmc.interactive.api.Gui
+import ink.pmc.interactive.api.GuiManager
 import ink.pmc.interactive.examples.ExampleScreen1
 import ink.pmc.interactive.examples.ExampleScreen2
 import ink.pmc.interactive.examples.ExampleScreen3
@@ -53,7 +53,7 @@ private fun PaperCtx.startInventory(content: ComposableFunction) {
         sender.sendMessage(NON_PLAYER)
         return
     }
-    Gui.startInventory(sender) {
+    GuiManager.startInventory(sender) {
         content()
     }
 }

@@ -1,6 +1,7 @@
 package ink.pmc.misc.commands
 
 import ink.pmc.misc.*
+import ink.pmc.misc.api.head.HeadManager
 import ink.pmc.utils.chat.NON_PLAYER
 import ink.pmc.utils.chat.replace
 import ink.pmc.utils.command.PaperCommand
@@ -23,11 +24,11 @@ object HeadCommand : PaperCommand() {
                 return@suspendingHandler
             }
 
-            if (!headManager.isNameCached(name.lowercase())) {
+            if (!HeadManager.isNameCached(name.lowercase())) {
                 sender.sendMessage(HEAD_GET_LOAD_DATA)
             }
 
-            val head = headManager.getHead(name)
+            val head = HeadManager.getHead(name)
 
             if (head == null) {
                 sender.sendMessage(HEAD_GET_FAILED)

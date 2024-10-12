@@ -5,7 +5,7 @@ import ink.pmc.interactive.inventory.InventoryScope
 import org.bukkit.entity.Player
 import java.util.concurrent.ConcurrentHashMap
 
-class GuiImpl : Gui {
+class GuiManagerImpl : GuiManager {
 
     private val inventoryScopes = ConcurrentHashMap<Player, GuiInventoryScope>()
 

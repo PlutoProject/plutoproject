@@ -49,7 +49,7 @@ val armorStandDataKey = NamespacedKey(plugin, "sit-passenger")
 fun runSitCheckTask() {
     submitAsync {
         while (!disabled) {
-            sitManager.sitters.forEach {
+            SitManager.sitters.forEach {
                 val player = it
 
                 player.ensureThreadSafe {
@@ -78,7 +78,7 @@ fun runSitCheckTask() {
 fun runActionBarOverrideTask() {
     submitAsync {
         while (!disabled) {
-            sitManager.sitters.forEach {
+            SitManager.sitters.forEach {
                 it.sendActionBar(STAND_UP)
             }
             delay(5)
@@ -111,9 +111,9 @@ fun createArmorStand(locationToSit: Location): Entity {
 
     entity.setGravity(false)
     entity.isInvisible = true
-    // entity.setAI(false)
-    // entity.isCollidable = false
-    // entity.setCanTick(false)
+    entity.setAI(false)
+    entity.isCollidable = false
+    entity.setCanTick(false)
 
     return entity
 }

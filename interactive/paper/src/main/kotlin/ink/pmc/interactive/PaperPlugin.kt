@@ -2,7 +2,7 @@ package ink.pmc.interactive
 
 import com.github.shynixn.mccoroutine.bukkit.SuspendingJavaPlugin
 import com.github.shynixn.mccoroutine.bukkit.registerSuspendingEvents
-import ink.pmc.interactive.api.Gui
+import ink.pmc.interactive.api.GuiManager
 import ink.pmc.interactive.inventory.InventoryListener
 import ink.pmc.utils.PaperCm
 import ink.pmc.utils.currentUnixTimestamp
@@ -18,13 +18,13 @@ internal lateinit var plugin: JavaPlugin
 
 private lateinit var commandManager: PaperCm
 private val bukkitModule = module {
-    single<Gui> { GuiImpl() }
+    single<GuiManager> { GuiManagerImpl() }
 }
 
 @Suppress("UNUSED")
 class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
 
-    private val gui by inject<Gui>()
+    private val guiManager by inject<GuiManager>()
 
     override suspend fun onLoadAsync() {
         preload()
@@ -44,7 +44,7 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
     }
 
     override suspend fun onDisableAsync() {
-        gui.disposeAll()
+        guiManager.disposeAll()
     }
 
     private fun preload() {

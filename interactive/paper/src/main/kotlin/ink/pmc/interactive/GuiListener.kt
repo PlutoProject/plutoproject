@@ -1,6 +1,6 @@
 package ink.pmc.interactive
 
-import ink.pmc.interactive.api.Gui
+import ink.pmc.interactive.api.GuiManager
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
@@ -12,7 +12,7 @@ import org.koin.core.component.inject
 @Suppress("UNUSED", "UnusedReceiverParameter")
 object GuiListener : Listener, KoinComponent {
 
-    private val manager by inject<Gui>()
+    private val manager by inject<GuiManager>()
 
     @EventHandler(priority = EventPriority.HIGHEST)
     fun PlayerJoinEvent.e() {

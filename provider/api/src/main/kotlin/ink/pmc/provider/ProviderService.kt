@@ -2,15 +2,12 @@ package ink.pmc.provider
 
 import com.mongodb.kotlin.client.coroutine.MongoClient
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
+import ink.pmc.utils.inject.inlinedGet
 import java.io.Closeable
 
-object ProviderService : IProviderService by IProviderService.instance
+interface ProviderService : Closeable {
 
-interface IProviderService : Closeable {
-
-    companion object {
-        lateinit var instance: IProviderService
-    }
+    companion object : ProviderService by inlinedGet()
 
     val mongoClient: MongoClient
     val defaultMongoDatabase: MongoDatabase

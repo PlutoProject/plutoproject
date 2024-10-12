@@ -1,10 +1,13 @@
 package ink.pmc.misc.api.head
 
+import ink.pmc.utils.inject.inlinedGet
 import org.bukkit.inventory.ItemStack
 import java.util.*
 
 @Suppress("UNUSED")
 interface HeadManager {
+
+    companion object : HeadManager by inlinedGet()
 
     fun getHead(uuid: UUID): ItemStack?
 

@@ -1,11 +1,15 @@
 package ink.pmc.provider
 
 import com.electronwill.nightconfig.core.Config
-import com.electronwill.nightconfig.core.file.FileConfig
 import com.mongodb.kotlin.client.coroutine.MongoClient
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
+import org.koin.core.qualifier.named
 
-class ProviderServiceImpl(private val config: FileConfig) : IProviderService {
+class ProviderServiceImpl : ProviderService, KoinComponent {
+
+    private val config by inject<Config>(named("provider_config"))
 
     override val mongoClient: MongoClient
     override val defaultMongoDatabase: MongoDatabase

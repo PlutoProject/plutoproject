@@ -1,7 +1,7 @@
 package ink.pmc.misc.commands
 
+import ink.pmc.misc.api.sit.SitManager
 import ink.pmc.misc.commandManager
-import ink.pmc.misc.sitManager
 import ink.pmc.utils.chat.NON_PLAYER
 import ink.pmc.utils.command.PaperCommand
 import ink.pmc.utils.concurrent.sync
@@ -20,7 +20,7 @@ object SitCommand : PaperCommand() {
             }
 
             sync {
-                sitManager.sit(sender, sender.location)
+                SitManager.sit(sender, sender.location)
             }
         }
 

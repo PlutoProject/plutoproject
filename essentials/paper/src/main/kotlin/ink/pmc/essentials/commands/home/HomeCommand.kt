@@ -4,7 +4,7 @@ import cafe.adriel.voyager.navigator.Navigator
 import ink.pmc.essentials.*
 import ink.pmc.essentials.api.Essentials
 import ink.pmc.essentials.screens.home.HomeViewerScreen
-import ink.pmc.interactive.api.Gui
+import ink.pmc.interactive.api.GuiManager
 import ink.pmc.utils.annotation.Command
 import ink.pmc.utils.chat.NO_PERMISSON
 import ink.pmc.utils.chat.replace
@@ -46,7 +46,7 @@ fun Cm.home(aliases: Array<String>) {
                 if (name == null) {
                     val preferred = manager.getPreferredHome(this)
                     if (preferred == null) {
-                        Gui.startInventory(this) {
+                        GuiManager.startInventory(this) {
                             Navigator(HomeViewerScreen(this))
                         }
                         playSound(VIEWER_PAGING_SOUND)
