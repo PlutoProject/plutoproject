@@ -56,3 +56,7 @@ fun <C> CommandManager<C>.registerCommands(
             }
         }
 }
+
+fun <C> CommandManager<C>.command(commands: Iterable<org.incendo.cloud.Command.Builder<C>>): CommandManager<C> {
+    return commands.fold(this) { acc, command -> acc.command(command) }
+}

@@ -5,6 +5,7 @@ import com.github.shynixn.mccoroutine.bukkit.SuspendingJavaPlugin
 import com.github.shynixn.mccoroutine.bukkit.registerSuspendingEvents
 import ink.pmc.essentials.api.Essentials
 import ink.pmc.essentials.api.afk.AfkManager
+import ink.pmc.essentials.commands.home.editHomeCommand
 import ink.pmc.essentials.commands.warp.defaultSpawnCommand
 import ink.pmc.essentials.config.EssentialsConfig
 import ink.pmc.essentials.hooks.EconomyHook
@@ -12,6 +13,7 @@ import ink.pmc.essentials.hooks.HuskHomesHook
 import ink.pmc.essentials.listeners.*
 import ink.pmc.essentials.recipes.MENU_ITEM_RECIPE
 import ink.pmc.utils.command.CommandRegistrationResult
+import ink.pmc.utils.command.command
 import ink.pmc.utils.command.registerCommands
 import ink.pmc.utils.inject.startKoinIfNotPresent
 import ink.pmc.utils.storage.saveResourceIfNotExisted
@@ -67,6 +69,7 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
 
         commandManager.apply {
             command(defaultSpawnCommand)
+            command(editHomeCommand)
         }
 
         registerEvents()

@@ -521,6 +521,41 @@ val COMMAND_HOME_NOT_EXISTED = component {
     text("的家不存在") with mochaMaroon
 }
 
+val COMMAND_EDITHOME_ALREADY_PREFERRED = component {
+    text("名为 ") with mochaMaroon
+    text("<name> ") with mochaText
+    text("的家已经是首选了") with mochaMaroon
+}
+
+val COMMAND_EDITHOME_PREFER_SUCCEED = component {
+    text("已将名为 ") with mochaPink
+    text("<name> ") with mochaText
+    text("的家设为首选") with mochaPink
+}
+
+val COMMAND_EDITHOME_ALREADY_STARRED = component {
+    text("名为 ") with mochaMaroon
+    text("<name> ") with mochaText
+    text("的家已经收藏过了") with mochaMaroon
+}
+
+val COMMAND_EDITHOME_STAR_SUCCEED = component {
+    text("已将名为 ") with mochaPink
+    text("<name> ") with mochaText
+    text("的家收藏") with mochaPink
+}
+
+val COMMAND_EDITHOME_RENAME_SUCCEED = component {
+    text("已将该家更名为 ") with mochaPink
+    text("<new_name>") with mochaText
+}
+
+val COMMAND_EDITHOME_MOVE_SUCCEED = component {
+    text("已将家 ") with mochaPink
+    text("<name> ") with mochaText
+    text("迁移到你所在的位置") with mochaPink
+}
+
 val COMMAND_HOME_NOT_EXISTED_UUID = component {
     text("无法通过指定的 ID 找到对应的家") with mochaMaroon
 }
