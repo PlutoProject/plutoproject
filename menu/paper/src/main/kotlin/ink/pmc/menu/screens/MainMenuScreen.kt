@@ -56,7 +56,7 @@ class MainMenuScreen : Screen, KoinComponent {
     private val localScreenModel: ProvidableCompositionLocal<MainMenuModel> =
         staticCompositionLocalOf { error("Unexpected") }
 
-    override val key: ScreenKey = "menu_yume_main"
+    override val key: ScreenKey = "main_menu"
 
     @Composable
     override fun Content() {
