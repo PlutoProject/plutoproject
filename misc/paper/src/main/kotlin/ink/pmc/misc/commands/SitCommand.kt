@@ -12,7 +12,7 @@ object SitCommand : PaperCommand() {
 
     private val sit = commandManager.commandBuilder("sit")
         .suspendingHandler {
-            val sender = it.sender().sender
+            val sender = it.sender()
 
             if (sender !is Player) {
                 sender.sendMessage(NON_PLAYER)

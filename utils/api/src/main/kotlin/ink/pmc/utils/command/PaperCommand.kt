@@ -1,6 +1,5 @@
 package ink.pmc.utils.command
 
-import io.papermc.paper.command.brigadier.CommandSourceStack
 import org.bukkit.command.CommandSender
 import org.incendo.cloud.CommandManager
 
@@ -12,4 +11,4 @@ fun CommandManager<CommandSender>.init(command: Command<CommandSender>) {
 }
 
 @Suppress("UNUSED")
-abstract class PaperCommand : Command<CommandSourceStack>()
+abstract class PaperCommand : Command<CommandSender>()

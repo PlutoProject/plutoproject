@@ -1,14 +1,14 @@
 package ink.pmc.utils.command
 
-import io.papermc.paper.command.brigadier.CommandSourceStack
 import org.bukkit.Bukkit
+import org.bukkit.command.CommandSender
 import org.incendo.cloud.component.CommandComponent
 import org.incendo.cloud.parser.standard.StringParser
 import org.incendo.cloud.suggestion.Suggestion
 import java.util.concurrent.CompletableFuture
 
 private fun onlinePlayers(argName: String, excludes: Array<out String>) =
-    CommandComponent.builder<CommandSourceStack, String>()
+    CommandComponent.builder<CommandSender, String>()
         .suggestionProvider { _, _ ->
             CompletableFuture.completedFuture(
                 Bukkit.getOnlinePlayers()
@@ -21,17 +21,17 @@ private fun onlinePlayers(argName: String, excludes: Array<out String>) =
         .name(argName)
 
 @Suppress("UNUSED")
-fun paperOptionalOnlinePlayersArgument(
+fun bukkitOptionalOnlinePlayersArgument(
     argName: String = "name",
     vararg excludes: String
-): CommandComponent.Builder<CommandSourceStack, String> {
+): CommandComponent.Builder<CommandSender, String> {
     return onlinePlayers(argName, excludes).optional()
 }
 
 @Suppress("UNUSED")
-fun paperRequiredOnlinePlayersArgument(
+fun bukkitRequiredOnlinePlayersArgument(
     argName: String = "name",
     vararg excludes: String
-): CommandComponent.Builder<CommandSourceStack, String> {
+): CommandComponent.Builder<CommandSender, String> {
     return onlinePlayers(argName, excludes).required()
 }
