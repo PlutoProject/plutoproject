@@ -39,29 +39,42 @@ val YUME_MAIN_ITEM_HOME = component {
     text("明灯") with mochaYellow without italic()
 }
 
-val YUME_MAIN_ITEM_HOME_LORE = listOf(
+val LOADING_LORE = listOf(
     component {
-        text("在长夜中为你指明归家路的一盏灯。") with mochaSubtext0 without italic()
-    },
+        text("正在加载...") with mochaSubtext0 without italic()
+    }
+)
+
+private val MAIN_MENU_ITEM_HOME_DESC = component {
+    text("在长夜中为你指明归家路的一盏灯。") with mochaSubtext0 without italic()
+}
+
+private val MAIN_MENU_ITEM_HOME_OPEN_LIST = component {
+    text("右键 ") with mochaLavender without italic()
+    text("打开家列表") with mochaText without italic()
+}
+
+val YUME_MAIN_ITEM_HOME_LORE = listOf(
+    MAIN_MENU_ITEM_HOME_DESC,
     Component.empty(),
     component {
         text("左键 ") with mochaLavender without italic()
         text("传送至首选的家") with mochaText without italic()
     },
-    component {
-        text("右键 ") with mochaLavender without italic()
-        text("打开家列表") with mochaText without italic()
-    },
+    MAIN_MENU_ITEM_HOME_OPEN_LIST,
 )
 
 val YUME_MAIN_ITEM_HOME_LORE_NO_PREFER = listOf(
+    MAIN_MENU_ITEM_HOME_DESC,
     Component.empty(),
     component {
-        text("你还没有首选的家，") with mochaMaroon without italic()
+        text("你还没有首选的家，") with mochaSubtext0 without italic()
     },
     component {
-        text("请在编辑家页面中点击「设为首选」") with mochaMaroon without italic()
+        text("请在编辑家页面中点击「设为首选」") with mochaSubtext0 without italic()
     },
+    Component.empty(),
+    MAIN_MENU_ITEM_HOME_OPEN_LIST,
 )
 
 val YUME_MAIN_ITEM_SPAWN = component {
@@ -110,10 +123,10 @@ val YUME_MAIN_ITEM_SPAWN_LORE_UNPICKED = listOf(
 val YUME_MAIN_ITEM_SPAWN_LORE_NO_PREFERRED = listOf(
     Component.empty(),
     component {
-        text("你还没有首选的主城，") with mochaMaroon without italic()
+        text("你还没有首选的主城，") with mochaSubtext0 without italic()
     },
     component {
-        text("右键点击来设置。") with mochaMaroon without italic()
+        text("右键点击来设置。") with mochaSubtext0 without italic()
     }
 )
 
