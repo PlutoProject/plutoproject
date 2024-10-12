@@ -12,13 +12,14 @@ import ink.pmc.essentials.hooks.HuskHomesHook
 import ink.pmc.essentials.listeners.*
 import ink.pmc.essentials.recipes.MENU_ITEM_RECIPE
 import ink.pmc.utils.command.CommandRegistrationResult
+import ink.pmc.utils.command.mappers.Stack2SenderMapper
 import ink.pmc.utils.command.registerCommands
 import ink.pmc.utils.inject.startKoinIfNotPresent
 import ink.pmc.utils.storage.saveResourceIfNotExisted
-import io.papermc.paper.command.brigadier.CommandSourceStack
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
+import org.bukkit.command.CommandSender
 import org.bukkit.plugin.Plugin
 import org.incendo.cloud.execution.ExecutionCoordinator
 import org.incendo.cloud.paper.PaperCommandManager
@@ -27,14 +28,12 @@ import org.koin.core.component.get
 import org.koin.core.component.inject
 import java.io.File
 
-typealias Cm = PaperCommandManager<CommandSourceStack>
-
 var disabled = true
 var economyHook: EconomyHook? = null
 var huskHomesHook: HuskHomesHook? = null
 lateinit var plugin: Plugin
 lateinit var fileConfig: FileConfig
-lateinit var commandManager: Cm
+lateinit var commandManager: PaperCommandManager<CommandSender>
 
 private const val COMMAND_PACKAGE = "ink.pmc.essentials.commands"
 val essentialsScope = CoroutineScope(Dispatchers.Default)
@@ -54,7 +53,7 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
         val config = saveResourceIfNotExisted("config.conf")
         fileConfig = config.loadConfig()
 
-        commandManager = PaperCommandManager.builder()
+        commandManager = PaperCommandManager.builder(Stack2SenderMapper)
             .executionCoordinator(ExecutionCoordinator.asyncCoordinator())
             .buildOnEnable(this)
 

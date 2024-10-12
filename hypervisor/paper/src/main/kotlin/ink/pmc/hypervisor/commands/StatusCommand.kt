@@ -9,7 +9,7 @@ object StatusCommand : PaperCommand() {
     private val status = commandManager.commandBuilder("status", "hvstatus")
         .permission("hypervisor.status")
         .suspendingHandler {
-            status(it.sender().sender)
+            status(it.sender())
         }
 
     init {

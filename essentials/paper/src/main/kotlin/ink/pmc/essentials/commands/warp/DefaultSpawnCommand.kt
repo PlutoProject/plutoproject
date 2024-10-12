@@ -15,9 +15,9 @@ import ink.pmc.utils.concurrent.submitAsync
 import ink.pmc.utils.dsl.cloud.sender
 import ink.pmc.utils.visual.mochaSubtext0
 import ink.pmc.utils.visual.mochaText
-import io.papermc.paper.command.brigadier.CommandSourceStack
 import kotlinx.coroutines.future.asCompletableFuture
 import net.kyori.adventure.text.Component
+import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.incendo.cloud.component.CommandComponent
 import org.incendo.cloud.context.CommandContext
@@ -28,9 +28,9 @@ import org.incendo.cloud.suggestion.Suggestion
 import org.incendo.cloud.suggestion.SuggestionProvider
 import java.util.concurrent.CompletableFuture
 
-private object SpawnSuggestion : SuggestionProvider<CommandSourceStack> {
+private object SpawnSuggestion : SuggestionProvider<CommandSender> {
     override fun suggestionsFuture(
-        context: CommandContext<CommandSourceStack>,
+        context: CommandContext<CommandSender>,
         input: CommandInput
     ): CompletableFuture<List<Suggestion>> {
         return submitAsync<List<Suggestion>> {
@@ -43,7 +43,7 @@ private object SpawnSuggestion : SuggestionProvider<CommandSourceStack> {
 val defaultSpawnCommand = commandManager.commandBuilder("preferredspawn")
     .permission("essentials.defaultspawn")
     .argument(
-        CommandComponent.builder<CommandSourceStack, String>()
+        CommandComponent.builder<CommandSender, String>()
             .suggestionProvider(SpawnSuggestion)
             .parser(StringParser.quotedStringParser())
             .required()
@@ -51,7 +51,7 @@ val defaultSpawnCommand = commandManager.commandBuilder("preferredspawn")
             .build()
     )
     .suspendingHandler {
-        val sender = it.sender.sender
+        val sender = it.sender
         if (sender !is Player) {
             sender.sendMessage(NON_PLAYER)
             return@suspendingHandler

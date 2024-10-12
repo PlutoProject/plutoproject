@@ -1,13 +1,13 @@
 package ink.pmc.essentials.commands.teleport.random
 
 import ink.pmc.essentials.COMMAND_RTP_NOT_ENABLED
-import ink.pmc.essentials.Cm
 import ink.pmc.essentials.RANDOM_TELEPORT_SPECIFIC
 import ink.pmc.essentials.api.Essentials
+import ink.pmc.utils.BukkitCommandManager
 import ink.pmc.utils.annotation.Command
 import ink.pmc.utils.chat.NO_PERMISSON
 import ink.pmc.utils.command.checkPlayer
-import ink.pmc.utils.command.suggestion.PaperPrivilegedSuggestion
+import ink.pmc.utils.command.suggestion.BukkitPrivilegedSuggestion
 import ink.pmc.utils.dsl.cloud.invoke
 import ink.pmc.utils.dsl.cloud.sender
 import org.bukkit.World
@@ -16,16 +16,16 @@ import kotlin.jvm.optionals.getOrNull
 
 @Command("rtp")
 @Suppress("UNUSED")
-fun Cm.rtp(aliases: Array<String>) {
+fun BukkitCommandManager.rtp(aliases: Array<String>) {
     this("rtp", *aliases) {
         permission("essentials.rtp")
         optional(
             "world",
             WorldParser.worldParser(),
-            PaperPrivilegedSuggestion.of(WorldParser(), RANDOM_TELEPORT_SPECIFIC)
+            BukkitPrivilegedSuggestion.of(WorldParser(), RANDOM_TELEPORT_SPECIFIC)
         )
         handler {
-            checkPlayer(sender.sender) {
+            checkPlayer(sender) {
                 val manager = Essentials.randomTeleportManager
                 val argWorld = optional<World>("world").getOrNull()
                 val world = argWorld ?: world

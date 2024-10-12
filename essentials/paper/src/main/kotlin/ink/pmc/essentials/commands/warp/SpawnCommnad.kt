@@ -2,6 +2,7 @@ package ink.pmc.essentials.commands.warp
 
 import ink.pmc.essentials.*
 import ink.pmc.essentials.api.Essentials
+import ink.pmc.utils.BukkitCommandManager
 import ink.pmc.utils.annotation.Command
 import ink.pmc.utils.chat.replace
 import ink.pmc.utils.command.checkPlayer
@@ -10,11 +11,11 @@ import ink.pmc.utils.dsl.cloud.sender
 
 @Command("spawn")
 @Suppress("UNUSED")
-fun Cm.spawn(aliases: Array<String>) {
+fun BukkitCommandManager.spawn(aliases: Array<String>) {
     this("spawn", *aliases) {
         permission("essentials.spawn")
         handler {
-            checkPlayer(sender.sender) {
+            checkPlayer(sender) {
                 val manager = Essentials.warpManager
                 val spawn = manager.getPreferredSpawn(this)
 

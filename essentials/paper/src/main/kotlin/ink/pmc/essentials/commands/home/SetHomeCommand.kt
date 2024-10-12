@@ -2,6 +2,7 @@ package ink.pmc.essentials.commands.home
 
 import ink.pmc.essentials.*
 import ink.pmc.essentials.api.Essentials
+import ink.pmc.utils.BukkitCommandManager
 import ink.pmc.utils.annotation.Command
 import ink.pmc.utils.chat.isValidIdentifier
 import ink.pmc.utils.chat.replace
@@ -14,12 +15,12 @@ import kotlin.jvm.optionals.getOrNull
 
 @Command("sethome")
 @Suppress("UNUSED")
-fun Cm.sethome(aliases: Array<String>) {
+fun BukkitCommandManager.sethome(aliases: Array<String>) {
     this("sethome", *aliases) {
         permission("essentials.sethome")
         optional("name", StringParser.quotedStringParser())
         handler {
-            checkPlayer(sender.sender) {
+            checkPlayer(sender) {
                 val manager = Essentials.homeManager
                 val list = manager.list(this)
                 val name = optional<String>("name").getOrNull() ?: "home"

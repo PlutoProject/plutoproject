@@ -1,6 +1,7 @@
 package ink.pmc.essentials.commands
 
 import ink.pmc.essentials.*
+import ink.pmc.utils.BukkitCommandManager
 import ink.pmc.utils.annotation.Command
 import ink.pmc.utils.chat.NON_PLAYER
 import ink.pmc.utils.chat.replace
@@ -10,6 +11,7 @@ import ink.pmc.utils.dsl.cloud.invoke
 import ink.pmc.utils.dsl.cloud.sender
 import io.papermc.paper.command.brigadier.CommandSourceStack
 import org.bukkit.GameMode
+import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.incendo.cloud.bukkit.parser.PlayerParser
 import org.incendo.cloud.context.CommandContext
@@ -17,7 +19,7 @@ import kotlin.jvm.optionals.getOrNull
 
 @Command("gm")
 @Suppress("UNUSED")
-fun Cm.gm(aliases: Array<String>) {
+fun BukkitCommandManager.gm(aliases: Array<String>) {
     this("gm", *aliases) {
         ("survival" alias "s" alias "0") {
             permission("essentials.gm.survival")
@@ -55,7 +57,7 @@ fun Cm.gm(aliases: Array<String>) {
 
 @Command("gms")
 @Suppress("UNUSED")
-fun Cm.gms(aliases: Array<String>) {
+fun BukkitCommandManager.gms(aliases: Array<String>) {
     this("gms", *aliases) {
         permission("essentials.gm.survival")
         optional("player", PlayerParser.playerParser())
@@ -67,7 +69,7 @@ fun Cm.gms(aliases: Array<String>) {
 
 @Command("gmc")
 @Suppress("UNUSED")
-fun Cm.gmc(aliases: Array<String>) {
+fun BukkitCommandManager.gmc(aliases: Array<String>) {
     this("gmc", *aliases) {
         permission("essentials.gm.creative")
         optional("player", PlayerParser.playerParser())
@@ -79,7 +81,7 @@ fun Cm.gmc(aliases: Array<String>) {
 
 @Command("gma")
 @Suppress("UNUSED")
-fun Cm.gma(aliases: Array<String>) {
+fun BukkitCommandManager.gma(aliases: Array<String>) {
     this("gma", *aliases) {
         permission("essentials.gm.adventure")
         optional("player", PlayerParser.playerParser())
@@ -91,7 +93,7 @@ fun Cm.gma(aliases: Array<String>) {
 
 @Command("gmsp")
 @Suppress("UNUSED")
-fun Cm.gmsp(aliases: Array<String>) {
+fun BukkitCommandManager.gmsp(aliases: Array<String>) {
     this("gmsp", *aliases) {
         permission("essentials.gm.spectator")
         optional("player", PlayerParser.playerParser())
@@ -101,9 +103,9 @@ fun Cm.gmsp(aliases: Array<String>) {
     }
 }
 
-private suspend fun CommandContext<CommandSourceStack>.gmHandler(gameMode: GameMode) {
+private suspend fun CommandContext<CommandSender>.gmHandler(gameMode: GameMode) {
     sync {
-        val sender = sender.sender
+        val sender = sender
         val argPlayer = optional<Player>("player").getOrNull()
         val mode = when (gameMode) {
             GameMode.SURVIVAL -> GM_SURVIVAL

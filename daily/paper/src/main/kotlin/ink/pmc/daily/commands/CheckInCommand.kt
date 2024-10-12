@@ -5,7 +5,7 @@ import ink.pmc.daily.CHECKED_IN
 import ink.pmc.daily.api.Daily
 import ink.pmc.daily.screens.DailyCalenderScreen
 import ink.pmc.interactive.api.GuiManager
-import ink.pmc.utils.PaperCm
+import ink.pmc.utils.BukkitCommandManager
 import ink.pmc.utils.annotation.Command
 import ink.pmc.utils.chat.UI_SUCCEED_SOUND
 import ink.pmc.utils.command.checkPlayer
@@ -15,11 +15,11 @@ import org.koin.java.KoinJavaComponent.getKoin
 
 @Command("checkin")
 @Suppress("UNUSED")
-fun PaperCm.checkIn(aliases: Array<String>) {
+fun BukkitCommandManager.checkIn(aliases: Array<String>) {
     this("checkin", *aliases) {
         permission("daily.checkin")
         handler {
-            checkPlayer(sender.sender) {
+            checkPlayer(sender) {
                 val daily = getKoin().get<Daily>()
                 val user = daily.getUserOrCreate(uniqueId)
 
@@ -36,7 +36,7 @@ fun PaperCm.checkIn(aliases: Array<String>) {
         "gui" {
             permission("daily.checkin.gui")
             handler {
-                checkPlayer(sender.sender) {
+                checkPlayer(sender) {
                     GuiManager.startInventory(this) {
                         Navigator(DailyCalenderScreen())
                     }
