@@ -4,6 +4,7 @@ import ink.pmc.advkt.component.text
 import ink.pmc.advkt.send
 import ink.pmc.essentials.api.warp.Warp
 import ink.pmc.essentials.api.warp.WarpManager
+import ink.pmc.essentials.commands.parseWarp
 import ink.pmc.utils.PaperCm
 import ink.pmc.utils.annotation.Command
 import ink.pmc.utils.command.checkPlayer
@@ -30,7 +31,7 @@ fun PaperCm.editWarp(aliases: Array<String>) {
             .required("content", StringParser.quotedStringParser())
             .suspendingHandler {
                 val sender = it.sender.sender
-                val warp = it.getWarp()
+                val warp = parseWarp(it.get("warp"))
                 val content = it.get<String>("content")
                 if (!it.checkWarp(warp)) return@suspendingHandler
 
@@ -53,7 +54,7 @@ fun PaperCm.editWarp(aliases: Array<String>) {
             .suspendingHandler {
                 val sender = it.sender.sender
                 val manager = getKoin().get<WarpManager>()
-                val warp = it.getWarp()
+                val warp = parseWarp(it.get("warp"))
                 if (!it.checkWarp(warp)) return@suspendingHandler
                 warp!!
 
@@ -79,7 +80,7 @@ fun PaperCm.editWarp(aliases: Array<String>) {
             .suspendingHandler {
                 val sender = it.sender.sender
                 val manager = getKoin().get<WarpManager>()
-                val warp = it.getWarp()
+                val warp = parseWarp(it.get("warp"))
                 if (!it.checkWarp(warp)) return@suspendingHandler
                 warp!!
 
@@ -105,7 +106,7 @@ fun PaperCm.editWarp(aliases: Array<String>) {
             .suspendingHandler {
                 val sender = it.sender.sender
                 val manager = getKoin().get<WarpManager>()
-                val warp = it.getWarp()
+                val warp = parseWarp(it.get("warp"))
                 if (!it.checkWarp(warp)) return@suspendingHandler
                 warp!!
 
@@ -131,7 +132,7 @@ fun PaperCm.editWarp(aliases: Array<String>) {
             .suspendingHandler {
                 val sender = it.sender.sender
                 val manager = getKoin().get<WarpManager>()
-                val warp = it.getWarp()
+                val warp = parseWarp(it.get("warp"))
                 if (!it.checkWarp(warp)) return@suspendingHandler
                 warp!!
 
@@ -156,7 +157,7 @@ fun PaperCm.editWarp(aliases: Array<String>) {
             .literal("move")
             .suspendingHandler {
                 checkPlayer(it.sender.sender) {
-                    val warp = it.getWarp()
+                    val warp = parseWarp(it.get("warp"))
                     if (!it.checkWarp(warp)) return@checkPlayer
 
                     warp!!
@@ -171,12 +172,6 @@ fun PaperCm.editWarp(aliases: Array<String>) {
                 }
             }
     )
-}
-
-private suspend fun CommandContext<CommandSourceStack>.getWarp(): Warp? {
-    val manager = getKoin().get<WarpManager>()
-    val name = get<String>("warp")
-    return manager.get(name)
 }
 
 private fun CommandContext<CommandSourceStack>.checkWarp(warp: Warp?): Boolean {

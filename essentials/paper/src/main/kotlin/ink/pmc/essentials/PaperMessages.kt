@@ -543,6 +543,22 @@ val COMMAND_WARP_NOT_EXISTED = component {
     text("的地标不存在") with mochaMaroon
 }
 
+val COMMAND_SPAWN_NOT_EXISTED = component {
+    text("名为 ") with mochaMaroon
+    text("<name> ") with mochaText
+    text("的出生点不存在") with mochaMaroon
+}
+
+val COMMAND_PREFERRED_SPAWN_SUCCEED = component {
+    text("已将你的默认出生点设为 ") with mochaPink
+    text("<name>") with mochaText
+}
+
+val COMMAND_PREFERRED_SPAWN_FAILED_ALREADY = component {
+    text("你的默认出生点已是 ") with mochaMaroon
+    text("<name>") with mochaText
+}
+
 val COMMAND_WARP_FAILED_NOT_EXISTED_UUID = component {
     text("无法通过指定的 ID 找到对应的地标") with mochaMaroon
 }

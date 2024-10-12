@@ -5,6 +5,7 @@ import com.github.shynixn.mccoroutine.bukkit.SuspendingJavaPlugin
 import com.github.shynixn.mccoroutine.bukkit.registerSuspendingEvents
 import ink.pmc.essentials.api.Essentials
 import ink.pmc.essentials.api.afk.AfkManager
+import ink.pmc.essentials.commands.warp.defaultSpawnCommand
 import ink.pmc.essentials.config.EssentialsConfig
 import ink.pmc.essentials.hooks.EconomyHook
 import ink.pmc.essentials.hooks.HuskHomesHook
@@ -62,6 +63,10 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
                 enabled = conf.Commands()[it],
                 aliases = conf.CommandAliases()[it]
             )
+        }
+
+        commandManager.apply {
+            command(defaultSpawnCommand)
         }
 
         registerEvents()
