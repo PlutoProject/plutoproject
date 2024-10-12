@@ -65,7 +65,6 @@ classgraph = { module = "io.github.classgraph:classgraph", version = "4.8.177" }
 vault-api = { module = "com.github.MilkBowl:VaultAPI", version = "1.7" }
 voyager-navigator = { module = "cafe.adriel.voyager:voyager-navigator", version.ref = "voyager" }
 voyager-screenmodel = { module = "cafe.adriel.voyager:voyager-screenmodel", version.ref = "voyager" }
-voyager-tab-navigator = { module = "cafe.adriel.voyager:voyager-tab-navigator", version.ref = "voyager" }
 anvilGui = { module = "net.wesjd:anvilgui", version = "1.10.1-SNAPSHOT" }
 coreprotect = { module = "net.coreprotect:coreprotect", version = "22.4" }
 huskHomes = { module = "net.william278.huskhomes:huskhomes-bukkit", version = "4.7" }
@@ -80,7 +79,7 @@ protobuf = ["protobuf-kotlin"]
 grpc = ["grpc-protobuf", "grpc-okhttp", "grpc-stub", "grpc-kotlin-stub"]
 mongodb = ["mongodb-kotlin", "mongodb-kotlin-bson"]
 koin = ["koin-core", "koin-core-coroutines", "koin-compose"]
-voyager = ["voyager-navigator", "voyager-screenmodel", "voyager-tab-navigator"]
+voyager = ["voyager-navigator", "voyager-screenmodel"]
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }

@@ -13,6 +13,10 @@ import ink.pmc.utils.concurrent.submitAsync
 import org.bukkit.entity.Player
 
 class MainMenuModel(private val player: Player) : ScreenModel {
+    enum class Tab {
+        HOME, ASSIST
+    }
+
     sealed class PreferredHomeState {
         data object Loading : PreferredHomeState()
         class Ready(val home: Home) : PreferredHomeState()
@@ -50,6 +54,7 @@ class MainMenuModel(private val player: Player) : ScreenModel {
         }
     }
 
+    var tab by mutableStateOf(Tab.HOME)
     var preferredHomeState by mutableStateOf<PreferredHomeState>(PreferredHomeState.Loading)
     var preferredSpawnState by mutableStateOf<PreferredSpawnState>(PreferredSpawnState.Loading)
     var lookupModeEnabled by mutableStateOf(player.inspecting)

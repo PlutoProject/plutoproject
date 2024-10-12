@@ -31,8 +31,12 @@ val MAIN_MENU_TAB_LORE = listOf(
     }
 )
 
-val MAIN_MENU_ITEM_COMMON = component {
-    text("常用功能") with mochaText without italic()
+val MAIN_MENU_TAB_HOME = component {
+    text("主页") with mochaText without italic()
+}
+
+val MAIN_MENU_TAB_ASSIST = component {
+    text("辅助功能") with mochaText without italic()
 }
 
 val MAIN_MENU_ITEM_HOME = component {
@@ -194,24 +198,19 @@ val MAIN_MENU_ITEM_HOME_RTP_NOT_ENABLED_LORE = listOf(
     component { text("该世界未启用随机传送。") with mochaSubtext0 without italic() },
 )
 
-val MAIN_MENU_ITEM_HOME_LOOKUP = component {
-    text("查询模式") with mochaGreen without italic()
+val MAIN_MENU_ITEM_HOME_LOOKUP_OFF = component {
+    text("查询模式 ") with mochaText without italic()
+    text("关") with mochaMaroon without italic()
 }
 
-val MAIN_MENU_ITEM_HOME_LOOKUP_ENABLE = component {
-    text("√ 已开启") with mochaGreen without italic()
-}
-
-val MAIN_MENU_ITEM_HOME_LOOKUP_DISABLE = component {
-    text("× 已关闭") with mochaMaroon without italic()
+val MAIN_MENU_ITEM_HOME_LOOKUP_ON = component {
+    text("查询模式 ") with mochaText without italic()
+    text("开") with mochaGreen without italic()
 }
 
 val MAIN_MENU_ITEM_HOME_LOOKUP_LORE = listOf(
     component {
-        text("将周围的变化一览无余，") with mochaSubtext0 without italic()
-    },
-    component {
-        text("这对抓住做坏事的人特别有用。") with mochaSubtext0 without italic()
+        text("将周围的变化一览无余。") with mochaSubtext0 without italic()
     },
     Component.empty(),
     component {

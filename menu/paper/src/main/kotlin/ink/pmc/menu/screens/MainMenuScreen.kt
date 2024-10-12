@@ -16,10 +16,7 @@ import ink.pmc.essentials.config.EssentialsConfig
 import ink.pmc.essentials.screens.home.HomeViewerScreen
 import ink.pmc.essentials.screens.warp.DefaultWarpPickerScreen
 import ink.pmc.interactive.api.LocalPlayer
-import ink.pmc.interactive.api.inventory.components.Background
-import ink.pmc.interactive.api.inventory.components.Item
-import ink.pmc.interactive.api.inventory.components.Space
-import ink.pmc.interactive.api.inventory.components.VerticalGrid
+import ink.pmc.interactive.api.inventory.components.*
 import ink.pmc.interactive.api.inventory.components.canvases.Chest
 import ink.pmc.interactive.api.inventory.jetpack.Arrangement
 import ink.pmc.interactive.api.inventory.layout.Box
@@ -34,12 +31,14 @@ import ink.pmc.menu.messages.*
 import ink.pmc.menu.screens.models.MainMenuModel
 import ink.pmc.menu.screens.models.MainMenuModel.PreferredHomeState
 import ink.pmc.menu.screens.models.MainMenuModel.PreferredSpawnState
+import ink.pmc.menu.screens.models.MainMenuModel.Tab.*
 import ink.pmc.playerdb.api.PlayerDb
 import ink.pmc.utils.chat.MESSAGE_SOUND
 import ink.pmc.utils.chat.UI_SUCCEED_SOUND
 import ink.pmc.utils.chat.replace
 import ink.pmc.utils.visual.mochaSubtext0
 import ink.pmc.utils.visual.mochaText
+import net.kyori.adventure.text.Component
 import org.bukkit.Material
 import org.bukkit.event.inventory.ClickType
 import org.koin.core.component.KoinComponent
@@ -101,26 +100,47 @@ class MainMenuScreen : Screen, KoinComponent {
     @Suppress("FunctionName")
     private fun TopBar() {
         Row(modifier = Modifier.height(1).fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-            Common()
+            TabSwitcher(
+                icon = Material.CAMPFIRE,
+                name = MAIN_MENU_TAB_HOME,
+                lore = listOf(),
+                tab = HOME
+            )
+            Spacer(modifier = Modifier.width(1).height(1))
+            TabSwitcher(
+                icon = Material.TRIPWIRE_HOOK,
+                name = MAIN_MENU_TAB_ASSIST,
+                lore = listOf(),
+                tab = ASSIST
+            )
         }
     }
 
-    /*
-    * 常用菜单页
-    */
     @Composable
     @Suppress("FunctionName")
-    private fun Common() {
+    private fun TabSwitcher(
+        icon: Material,
+        name: Component,
+        lore: List<Component>,
+        tab: MainMenuModel.Tab
+    ) {
+        val model = localScreenModel.current
         Item(
-            material = Material.CAMPFIRE,
-            name = MAIN_MENU_ITEM_COMMON,
-            lore = MAIN_MENU_TAB_LORE
+            material = icon,
+            name = name,
+            lore = lore,
+            modifier = Modifier.clickable {
+                if (clickType != ClickType.LEFT) return@clickable
+                if (model.tab == tab) return@clickable
+                model.tab = tab
+            }
         )
     }
 
     @Composable
     @Suppress("FunctionName")
     private fun Pane() {
+        val model = localScreenModel.current
         Row(
             modifier = Modifier.height(PANE_COLUMNS).fillMaxWidth(),
             horizontalArrangement = Arrangement.Center
@@ -135,20 +155,45 @@ class MainMenuScreen : Screen, KoinComponent {
                     modifier = Modifier.fillMaxSize(),
                     verticalArrangement = Arrangement.Center,
                 ) {
-                    Row(modifier = Modifier.fillMaxWidth().height(1), horizontalArrangement = Arrangement.Center) {
-                        Home()
-                        Spawn()
-                        Teleport()
-                        RandomTeleport()
-                        Lookup()
-                    }
-                    Row(modifier = Modifier.fillMaxWidth().height(1), horizontalArrangement = Arrangement.Center) {
-                        Daily()
-                        Coin()
-                        Wiki()
+                    when (model.tab) {
+                        HOME -> HomeTab()
+                        ASSIST -> AssistTab()
                     }
                 }
             }
+        }
+    }
+
+    // 主页面
+    @Composable
+    @Suppress("FunctionName")
+    private fun HomeTab() {
+        Row(modifier = Modifier.fillMaxWidth().height(1), horizontalArrangement = Arrangement.Center) {
+            Home()
+            Spawn()
+            Teleport()
+            RandomTeleport()
+            Daily()
+        }
+        Row(modifier = Modifier.fillMaxWidth().height(1), horizontalArrangement = Arrangement.Center) {
+            Coin()
+            Space()
+            Wiki()
+        }
+    }
+
+    // 辅助功能页面
+    @Composable
+    @Suppress("FunctionName")
+    private fun AssistTab() {
+        Row(modifier = Modifier.fillMaxWidth().height(1), horizontalArrangement = Arrangement.Center) {
+            Lookup()
+            repeat(4) {
+                Space()
+            }
+        }
+        Row(modifier = Modifier.fillMaxWidth().height(1), horizontalArrangement = Arrangement.Center) {
+
         }
     }
 
@@ -306,10 +351,9 @@ class MainMenuScreen : Screen, KoinComponent {
     private fun Lookup() {
         val player = LocalPlayer.current
         val model = localScreenModel.current
-
         Item(
             material = Material.SPYGLASS,
-            name = MAIN_MENU_ITEM_HOME_LOOKUP,
+            name = if (!model.lookupModeEnabled) MAIN_MENU_ITEM_HOME_LOOKUP_OFF else MAIN_MENU_ITEM_HOME_LOOKUP_ON,
             lore = if (!model.lookupModeEnabled) MAIN_MENU_ITEM_HOME_LOOKUP_LORE else MAIN_MENU_ITEM_HOME_LOOKUP_ENABLED_LORE,
             enchantmentGlint = model.lookupModeEnabled,
             modifier = Modifier.clickable {
