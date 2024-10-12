@@ -357,17 +357,12 @@ allprojects {
         dep(rootProject.libs.bundles.nightconfig)
         dep(rootProject.libs.bundles.protobuf)
         dep(rootProject.libs.bundles.grpc)
-        dep(rootProject.libs.bundles.javers)
         dep(rootProject.libs.bundles.mongodb)
-        // dep(rootProject.libs.bundles.ktor)
         dep(rootProject.libs.okhttp)
         dep(rootProject.libs.gson)
         dep(rootProject.libs.catppuccin)
-        // dep(rootProject.libs.netty)
-        dep(rootProject.libs.jsoup)
         dep(rootProject.libs.caffeine)
         dep(rootProject.libs.adventure.kt)
-        dep(rootProject.libs.invui)
         dep(rootProject.libs.bundles.koin)
         dep(rootProject.libs.classgraph)
         dep(provider { compose.runtime })
@@ -393,11 +388,9 @@ allprojects {
         options.encoding = "UTF-8"
     }
 
-    if (project.name != "dependency-loader") {
-        tasks.jar {
-            manifest {
-                attributes["paperweight-mappings-namespace"] = "mojang+yarn"
-            }
+    tasks.jar {
+        manifest {
+            attributes["paperweight-mappings-namespace"] = "mojang+yarn"
         }
     }
 
