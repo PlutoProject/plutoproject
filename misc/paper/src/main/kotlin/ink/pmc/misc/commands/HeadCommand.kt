@@ -5,8 +5,7 @@ import ink.pmc.misc.api.head.HeadManager
 import ink.pmc.utils.chat.NON_PLAYER
 import ink.pmc.utils.chat.replace
 import ink.pmc.utils.command.PaperCommand
-import ink.pmc.utils.command.paperRequiredOnlinePlayersArgument
-import ink.pmc.utils.visual.mochaYellow
+import ink.pmc.utils.command.bukkitRequiredOnlinePlayersArgument
 import net.kyori.adventure.text.Component
 import org.bukkit.entity.Player
 import org.incendo.cloud.kotlin.coroutines.extension.suspendingHandler
@@ -14,9 +13,9 @@ import org.incendo.cloud.kotlin.coroutines.extension.suspendingHandler
 object HeadCommand : PaperCommand() {
 
     private val head = commandManager.commandBuilder("head")
-        .argument(paperRequiredOnlinePlayersArgument())
+        .argument(bukkitRequiredOnlinePlayersArgument())
         .suspendingHandler {
-            val sender = it.sender().sender
+            val sender = it.sender()
             val name = it.get<String>("name")
 
             if (sender !is Player) {

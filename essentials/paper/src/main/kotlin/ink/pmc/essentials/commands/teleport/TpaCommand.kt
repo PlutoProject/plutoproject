@@ -5,6 +5,7 @@ import ink.pmc.essentials.api.Essentials
 import ink.pmc.essentials.api.teleport.TeleportDirection
 import ink.pmc.essentials.api.teleport.TeleportDirection.COME
 import ink.pmc.essentials.api.teleport.TeleportDirection.GO
+import ink.pmc.utils.BukkitCommandManager
 import ink.pmc.utils.annotation.Command
 import ink.pmc.utils.chat.DURATION
 import ink.pmc.utils.chat.replace
@@ -16,12 +17,12 @@ import org.incendo.cloud.bukkit.parser.PlayerParser
 
 @Command("tpa")
 @Suppress("UNUSED")
-fun Cm.tpa(aliases: Array<String>) {
+fun BukkitCommandManager.tpa(aliases: Array<String>) {
     this("tpa", *aliases) {
         permission("essentials.tpa")
         required("player", PlayerParser.playerParser())
         handler {
-            checkPlayer(sender.sender) {
+            checkPlayer(sender) {
                 val target = get<Player>("player")
                 handleTpa(this, target, GO)
             }
@@ -31,12 +32,12 @@ fun Cm.tpa(aliases: Array<String>) {
 
 @Command("tpahere")
 @Suppress("UNUSED")
-fun Cm.tpahere(aliases: Array<String>) {
+fun BukkitCommandManager.tpahere(aliases: Array<String>) {
     this("tpahere", *aliases) {
         permission("essentials.tpahere")
         required("player", PlayerParser.playerParser())
         handler {
-            checkPlayer(sender.sender) {
+            checkPlayer(sender) {
                 val target = get<Player>("player")
                 handleTpa(this, target, COME)
             }

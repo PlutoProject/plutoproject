@@ -4,9 +4,9 @@ import ink.pmc.advkt.component.component
 import ink.pmc.advkt.component.text
 import ink.pmc.essentials.COMMAND_ETP_SUCCEED
 import ink.pmc.essentials.COMMAND_ETP_SUCCEED_OTHER
-import ink.pmc.essentials.Cm
 import ink.pmc.essentials.TELEPORT_SUCCEED_SOUND
 import ink.pmc.essentials.api.Essentials
+import ink.pmc.utils.BukkitCommandManager
 import ink.pmc.utils.annotation.Command
 import ink.pmc.utils.chat.NON_PLAYER
 import ink.pmc.utils.chat.replace
@@ -22,7 +22,7 @@ import kotlin.jvm.optionals.getOrNull
 
 @Command("etp")
 @Suppress("UNUSED")
-fun Cm.etp(aliases: Array<String>) {
+fun BukkitCommandManager.etp(aliases: Array<String>) {
     this("etp", *aliases) {
         permission("essentials.etp")
         required("location", LocationParser.locationParser())
@@ -32,7 +32,7 @@ fun Cm.etp(aliases: Array<String>) {
             val manager = Essentials.teleportManager
             val location = get<Location>("location")
             val argPlayer = optional<Player>("player").getOrNull()
-            val sender = sender.sender
+            val sender = sender
             val bypassSafe = optional<Boolean>("bypassSafe").getOrNull() == true
             val options = manager.getWorldTeleportOptions(location.world).copy(disableSafeCheck = bypassSafe)
 

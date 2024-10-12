@@ -5,6 +5,7 @@ import ink.pmc.essentials.*
 import ink.pmc.essentials.api.Essentials
 import ink.pmc.essentials.screens.home.HomeViewerScreen
 import ink.pmc.interactive.api.GuiManager
+import ink.pmc.utils.BukkitCommandManager
 import ink.pmc.utils.annotation.Command
 import ink.pmc.utils.chat.NO_PERMISSON
 import ink.pmc.utils.chat.replace
@@ -16,12 +17,12 @@ import kotlin.jvm.optionals.getOrNull
 
 @Command("home")
 @Suppress("UNUSED")
-fun Cm.home(aliases: Array<String>) {
+fun BukkitCommandManager.home(aliases: Array<String>) {
     this("home", *aliases) {
         permission("essentials.home")
         argument(homes("name").optional())
         handler {
-            checkPlayer(sender.sender) {
+            checkPlayer(sender) {
                 val manager = Essentials.homeManager
                 val name = optional<String>("name").getOrNull()
                 val argUuid = name?.uuidOrNull

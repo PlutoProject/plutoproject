@@ -2,6 +2,7 @@ package ink.pmc.essentials.commands.home
 
 import ink.pmc.essentials.*
 import ink.pmc.essentials.api.Essentials
+import ink.pmc.utils.BukkitCommandManager
 import ink.pmc.utils.annotation.Command
 import ink.pmc.utils.chat.NO_PERMISSON
 import ink.pmc.utils.chat.replace
@@ -13,12 +14,12 @@ import ink.pmc.utils.player.uuidOrNull
 
 @Command("delhome")
 @Suppress("UNUSED")
-fun Cm.delhome(aliases: Array<String>) {
+fun BukkitCommandManager.delhome(aliases: Array<String>) {
     this("delhome", *aliases) {
         permission("essentials.delhome")
         argument(homes("name").required())
         handler {
-            checkPlayer(sender.sender) {
+            checkPlayer(sender) {
                 val manager = Essentials.homeManager
                 val name = get<String>("name")
                 val argUuid = name.uuidOrNull

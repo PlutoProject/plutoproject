@@ -5,6 +5,7 @@ import ink.pmc.essentials.*
 import ink.pmc.essentials.api.Essentials
 import ink.pmc.essentials.screens.warp.WarpViewerScreen
 import ink.pmc.interactive.api.GuiManager
+import ink.pmc.utils.BukkitCommandManager
 import ink.pmc.utils.annotation.Command
 import ink.pmc.utils.chat.replace
 import ink.pmc.utils.command.checkPlayer
@@ -15,12 +16,12 @@ import kotlin.jvm.optionals.getOrNull
 
 @Command("warp")
 @Suppress("UNUSED")
-fun Cm.warp(aliases: Array<String>) {
+fun BukkitCommandManager.warp(aliases: Array<String>) {
     this("warp", *aliases) {
         permission("essentials.warp")
         argument(warps("name").optional())
         handler {
-            checkPlayer(sender.sender) {
+            checkPlayer(sender) {
                 val manager = Essentials.warpManager
                 val input = optional<String>("name").getOrNull()
 
