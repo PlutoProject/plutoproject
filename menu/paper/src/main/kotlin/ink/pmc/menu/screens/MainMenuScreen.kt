@@ -25,15 +25,16 @@ import ink.pmc.interactive.api.inventory.layout.Row
 import ink.pmc.interactive.api.inventory.modifiers.*
 import ink.pmc.interactive.api.inventory.modifiers.click.clickable
 import ink.pmc.menu.CO_NEAR_COMMAND
+import ink.pmc.menu.components.Wiki
 import ink.pmc.menu.economy
 import ink.pmc.menu.inspecting
 import ink.pmc.menu.messages.*
 import ink.pmc.menu.screens.models.MainMenuModel
 import ink.pmc.menu.screens.models.MainMenuModel.PreferredHomeState
 import ink.pmc.menu.screens.models.MainMenuModel.PreferredSpawnState
-import ink.pmc.menu.screens.models.MainMenuModel.Tab.*
+import ink.pmc.menu.screens.models.MainMenuModel.Tab.ASSIST
+import ink.pmc.menu.screens.models.MainMenuModel.Tab.HOME
 import ink.pmc.playerdb.api.PlayerDb
-import ink.pmc.utils.chat.MESSAGE_SOUND
 import ink.pmc.utils.chat.UI_SUCCEED_SOUND
 import ink.pmc.utils.chat.replace
 import ink.pmc.utils.visual.mochaSubtext0
@@ -395,7 +396,6 @@ class MainMenuScreen : Screen, KoinComponent {
     private fun Daily() {
         val navigator = LocalNavigator.currentOrThrow
         val screenModel = localScreenModel.current
-
         Item(
             material = Material.NAME_TAG,
             name = MAIN_MENU_ITEMS_DAILY,
@@ -418,26 +418,6 @@ class MainMenuScreen : Screen, KoinComponent {
             material = Material.SUNFLOWER,
             name = MAIN_MENU_ITEM_COINS,
             lore = MAIN_MENU_ITEM_COINS_LORE(player),
-        )
-    }
-
-    /*
-    * Wiki
-    */
-    @Composable
-    @Suppress("FunctionName")
-    private fun Wiki() {
-        val player = LocalPlayer.current
-        Item(
-            material = Material.BOOK,
-            name = MAIN_MENU_ITEM_WIKI,
-            lore = MAIN_MENU_ITEM_WIKI_LORE,
-            modifier = Modifier.clickable {
-                if (clickType != ClickType.LEFT) return@clickable
-                player.closeInventory()
-                player.sendMessage(MAIN_MENU_WIKI)
-                player.playSound(MESSAGE_SOUND)
-            }
         )
     }
 

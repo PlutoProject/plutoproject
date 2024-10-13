@@ -1,6 +1,7 @@
 package ink.pmc.utils
 
 import com.github.shynixn.mccoroutine.bukkit.SuspendingJavaPlugin
+import ink.pmc.utils.hook.initPaperHooks
 import ink.pmc.utils.jvm.byteBuddy
 import ink.pmc.utils.platform.*
 import java.util.concurrent.Executor
@@ -43,6 +44,7 @@ class PaperPlugin : SuspendingJavaPlugin() {
         }
 
         this.server.messenger.registerOutgoingPluginChannel(this, "BungeeCord")
+        initPaperHooks()
     }
 
 }
