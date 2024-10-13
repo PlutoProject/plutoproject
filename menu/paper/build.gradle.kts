@@ -1,8 +1,8 @@
 bukkitPluginYaml {
     depend.add("interactive")
-    depend.add("essentials")
-    depend.add("daily")
-    depend.add("player-database")
-    depend.add("Vault")
-    depend.add("CoreProtect")
+    softDepend.add("essentials")
+    softDepend.add("daily")
+    softDepend.add("player-database")
+    softDepend.add("Vault")
+    softDepend.add("CoreProtect")
 }

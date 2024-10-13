@@ -14,6 +14,7 @@ cloud = "2.0.0"
 cloud-minecraft = "2.0.0-SNAPSHOT"
 koin = "3.6.0-Beta5"
 compose = "1.7.0-alpha02"
+voyager = "1.1.0-beta02"
 
 [libraries]
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
@@ -62,7 +63,8 @@ koin-core-coroutines = { module = "io.insert-koin:koin-core-coroutines", version
 koin-compose = { module = "io.insert-koin:koin-compose", version = "3.6.0-alpha1" }
 classgraph = { module = "io.github.classgraph:classgraph", version = "4.8.177" }
 vault-api = { module = "com.github.MilkBowl:VaultAPI", version = "1.7" }
-voyager-navigator = { module = "cafe.adriel.voyager:voyager-navigator", version = "1.1.0-beta02" }
+voyager-navigator = { module = "cafe.adriel.voyager:voyager-navigator", version.ref = "voyager" }
+voyager-screenmodel = { module = "cafe.adriel.voyager:voyager-screenmodel", version.ref = "voyager" }
 anvilGui = { module = "net.wesjd:anvilgui", version = "1.10.1-SNAPSHOT" }
 coreprotect = { module = "net.coreprotect:coreprotect", version = "22.4" }
 huskHomes = { module = "net.william278.huskhomes:huskhomes-bukkit", version = "4.7" }
@@ -77,6 +79,7 @@ protobuf = ["protobuf-kotlin"]
 grpc = ["grpc-protobuf", "grpc-okhttp", "grpc-stub", "grpc-kotlin-stub"]
 mongodb = ["mongodb-kotlin", "mongodb-kotlin-bson"]
 koin = ["koin-core", "koin-core-coroutines", "koin-compose"]
+voyager = ["voyager-navigator", "voyager-screenmodel"]
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }

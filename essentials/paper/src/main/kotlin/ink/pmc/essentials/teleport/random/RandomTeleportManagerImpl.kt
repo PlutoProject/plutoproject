@@ -5,6 +5,7 @@ import com.google.common.collect.ArrayListMultimap
 import com.google.common.collect.ListMultimap
 import com.google.common.collect.Multimaps
 import ink.pmc.essentials.*
+import ink.pmc.essentials.api.Essentials
 import ink.pmc.essentials.api.teleport.ManagerState
 import ink.pmc.essentials.api.teleport.TaskState.*
 import ink.pmc.essentials.api.teleport.TeleportManager
@@ -350,7 +351,7 @@ class RandomTeleportManagerImpl : RandomTeleportManager, KoinComponent {
     }
 
     override fun isEnabled(world: World): Boolean {
-        return enabledWorlds.contains(world)
+        return enabledWorlds.contains(world) && Essentials.isRandomTeleportEnabled()
     }
 
     private suspend fun tickCacheTask() {

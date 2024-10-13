@@ -9,11 +9,11 @@ import ink.pmc.utils.visual.*
 import net.kyori.adventure.text.Component
 import org.bukkit.entity.Player
 
-val YUME_MAIN_TITLE = component {
+val MAIN_MENU_TITLE = component {
     text("手账")
 }
 
-val YUME_MAIN_FIRST_OPEN_PROMPT = component {
+val MAIN_MENU_FIRST_OPEN_PROMPT = component {
     text("小提示: 你可以使用 ") with mochaText
     keybind("key.sneak") with mochaLavender
     text(" + ") with mochaLavender
@@ -23,7 +23,7 @@ val YUME_MAIN_FIRST_OPEN_PROMPT = component {
     text("来打开「手账」") with mochaText
 }
 
-val YUME_MAIN_TAB_LORE = listOf(
+val MAIN_MENU_TAB_LORE = listOf(
     Component.empty(),
     component {
         text("左键 ") with mochaLavender without italic()
@@ -31,40 +31,57 @@ val YUME_MAIN_TAB_LORE = listOf(
     }
 )
 
-val YUME_MAIN_ITEM_COMMON = component {
-    text("常用功能") with mochaText without italic()
+val MAIN_MENU_TAB_HOME = component {
+    text("主页") with mochaText without italic()
 }
 
-val YUME_MAIN_ITEM_HOME = component {
+val MAIN_MENU_TAB_ASSIST = component {
+    text("辅助功能") with mochaText without italic()
+}
+
+val MAIN_MENU_ITEM_HOME = component {
     text("明灯") with mochaYellow without italic()
 }
 
-val YUME_MAIN_ITEM_HOME_LORE = listOf(
+val LOADING_LORE = listOf(
     component {
-        text("在长夜中为你指明归家路的一盏灯。") with mochaSubtext0 without italic()
-    },
+        text("正在加载...") with mochaSubtext0 without italic()
+    }
+)
+
+private val MAIN_MENU_ITEM_HOME_DESC = component {
+    text("在长夜中为你指明归家路的一盏灯。") with mochaSubtext0 without italic()
+}
+
+private val MAIN_MENU_ITEM_HOME_OPEN_LIST = component {
+    text("右键 ") with mochaLavender without italic()
+    text("打开家列表") with mochaText without italic()
+}
+
+val MAIN_MENU_ITEM_HOME_LORE = listOf(
+    MAIN_MENU_ITEM_HOME_DESC,
     Component.empty(),
     component {
         text("左键 ") with mochaLavender without italic()
         text("传送至首选的家") with mochaText without italic()
     },
-    component {
-        text("右键 ") with mochaLavender without italic()
-        text("打开家列表") with mochaText without italic()
-    },
+    MAIN_MENU_ITEM_HOME_OPEN_LIST,
 )
 
-val YUME_MAIN_ITEM_HOME_LORE_NO_PREFER = listOf(
+val MAIN_MENU_ITEM_HOME_LORE_NO_PREFER = listOf(
+    MAIN_MENU_ITEM_HOME_DESC,
     Component.empty(),
     component {
-        text("你还没有首选的家，") with mochaMaroon without italic()
+        text("你还没有首选的家，") with mochaSubtext0 without italic()
     },
     component {
-        text("请在编辑家页面中点击「设为首选」") with mochaMaroon without italic()
+        text("请在编辑家页面中点击「设为首选」") with mochaSubtext0 without italic()
     },
+    Component.empty(),
+    MAIN_MENU_ITEM_HOME_OPEN_LIST,
 )
 
-val YUME_MAIN_ITEM_SPAWN = component {
+val MAIN_MENU_ITEM_SPAWN = component {
     text("伊始之处") with mochaFlamingo without italic()
 }
 
@@ -91,7 +108,7 @@ private val SPAWN_DESC = component {
     text("行向云海之志。") with mochaSubtext0 without italic()
 }
 
-val YUME_MAIN_ITEM_SPAWN_LORE = listOf(
+val MAIN_MENU_ITEM_SPAWN_LORE = listOf(
     // SPAWN_PICKED,
     // SPAWN_LOC,
     SPAWN_DESC,
@@ -100,28 +117,28 @@ val YUME_MAIN_ITEM_SPAWN_LORE = listOf(
     SPAWN_OPERATION_2
 )
 
-val YUME_MAIN_ITEM_SPAWN_LORE_UNPICKED = listOf(
+val MAIN_MENU_ITEM_SPAWN_LORE_UNPICKED = listOf(
     SPAWN_DESC,
     Component.empty(),
     SPAWN_OPERATION_1,
     SPAWN_OPERATION_2
 )
 
-val YUME_MAIN_ITEM_SPAWN_LORE_NO_PREFERRED = listOf(
+val MAIN_MENU_ITEM_SPAWN_LORE_NO_PREFERRED = listOf(
     Component.empty(),
     component {
-        text("你还没有首选的主城，") with mochaMaroon without italic()
+        text("你还没有首选的主城，") with mochaSubtext0 without italic()
     },
     component {
-        text("右键点击来设置。") with mochaMaroon without italic()
+        text("右键点击来设置。") with mochaSubtext0 without italic()
     }
 )
 
-val YUME_MAIN_ITEM_TP = component {
+val MAIN_MENU_ITEM_TP = component {
     text("巡回列车") with mochaSapphire without italic()
 }
 
-val YUME_MAIN_ITEM_TP_LORE = listOf(
+val MAIN_MENU_ITEM_TP_LORE = listOf(
     component {
         text("拜访世界中的其他玩家。") with mochaSubtext0 without italic()
     },
@@ -132,25 +149,25 @@ val YUME_MAIN_ITEM_TP_LORE = listOf(
     },
 )
 
-val YUME_MAIN_ITEM_TP_EXISTED_LORE = listOf(
+val MAIN_MENU_ITEM_TP_EXISTED_LORE = listOf(
     Component.empty(),
     component {
-        text("你还有未完成的传送请求，") with mochaMaroon without italic()
+        text("你还有未完成的传送请求，") with mochaSubtext0 without italic()
     },
     component {
-        text("可使用 ") with mochaMaroon without italic()
-        text("/tpcancel ") with mochaText without italic()
-        text("来取消") with mochaMaroon without italic()
+        text("可使用 ") with mochaSubtext0 without italic()
+        text("/tpcancel ") with mochaLavender without italic()
+        text("来取消") with mochaSubtext0 without italic()
     },
 )
 
-val YUME_MAIN_ITEM_HOME_RTP = component {
+val MAIN_MENU_ITEM_HOME_RTP = component {
     text("神奇水晶") with mochaMauve without italic()
 }
 
-val YUME_MAIN_RTP_COST = "${Essentials.randomTeleportManager.defaultOptions.cost.trimmed()}$DEFAULT_ECONOMY_SYMBOL"
+val MAIN_MENU_RTP_COST = "${Essentials.randomTeleportManager.defaultOptions.cost.trimmed()}$DEFAULT_ECONOMY_SYMBOL"
 
-val YUME_MAIN_ITEM_HOME_RTP_LORE = listOf(
+val MAIN_MENU_ITEM_HOME_RTP_LORE = listOf(
     component {
         text("具有魔力的紫水晶，") with mochaSubtext0 without italic()
     },
@@ -161,44 +178,39 @@ val YUME_MAIN_ITEM_HOME_RTP_LORE = listOf(
     component {
         text("左键 ") with mochaLavender without italic()
         text("进行随机传送 ") with mochaText without italic()
-        text("($YUME_MAIN_RTP_COST)") with mochaSubtext0 without italic()
+        text("($MAIN_MENU_RTP_COST)") with mochaSubtext0 without italic()
     },
 )
 
-val YUME_MAIN_ITEM_HOME_RTP_COIN_NOT_ENOUGH_LORE = listOf(
+val MAIN_MENU_ITEM_HOME_RTP_COIN_NOT_ENOUGH_LORE = listOf(
     Component.empty(),
     component {
-        text("货币不足，") with mochaMaroon without italic()
+        text("货币不足，") with mochaSubtext0 without italic()
     },
     component {
-        text("进行随机传送需要 ") with mochaMaroon without italic()
-        text(YUME_MAIN_RTP_COST) with mochaText without italic()
+        text("进行随机传送需要 ") with mochaSubtext0 without italic()
+        text(MAIN_MENU_RTP_COST) with mochaText without italic()
     },
 )
 
-val YUME_MAIN_ITEM_HOME_RTP_NOT_ENABLED_LORE = listOf(
+val MAIN_MENU_ITEM_HOME_RTP_NOT_ENABLED_LORE = listOf(
     Component.empty(),
-    component { text("该世界未启用随机传送") with mochaMaroon without italic() },
+    component { text("该世界未启用随机传送。") with mochaSubtext0 without italic() },
 )
 
-val YUME_MAIN_ITEM_HOME_LOOKUP = component {
-    text("查询模式") with mochaGreen without italic()
+val MAIN_MENU_ITEM_HOME_LOOKUP_OFF = component {
+    text("查询模式 ") with mochaText without italic()
+    text("关") with mochaMaroon without italic()
 }
 
-val YUME_MAIN_ITEM_HOME_LOOKUP_ENABLE = component {
-    text("√ 已开启") with mochaGreen without italic()
+val MAIN_MENU_ITEM_HOME_LOOKUP_ON = component {
+    text("查询模式 ") with mochaText without italic()
+    text("开") with mochaGreen without italic()
 }
 
-val YUME_MAIN_ITEM_HOME_LOOKUP_DISABLE = component {
-    text("× 已关闭") with mochaMaroon without italic()
-}
-
-val YUME_MAIN_ITEM_HOME_LOOKUP_LORE = listOf(
+val MAIN_MENU_ITEM_HOME_LOOKUP_LORE = listOf(
     component {
-        text("将周围的变化一览无余，") with mochaSubtext0 without italic()
-    },
-    component {
-        text("这对抓住做坏事的人特别有用。") with mochaSubtext0 without italic()
+        text("将周围的变化一览无余。") with mochaSubtext0 without italic()
     },
     Component.empty(),
     component {
@@ -211,7 +223,7 @@ val YUME_MAIN_ITEM_HOME_LOOKUP_LORE = listOf(
     },
 )
 
-val YUME_MAIN_ITEM_HOME_LOOKUP_ENABLED_LORE = listOf(
+val MAIN_MENU_ITEM_HOME_LOOKUP_ENABLED_LORE = listOf(
     component {
         text("查询模式已开启，") with mochaSubtext0 without italic()
     },
@@ -225,7 +237,7 @@ val YUME_MAIN_ITEM_HOME_LOOKUP_ENABLED_LORE = listOf(
     },
 )
 
-val YUME_MAIN_ITEMS_DAILY = component {
+val MAIN_MENU_ITEMS_DAILY = component {
     text("礼记") with mochaPink without italic()
 }
 
@@ -238,7 +250,7 @@ private val DAILY_LORE_INTRODUCTION = component {
     text("时光与点滴足迹。") with mochaSubtext0 without italic()
 }
 
-val YUME_MAIN_ITEMS_DAILY_LORE = listOf(
+val MAIN_MENU_ITEMS_DAILY_LORE = listOf(
     component {
         text("× 今日尚未到访") with mochaYellow without italic()
     },
@@ -247,7 +259,7 @@ val YUME_MAIN_ITEMS_DAILY_LORE = listOf(
     DAILY_LORE_OPERATION
 )
 
-val YUME_MAIN_ITEMS_DAILY_LORE_CHECKED_IN = listOf(
+val MAIN_MENU_ITEMS_DAILY_LORE_CHECKED_IN = listOf(
     component {
         text("√ 今日已到访") with mochaGreen without italic()
     },
@@ -256,12 +268,12 @@ val YUME_MAIN_ITEMS_DAILY_LORE_CHECKED_IN = listOf(
     DAILY_LORE_OPERATION
 )
 
-val YUME_MAIN_ITEM_COINS = component {
+val MAIN_MENU_ITEM_COINS = component {
     text("货币") with mochaYellow without italic()
 }
 
 @Suppress("FunctionName")
-fun YUME_MAIN_ITEM_COINS_LORE(player: Player): List<Component> {
+fun MAIN_MENU_ITEM_COINS_LORE(player: Player): List<Component> {
     val balance = economy.getBalance(player).trimmed()
     return listOf(
         component {
@@ -271,15 +283,15 @@ fun YUME_MAIN_ITEM_COINS_LORE(player: Player): List<Component> {
     )
 }
 
-val YUME_MAIN_WIKI = component {
+val MAIN_MENU_WIKI = component {
     text("点此打开星社百科") with mochaLavender with underlined() with openUrl("https://wiki.plutomc.club/")
 }
 
-val YUME_MAIN_ITEM_WIKI = component {
+val MAIN_MENU_ITEM_WIKI = component {
     text("星社百科") with mochaText without italic()
 }
 
-val YUME_MAIN_ITEM_WIKI_LORE = listOf(
+val MAIN_MENU_ITEM_WIKI_LORE = listOf(
     component {
         text("服务器的百科全书，") with mochaSubtext0 without italic()
     },

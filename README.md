@@ -11,7 +11,7 @@
 - `hypervisor`: 服务端监测、调控工具。
 - `visual`: 视觉，客户端 UI 相关 API。
 - `interactive`: 交互框架，其 `inventory` 部分基于 [guiy-compose](https://github.com/MineInAbyss/guiy-compose) 开发。
-- `menu`: 服务器菜单相关内容。
+- `menu`: 运行在生存区域的「手账」功能。
 - `whitelist`: 代理端白名单实现。
 - `player-database`: 以玩家为单位，使用键值对存储数据。
 - `options`: 玩家设置框架。
