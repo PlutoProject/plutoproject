@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.com.intellij.psi.impl.PsiDocumentManagerBase.PriorityEventCollector
-
 plugins {
     alias(libs.plugins.protobuf)
 }
