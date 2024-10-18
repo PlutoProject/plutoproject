@@ -16,16 +16,16 @@ import ink.pmc.misc.listeners.ChatListener
 import ink.pmc.misc.listeners.CreeperAntiExplodeListener
 import ink.pmc.misc.listeners.ElevatorListener
 import ink.pmc.misc.listeners.SitListener
-import ink.pmc.utils.BukkitCommandManager
 import ink.pmc.utils.command.init
-import ink.pmc.utils.command.mappers.Stack2SenderMapper
 import ink.pmc.utils.inject.startKoinIfNotPresent
+import io.papermc.paper.command.brigadier.CommandSourceStack
 import org.bukkit.plugin.java.JavaPlugin
 import org.incendo.cloud.execution.ExecutionCoordinator
+import org.incendo.cloud.paper.PaperCommandManager
 import org.koin.dsl.module
 import java.io.File
 
-lateinit var commandManager: BukkitCommandManager
+lateinit var commandManager: PaperCommandManager<CommandSourceStack>
 lateinit var plugin: JavaPlugin
 lateinit var fileConfig: FileConfig
 var disabled = true
@@ -52,7 +52,7 @@ class PaperPlugin : JavaPlugin() {
         plugin = this
         disabled = false
 
-        commandManager = BukkitCommandManager.builder(Stack2SenderMapper)
+        commandManager = PaperCommandManager.builder()
             .executionCoordinator(ExecutionCoordinator.asyncCoordinator())
             .buildOnEnable(this)
 

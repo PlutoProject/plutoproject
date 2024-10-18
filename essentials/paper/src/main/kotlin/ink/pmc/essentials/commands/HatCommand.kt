@@ -1,7 +1,6 @@
 package ink.pmc.essentials.commands
 
 import ink.pmc.essentials.*
-import ink.pmc.utils.BukkitCommandManager
 import ink.pmc.utils.annotation.Command
 import ink.pmc.utils.chat.NO_PERMISSON
 import ink.pmc.utils.chat.replace
@@ -17,12 +16,12 @@ import kotlin.jvm.optionals.getOrNull
 
 @Command("hat")
 @Suppress("UNUSED")
-fun BukkitCommandManager.hat(aliases: Array<String>) {
+fun Cm.hat(aliases: Array<String>) {
     this("hat", *aliases) {
         permission("essentials.hat")
         optional("player", PlayerParser.playerParser())
         handler {
-            checkPlayer(sender) {
+            checkPlayer(sender.sender) {
                 val argPlayer = optional<Player>("player").getOrNull()
 
                 if (handItem.type == Material.AIR) {

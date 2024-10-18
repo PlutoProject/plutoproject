@@ -6,8 +6,8 @@ import ink.pmc.interactive.api.GuiManager
 import ink.pmc.interactive.examples.ExampleScreen1
 import ink.pmc.interactive.examples.ExampleScreen2
 import ink.pmc.interactive.examples.ExampleScreen3
-import ink.pmc.utils.BukkitCommandContext
-import ink.pmc.utils.BukkitCommandManager
+import ink.pmc.utils.PaperCm
+import ink.pmc.utils.PaperCtx
 import ink.pmc.utils.chat.NON_PLAYER
 import ink.pmc.utils.dsl.cloud.invoke
 import ink.pmc.utils.dsl.cloud.sender
@@ -15,7 +15,7 @@ import org.bukkit.entity.Player
 
 private const val PERMISSION = "interactive.example"
 
-fun BukkitCommandManager.interactive(alias: Array<String>) {
+fun PaperCm.interactive(alias: Array<String>) {
     this("interactive", *alias) {
         permission(PERMISSION)
         "example_1" {
@@ -47,8 +47,8 @@ fun BukkitCommandManager.interactive(alias: Array<String>) {
     }
 }
 
-private fun BukkitCommandContext.startInventory(content: ComposableFunction) {
-    val sender = sender
+private fun PaperCtx.startInventory(content: ComposableFunction) {
+    val sender = sender.sender
     if (sender !is Player) {
         sender.sendMessage(NON_PLAYER)
         return

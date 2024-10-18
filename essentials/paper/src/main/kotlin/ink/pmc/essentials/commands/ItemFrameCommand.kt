@@ -1,7 +1,6 @@
 package ink.pmc.essentials.commands
 
 import ink.pmc.essentials.*
-import ink.pmc.utils.BukkitCommandManager
 import ink.pmc.utils.annotation.Command
 import ink.pmc.utils.chat.replace
 import ink.pmc.utils.command.checkPlayer
@@ -60,12 +59,12 @@ private fun ItemFrame.setProtect(value: Boolean, player: Player) {
 
 @Command("itemframe")
 @Suppress("UNUSED")
-fun BukkitCommandManager.itemframe(aliases: Array<String>) {
+fun Cm.itemframe(aliases: Array<String>) {
     this("itemframe", *aliases) {
         "invisible" {
             permission("essentials.itemframe.invisible")
             handler {
-                checkPlayer(sender) {
+                checkPlayer(sender.sender) {
                     sync { handleOperation(Operation.INVISIBLE) }
                 }
             }
@@ -73,7 +72,7 @@ fun BukkitCommandManager.itemframe(aliases: Array<String>) {
         "protect" {
             permission("essentials.itemframe.protect")
             handler {
-                checkPlayer(sender) {
+                checkPlayer(sender.sender) {
                     sync { handleOperation(Operation.PROTECT) }
                 }
             }

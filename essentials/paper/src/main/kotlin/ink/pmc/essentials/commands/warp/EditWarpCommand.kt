@@ -5,7 +5,7 @@ import ink.pmc.advkt.send
 import ink.pmc.essentials.api.warp.Warp
 import ink.pmc.essentials.api.warp.WarpManager
 import ink.pmc.essentials.commands.parseWarp
-import ink.pmc.utils.BukkitCommandManager
+import ink.pmc.utils.PaperCm
 import ink.pmc.utils.annotation.Command
 import ink.pmc.utils.command.checkPlayer
 import ink.pmc.utils.dsl.cloud.sender
@@ -13,7 +13,6 @@ import ink.pmc.utils.visual.mochaMaroon
 import ink.pmc.utils.visual.mochaPink
 import ink.pmc.utils.visual.mochaText
 import io.papermc.paper.command.brigadier.CommandSourceStack
-import org.bukkit.command.CommandSender
 import org.incendo.cloud.context.CommandContext
 import org.incendo.cloud.kotlin.coroutines.extension.suspendingHandler
 import org.incendo.cloud.parser.standard.StringParser
@@ -21,7 +20,7 @@ import org.koin.java.KoinJavaComponent.getKoin
 
 @Command("editwarp")
 @Suppress("UNUSED")
-fun BukkitCommandManager.editWarp(aliases: Array<String>) {
+fun PaperCm.editWarp(aliases: Array<String>) {
     val base = commandBuilder("editwarp", *aliases)
         .permission("essentials.editwarp")
         .argument(warpsWithoutAlias("warp").required())
@@ -31,7 +30,7 @@ fun BukkitCommandManager.editWarp(aliases: Array<String>) {
             .literal("alias")
             .required("content", StringParser.quotedStringParser())
             .suspendingHandler {
-                val sender = it.sender
+                val sender = it.sender.sender
                 val warp = parseWarp(it.get("warp"))
                 val content = it.get<String>("content")
                 if (!it.checkWarp(warp)) return@suspendingHandler
@@ -53,7 +52,7 @@ fun BukkitCommandManager.editWarp(aliases: Array<String>) {
         base
             .literal("set_spawn")
             .suspendingHandler {
-                val sender = it.sender
+                val sender = it.sender.sender
                 val manager = getKoin().get<WarpManager>()
                 val warp = parseWarp(it.get("warp"))
                 if (!it.checkWarp(warp)) return@suspendingHandler
@@ -79,7 +78,7 @@ fun BukkitCommandManager.editWarp(aliases: Array<String>) {
         base
             .literal("unset_spawn")
             .suspendingHandler {
-                val sender = it.sender
+                val sender = it.sender.sender
                 val manager = getKoin().get<WarpManager>()
                 val warp = parseWarp(it.get("warp"))
                 if (!it.checkWarp(warp)) return@suspendingHandler
@@ -105,7 +104,7 @@ fun BukkitCommandManager.editWarp(aliases: Array<String>) {
         base
             .literal("set_default_spawn")
             .suspendingHandler {
-                val sender = it.sender
+                val sender = it.sender.sender
                 val manager = getKoin().get<WarpManager>()
                 val warp = parseWarp(it.get("warp"))
                 if (!it.checkWarp(warp)) return@suspendingHandler
@@ -131,7 +130,7 @@ fun BukkitCommandManager.editWarp(aliases: Array<String>) {
         base
             .literal("unset_default_spawn")
             .suspendingHandler {
-                val sender = it.sender
+                val sender = it.sender.sender
                 val manager = getKoin().get<WarpManager>()
                 val warp = parseWarp(it.get("warp"))
                 if (!it.checkWarp(warp)) return@suspendingHandler
@@ -157,7 +156,7 @@ fun BukkitCommandManager.editWarp(aliases: Array<String>) {
         base
             .literal("move")
             .suspendingHandler {
-                checkPlayer(it.sender) {
+                checkPlayer(it.sender.sender) {
                     val warp = parseWarp(it.get("warp"))
                     if (!it.checkWarp(warp)) return@checkPlayer
 
@@ -175,9 +174,9 @@ fun BukkitCommandManager.editWarp(aliases: Array<String>) {
     )
 }
 
-private fun CommandContext<CommandSender>.checkWarp(warp: Warp?): Boolean {
+private fun CommandContext<CommandSourceStack>.checkWarp(warp: Warp?): Boolean {
     if (warp == null) {
-        sender.send {
+        sender.sender.send {
             text("该地标不存在") with mochaMaroon
         }
         return false

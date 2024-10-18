@@ -4,7 +4,6 @@ import ink.pmc.utils.concurrent.submitSync
 import ink.pmc.utils.platform.isFoliaOrAsync
 import kotlinx.coroutines.future.await
 import org.bukkit.Location
-import org.bukkit.craftbukkit.entity.CraftEntity
 import org.bukkit.entity.Entity
 
 @Suppress("UNUSED")
@@ -22,8 +21,3 @@ fun Entity.ensureThreadSafe(block: Entity.() -> Unit) {
 suspend fun Entity.teleportSuspend(location: Location) {
     teleportAsync(location).await()
 }
-
-inline val Entity.internal: net.minecraft.world.entity.Entity
-    get() {
-        return (this as CraftEntity).handle
-    }

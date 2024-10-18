@@ -1,22 +1,14 @@
 package ink.pmc.utils.platform
 
 import ink.pmc.utils.concurrent.submitSync
-import net.minecraft.server.MinecraftServer
-import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Server
-import org.bukkit.craftbukkit.CraftServer
 import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
 
 lateinit var paperThread: Thread
 lateinit var paper: Server
 lateinit var paperUtilsPlugin: JavaPlugin
-
-inline val minecraftServer: MinecraftServer
-    get() {
-        return (paper as CraftServer).server
-    }
 
 @Suppress("UNUSED")
 val Thread.isServerThread: Boolean

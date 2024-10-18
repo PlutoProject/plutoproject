@@ -2,7 +2,6 @@ package ink.pmc.essentials.commands.teleport
 
 import ink.pmc.essentials.*
 import ink.pmc.essentials.api.Essentials
-import ink.pmc.utils.BukkitCommandManager
 import ink.pmc.utils.annotation.Command
 import ink.pmc.utils.chat.NON_PLAYER
 import ink.pmc.utils.chat.NO_PERMISSON
@@ -15,7 +14,7 @@ import kotlin.jvm.optionals.getOrNull
 
 @Command("tpcancel")
 @Suppress("UNUSED")
-fun BukkitCommandManager.tpcancel(aliases: Array<String>) {
+fun Cm.tpcancel(aliases: Array<String>) {
     this("tpcancel", *aliases) {
         permission("essentials.tpcancel")
         optional("player", PlayerParser.playerParser())
@@ -23,7 +22,7 @@ fun BukkitCommandManager.tpcancel(aliases: Array<String>) {
             val manager = Essentials.teleportManager
             val argPlayer = optional<Player>("player").getOrNull()
             val argRequest = argPlayer?.let { manager.getUnfinishedRequest(it) }
-            val sender = sender
+            val sender = sender.sender
 
             if (argPlayer != null) {
                 if (!sender.hasPermission("essentials.tpcancel.other")) {

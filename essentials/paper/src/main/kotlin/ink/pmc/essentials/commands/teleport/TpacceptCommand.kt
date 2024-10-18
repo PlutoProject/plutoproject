@@ -2,16 +2,16 @@ package ink.pmc.essentials.commands.teleport
 
 import ink.pmc.essentials.*
 import ink.pmc.essentials.api.Essentials
-import ink.pmc.utils.BukkitCommandContext
-import ink.pmc.utils.BukkitCommandManager
 import ink.pmc.utils.annotation.Command
 import ink.pmc.utils.chat.replace
-import ink.pmc.utils.command.bukkitOptionalOnlinePlayersArgument
 import ink.pmc.utils.command.checkPlayer
+import ink.pmc.utils.command.paperOptionalOnlinePlayersArgument
 import ink.pmc.utils.dsl.cloud.invoke
 import ink.pmc.utils.dsl.cloud.sender
 import ink.pmc.utils.player.uuidOrNull
+import io.papermc.paper.command.brigadier.CommandSourceStack
 import org.bukkit.Bukkit
+import org.incendo.cloud.context.CommandContext
 import kotlin.jvm.optionals.getOrNull
 
 private enum class Operation {
@@ -20,10 +20,10 @@ private enum class Operation {
 
 @Command("tpaccept")
 @Suppress("UNUSED")
-fun BukkitCommandManager.tpaccept(aliases: Array<String>) {
+fun Cm.tpaccept(aliases: Array<String>) {
     this("tpaccept", *aliases) {
         permission("essentials.tpaccept")
-        argument(bukkitOptionalOnlinePlayersArgument("request"))
+        argument(paperOptionalOnlinePlayersArgument("request"))
         handler {
             handleOperation(Operation.ACCEPT)
         }
@@ -32,18 +32,18 @@ fun BukkitCommandManager.tpaccept(aliases: Array<String>) {
 
 @Command("tpdeny")
 @Suppress("UNUSED")
-fun BukkitCommandManager.tpdeny(aliases: Array<String>) {
+fun Cm.tpdeny(aliases: Array<String>) {
     this("tpdeny", *aliases) {
         permission("essentials.tpdeny")
-        argument(bukkitOptionalOnlinePlayersArgument("request"))
+        argument(paperOptionalOnlinePlayersArgument("request"))
         handler {
             handleOperation(Operation.DENY)
         }
     }
 }
 
-private suspend fun BukkitCommandContext.handleOperation(type: Operation) {
-    checkPlayer(sender) {
+private suspend fun CommandContext<CommandSourceStack>.handleOperation(type: Operation) {
+    checkPlayer(sender.sender) {
         val manager = Essentials.teleportManager
         val input = optional<String>("request").getOrNull()
 

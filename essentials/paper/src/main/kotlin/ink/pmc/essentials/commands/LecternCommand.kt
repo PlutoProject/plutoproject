@@ -1,7 +1,6 @@
 package ink.pmc.essentials.commands
 
 import ink.pmc.essentials.*
-import ink.pmc.utils.BukkitCommandManager
 import ink.pmc.utils.annotation.Command
 import ink.pmc.utils.chat.replace
 import ink.pmc.utils.command.checkPlayer
@@ -48,11 +47,11 @@ private fun Lectern.setProtect(value: Boolean, player: Player) {
 
 @Command("lectern")
 @Suppress("UNUSED")
-fun BukkitCommandManager.lectern(aliases: Array<String>) {
+fun Cm.lectern(aliases: Array<String>) {
     this("lectern", *aliases) {
         permission("essentials.lectern")
         handler {
-            checkPlayer(sender) {
+            checkPlayer(sender.sender) {
                 sync {
                     val range = getAttribute(Attribute.PLAYER_BLOCK_INTERACTION_RANGE)!!.value
                     val block = getTargetBlockExact(range.toInt())?.state

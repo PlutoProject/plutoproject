@@ -5,7 +5,6 @@ import ink.pmc.misc.commandManager
 import ink.pmc.utils.chat.NON_PLAYER
 import ink.pmc.utils.command.PaperCommand
 import ink.pmc.utils.concurrent.sync
-import ink.pmc.utils.dsl.cloud.sender
 import org.bukkit.entity.Player
 import org.incendo.cloud.kotlin.coroutines.extension.suspendingHandler
 
@@ -13,7 +12,7 @@ object SuicideCommand : PaperCommand() {
 
     private val suicide = commandManager.commandBuilder("suicide")
         .suspendingHandler {
-            val sender = it.sender
+            val sender = it.sender().sender
 
             if (sender !is Player) {
                 sender.sendMessage(NON_PLAYER)

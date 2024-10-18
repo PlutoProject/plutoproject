@@ -2,8 +2,8 @@ package ink.pmc.whitelist
 
 import ink.pmc.advkt.component.text
 import ink.pmc.advkt.send
-import ink.pmc.utils.VelocityCommandContext
-import ink.pmc.utils.VelocityCommandManager
+import ink.pmc.utils.VelocityCm
+import ink.pmc.utils.VelocityCtx
 import ink.pmc.utils.dsl.cloud.sender
 import ink.pmc.utils.player.uuid
 import ink.pmc.utils.visual.mochaMaroon
@@ -21,7 +21,7 @@ import kotlin.time.Duration.Companion.seconds
 
 private val repo = getKoin().get<WhitelistRepository>()
 
-fun VelocityCommandManager.whitelist() {
+fun VelocityCm.whitelist() {
     val builder = commandBuilder("whitelist", "wl").permission("whitelist.command")
     val addBuilder = builder.literal("add")
 
@@ -82,7 +82,7 @@ fun VelocityCommandManager.whitelist() {
     )
 }
 
-private suspend fun VelocityCommandContext.handleAdd(name: String, fetcher: ProfileFetcher) {
+private suspend fun VelocityCtx.handleAdd(name: String, fetcher: ProfileFetcher) {
     repo.findByNameAndFetcher(name, fetcher)?.let {
         sender.send {
             text("已经有一位名为 ") with mochaMaroon

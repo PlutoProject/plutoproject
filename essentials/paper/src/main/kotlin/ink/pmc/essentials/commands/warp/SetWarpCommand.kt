@@ -2,7 +2,6 @@ package ink.pmc.essentials.commands.warp
 
 import ink.pmc.essentials.*
 import ink.pmc.essentials.api.Essentials
-import ink.pmc.utils.BukkitCommandManager
 import ink.pmc.utils.annotation.Command
 import ink.pmc.utils.chat.isValidIdentifier
 import ink.pmc.utils.chat.replace
@@ -15,13 +14,13 @@ import kotlin.jvm.optionals.getOrNull
 
 @Command("setwarp")
 @Suppress("UNUSED")
-fun BukkitCommandManager.setwarp(aliases: Array<String>) {
+fun Cm.setwarp(aliases: Array<String>) {
     this("setwarp", *aliases) {
         permission("essentials.setwarp")
         required("name", StringParser.quotedStringParser())
         optional("alias", StringParser.quotedStringParser())
         handler {
-            checkPlayer(sender) {
+            checkPlayer(sender.sender) {
                 val manager = Essentials.warpManager
                 val name = get<String>("name")
                 val alias = optional<String>("alias").getOrNull()

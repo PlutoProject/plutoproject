@@ -8,8 +8,7 @@ import ink.pmc.daily.listeners.DailyListener
 import ink.pmc.daily.repositories.DailyHistoryRepository
 import ink.pmc.daily.repositories.DailyUserRepository
 import ink.pmc.provider.ProviderService
-import ink.pmc.utils.BukkitCommandManager
-import ink.pmc.utils.command.mappers.Stack2SenderMapper
+import ink.pmc.utils.PaperCm
 import ink.pmc.utils.command.registerCommands
 import ink.pmc.utils.inject.startKoinIfNotPresent
 import ink.pmc.utils.storage.saveResourceIfNotExisted
@@ -36,7 +35,7 @@ private val bukkitModule = module {
 
 internal lateinit var plugin: PaperPlugin
 internal lateinit var fileConfig: FileConfig
-internal lateinit var commandManager: BukkitCommandManager
+internal lateinit var commandManager: PaperCm
 internal lateinit var economy: Economy
 
 @Suppress("UNUSED")
@@ -52,7 +51,7 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
             modules(bukkitModule)
         }
 
-        commandManager = BukkitCommandManager.builder(Stack2SenderMapper)
+        commandManager = PaperCm.builder()
             .executionCoordinator(ExecutionCoordinator.asyncCoordinator())
             .buildOnEnable(this)
             .also { it.registerCommands(COMMANDS_PACKAGE) }

@@ -4,7 +4,6 @@ import ink.pmc.essentials.api.Essentials
 import ink.pmc.utils.concurrent.submitAsync
 import io.papermc.paper.command.brigadier.CommandSourceStack
 import kotlinx.coroutines.future.asCompletableFuture
-import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.incendo.cloud.component.CommandComponent
 import org.incendo.cloud.parser.standard.StringParser
@@ -12,10 +11,10 @@ import org.incendo.cloud.suggestion.Suggestion
 import java.util.concurrent.CompletableFuture
 
 internal fun warps(argName: String) =
-    CommandComponent.builder<CommandSender, String>()
+    CommandComponent.builder<CommandSourceStack, String>()
         .suggestionProvider { ctx, _ ->
             val manager = Essentials.warpManager
-            val sender = ctx.sender()
+            val sender = ctx.sender().sender
             if (sender is Player) {
                 submitAsync<List<Suggestion>> {
                     manager.list().map {
@@ -36,10 +35,10 @@ internal fun warps(argName: String) =
         .name(argName)
 
 internal fun warpsWithoutAlias(argName: String) =
-    CommandComponent.builder<CommandSender, String>()
+    CommandComponent.builder<CommandSourceStack, String>()
         .suggestionProvider { ctx, _ ->
             val manager = Essentials.warpManager
-            val sender = ctx.sender()
+            val sender = ctx.sender().sender
             if (sender is Player) {
                 submitAsync<List<Suggestion>> {
                     manager.list().map {
