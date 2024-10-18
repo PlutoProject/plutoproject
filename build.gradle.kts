@@ -1,5 +1,4 @@
 import org.jetbrains.kotlin.gradle.plugin.extraProperties
-import xyz.jpenilla.runpaper.task.RunServer
 
 plugins {
     id("java")
@@ -8,7 +7,6 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.kotlin.kapt)
     alias(libs.plugins.shadow)
-    alias(libs.plugins.runpaper)
     alias(libs.plugins.protobuf)
     alias(libs.plugins.paperweight.userdev)
     alias(libs.plugins.resource.factory.bukkit)
@@ -80,7 +78,7 @@ fun Project.initDevEnv() {
         subprojects {
             when (project.name) {
                 "shared" -> afterEvaluate {
-                    applySharedDevEnv()
+                    useSharedEnv()
                     implementationWithEnv(project)
                     project(project.path) {
                         dependOnApi()
@@ -131,11 +129,10 @@ fun Project.initDevEnv() {
     configureRelocate()
 }
 
-fun Project.configurePaperweight() {
+fun Project.usePaperweight() {
     apply {
         plugin("io.papermc.paperweight.userdev")
     }
-
     paperweight.reobfArtifactConfiguration = io.papermc.paperweight.userdev.ReobfArtifactConfiguration.MOJANG_PRODUCTION
 }
 
@@ -143,27 +140,22 @@ fun Project.packageName(): String {
     if (!ensureParent() && parent != null) {
         return "${parent!!.packageName()}.$name"
     }
-
     return "ink.pmc.${name.lowercase().replace("-", "")}"
 }
 
 fun Project.configurePaperPlugin() {
     apply(plugin = "xyz.jpenilla.resource-factory-bukkit-convention")
-
     afterEvaluate {
         bukkitPluginYaml {
             main = "${parent?.group}.PaperPlugin"
             name = parent?.name
             apiVersion = bukkitApiVersion
-
             if (name.get().contains("dependency-loader")) {
                 return@bukkitPluginYaml
             }
-
             if (!name.get().contains("dependency-loader")) {
                 depend.add("dependency-loader")
             }
-
             if (!name.get().contains("utils")) {
                 depend.add("utils")
             }
@@ -173,21 +165,17 @@ fun Project.configurePaperPlugin() {
 
 fun Project.configureVelocityPlugin() {
     apply(plugin = "xyz.jpenilla.resource-factory-velocity-convention")
-
     afterEvaluate {
         velocityPluginJson {
             main = "${parent?.group}.VelocityPlugin"
             id = parent?.name
             name = parent?.name
-
             if (name.get().contains("dependency-loader")) {
                 return@velocityPluginJson
             }
-
             if (!name.get().contains("dependency-loader")) {
                 dependency("dependency-loader")
             }
-
             if (!name.get().contains("utils")) {
                 dependency("utils")
             }
@@ -203,7 +191,7 @@ fun Project.extraOrNull(key: String): Any? {
     return this.extra[key]
 }
 
-fun Project.applySharedDevEnv() {
+fun Project.useSharedEnv() {
     dependencies {
         compileOnly(root.libs.velocity.api)
         compileOnly(root.libs.paper.api)
@@ -226,19 +214,15 @@ fun Project.enableApiDevEnv() {
     extra[apiDevEnvProp] = true
 }
 
-fun Project.configurePaperDevEnv() {
+fun Project.usePaperEnv() {
     if (extraOrNull(paperDevEnvProp) != true) {
         return
     }
-
-    configurePaperweight()
-
+    usePaperweight()
     configurations.create("obf").extendsFrom(
-        // configurations.reobf.get(),
         configurations.apiElements.get(),
         configurations.runtimeElements.get()
     )
-
     dependencies {
         paperweight.paperDevBundle(paperDevBundleVer)
     }
@@ -248,15 +232,13 @@ fun DependencyHandlerScope.implementationWithEnv(dep: Project) {
     if (dep.extraOrNull(paperDevEnvProp) == true) {
         implementation(project(path = dep.path, configuration = "obf"))
     }
-
     implementation(dep)
 }
 
-fun Project.configureVelocityDevEnv() {
+fun Project.useVelocityEnv() {
     if (extraOrNull(velocityDevEnvProp) != true) {
         return
     }
-
     dependencies {
         compileOnly(root.libs.velocity.api)
         compileOnly(root.libs.velocity)
@@ -264,18 +246,17 @@ fun Project.configureVelocityDevEnv() {
     }
 }
 
-fun Project.configureApiDevEnv() {
+fun Project.useApiEnv() {
     if (extraOrNull(apiDevEnvProp) != true) {
         return
     }
-
     dependencies {
         compileOnly(root.libs.velocity.api)
         compileOnly(root.libs.paper.api)
     }
 }
 
-fun Project.applyProtobuf() {
+fun Project.useProtoEnv() {
     protobuf {
         protoc {
             artifact = root.libs.protoc.asProvider().get().toString()
@@ -400,7 +381,7 @@ allprojects {
         }
     }
 
-    applyProtobuf()
+    useProtoEnv()
 }
 
 tasks.shadowJar {
@@ -411,7 +392,6 @@ subprojects {
     if (!ensureParent()) {
         return@subprojects
     }
-
     initDevEnv()
 }
 
@@ -428,175 +408,29 @@ velocityPluginJson {
 }
 
 allprojects {
-    fun afterEvaluateIfNeeded(block: () -> Unit) {
+    fun afterEvaluateIfNonRoot(block: () -> Unit) {
         if (project != rootProject) {
             afterEvaluate {
                 block()
             }
             return
         }
-
         block()
     }
 
-    afterEvaluateIfNeeded {
-        configurePaperDevEnv()
-        configureVelocityDevEnv()
-        configureApiDevEnv()
-    }
-}
-
-val String.trimmed: String
-    get() {
-        return replace(
-            substring(
-                lastIndexOf('-'),
-                lastIndexOf('.')
-            ),
-            ""
-        )
-    }
-
-fun copyJars() {
-    val outputsDir = file("$rootDir/build-outputs")
-
-    outputsDir.listFiles()!!.forEach {
-        if (it.name.startsWith("common-library-") || it.name.contains("velocity")) {
-            return@forEach
-        }
-
-        val folder = file("$rootDir/run/plugins/")
-
-        if (!folder.exists()) {
-            folder.mkdirs()
-        }
-
-        val target = File(
-            folder,
-            it.name.trimmed
-        )
-
-        if (target.exists()) {
-            target.delete()
-        }
-
-        it.copyTo(target)
+    afterEvaluateIfNonRoot {
+        usePaperEnv()
+        useVelocityEnv()
+        useApiEnv()
     }
 }
 
 fun clearOutputsDir() {
     val dir = file("$rootDir/build-outputs")
-
     if (!dir.exists()) {
         dir.mkdirs()
     }
-
     file(file("$rootDir/build-outputs")).listFiles()!!.forEach {
         it.delete()
     }
-}
-
-fun Task.runTest(task: Task) {
-    group = "pluto develop testing"
-    dependsOn(allprojects.map { it.tasks.named("shadowJar") })
-
-    doLast {
-        copyJars()
-        task.actions.forEach { it.execute(task) }
-    }
-}
-
-var debugMode = true
-
-tasks.register("Paper") {
-    runTest(tasks.runServer.get())
-}
-
-tasks.register("Folia") {
-    runTest(tasks.named("runFolia").get())
-}
-
-tasks.register("copyJars") {
-    group = "pluto develop testing"
-    doLast {
-        copyJars()
-    }
-}
-
-tasks.register("markAsNonDebugMode") {
-    group = "DONT RUN THESE TASKS MANUALLY"
-    debugMode = false
-}
-
-tasks.register("runServerWithoutDebugMode") {
-    group = "run paper"
-    dependsOn(tasks.named("markAsNonDebugMode"), tasks.runServer)
-}
-
-tasks.register("runFoliaWithoutDebugMode") {
-    group = "run paper"
-    dependsOn(tasks.named("markAsNonDebugMode"), tasks.named("runFolia"))
-}
-
-runPaper.folia.registerTask()
-runPaper.disablePluginJarDetection()
-
-fun debugInitStep(task: Task) {
-    task as RunServer
-
-    val logs = mutableListOf<String>()
-
-    logs.add(" ")
-    logs.add("Some component's feature will be disabled due to the debug plugin can't support Leaves-PMC.")
-    logs.add(" ")
-    logs.add("If you modified your code, you should rerun the shadowJar task to make the changes function properly.")
-    logs.add("Maybe there will be a auto run task in the future, but now I haven't figure out how to implement it because the run-task plugin has some weird behaviors.")
-
-    if (debugMode) {
-        logs.add(" ")
-        logs.add("By default, using Gradle plugin to run will be debug mode.")
-        logs.add("In debug mode, some components which has behaviors related to the environment (such as connecting to a database) will be disabled.")
-        logs.add("If you want to disable debug mode, you can run runServerWithoutDebugMode or runFoliaWithoutDebugMode.")
-        logs.add(" ")
-        task.jvmArgs(
-            "-DPLUTO_DEBUG_MODE=TRUE"
-        )
-    } else {
-        logs.add(" ")
-        logs.add("You are not running debug mode, please ensure you need to do some things related to the environment (such as connecting to a database).")
-        logs.add("Or it will make some components run into error.")
-        logs.add(" ")
-    }
-
-    logs.forEach { println(it) }
-}
-
-val paperPlugins = runPaper.downloadPluginsSpec {
-    url("https://ci.lucko.me/job/spark/401/artifact/spark-bukkit/build/libs/spark-1.10.60-bukkit.jar")
-    url("https://github.com/dmulloy2/ProtocolLib/releases/download/5.2.0/ProtocolLib.jar")
-}
-
-val foliaPlugins = runPaper.downloadPluginsSpec {
-    url("https://ci.lucko.me/job/spark-folia/lastSuccessfulBuild/artifact/spark-bukkit/build/libs/spark-1.10.60-bukkit.jar")
-}
-
-tasks.runServer {
-    doFirst {
-        debugInitStep(this)
-    }
-
-    dependsOn(tasks.named("copyJars"))
-    minecraftVersion("1.20.4")
-    downloadPlugins.from(paperPlugins)
-}
-
-tasks.named("runFolia") {
-    this as RunServer
-
-    doFirst {
-        debugInitStep(this)
-    }
-
-    dependsOn(tasks.named("copyJars"))
-    downloadPlugins.from(foliaPlugins)
 }
