@@ -14,6 +14,7 @@ plugins {
 
 rootProject.name = "plutoproject"
 
+/*
 // 删除 1.2.0
 /*
 include("bedrock-adaptive")
@@ -132,3 +133,4 @@ include("options:shared")
 include("options:paper")
 include("options:velocity")
 include("options:proto")
+*/

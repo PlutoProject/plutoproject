@@ -1,5 +1,4 @@
 import org.jetbrains.kotlin.gradle.plugin.extraProperties
-import xyz.jpenilla.runpaper.task.RunServer
 
 plugins {
     id("java")
@@ -8,15 +7,17 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.kotlin.kapt)
     alias(libs.plugins.shadow)
-    alias(libs.plugins.runpaper)
+    /*
     alias(libs.plugins.protobuf)
     alias(libs.plugins.paperweight.userdev)
     alias(libs.plugins.resource.factory.bukkit)
     alias(libs.plugins.resource.factory.velocity)
     alias(libs.plugins.jetbrains.compose)
     alias(libs.plugins.compose.compiler)
+     */
 }
 
+/*
 val paperDevBundleVer = "1.21-R0.1-SNAPSHOT"
 extra["paperDevBundleVer"] = paperDevBundleVer
 
@@ -508,6 +509,7 @@ fun Task.runTest(task: Task) {
 
 var debugMode = true
 
+/*
 tasks.register("Paper") {
     runTest(tasks.runServer.get())
 }
@@ -600,3 +602,5 @@ tasks.named("runFolia") {
     dependsOn(tasks.named("copyJars"))
     downloadPlugins.from(foliaPlugins)
 }
+ */
+*/
