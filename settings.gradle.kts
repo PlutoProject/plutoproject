@@ -51,6 +51,7 @@ include("misc:api")
 include("misc:paper")
 
 include("hypervisor")
+include("hypervisor:api")
 include("hypervisor:paper")
 
 // 删除：1.1.0
