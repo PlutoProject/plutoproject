@@ -30,6 +30,7 @@ lateinit var config: FileConfig
 lateinit var protocolRange: IntRange
 var serverBrand: String? = null
 var forwardPlayerList = false
+var samplePlayersCount = 0
 
 val Int.gameVersion: List<String>
     get() {
@@ -51,13 +52,10 @@ class VelocityPlugin @Inject constructor(suspendingPluginContainer: SuspendingPl
         if (!dataDir.exists()) {
             dataDir.mkdirs()
         }
-
         val configFile = File(dataDir, "proxy_config.conf")
-
         if (!configFile.exists()) {
             saveConfig(VelocityPlugin::class.java, "proxy_config.conf", configFile)
         }
-
         config = configFile.loadConfig()
         loadConfigValues()
     }
@@ -75,39 +73,28 @@ class VelocityPlugin @Inject constructor(suspendingPluginContainer: SuspendingPl
 
     @Subscribe(order = PostOrder.FIRST)
     fun ProxyPingEvent.e() {
-        val protocol = connection.protocolVersion.protocol
-
-        if (protocolRange.contains(protocol)) {
-            return
-        }
-
         val version = if (serverBrand == null) {
             ServerPing.Version(protocolRange.first, VERSION_RANGE)
         } else {
             ServerPing.Version(protocolRange.first, "$serverBrand $VERSION_RANGE")
         }
-
-        val newPing = ping.asBuilder()
+        ping = ping.asBuilder()
             .version(version)
             .apply {
                 if (forwardPlayerList) {
-                    samplePlayers(*proxy.allPlayers.map { SamplePlayer(it.username, it.uniqueId) }.toTypedArray())
+                    val players = proxy.allPlayers
+                        .map { SamplePlayer(it.username, it.uniqueId) }
+                        .take(samplePlayersCount)
+                    samplePlayers(*players.toTypedArray())
                 }
             }
             .build()
-
-        ping = newPing
-        // result = ResultedEvent.GenericResult.denied()
     }
 
     @Subscribe(order = PostOrder.FIRST)
     fun PreLoginEvent.e() {
         val protocol = connection.protocolVersion.protocol
-
-        if (protocolRange.contains(protocol)) {
-            return
-        }
-
+        if (protocolRange.contains(protocol)) return
         result = PreLoginEvent.PreLoginComponentResult.denied(VERSION_NOT_SUPPORTED)
     }
 
@@ -116,6 +103,7 @@ class VelocityPlugin @Inject constructor(suspendingPluginContainer: SuspendingPl
         protocolRange = list[0]..list[1]
         serverBrand = config.get("server-brand")
         forwardPlayerList = config.get("forward-player-list") ?: false
+        samplePlayersCount = config.get("sample-players-count")
     }
 
     private fun File.loadConfig(): FileConfig {
