@@ -21,3 +21,9 @@ val VERSION_NOT_SUPPORTED
         text(VERSION_RANGE) with mochaText
         text(" 进行游玩") with mochaMaroon
     }
+
+val SERVER_IS_FULL = component {
+    text("今日服务器似乎格外热闹...") with mochaMaroon
+    newline()
+    text("当前服务器已满，请稍后再来") with mochaMaroon
+}
