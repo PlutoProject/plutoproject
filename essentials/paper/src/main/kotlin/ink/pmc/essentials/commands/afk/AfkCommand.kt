@@ -2,7 +2,7 @@ package ink.pmc.essentials.commands.afk
 
 import ink.pmc.essentials.Cm
 import ink.pmc.essentials.api.Essentials
-import ink.pmc.utils.annotation.Command
+import ink.pmc.utils.command.annotation.Command
 import ink.pmc.utils.command.checkPlayer
 import ink.pmc.utils.dsl.cloud.invoke
 import ink.pmc.utils.dsl.cloud.sender

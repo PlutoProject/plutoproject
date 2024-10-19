@@ -14,9 +14,9 @@ import ink.pmc.utils.concurrent.compose
 import ink.pmc.utils.concurrent.submitAsync
 import ink.pmc.utils.data.mapKv
 import ink.pmc.utils.entity.teleportSuspend
-import ink.pmc.utils.multiplaform.item.KeyedMaterial
-import ink.pmc.utils.multiplaform.item.exts.bukkit
-import ink.pmc.utils.world.ValueChunkLoc
+import ink.pmc.utils.item.KeyedMaterial
+import ink.pmc.utils.item.bukkit
+import ink.pmc.utils.world.ValueVec2
 import ink.pmc.utils.world.getChunkViaSource
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
@@ -100,25 +100,25 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
     private val World.teleportOptions: TeleportOptions
         get() = worldTeleportOptions[this] ?: defaultTeleportOptions
 
-    private fun Location.chunkNeedToPrepare(radius: Int): List<ValueChunkLoc> {
-        val centerChunk = ValueChunkLoc(chunk.x, chunk.z)
+    private fun Location.chunkNeedToPrepare(radius: Int): List<ValueVec2> {
+        val centerChunk = ValueVec2(chunk.x, chunk.z)
         val chunks = (-radius..radius).flatMap { x ->
             (-radius..radius).map { z ->
                 val x1 = centerChunk.x + x
                 val y1 = centerChunk.y + z
-                ValueChunkLoc(x1, y1)
+                ValueVec2(x1, y1)
             }
         }.toMutableList()
         chunks.add(centerChunk)
         return chunks
     }
 
-    private fun List<ValueChunkLoc>.allPrepared(world: World): Boolean {
+    private fun List<ValueVec2>.allPrepared(world: World): Boolean {
         return all { it.isLoaded(world) }
     }
 
     @JvmName("internalPrepareChunk")
-    private suspend fun Collection<ValueChunkLoc>.prepareChunk(world: World) {
+    private suspend fun Collection<ValueVec2>.prepareChunk(world: World) {
         coroutineScope {
             forEach {
                 submitAsync {
@@ -360,15 +360,15 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
         teleportRequests.clear()
     }
 
-    override fun getRequiredChunks(center: Location, radius: Int): Collection<ValueChunkLoc> {
+    override fun getRequiredChunks(center: Location, radius: Int): Collection<ValueVec2> {
         return center.chunkNeedToPrepare(radius)
     }
 
-    override fun isAllPrepared(chunks: Collection<ValueChunkLoc>, world: World): Boolean {
+    override fun isAllPrepared(chunks: Collection<ValueVec2>, world: World): Boolean {
         return chunks.toList().allPrepared(world)
     }
 
-    override suspend fun prepareChunk(chunks: Collection<ValueChunkLoc>, world: World) {
+    override suspend fun prepareChunk(chunks: Collection<ValueVec2>, world: World) {
         chunks.prepareChunk(world)
     }
 

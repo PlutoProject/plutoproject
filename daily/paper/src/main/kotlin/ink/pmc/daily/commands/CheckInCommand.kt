@@ -6,7 +6,7 @@ import ink.pmc.daily.api.Daily
 import ink.pmc.daily.screens.DailyCalenderScreen
 import ink.pmc.interactive.api.GuiManager
 import ink.pmc.utils.PaperCm
-import ink.pmc.utils.annotation.Command
+import ink.pmc.utils.command.annotation.Command
 import ink.pmc.utils.chat.UI_SUCCEED_SOUND
 import ink.pmc.utils.command.checkPlayer
 import ink.pmc.utils.dsl.cloud.invoke

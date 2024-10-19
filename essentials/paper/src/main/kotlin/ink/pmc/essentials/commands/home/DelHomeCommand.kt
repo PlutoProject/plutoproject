@@ -2,7 +2,7 @@ package ink.pmc.essentials.commands.home
 
 import ink.pmc.essentials.*
 import ink.pmc.essentials.api.Essentials
-import ink.pmc.utils.annotation.Command
+import ink.pmc.utils.command.annotation.Command
 import ink.pmc.utils.chat.NO_PERMISSON
 import ink.pmc.utils.chat.replace
 import ink.pmc.utils.command.checkPlayer

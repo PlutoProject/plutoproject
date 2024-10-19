@@ -17,7 +17,7 @@ import ink.pmc.utils.chat.replace
 import ink.pmc.utils.concurrent.async
 import ink.pmc.utils.concurrent.submitAsync
 import ink.pmc.utils.data.mapKv
-import ink.pmc.utils.world.Pos2D
+import ink.pmc.utils.world.Vec2
 import ink.pmc.utils.world.addTicket
 import ink.pmc.utils.world.removeTicket
 import kotlinx.coroutines.launch
@@ -68,7 +68,7 @@ class RandomTeleportManagerImpl : RandomTeleportManager, KoinComponent {
     override val chunkPreserveRadius: Int =
         if (conf.chunkPreserveRadius >= 0) conf.chunkPreserveRadius else teleportConf.chunkPrepareRadius
     override val defaultOptions: RandomTeleportOptions = RandomTeleportOptions(
-        center = Pos2D(conf.centerX, conf.centerZ),
+        center = Vec2(conf.centerX, conf.centerZ),
         spawnPointAsCenter = conf.spawnPointAsCenter,
         startRadius = conf.startRadius,
         endRadius = conf.endRadius,
@@ -81,7 +81,7 @@ class RandomTeleportManagerImpl : RandomTeleportManager, KoinComponent {
     )
     override val worldOptions: Map<World, RandomTeleportOptions> = conf.worldOptions.mapKv {
         it.key to RandomTeleportOptions(
-            center = it.value.get<Config>("center")?.let { c -> Pos2D(c.get("x"), c.get("z")) }
+            center = it.value.get<Config>("center")?.let { c -> Vec2(c.get("x"), c.get("z")) }
                 ?: defaultOptions.center,
             spawnPointAsCenter = it.value.get("spawnpoint-as-center") ?: defaultOptions.spawnPointAsCenter,
             startRadius = it.value.get("start-radius") ?: defaultOptions.startRadius,
@@ -107,9 +107,9 @@ class RandomTeleportManagerImpl : RandomTeleportManager, KoinComponent {
         return worldOptions[world] ?: defaultOptions
     }
 
-    override fun getCenterLocation(world: World, options: RandomTeleportOptions?): Pos2D {
+    override fun getCenterLocation(world: World, options: RandomTeleportOptions?): Vec2 {
         val opt = options ?: getRandomTeleportOptions(world)
-        val spawnPoint = Pos2D(world.spawnLocation)
+        val spawnPoint = Vec2(world.spawnLocation)
         val center = opt.center
         val spawnPointAsCenter = opt.spawnPointAsCenter
         return if (spawnPointAsCenter) spawnPoint else center

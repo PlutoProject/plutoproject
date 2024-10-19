@@ -11,14 +11,13 @@ import ink.pmc.essentials.dtos.HomeDto
 import ink.pmc.essentials.essentialsScope
 import ink.pmc.essentials.repositories.HomeRepository
 import ink.pmc.utils.chat.isValidIdentifier
-import ink.pmc.utils.storage.entity.dto
+import ink.pmc.utils.storage.model
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.bson.types.ObjectId
 import org.bukkit.Location
 import org.bukkit.OfflinePlayer
 import org.bukkit.World
-import org.bukkit.entity.Player
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.*
@@ -137,7 +136,7 @@ class HomeManagerImpl : HomeManager, KoinComponent {
             UUID.randomUUID(),
             name,
             System.currentTimeMillis(),
-            location.dto,
+            location.model,
             owner.uniqueId,
         )
         val home = HomeImpl(dto)

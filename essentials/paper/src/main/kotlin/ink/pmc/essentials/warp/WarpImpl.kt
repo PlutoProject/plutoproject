@@ -10,7 +10,7 @@ import ink.pmc.essentials.home.loadFailed
 import ink.pmc.essentials.repositories.WarpRepository
 import ink.pmc.utils.concurrent.async
 import ink.pmc.utils.concurrent.submitAsync
-import ink.pmc.utils.storage.entity.dto
+import ink.pmc.utils.storage.model
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.jetbrains.annotations.ApiStatus.Internal
@@ -63,7 +63,7 @@ class WarpImpl(private val dto: WarpDto) : Warp, KoinComponent {
         alias = alias,
         type = type,
         createdAt = createdAt.toEpochMilli(),
-        location = location.dto,
+        location = location.model,
     )
 
     override suspend fun update() {

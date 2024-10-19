@@ -5,7 +5,7 @@ import ink.pmc.advkt.send
 import ink.pmc.daily.PERMISSION_CMD_DAILY
 import ink.pmc.daily.plugin
 import ink.pmc.utils.PaperCm
-import ink.pmc.utils.annotation.Command
+import ink.pmc.utils.command.annotation.Command
 import ink.pmc.utils.dsl.cloud.invoke
 import ink.pmc.utils.dsl.cloud.sender
 import ink.pmc.utils.visual.mochaPink

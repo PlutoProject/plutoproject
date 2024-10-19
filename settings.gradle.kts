@@ -28,7 +28,6 @@ include("utils")
 include("utils:paper")
 include("utils:velocity")
 include("utils:api")
-include("utils:proto")
 
 // 删除 1.2.0
 /*

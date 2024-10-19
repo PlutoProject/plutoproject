@@ -8,7 +8,7 @@ import ink.pmc.essentials.dtos.HomeDto
 import ink.pmc.essentials.repositories.HomeRepository
 import ink.pmc.utils.concurrent.async
 import ink.pmc.utils.concurrent.submitAsync
-import ink.pmc.utils.storage.entity.dto
+import ink.pmc.utils.storage.model
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.OfflinePlayer
@@ -78,7 +78,7 @@ class HomeImpl(private val dto: HomeDto) : Home, KoinComponent {
         id = id,
         name = name,
         createdAt = createdAt.toEpochMilli(),
-        location = location.dto,
+        location = location.model,
         owner = owner.uniqueId,
         isStarred = isStarred,
         isPreferred = isPreferred,

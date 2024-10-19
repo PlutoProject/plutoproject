@@ -9,7 +9,7 @@ import ink.pmc.essentials.repositories.WarpRepository
 import ink.pmc.playerdb.api.PlayerDb
 import ink.pmc.utils.concurrent.submitAsync
 import ink.pmc.utils.player.uuidOrNull
-import ink.pmc.utils.storage.entity.dto
+import ink.pmc.utils.storage.model
 import org.bson.types.ObjectId
 import org.bukkit.Location
 import org.bukkit.OfflinePlayer
@@ -163,7 +163,7 @@ class WarpManagerImpl : WarpManager, KoinComponent {
             alias,
             WarpType.WARP,
             System.currentTimeMillis(),
-            location.dto,
+            location.model,
         )
         val warp = WarpImpl(dto)
         loadedWarps[dto.id] = warp

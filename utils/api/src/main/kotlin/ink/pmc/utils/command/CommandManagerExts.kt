@@ -1,6 +1,6 @@
 package ink.pmc.utils.command
 
-import ink.pmc.utils.annotation.Command
+import ink.pmc.utils.command.annotation.Command
 import io.github.classgraph.ClassGraph
 import org.incendo.cloud.CommandManager
 import kotlin.reflect.full.findAnnotation

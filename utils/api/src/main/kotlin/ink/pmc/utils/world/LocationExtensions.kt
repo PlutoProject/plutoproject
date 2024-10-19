@@ -2,17 +2,12 @@ package ink.pmc.utils.world
 
 import org.bukkit.Location
 
-fun toRawLocation(location: Location): Location {
-    val rawLocation = location.toBlockLocation()
-
+fun Location.eraseAngle(): Location {
+    val rawLocation = clone().toBlockLocation()
     rawLocation.yaw = 0F
     rawLocation.pitch = 0F
-
     return rawLocation
 }
-
-val Location.rawLocation: Location
-    get() = toRawLocation(this)
 
 fun minLocation(a: Location, b: Location): Location {
     return Location(

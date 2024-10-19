@@ -5,7 +5,7 @@ import ink.pmc.essentials.COMMAND_BACK_SUCCEED
 import ink.pmc.essentials.Cm
 import ink.pmc.essentials.TELEPORT_FAILED_SOUND
 import ink.pmc.essentials.api.Essentials
-import ink.pmc.utils.annotation.Command
+import ink.pmc.utils.command.annotation.Command
 import ink.pmc.utils.command.checkPlayer
 import ink.pmc.utils.dsl.cloud.invoke
 import ink.pmc.utils.dsl.cloud.sender

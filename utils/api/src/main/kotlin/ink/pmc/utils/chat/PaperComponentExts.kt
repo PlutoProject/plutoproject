@@ -7,7 +7,7 @@ import net.minecraft.core.RegistryAccess
 typealias NmsComponent = net.minecraft.network.chat.Component
 typealias NmsComponentSerializer = net.minecraft.network.chat.Component.Serializer
 
-val Component.nms: NmsComponent
+val Component.internal: NmsComponent
     get() {
         val json = GsonComponentSerializer.gson().serialize(this)
         return NmsComponentSerializer.fromJson(json, RegistryAccess.EMPTY) as NmsComponent

@@ -2,7 +2,7 @@ package ink.pmc.essentials.commands.teleport
 
 import ink.pmc.essentials.*
 import ink.pmc.essentials.api.Essentials
-import ink.pmc.utils.annotation.Command
+import ink.pmc.utils.command.annotation.Command
 import ink.pmc.utils.chat.NON_PLAYER
 import ink.pmc.utils.chat.NO_PERMISSON
 import ink.pmc.utils.chat.replace

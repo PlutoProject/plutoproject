@@ -6,7 +6,7 @@ import ink.pmc.essentials.api.warp.Warp
 import ink.pmc.essentials.api.warp.WarpManager
 import ink.pmc.essentials.commands.parseWarp
 import ink.pmc.utils.PaperCm
-import ink.pmc.utils.annotation.Command
+import ink.pmc.utils.command.annotation.Command
 import ink.pmc.utils.command.checkPlayer
 import ink.pmc.utils.dsl.cloud.sender
 import ink.pmc.utils.visual.mochaMaroon

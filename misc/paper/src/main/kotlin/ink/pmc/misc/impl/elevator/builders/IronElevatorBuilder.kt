@@ -2,7 +2,7 @@ package ink.pmc.misc.impl.elevator.builders
 
 import ink.pmc.misc.api.elevator.ElevatorBuilder
 import ink.pmc.utils.concurrent.submitSync
-import ink.pmc.utils.world.rawLocation
+import ink.pmc.utils.world.eraseAngle
 import org.bukkit.Location
 import org.bukkit.Material
 
@@ -13,7 +13,7 @@ object IronElevatorBuilder : ElevatorBuilder {
     override val permission: String? = null
 
     override suspend fun findLocations(startPoint: Location): List<Location> {
-        val loc = startPoint.rawLocation
+        val loc = startPoint.eraseAngle()
         val offsetUp = mutableListOf<Location>()
         val offsetDown = mutableListOf<Location>()
         val result = mutableListOf<Location>()

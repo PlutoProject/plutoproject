@@ -1,7 +1,7 @@
 package ink.pmc.misc.impl.head
 
 import ink.pmc.misc.api.head.HeadManager
-import ink.pmc.utils.player.getPlayerUUID
+import ink.pmc.utils.player.fetchPlayerUuidFromApi
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
@@ -34,7 +34,7 @@ class HeadManagerImpl : HeadManager {
         var id: UUID
 
         if (!cachedUUIDs.containsKey(lowercase)) {
-            val nullableID = lowercase.getPlayerUUID() ?: return null
+            val nullableID = lowercase.fetchPlayerUuidFromApi() ?: return null
             id = nullableID
             cachedUUIDs[lowercase] = id
         }

@@ -2,7 +2,7 @@ package ink.pmc.essentials.api.teleport.random
 
 import com.google.common.collect.Multimap
 import ink.pmc.essentials.api.teleport.ManagerState
-import ink.pmc.utils.world.Pos2D
+import ink.pmc.utils.world.Vec2
 import org.bukkit.Location
 import org.bukkit.World
 import org.bukkit.entity.Player
@@ -23,7 +23,7 @@ interface RandomTeleportManager {
 
     fun getRandomTeleportOptions(world: World): RandomTeleportOptions
 
-    fun getCenterLocation(world: World, options: RandomTeleportOptions? = null): Pos2D
+    fun getCenterLocation(world: World, options: RandomTeleportOptions? = null): Vec2
 
     fun getCacheAmount(world: World): Int
 

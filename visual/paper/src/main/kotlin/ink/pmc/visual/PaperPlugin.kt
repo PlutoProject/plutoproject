@@ -21,12 +21,12 @@ import org.koin.dsl.module
 private val bukkitModule = module {
     // Toast
     single<ToastFactory> { ToastFactoryImpl() }
-    single<ToastRenderer<Player>>(named("nms")) { NmsToastRenderer() }
+    single<ToastRenderer<Player>>(named("internal")) { NmsToastRenderer() }
 
     // Display
     single<TextDisplayManager> { TextDisplayManagerImpl() }
     single<TextDisplayFactory> { TextDisplayFactoryImpl() }
-    single<TextDisplayRenderer>(named("nms")) { NmsTextDisplayRenderer() }
+    single<TextDisplayRenderer>(named("internal")) { NmsTextDisplayRenderer() }
 }
 
 @Suppress("UNUSED")

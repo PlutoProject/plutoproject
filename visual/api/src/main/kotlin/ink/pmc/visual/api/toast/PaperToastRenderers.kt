@@ -4,6 +4,6 @@ import ink.pmc.utils.inject.inlinedGet
 import org.bukkit.entity.Player
 import org.koin.core.qualifier.named
 
-object BukkitDefaultToastRenderer: ToastRenderer<Player> by inlinedGet(named("nms"))
+object BukkitDefaultToastRenderer: ToastRenderer<Player> by inlinedGet(named("internal"))
 
 object BedrockToastRenderer: ToastRenderer<Player> by inlinedGet(named("bedrock"))

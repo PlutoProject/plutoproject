@@ -5,7 +5,7 @@ import com.mongodb.client.model.ReplaceOptions
 import ink.pmc.essentials.config.EssentialsConfig
 import ink.pmc.essentials.dtos.BackDto
 import ink.pmc.provider.ProviderService
-import ink.pmc.utils.storage.entity.dto
+import ink.pmc.utils.storage.model
 import kotlinx.coroutines.flow.firstOrNull
 import org.bson.types.ObjectId
 import org.bukkit.Location
@@ -38,12 +38,12 @@ class BackRepository : KoinComponent {
             objectId = ObjectId(),
             owner = player.uniqueId,
             recordedAt = System.currentTimeMillis(),
-            location = location.dto
+            location = location.model
         )
 
         if (existed != null) {
             dto.recordedAt = System.currentTimeMillis()
-            dto.location = location.dto
+            dto.location = location.model
         }
 
         db.replaceOne(eq("owner", player.uniqueId.toString()), dto, options)

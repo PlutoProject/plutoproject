@@ -40,7 +40,6 @@ fun <T> tryOrNull(block: () -> T): T? {
 fun Project.dependOnOtherModule(name: String, impl: Boolean = false) {
     val par = parent?.name
     val module = tryOrNull { project(":$par:$name") } ?: return
-
     dependencies {
         if (impl) {
             implementation(module)

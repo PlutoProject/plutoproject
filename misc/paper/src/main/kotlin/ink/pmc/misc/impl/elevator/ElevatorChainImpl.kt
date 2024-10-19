@@ -4,8 +4,8 @@ import ink.pmc.misc.ELEVATOR_WORK_SOUND
 import ink.pmc.misc.api.elevator.ElevatorChain
 import ink.pmc.misc.elevatorGoDownTitle
 import ink.pmc.misc.elevatorGoUpTitle
-import ink.pmc.utils.platform.threadSafeTeleport
-import ink.pmc.utils.world.rawLocation
+import ink.pmc.utils.player.threadSafeTeleport
+import ink.pmc.utils.world.eraseAngle
 import org.bukkit.Location
 import org.bukkit.entity.Player
 
@@ -65,7 +65,7 @@ class ElevatorChainImpl(override val floors: List<Location>, private val tpLocs:
     }
 
     override fun getCurrentFloor(player: Player): Int {
-        val floorLoc = player.location.rawLocation.subtract(0.0, 1.0, 0.0)
+        val floorLoc = player.location.eraseAngle().subtract(0.0, 1.0, 0.0)
 
         if (!floors.contains(floorLoc)) {
             return -1

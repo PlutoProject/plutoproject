@@ -1,8 +1,8 @@
 package ink.pmc.visual.toast.renderers
 
-import ink.pmc.utils.chat.nms
+import ink.pmc.utils.chat.internal
 import ink.pmc.utils.data.namespacedKey
-import ink.pmc.utils.multiplaform.item.exts.bukkit
+import ink.pmc.utils.item.bukkit
 import ink.pmc.utils.player.sendPacket
 import ink.pmc.utils.structure.emptyOptional
 import ink.pmc.utils.structure.optional
@@ -47,8 +47,8 @@ open class NmsToastRenderer : ToastRenderer<Player> {
         val display = optional(
             DisplayInfo(
                 CraftItemStack.asNMSCopy(item),
-                obj.message.nms,
-                Component.text("PlutoProject Visual - Paper Toast Renderer").nms,
+                obj.message.internal,
+                Component.text("PlutoProject Visual - Paper Toast Renderer").internal,
                 optional(namespacedKey(obj.frame.texture)),
                 obj.type.nms,
                 true,

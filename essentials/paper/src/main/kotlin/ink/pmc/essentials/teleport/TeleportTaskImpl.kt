@@ -4,7 +4,7 @@ import ink.pmc.essentials.api.teleport.TeleportManager
 import ink.pmc.essentials.api.teleport.TeleportOptions
 import ink.pmc.essentials.api.teleport.TeleportTask
 import ink.pmc.essentials.api.teleport.TeleportTaskState
-import ink.pmc.utils.world.ValueChunkLoc
+import ink.pmc.utils.world.ValueVec2
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.supervisorScope
@@ -20,7 +20,7 @@ class TeleportTaskImpl(
     override val destination: Location,
     override val teleportOptions: TeleportOptions?,
     override val prompt: Boolean,
-    override val chunkNeedToPrepare: List<ValueChunkLoc>,
+    override val chunkNeedToPrepare: List<ValueVec2>,
 ) : TeleportTask, KoinComponent {
 
     private val manager by inject<TeleportManager>()

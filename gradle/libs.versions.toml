@@ -53,11 +53,6 @@ grpc-kotlin-stub = { group = "io.grpc", name = "grpc-kotlin-stub", version.ref =
 protoc-gen-grpc-java = { group = "io.grpc", name = "protoc-gen-grpc-java", version.ref = "grpc" }
 protoc-gen-grpc-kotlin = { group = "io.grpc", name = "protoc-gen-grpc-kotlin", version.ref = "grpc-kotlin" }
 adventure-kt = { module = "ink.pmc.advkt:core", version = "1.0.0-20240615.071613-4" }
-kotlin-scripting-common = { module = "org.jetbrains.kotlin:kotlin-scripting-common", version.ref = "kotlin" }
-kotlin-scripting-jvm = { module = "org.jetbrains.kotlin:kotlin-scripting-jvm", version.ref = "kotlin" }
-kotlin-scripting-jvm-host = { module = "org.jetbrains.kotlin:kotlin-scripting-jvm-host", version.ref = "kotlin" }
-kotlin-scripting-dependencies = { module = "org.jetbrains.kotlin:kotlin-scripting-dependencies", version.ref = "kotlin" }
-kotlin-scripting-dependencies-maven = { module = "org.jetbrains.kotlin:kotlin-scripting-dependencies-maven", version.ref = "kotlin" }
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 koin-core-coroutines = { module = "io.insert-koin:koin-core-coroutines", version.ref = "koin" }
 koin-compose = { module = "io.insert-koin:koin-compose", version = "3.6.0-alpha1" }
@@ -70,7 +65,7 @@ coreprotect = { module = "net.coreprotect:coreprotect", version = "22.4" }
 huskHomes = { module = "net.william278.huskhomes:huskhomes-bukkit", version = "4.7" }
 
 [bundles]
-kotlin = ["kotlin-stdlib", "kotlin-reflect", "kotlinx-coroutine-core", "kotlinx-serialization", "kotlin-scripting-common", "kotlin-scripting-jvm", "kotlin-scripting-jvm-host", "kotlin-scripting-dependencies", "kotlin-scripting-dependencies-maven"]
+kotlin = ["kotlin-stdlib", "kotlin-reflect", "kotlinx-coroutine-core", "kotlinx-serialization"]
 nightconfig = ["nightconfig-core", "nightconfig-toml", "nightconfig-hocon"]
 cloud = ["cloud-paper", "cloud-velocity", "cloud-coroutines", "cloud-extensions"]
 mccoroutine = ["mccoroutine-bukkit-api", "mccoroutine-bukkit-core", "mccoroutine-velocity-api", "mccoroutine-velocity-core"]

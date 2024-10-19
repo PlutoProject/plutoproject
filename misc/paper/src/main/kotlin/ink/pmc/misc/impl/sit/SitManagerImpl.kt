@@ -5,10 +5,10 @@ import ink.pmc.misc.api.sit.SitManager
 import ink.pmc.misc.api.sit.isSitting
 import ink.pmc.misc.api.sit.sitter
 import ink.pmc.misc.api.sit.stand
-import ink.pmc.utils.entity
-import ink.pmc.utils.platform.threadSafeTeleport
-import ink.pmc.utils.player
-import ink.pmc.utils.world.rawLocation
+import ink.pmc.utils.entity.entity
+import ink.pmc.utils.player.bukkitPlayer
+import ink.pmc.utils.player.threadSafeTeleport
+import ink.pmc.utils.world.eraseAngle
 import net.kyori.adventure.text.Component
 import org.bukkit.Location
 import org.bukkit.block.data.type.Campfire
@@ -22,7 +22,7 @@ class SitManagerImpl : SitManager {
     private val playerToSitLocationMap = mutableMapOf<UUID, Location>()
     private val playerToSeatMap = mutableMapOf<UUID, UUID>()
     override val sitters: Set<Player>
-        get() = playerToSitLocationMap.keys.map { it.player!! }.toSet()
+        get() = playerToSitLocationMap.keys.map { it.bukkitPlayer!! }.toSet()
     override val seats: Set<Entity>
         get() = playerToSeatMap.values.map { it.entity!! }.toSet()
 
@@ -31,7 +31,7 @@ class SitManagerImpl : SitManager {
             player.stand()
         }
 
-        var sitLoc = location.rawLocation
+        var sitLoc = location.eraseAngle()
 
         if (!checkLocation(location)) {
             val tryFind = findLegalLocation(sitLoc)
@@ -100,11 +100,11 @@ class SitManagerImpl : SitManager {
     }
 
     override fun getSitterByLocation(location: Location): Player? {
-        return playerToSitLocationMap.entries.firstOrNull { it.value == location.rawLocation }?.key?.player
+        return playerToSitLocationMap.entries.firstOrNull { it.value == location.eraseAngle() }?.key?.bukkitPlayer
     }
 
     override fun getSitterBySeat(seat: Entity): Player? {
-        return playerToSeatMap.entries.firstOrNull { it.value == seat.uniqueId }?.key?.player
+        return playerToSeatMap.entries.firstOrNull { it.value == seat.uniqueId }?.key?.bukkitPlayer
     }
 
     override fun isSeat(entity: Entity): Boolean {
@@ -112,7 +112,7 @@ class SitManagerImpl : SitManager {
     }
 
     override fun isSitLocation(location: Location): Boolean {
-        return playerToSitLocationMap.containsValue(location.rawLocation)
+        return playerToSitLocationMap.containsValue(location.eraseAngle())
     }
 
     override fun standAll() {

@@ -22,7 +22,6 @@ private val serverDispatcher: CoroutineDispatcher
         if (!::lateServerDispatcher.isInitialized) {
             lateServerDispatcher = serverExecutor.asCoroutineDispatcher()
         }
-
         return lateServerDispatcher
     }
 
@@ -31,7 +30,6 @@ val mainThreadDispatcher: CoroutineDispatcher
         if (isFolia) {
             return globalRegionDispatcher
         }
-
         return serverDispatcher
     }
 
@@ -39,14 +37,12 @@ val Entity.dispatcher: CoroutineDispatcher
     get() {
         if (isFolia) {
             val entity = this
-
             return object : CoroutineDispatcher() {
                 override fun dispatch(context: CoroutineContext, block: Runnable) {
                     entity.scheduler { block.run() }
                 }
             }
         }
-
         return serverDispatcher
     }
 
@@ -58,7 +54,6 @@ private fun dispatcherForChunk(chunk: Chunk): CoroutineDispatcher {
             }
         }
     }
-
     return serverDispatcher
 }
 

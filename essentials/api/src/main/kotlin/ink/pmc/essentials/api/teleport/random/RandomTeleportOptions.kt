@@ -1,10 +1,10 @@
 package ink.pmc.essentials.api.teleport.random
 
-import ink.pmc.utils.world.Pos2D
+import ink.pmc.utils.world.Vec2
 import org.bukkit.block.Biome
 
 data class RandomTeleportOptions(
-    val center: Pos2D,
+    val center: Vec2,
     val spawnPointAsCenter: Boolean,
     val startRadius: Int,
     val endRadius: Int,
