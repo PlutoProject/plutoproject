@@ -74,11 +74,10 @@ class VelocityPlugin @Inject constructor(suspendingPluginContainer: SuspendingPl
 
     @Subscribe(order = PostOrder.FIRST)
     fun ProxyPingEvent.e() {
-        val version = if (serverBrand == null) {
-            ServerPing.Version(protocolRange.first, VERSION_RANGE)
-        } else {
-            ServerPing.Version(protocolRange.first, "$serverBrand $VERSION_RANGE")
-        }
+        val version = ServerPing.Version(
+            protocolRange.first,
+            if (serverBrand != null) "$serverBrand $VERSION_RANGE" else VERSION_RANGE
+        )
         ping = ping.asBuilder()
             .version(version)
             .apply {
