@@ -15,6 +15,7 @@ cloud-minecraft = "2.0.0-SNAPSHOT"
 koin = "3.6.0-Beta5"
 compose = "1.7.0-alpha02"
 voyager = "1.1.0-beta02"
+hoplite = "2.8.2"
 
 [libraries]
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
@@ -63,6 +64,8 @@ voyager-screenmodel = { module = "cafe.adriel.voyager:voyager-screenmodel", vers
 anvilGui = { module = "net.wesjd:anvilgui", version = "1.10.1-SNAPSHOT" }
 coreprotect = { module = "net.coreprotect:coreprotect", version = "22.4" }
 huskHomes = { module = "net.william278.huskhomes:huskhomes-bukkit", version = "4.7" }
+hoplite-core = { module = "com.sksamuel.hoplite:hoplite-core", version.ref = "hoplite" }
+hoplite-hocon = { module = "com.sksamuel.hoplite:hoplite-hocon", version.ref = "hoplite" }
 
 [bundles]
 kotlin = ["kotlin-stdlib", "kotlin-reflect", "kotlinx-coroutine-core", "kotlinx-serialization"]
@@ -75,6 +78,7 @@ grpc = ["grpc-protobuf", "grpc-okhttp", "grpc-stub", "grpc-kotlin-stub"]
 mongodb = ["mongodb-kotlin", "mongodb-kotlin-bson"]
 koin = ["koin-core", "koin-core-coroutines", "koin-compose"]
 voyager = ["voyager-navigator", "voyager-screenmodel"]
+hoplite = ["hoplite-core", "hoplite-hocon"]
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }

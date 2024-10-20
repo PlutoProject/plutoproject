@@ -1,14 +1,12 @@
 package ink.pmc.hypervisor
 
-import ink.pmc.advkt.component.*
-import ink.pmc.advkt.sound.*
-import ink.pmc.advkt.title.*
+import ink.pmc.advkt.component.component
+import ink.pmc.advkt.component.newline
+import ink.pmc.advkt.component.raw
+import ink.pmc.advkt.component.text
 import ink.pmc.utils.chat.replace
 import ink.pmc.utils.visual.*
-import net.kyori.adventure.key.Key
-import net.kyori.adventure.sound.Sound
 import net.kyori.adventure.text.Component
-import kotlin.time.Duration.Companion.seconds
 
 val SERVER_STATUS
     get() = component {
@@ -20,26 +18,26 @@ val SERVER_STATUS
         newline()
         text("  - ") with mochaSubtext0
         text("当前 TPS: ") with mochaText
-        raw(sparkTPS5Secs.colorizedTPSComponent)
+        raw(StatisticProvider.getTicksPerSecond(MeasuringTime.SECONDS_10).colorizedTPSComponent)
         newline()
         text("  - ") with mochaSubtext0
         text("当前 MSPT: ") with mochaText
-        raw(sparkMSPT10Secs.colorizedMSPTComponent)
+        raw(StatisticProvider.getMillsPerTick(MeasuringTime.SECONDS_10).colorizedMSPTComponent)
         newline()
         text("  - ") with mochaSubtext0
-        text("自 5s, 1m, 5m 以来的 TPS: ") with mochaText
-        raw(sparkTPS5Secs.colorizedTPSComponent)
+        text("自 10s, 1m, 5m 以来的 TPS: ") with mochaText
+        raw(StatisticProvider.getTicksPerSecond(MeasuringTime.SECONDS_10).colorizedTPSComponent)
         text(", ") with mochaSubtext0
-        raw(sparkTPS1Mins.colorizedTPSComponent)
+        raw(StatisticProvider.getTicksPerSecond(MeasuringTime.MINUTE_1).colorizedTPSComponent)
         text(", ") with mochaSubtext0
-        raw(sparkTPS5Mins.colorizedTPSComponent)
+        raw(StatisticProvider.getTicksPerSecond(MeasuringTime.MINUTES_5).colorizedTPSComponent)
         newline()
 
         text("  - ") with mochaSubtext0
         text("自 10s, 1m 以来的 MSPT: ") with mochaText
-        raw(sparkMSPT10Secs.colorizedMSPTComponent)
+        raw(StatisticProvider.getMillsPerTick(MeasuringTime.SECONDS_10).colorizedMSPTComponent)
         text(", ") with mochaSubtext0
-        raw(sparkMSPT1Min.colorizedMSPTComponent)
+        raw(StatisticProvider.getMillsPerTick(MeasuringTime.MINUTE_1).colorizedMSPTComponent)
     }
 
 val WORLD_STATUS = component {

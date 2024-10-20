@@ -352,6 +352,7 @@ allprojects {
         compileOnly(rootProject.libs.vault.api) {
             isTransitive = false
         }
+        dep(rootProject.libs.bundles.hoplite)
     }
 
     tasks.shadowJar {
