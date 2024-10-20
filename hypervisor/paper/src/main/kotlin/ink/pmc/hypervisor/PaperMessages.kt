@@ -5,6 +5,7 @@ import ink.pmc.advkt.component.newline
 import ink.pmc.advkt.component.raw
 import ink.pmc.advkt.component.text
 import ink.pmc.utils.chat.replace
+import ink.pmc.utils.roundToTwoDecimals
 import ink.pmc.utils.visual.*
 import net.kyori.adventure.text.Component
 
@@ -18,26 +19,26 @@ val SERVER_STATUS
         newline()
         text("  - ") with mochaSubtext0
         text("当前 TPS: ") with mochaText
-        raw(StatisticProvider.getTicksPerSecond(MeasuringTime.SECONDS_10).colorizedTPSComponent)
+        raw(StatisticProvider.getTicksPerSecond(MeasuringTime.SECONDS_10).roundToTwoDecimals().colorizedTPSComponent)
         newline()
         text("  - ") with mochaSubtext0
         text("当前 MSPT: ") with mochaText
-        raw(StatisticProvider.getMillsPerTick(MeasuringTime.SECONDS_10).colorizedMSPTComponent)
+        raw(StatisticProvider.getMillsPerTick(MeasuringTime.SECONDS_10).roundToTwoDecimals().colorizedMSPTComponent)
         newline()
         text("  - ") with mochaSubtext0
         text("自 10s, 1m, 5m 以来的 TPS: ") with mochaText
-        raw(StatisticProvider.getTicksPerSecond(MeasuringTime.SECONDS_10).colorizedTPSComponent)
+        raw(StatisticProvider.getTicksPerSecond(MeasuringTime.SECONDS_10).roundToTwoDecimals().colorizedTPSComponent)
         text(", ") with mochaSubtext0
-        raw(StatisticProvider.getTicksPerSecond(MeasuringTime.MINUTE_1).colorizedTPSComponent)
+        raw(StatisticProvider.getTicksPerSecond(MeasuringTime.MINUTE_1).roundToTwoDecimals().colorizedTPSComponent)
         text(", ") with mochaSubtext0
-        raw(StatisticProvider.getTicksPerSecond(MeasuringTime.MINUTES_5).colorizedTPSComponent)
+        raw(StatisticProvider.getTicksPerSecond(MeasuringTime.MINUTES_5).roundToTwoDecimals().colorizedTPSComponent)
         newline()
 
         text("  - ") with mochaSubtext0
         text("自 10s, 1m 以来的 MSPT: ") with mochaText
-        raw(StatisticProvider.getMillsPerTick(MeasuringTime.SECONDS_10).colorizedMSPTComponent)
+        raw(StatisticProvider.getMillsPerTick(MeasuringTime.SECONDS_10).roundToTwoDecimals().colorizedMSPTComponent)
         text(", ") with mochaSubtext0
-        raw(StatisticProvider.getMillsPerTick(MeasuringTime.MINUTE_1).colorizedMSPTComponent)
+        raw(StatisticProvider.getMillsPerTick(MeasuringTime.MINUTE_1).roundToTwoDecimals().colorizedMSPTComponent)
     }
 
 val WORLD_STATUS = component {

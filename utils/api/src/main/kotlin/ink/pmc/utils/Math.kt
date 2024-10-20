@@ -3,8 +3,9 @@ package ink.pmc.utils
 import java.math.BigDecimal
 import java.math.RoundingMode
 
-val Double.roundTwoDecimals: Double
-    get() = BigDecimal(this).setScale(2, RoundingMode.HALF_EVEN).toDouble()
+fun Double.roundToTwoDecimals(): Double {
+    return BigDecimal(this).setScale(2, RoundingMode.HALF_EVEN).toDouble()
+}
 
 fun Double.trimmed(): String {
     // 将 Double 转换为字符串并去除末尾多余的 0
