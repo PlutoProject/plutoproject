@@ -36,3 +36,6 @@ inline val Server.internal: MinecraftServer
 
 inline val Server.executor: Executor
     get() = internal
+
+inline val paperDepClassLoader: ClassLoader
+    get() = Class.forName("ink.pmc.deploader.PaperPlugin").classLoader
