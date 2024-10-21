@@ -9,16 +9,19 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.bukkit.entity.Player
+import org.bukkit.entity.SpawnCategory
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
 class DynamicSchedulingImpl : DynamicScheduling, KoinComponent {
     private val config by inject<HypervisorConfig>()
-    private val localDynamicViewDistanceState = mutableMapOf<Player, Boolean>()
+    private val dynamicViewDistanceState = mutableMapOf<Player, DynamicViewDistanceState>()
     private var cycleJob: Job? = null
     override val enabled: Boolean
         get() = config.dynamicScheduling.enabled
-    override var state: SchedulingState = SchedulingState(-1, mapOf(), mapOf())
+    override var currentSimulateDistance: Int = -1
+    override val currentSpawnLimits: MutableMap<SpawnCategory, Int> = mutableMapOf()
+    override val currentTicksPerSpawn: MutableMap<SpawnCategory, Int> = mutableMapOf()
     override var isRunning: Boolean = false
 
     override fun start() {
@@ -27,17 +30,17 @@ class DynamicSchedulingImpl : DynamicScheduling, KoinComponent {
             paper.onlinePlayers.forEach { player ->
                 val ping = player.ping
                 if (ping > config.dynamicScheduling.viewDistance.maximumPing
-                    && isDynamicViewDistanceEnabled(player)
-                    && isDynamicViewDistanceEnabledLocally(player)
+                    && getDynamicViewDistance(player)
+                    && !getDynamicViewDistanceLocally(player).isDisabledLocally
                 ) {
-                    setDynamicViewDistanceStateLocally(player, false)
+                    setDynamicViewDistanceLocally(player, DynamicViewDistanceState.ENABLED)
                     return@forEach
                 }
                 if (ping <= config.dynamicScheduling.viewDistance.maximumPing
-                    && isDynamicViewDistanceEnabled(player)
-                    && !isDynamicViewDistanceEnabledLocally(player)
+                    && getDynamicViewDistance(player)
+                    && getDynamicViewDistanceLocally(player) == DynamicViewDistanceState.DISABLED_DUE_PING
                 ) {
-                    setDynamicViewDistanceStateLocally(player, true)
+                    setDynamicViewDistanceLocally(player, DynamicViewDistanceState.ENABLED)
                     return@forEach
                 }
             }
@@ -54,7 +57,7 @@ class DynamicSchedulingImpl : DynamicScheduling, KoinComponent {
         pluginLogger.info("Dynamic-scheduling cycle job stopped")
     }
 
-    override fun setDynamicViewDistanceState(player: Player, state: Boolean) {
+    override fun setDynamicViewDistance(player: Player, state: Boolean) {
         val options = runBlocking {
             OptionsManager.getOptionsOrCreate(player.uniqueId)
         }
@@ -64,19 +67,19 @@ class DynamicSchedulingImpl : DynamicScheduling, KoinComponent {
         }
     }
 
-    override fun setDynamicViewDistanceStateLocally(player: Player, state: Boolean) {
-        localDynamicViewDistanceState[player] = state
+    override fun setDynamicViewDistanceLocally(player: Player, state: DynamicViewDistanceState) {
+        dynamicViewDistanceState[player] = state
     }
 
     override fun toggleDynamicViewDistance(player: Player) {
-        if (isDynamicViewDistanceEnabled(player)) {
-            setDynamicViewDistanceState(player, false)
+        if (getDynamicViewDistance(player)) {
+            setDynamicViewDistance(player, false)
         } else {
-            setDynamicViewDistanceState(player, true)
+            setDynamicViewDistance(player, true)
         }
     }
 
-    override fun isDynamicViewDistanceEnabled(player: Player): Boolean {
+    override fun getDynamicViewDistance(player: Player): Boolean {
         val options = runBlocking {
             OptionsManager.getOptionsOrCreate(player.uniqueId)
         }
@@ -84,7 +87,9 @@ class DynamicSchedulingImpl : DynamicScheduling, KoinComponent {
         return entry?.value ?: false
     }
 
-    override fun isDynamicViewDistanceEnabledLocally(player: Player): Boolean {
-        return localDynamicViewDistanceState.getOrPut(player) { isDynamicViewDistanceEnabled(player) }
+    override fun getDynamicViewDistanceLocally(player: Player): DynamicViewDistanceState {
+        return dynamicViewDistanceState.getOrPut(player) {
+            if (getDynamicViewDistance(player)) DynamicViewDistanceState.ENABLED else DynamicViewDistanceState.DISABLED
+        }
     }
 }
