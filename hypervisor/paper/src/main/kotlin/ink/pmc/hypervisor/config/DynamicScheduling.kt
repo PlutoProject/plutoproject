@@ -2,8 +2,8 @@ package ink.pmc.hypervisor.config
 
 import org.bukkit.entity.SpawnCategory
 
-typealias CurveSampler = Map<Int, Int>
-typealias SpawnStrategy = Map<SpawnCategory, CurveSampler>
+typealias Double2IntCurve = Map<Double, Int>
+typealias SpawnStrategy = Map<SpawnCategory, Double2IntCurve>
 
 data class DynamicScheduling(
     val enabled: Boolean,
@@ -18,12 +18,12 @@ data class ViewDistance(
     val enabled: Boolean,
     val virtualHosts: List<String>,
     val maximumPing: Double,
-    val sampler: CurveSampler
+    val value: Int
 )
 
 data class SimulateDistance(
     val enabled: Boolean,
-    val sampler: CurveSampler,
+    val curve: Double2IntCurve,
 )
 
 data class SpawnSettings(

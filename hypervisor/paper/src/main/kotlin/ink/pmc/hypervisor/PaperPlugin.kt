@@ -1,6 +1,7 @@
 package ink.pmc.hypervisor
 
 import com.github.shynixn.mccoroutine.bukkit.SuspendingJavaPlugin
+import com.github.shynixn.mccoroutine.bukkit.registerSuspendingEvents
 import com.sksamuel.hoplite.PropertySource
 import ink.pmc.hypervisor.StatisticProviderType.NATIVE
 import ink.pmc.hypervisor.StatisticProviderType.SPARK
@@ -9,6 +10,7 @@ import ink.pmc.hypervisor.commands.StatusCommand
 import ink.pmc.hypervisor.config.HypervisorConfig
 import ink.pmc.hypervisor.providers.NativeStatisticProvider
 import ink.pmc.hypervisor.providers.SparkStatisticProvider
+import ink.pmc.options.api.OptionsManager
 import ink.pmc.utils.command.init
 import ink.pmc.utils.config.preconfiguredConfigLoaderBuilder
 import ink.pmc.utils.inject.startKoinIfNotPresent
@@ -25,7 +27,7 @@ import java.util.logging.Logger
 
 lateinit var commandManager: PaperCommandManager<CommandSourceStack>
 lateinit var plugin: JavaPlugin
-lateinit var serverLogger: Logger
+lateinit var pluginLogger: Logger
 var disabled = true
 
 @Suppress("UNUSED")
@@ -50,12 +52,12 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
             }
         }
         single<Hypervisor> { HypervisorImpl() }
+        single<DynamicScheduling> { DynamicSchedulingImpl() }
     }
 
     override fun onEnable() {
         plugin = this
-        disabled = false
-        serverLogger = logger
+        pluginLogger = logger
 
         startKoinIfNotPresent {
             modules(bukkitModule)
@@ -64,12 +66,23 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
         commandManager = PaperCommandManager.builder()
             .executionCoordinator(ExecutionCoordinator.asyncCoordinator())
             .buildOnEnable(this)
-
         commandManager.init(HypervisorCommand)
         commandManager.init(StatusCommand)
+
+        OptionsManager.registerOptionDescriptor(DYNAMIC_VIEW_DISTANCE)
+
+        if (config.dynamicScheduling.enabled) {
+            server.pluginManager.registerSuspendingEvents(DynamicSchedulingListener, this)
+            DynamicScheduling.start()
+        }
+
+        disabled = false
     }
 
     override fun onDisable() {
+        if (config.dynamicScheduling.enabled) {
+            DynamicScheduling.stop()
+        }
         disabled = true
     }
 
