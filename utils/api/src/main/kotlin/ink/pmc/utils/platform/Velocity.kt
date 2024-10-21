@@ -21,3 +21,6 @@ fun saveConfig(clazz: Class<*>, name: String, output: File) {
     Files.copy(input, output.toPath(), StandardCopyOption.REPLACE_EXISTING)
     input.close()
 }
+
+inline val velocityDepClassLoader: ClassLoader
+    get() = Class.forName("ink.pmc.deploader.VelocityPlugin").classLoader
