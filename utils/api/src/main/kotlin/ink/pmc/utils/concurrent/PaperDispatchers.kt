@@ -1,9 +1,10 @@
 package ink.pmc.utils.concurrent
 
+import com.github.shynixn.mccoroutine.bukkit.minecraftDispatcher
 import ink.pmc.utils.platform.isFolia
-import ink.pmc.utils.platform.serverExecutor
+import ink.pmc.utils.platform.paper
+import ink.pmc.utils.platform.paperUtilsPlugin
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.asCoroutineDispatcher
 import org.bukkit.Chunk
 import org.bukkit.Location
 import org.bukkit.entity.Entity
@@ -11,54 +12,41 @@ import kotlin.coroutines.CoroutineContext
 
 private val globalRegionDispatcher = object : CoroutineDispatcher() {
     override fun dispatch(context: CoroutineContext, block: Runnable) {
-        globalRegionScheduler { block.run() }
+        paper.globalRegionScheduler.execute(paperUtilsPlugin, block)
     }
 }
 
-private lateinit var lateServerDispatcher: CoroutineDispatcher
-
-private val serverDispatcher: CoroutineDispatcher
+val paperDispatcher: CoroutineContext
     get() {
-        if (!::lateServerDispatcher.isInitialized) {
-            lateServerDispatcher = serverExecutor.asCoroutineDispatcher()
-        }
-        return lateServerDispatcher
+        if (isFolia) return globalRegionDispatcher
+        return paperUtilsPlugin.minecraftDispatcher
     }
 
-val mainThreadDispatcher: CoroutineDispatcher
-    get() {
-        if (isFolia) {
-            return globalRegionDispatcher
-        }
-        return serverDispatcher
-    }
-
-val Entity.dispatcher: CoroutineDispatcher
+val Entity.dispatcher: CoroutineContext
     get() {
         if (isFolia) {
             val entity = this
             return object : CoroutineDispatcher() {
                 override fun dispatch(context: CoroutineContext, block: Runnable) {
-                    entity.scheduler { block.run() }
+                    entity.scheduler.execute(paperUtilsPlugin, block, {}, 0L)
                 }
             }
         }
-        return serverDispatcher
+        return paperDispatcher
     }
 
-private fun dispatcherForChunk(chunk: Chunk): CoroutineDispatcher {
-    if (isFolia) {
-        return object : CoroutineDispatcher() {
-            override fun dispatch(context: CoroutineContext, block: Runnable) {
-                chunk.scheduler { block.run() }
+val Chunk.dispatcher: CoroutineContext
+    get() {
+        if (isFolia) {
+            return object : CoroutineDispatcher() {
+                override fun dispatch(context: CoroutineContext, block: Runnable) {
+                    val chunk = this@dispatcher
+                    paper.regionScheduler.execute(paperUtilsPlugin, chunk.world, chunk.x, chunk.z, block)
+                }
             }
         }
+        return paperDispatcher
     }
-    return serverDispatcher
-}
-
-val Chunk.dispatcher
-    get() = dispatcherForChunk(this)
 
 val Location.dispatcher
-    get() = dispatcherForChunk(this.chunk)
+    get() = chunk.dispatcher
