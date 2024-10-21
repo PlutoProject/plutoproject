@@ -18,15 +18,28 @@ object DynamicSchedulingListener : Listener, KoinComponent {
 
     private fun Player.refreshViewDistance() {
         val configured = config.dynamicScheduling.viewDistance.value
-        viewDistance = if (DynamicScheduling.isDynamicViewDistanceEnabledLocally(this) && viewDistance < configured) {
-            configured
-        } else {
-            paper.viewDistance
+        val before = viewDistance
+        when {
+            DynamicScheduling.getDynamicViewDistanceLocally(this) == DynamicViewDistanceState.ENABLED
+                    && viewDistance < configured -> viewDistance = configured
+
+            DynamicScheduling.getDynamicViewDistanceLocally(this) != DynamicViewDistanceState.ENABLED
+                    && viewDistance > paper.viewDistance -> viewDistance = paper.viewDistance
+        }
+        if (viewDistance != before) {
+            pluginLogger.info("Updated $name's view-distance: $before -> $viewDistance")
         }
     }
 
     @EventHandler
     fun PlayerJoinEvent.e() {
+        val vhosts = config.dynamicScheduling.viewDistance.virtualHosts
+        val vhost = player.virtualHost
+        if (player.virtualHost != null && !vhosts.contains("${vhost?.hostString}:${vhost?.port}")) {
+            DynamicScheduling.setDynamicViewDistanceLocally(player, DynamicViewDistanceState.DISABLED_DUE_VHOST)
+            pluginLogger.info("Disabled ${player.name}'s view-distance because the virtual host is not in whitelist")
+            return
+        }
         player.refreshViewDistance()
     }
 
