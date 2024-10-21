@@ -38,6 +38,7 @@ class DynamicSchedulingImpl : DynamicScheduling, KoinComponent {
                     && !isDynamicViewDistanceEnabledLocally(player)
                 ) {
                     setDynamicViewDistanceStateLocally(player, true)
+                    return@forEach
                 }
             }
             delay(config.dynamicScheduling.cyclePeriod.ticks)
