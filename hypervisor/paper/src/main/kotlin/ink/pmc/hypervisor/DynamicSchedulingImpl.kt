@@ -33,7 +33,7 @@ class DynamicSchedulingImpl : DynamicScheduling, KoinComponent {
                     setDynamicViewDistanceStateLocally(player, false)
                     return@forEach
                 }
-                if (ping < config.dynamicScheduling.viewDistance.maximumPing
+                if (ping <= config.dynamicScheduling.viewDistance.maximumPing
                     && isDynamicViewDistanceEnabled(player)
                     && !isDynamicViewDistanceEnabledLocally(player)
                 ) {
