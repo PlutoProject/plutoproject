@@ -8,7 +8,6 @@ import org.bukkit.Material
 
 @Suppress("UNUSED")
 object IronElevatorBuilder : ElevatorBuilder {
-
     override val type: Material = Material.IRON_BLOCK
     override val permission: String? = null
 
@@ -22,18 +21,12 @@ object IronElevatorBuilder : ElevatorBuilder {
             val top = loc.world.maxHeight
             val curr = loc.blockY
             val temp = mutableListOf<Location>()
-
             for (i in loc.blockY..top) {
                 val offset = i - curr
                 val block = loc.clone().add(0.0, offset.toDouble(), 0.0)
-
-                if (block.block.type != type) {
-                    continue
-                }
-
+                if (block.block.type != type) continue
                 temp.add(block)
             }
-
             offsetUp.addAll(filterSafe(temp))
         }
 
@@ -41,27 +34,19 @@ object IronElevatorBuilder : ElevatorBuilder {
             val bottom = loc.world.minHeight
             val curr = loc.blockY
             val temp = mutableListOf<Location>()
-
             for (i in bottom..loc.blockY) {
                 val offset = curr - i
                 val block = loc.clone().subtract(0.0, offset.toDouble(), 0.0)
-
-                if (block.block.type != type) {
-                    continue
-                }
-
+                if (block.block.type != type) continue
                 temp.add(block)
             }
-
             offsetDown.addAll(filterSafe(temp))
         }
 
         up.join()
         down.join()
-
         result.addAll(offsetDown)
         result.addAll(offsetUp)
-
         return result
     }
 
@@ -75,11 +60,8 @@ object IronElevatorBuilder : ElevatorBuilder {
         val filtered = list.filter {
             val offset1 = it.clone().add(0.0, 1.0, 0.0)
             val offset2 = it.clone().add(0.0, 2.0, 0.0)
-
-            offset1.block.type == Material.AIR && offset2.block.type == Material.AIR
+            offset1.block.type.isAir && offset2.block.type.isAir
         }
-
         return filtered
     }
-
 }
