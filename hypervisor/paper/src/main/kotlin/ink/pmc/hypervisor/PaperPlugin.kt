@@ -46,7 +46,7 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
                 SPARK -> if (findClass("me.lucko.spark.api.Spark") != null) {
                     SparkStatisticProvider(SparkHook.instance)
                 } else {
-                    logger.warn("Spark API not found, fallback to native statistic provider")
+                    logger.warn("Spark not found, fallback to native statistic provider")
                     NativeStatisticProvider()
                 }
             }
@@ -62,6 +62,8 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
         startKoinIfNotPresent {
             modules(bukkitModule)
         }
+
+        logger.info("Using statistic provider: ${StatisticProvider.type}")
 
         commandManager = PaperCommandManager.builder()
             .executionCoordinator(ExecutionCoordinator.asyncCoordinator())
