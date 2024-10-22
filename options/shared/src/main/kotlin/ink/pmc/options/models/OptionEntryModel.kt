@@ -1,5 +1,6 @@
 package ink.pmc.options.models
 
+import ink.pmc.options.UnknownDescriptor
 import ink.pmc.options.api.EntryValueType
 import ink.pmc.options.api.EntryValueType.*
 import ink.pmc.options.api.OptionEntry
@@ -28,7 +29,11 @@ internal fun OptionEntry<*>.toModel(): OptionEntryModel {
                 gson.toJson(value, objClass)
             }
         }
-    }, descriptor.type)
+
+        UNKNOWN -> value as String
+    }, if (descriptor.type == UNKNOWN) {
+        (descriptor as UnknownDescriptor).originalType
+    } else descriptor.type)
 }
 
 @Serializable

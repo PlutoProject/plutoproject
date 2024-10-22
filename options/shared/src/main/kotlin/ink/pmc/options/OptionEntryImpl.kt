@@ -12,12 +12,9 @@ import kotlinx.serialization.serializerOrNull
 
 @OptIn(InternalSerializationApi::class)
 @Suppress("UNCHECKED_CAST")
-internal fun createEntryFromModel(model: OptionEntryModel): OptionEntry<*>? {
+internal fun createEntryFromModel(model: OptionEntryModel): OptionEntry<*> {
     val descriptor = OptionsManager.getOptionDescriptor(model.key)
-    if (descriptor == null) {
-        // logger.warning("Descriptor not found for ${model.key}")
-        return null
-    }
+        ?: return OptionEntryImpl(UnknownDescriptor(model.type), model.value)
     return when (descriptor.type) {
         INT -> OptionEntryImpl(descriptor as OptionDescriptor<Int>, Json.decodeFromString(model.value))
         LONG -> OptionEntryImpl(descriptor as OptionDescriptor<Long>, Json.decodeFromString(model.value))
@@ -40,6 +37,8 @@ internal fun createEntryFromModel(model: OptionEntryModel): OptionEntry<*>? {
                 OptionEntryImpl(descriptor as OptionDescriptor<Any>, model.value.toObject(objClass))
             }
         }
+
+        UNKNOWN -> error("Unreachable")
     }
 }
 
