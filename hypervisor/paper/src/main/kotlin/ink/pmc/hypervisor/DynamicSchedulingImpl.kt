@@ -30,10 +30,9 @@ class DynamicSchedulingImpl : DynamicScheduling, KoinComponent {
             paper.onlinePlayers.forEach { player ->
                 val ping = player.ping
                 if (ping > config.dynamicScheduling.viewDistance.maximumPing
-                    && getDynamicViewDistance(player)
                     && !getDynamicViewDistanceLocally(player).isDisabledLocally
                 ) {
-                    setDynamicViewDistanceLocally(player, DynamicViewDistanceState.ENABLED)
+                    setDynamicViewDistanceLocally(player, DynamicViewDistanceState.DISABLED_DUE_PING)
                     return@forEach
                 }
                 if (ping <= config.dynamicScheduling.viewDistance.maximumPing

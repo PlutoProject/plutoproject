@@ -37,7 +37,7 @@ object DynamicSchedulingListener : Listener, KoinComponent {
         val vhost = player.virtualHost
         if (player.virtualHost != null && !vhosts.contains("${vhost?.hostString}:${vhost?.port}")) {
             DynamicScheduling.setDynamicViewDistanceLocally(player, DynamicViewDistanceState.DISABLED_DUE_VHOST)
-            pluginLogger.info("Disabled ${player.name}'s view-distance because the virtual host is not in whitelist")
+            pluginLogger.info("Disabled ${player.name}'s view-distance locally because the virtual host is not in whitelist")
             return
         }
         player.refreshViewDistance()
