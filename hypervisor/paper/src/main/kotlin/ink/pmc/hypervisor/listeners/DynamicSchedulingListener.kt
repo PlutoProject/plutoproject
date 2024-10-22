@@ -1,5 +1,6 @@
 package ink.pmc.hypervisor.listeners
 
+import com.destroystokyo.paper.event.player.PlayerPostRespawnEvent
 import ink.pmc.hypervisor.DynamicScheduling
 import ink.pmc.hypervisor.DynamicViewDistanceState
 import ink.pmc.hypervisor.config.HypervisorConfig
@@ -8,7 +9,6 @@ import ink.pmc.utils.platform.paper
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
-import org.bukkit.event.entity.PlayerDeathEvent
 import org.bukkit.event.player.PlayerChangedWorldEvent
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
@@ -76,7 +76,7 @@ object DynamicSchedulingListener : Listener, KoinComponent {
     }
 
     @EventHandler
-    fun PlayerDeathEvent.e() {
+    fun PlayerPostRespawnEvent.e() {
         player.refreshViewDistance()
     }
 
