@@ -1,10 +1,8 @@
 package ink.pmc.hypervisor.config
 
-import org.bukkit.entity.SpawnCategory
+import ink.pmc.hypervisor.Double2IntSample
+import ink.pmc.hypervisor.SpawnStrategy
 import kotlin.time.Duration
-
-typealias Double2IntCurve = List<Pair<Double, Int>>
-typealias SpawnStrategy = Map<SpawnCategory, Double2IntCurve>
 
 data class DynamicScheduling(
     val enabled: Boolean,
@@ -24,7 +22,7 @@ data class ViewDistance(
 
 data class SimulateDistance(
     val enabled: Boolean,
-    val curve: Double2IntCurve,
+    val curve: Double2IntSample,
 )
 
 data class SpawnSettings(

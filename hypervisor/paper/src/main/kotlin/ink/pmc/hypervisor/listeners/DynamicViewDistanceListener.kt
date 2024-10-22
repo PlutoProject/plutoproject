@@ -14,20 +14,20 @@ import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.event.player.PlayerTeleportEvent
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
+import org.koin.core.component.get
 
 @Suppress("UNUSED")
-object DynamicSchedulingListener : Listener, KoinComponent {
-    private val config by inject<HypervisorConfig>()
+object DynamicViewDistanceListener : Listener, KoinComponent {
+    private val config by lazy { get<HypervisorConfig>().dynamicScheduling }
 
     private fun Player.refreshViewDistance() {
-        val configured = config.dynamicScheduling.viewDistance.value
+        val configured = config.viewDistance.value
         val before = viewDistance
         // 不知道为什么在设置 viewDistance 后，立即获取出来的值并不是刚刚设置的
         // 所以缓存一下
         var after = before
         when {
-            DynamicScheduling.getDynamicViewDistanceLocally(this) == DynamicViewDistanceState.ENABLED
+            DynamicScheduling.getViewDistanceLocally(this) == DynamicViewDistanceState.ENABLED
                     && viewDistance < configured -> {
                 after = configured
                 // 设置之后会变成指定值 -1，所以输出可能和预期不同
@@ -35,7 +35,7 @@ object DynamicSchedulingListener : Listener, KoinComponent {
                 viewDistance = after
             }
 
-            DynamicScheduling.getDynamicViewDistanceLocally(this) != DynamicViewDistanceState.ENABLED
+            DynamicScheduling.getViewDistanceLocally(this) != DynamicViewDistanceState.ENABLED
                     && viewDistance > paper.viewDistance -> {
                 after = paper.viewDistance
                 viewDistance = after
@@ -61,10 +61,10 @@ object DynamicSchedulingListener : Listener, KoinComponent {
 
     @EventHandler
     fun PlayerJoinEvent.e() {
-        val vhosts = config.dynamicScheduling.viewDistance.virtualHosts
+        val vhosts = config.viewDistance.virtualHosts
         val vhost = player.formattedVhost
         if (vhost != null && !vhosts.contains(vhost)) {
-            DynamicScheduling.setDynamicViewDistanceLocally(player, DynamicViewDistanceState.DISABLED_DUE_VHOST)
+            DynamicScheduling.setViewDistanceLocally(player, DynamicViewDistanceState.DISABLED_DUE_VHOST)
             return
         }
         player.refreshViewDistance()
@@ -87,6 +87,6 @@ object DynamicSchedulingListener : Listener, KoinComponent {
 
     @EventHandler
     fun PlayerQuitEvent.e() {
-        DynamicScheduling.removeLocalDynamicViewDistanceState(player)
+        DynamicScheduling.removeLocalViewDistanceState(player)
     }
 }

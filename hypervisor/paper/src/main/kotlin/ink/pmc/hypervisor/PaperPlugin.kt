@@ -7,7 +7,7 @@ import ink.pmc.hypervisor.StatisticProviderType.NATIVE
 import ink.pmc.hypervisor.StatisticProviderType.SPARK
 import ink.pmc.hypervisor.commands.*
 import ink.pmc.hypervisor.config.HypervisorConfig
-import ink.pmc.hypervisor.listeners.DynamicSchedulingListener
+import ink.pmc.hypervisor.listeners.DynamicViewDistanceListener
 import ink.pmc.hypervisor.providers.NativeStatisticProvider
 import ink.pmc.hypervisor.providers.SparkStatisticProvider
 import ink.pmc.options.api.OptionsManager
@@ -77,7 +77,7 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
         OptionsManager.registerOptionDescriptor(DYNAMIC_VIEW_DISTANCE)
 
         if (config.dynamicScheduling.enabled) {
-            server.pluginManager.registerSuspendingEvents(DynamicSchedulingListener, this)
+            server.pluginManager.registerSuspendingEvents(DynamicViewDistanceListener, this)
             DynamicScheduling.start()
         }
 

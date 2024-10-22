@@ -21,9 +21,9 @@ val debugCommand = commandManager.commandBuilder("vd_debug")
             newline()
             text("Current send view distance: ${sender.sendViewDistance}")
             newline()
-            text("Current state: ${DynamicScheduling.getDynamicViewDistanceLocally(sender)}")
+            text("Current state: ${DynamicScheduling.getViewDistanceLocally(sender)}")
             newline()
-            text("Current option: ${DynamicScheduling.getDynamicViewDistance(sender)}")
+            text("Current option: ${DynamicScheduling.getViewDistance(sender)}")
         }
     }
 
@@ -32,7 +32,7 @@ val enabledCommand = commandManager.commandBuilder("vd_debug")
     .suspendingHandler {
         val sender = it.sender.sender as? Player ?: return@suspendingHandler
         runBlocking {
-            DynamicScheduling.setDynamicViewDistance(sender, true)
+            DynamicScheduling.setViewDistance(sender, true)
             sender.send {
                 text("Enabled")
             }
@@ -44,7 +44,7 @@ val disabledCommand = commandManager.commandBuilder("vd_debug")
     .suspendingHandler {
         val sender = it.sender.sender as? Player ?: return@suspendingHandler
         runBlocking {
-            DynamicScheduling.setDynamicViewDistance(sender, false)
+            DynamicScheduling.setViewDistance(sender, false)
             sender.send {
                 text("Disabled")
             }

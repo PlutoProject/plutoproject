@@ -353,6 +353,7 @@ allprojects {
             isTransitive = false
         }
         dep(rootProject.libs.bundles.hoplite)
+        dep(rootProject.libs.commons.math)
     }
 
     tasks.shadowJar {
