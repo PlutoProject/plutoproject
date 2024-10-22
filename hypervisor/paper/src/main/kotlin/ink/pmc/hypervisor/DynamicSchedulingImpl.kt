@@ -4,7 +4,6 @@ import ink.pmc.hypervisor.config.HypervisorConfig
 import ink.pmc.options.api.OptionsManager
 import ink.pmc.utils.concurrent.submitAsync
 import ink.pmc.utils.platform.paper
-import ink.pmc.utils.time.ticks
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking

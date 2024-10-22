@@ -3,10 +3,8 @@ package ink.pmc.hypervisor.commands
 import ink.pmc.advkt.component.newline
 import ink.pmc.advkt.component.text
 import ink.pmc.advkt.send
-import ink.pmc.hypervisor.DYNAMIC_VIEW_DISTANCE
 import ink.pmc.hypervisor.DynamicScheduling
 import ink.pmc.hypervisor.commandManager
-import ink.pmc.options.api.OptionsManager
 import ink.pmc.utils.dsl.cloud.sender
 import ink.pmc.utils.platform.paper
 import kotlinx.coroutines.runBlocking
