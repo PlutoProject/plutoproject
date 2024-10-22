@@ -7,11 +7,11 @@ interface StatisticProvider {
 
     val type: StatisticProviderType
 
-    fun getTicksPerSecond(time: MeasuringTime): Double
+    fun getTicksPerSecond(time: MeasuringTime): Double?
 
-    fun getMillsPerTick(time: MeasuringTime): Double
+    fun getMillsPerTick(time: MeasuringTime): Double?
 
-    fun getCpuUsageSystem(time: MeasuringTime): Double
+    fun getCpuUsageSystem(time: MeasuringTime): Double?
 
-    fun getCpuUsageProcess(time: MeasuringTime): Double
+    fun getCpuUsageProcess(time: MeasuringTime): Double?
 }

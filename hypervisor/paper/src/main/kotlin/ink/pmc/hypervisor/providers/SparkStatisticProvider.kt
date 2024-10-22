@@ -10,8 +10,8 @@ import me.lucko.spark.api.statistic.StatisticWindow
 class SparkStatisticProvider(private val spark: Spark) : StatisticProvider {
     override val type: StatisticProviderType = StatisticProviderType.SPARK
 
-    override fun getTicksPerSecond(time: MeasuringTime): Double {
-        val statistic = spark.tps()!!
+    override fun getTicksPerSecond(time: MeasuringTime): Double? {
+        val statistic = spark.tps() ?: return null
         return statistic.poll(
             when (time) {
                 SECONDS_10 -> StatisticWindow.TicksPerSecond.SECONDS_10
@@ -23,8 +23,8 @@ class SparkStatisticProvider(private val spark: Spark) : StatisticProvider {
         )
     }
 
-    override fun getMillsPerTick(time: MeasuringTime): Double {
-        val statistic = spark.mspt()!!
+    override fun getMillsPerTick(time: MeasuringTime): Double? {
+        val statistic = spark.mspt() ?: return null
         return statistic.poll(
             when (time) {
                 SECONDS_10 -> StatisticWindow.MillisPerTick.SECONDS_10

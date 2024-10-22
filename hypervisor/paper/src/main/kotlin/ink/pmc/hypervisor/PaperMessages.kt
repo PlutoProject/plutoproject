@@ -19,26 +19,26 @@ val SERVER_STATUS
         newline()
         text("  - ") with mochaSubtext0
         text("当前 TPS: ") with mochaText
-        raw(StatisticProvider.getTicksPerSecond(MeasuringTime.SECONDS_10).roundToTwoDecimals().colorizedTPSComponent)
+        raw(StatisticProvider.getTicksPerSecond(MeasuringTime.SECONDS_10)!!.roundToTwoDecimals().colorizedTPSComponent)
         newline()
         text("  - ") with mochaSubtext0
         text("当前 MSPT: ") with mochaText
-        raw(StatisticProvider.getMillsPerTick(MeasuringTime.SECONDS_10).roundToTwoDecimals().colorizedMSPTComponent)
+        raw(StatisticProvider.getMillsPerTick(MeasuringTime.SECONDS_10)!!.roundToTwoDecimals().colorizedMSPTComponent)
         newline()
         text("  - ") with mochaSubtext0
         text("自 10s, 1m, 5m 以来的 TPS: ") with mochaText
-        raw(StatisticProvider.getTicksPerSecond(MeasuringTime.SECONDS_10).roundToTwoDecimals().colorizedTPSComponent)
+        raw(StatisticProvider.getTicksPerSecond(MeasuringTime.SECONDS_10)!!.roundToTwoDecimals().colorizedTPSComponent)
         text(", ") with mochaSubtext0
-        raw(StatisticProvider.getTicksPerSecond(MeasuringTime.MINUTE_1).roundToTwoDecimals().colorizedTPSComponent)
+        raw(StatisticProvider.getTicksPerSecond(MeasuringTime.MINUTE_1)!!.roundToTwoDecimals().colorizedTPSComponent)
         text(", ") with mochaSubtext0
-        raw(StatisticProvider.getTicksPerSecond(MeasuringTime.MINUTES_5).roundToTwoDecimals().colorizedTPSComponent)
+        raw(StatisticProvider.getTicksPerSecond(MeasuringTime.MINUTES_5)!!.roundToTwoDecimals().colorizedTPSComponent)
         newline()
 
         text("  - ") with mochaSubtext0
         text("自 10s, 1m 以来的 MSPT: ") with mochaText
-        raw(StatisticProvider.getMillsPerTick(MeasuringTime.SECONDS_10).roundToTwoDecimals().colorizedMSPTComponent)
+        raw(StatisticProvider.getMillsPerTick(MeasuringTime.SECONDS_10)!!.roundToTwoDecimals().colorizedMSPTComponent)
         text(", ") with mochaSubtext0
-        raw(StatisticProvider.getMillsPerTick(MeasuringTime.MINUTE_1).roundToTwoDecimals().colorizedMSPTComponent)
+        raw(StatisticProvider.getMillsPerTick(MeasuringTime.MINUTE_1)!!.roundToTwoDecimals().colorizedMSPTComponent)
     }
 
 val WORLD_STATUS = component {

@@ -66,29 +66,30 @@ class DynamicSchedulingImpl : DynamicScheduling, KoinComponent {
                     }
                 }
                 if (isCurveCalculated) {
-                    paper.worlds.forEach { world ->
-                        val millsPerTick = StatisticProvider.getMillsPerTick(MeasuringTime.SECONDS_10)
-
-                        val simulateDistance = getSimulateDistanceWhen(millsPerTick, world)
-                        val currentSimulateDistance = world.simulationDistance
-                        if (currentSimulateDistance != simulateDistance) {
-                            world.simulationDistance = simulateDistance
-                            pluginLogger.info("Update ${world.name}'s simulate distance: $currentSimulateDistance -> $simulateDistance")
-                        }
-
-                        SpawnCategory.entries.forEach { category ->
-                            val spawnLimit = getSpawnLimitWhen(millsPerTick, world, category)
-                            val currentSpawnLimit = world.getSpawnLimit(category)
-                            if (currentSpawnLimit != spawnLimit) {
-                                world.setSpawnLimit(category, spawnLimit)
-                                pluginLogger.info("Update ${world.name}'s $category spawn limit: $currentSpawnLimit -> $spawnLimit")
+                    val millsPerTick = StatisticProvider.getMillsPerTick(MeasuringTime.SECONDS_10)
+                    if (millsPerTick != null) {
+                        paper.worlds.forEach { world ->
+                            val simulateDistance = getSimulateDistanceWhen(millsPerTick, world)
+                            val currentSimulateDistance = world.simulationDistance
+                            if (currentSimulateDistance != simulateDistance) {
+                                world.simulationDistance = simulateDistance
+                                pluginLogger.info("Update ${world.name}'s simulate distance: $currentSimulateDistance -> $simulateDistance")
                             }
 
-                            val ticksPerSpawn = getTicksPerSpawnWhen(millsPerTick, world, category)
-                            val currentTicksPerSpawn = world.getTicksPerSpawns(category).toInt()
-                            if (currentTicksPerSpawn != ticksPerSpawn) {
-                                world.setTicksPerSpawns(category, ticksPerSpawn)
-                                pluginLogger.info("Update ${world.name}'s $category ticks per spawn: $currentTicksPerSpawn -> $ticksPerSpawn")
+                            SpawnCategory.entries.forEach { category ->
+                                val spawnLimit = getSpawnLimitWhen(millsPerTick, world, category)
+                                val currentSpawnLimit = world.getSpawnLimit(category)
+                                if (currentSpawnLimit != spawnLimit) {
+                                    world.setSpawnLimit(category, spawnLimit)
+                                    pluginLogger.info("Update ${world.name}'s $category spawn limit: $currentSpawnLimit -> $spawnLimit")
+                                }
+
+                                val ticksPerSpawn = getTicksPerSpawnWhen(millsPerTick, world, category)
+                                val currentTicksPerSpawn = world.getTicksPerSpawns(category).toInt()
+                                if (currentTicksPerSpawn != ticksPerSpawn) {
+                                    world.setTicksPerSpawns(category, ticksPerSpawn)
+                                    pluginLogger.info("Update ${world.name}'s $category ticks per spawn: $currentTicksPerSpawn -> $ticksPerSpawn")
+                                }
                             }
                         }
                     }

@@ -11,14 +11,14 @@ import org.bukkit.Bukkit
 class NativeStatisticProvider : StatisticProvider {
     override val type: StatisticProviderType = StatisticProviderType.NATIVE
 
-    override fun getTicksPerSecond(time: MeasuringTime): Double {
+    override fun getTicksPerSecond(time: MeasuringTime): Double? {
         val tps = Bukkit.getServer().tps
         return when (time) {
-            SECONDS_10 -> tps[0]
-            MINUTE_1 -> tps[0]
-            MINUTES_5 -> tps[1]
-            MINUTES_10 -> tps[1]
-            MINUTES_15 -> tps[2]
+            SECONDS_10 -> tps.getOrNull(0)
+            MINUTE_1 -> tps.getOrNull(0)
+            MINUTES_5 -> tps.getOrNull(1)
+            MINUTES_10 -> tps.getOrNull(1)
+            MINUTES_15 -> tps.getOrNull(2)
         }
     }
 
