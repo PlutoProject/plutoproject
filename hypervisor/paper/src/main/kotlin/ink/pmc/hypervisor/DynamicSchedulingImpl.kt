@@ -230,10 +230,6 @@ class DynamicSchedulingImpl : DynamicScheduling, KoinComponent {
         isCurveCalculated = true
     }
 
-    private fun getHighestPoint(sample: Map<Double, Int>): Pair<Double, Int> {
-        return sample.maxByOrNull { it.key }?.toPair() ?: error("Sample is empty")
-    }
-
     override fun getSimulateDistanceWhen(millsPerSecond: Double, world: World?): Int {
         check(isCurveCalculated) { "Curve not calculated" }
         if (world == null) {
