@@ -4,5 +4,6 @@ import ink.pmc.hypervisor.StatisticProviderType
 
 data class HypervisorConfig(
     val statisticProvider: StatisticProviderType,
-    val dynamicScheduling: DynamicScheduling
+    val dynamicScheduling: DynamicScheduling,
+    val overloadWarning: OverloadWarning
 )

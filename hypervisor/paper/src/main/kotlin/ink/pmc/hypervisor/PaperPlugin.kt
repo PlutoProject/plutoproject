@@ -80,6 +80,9 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
             server.pluginManager.registerSuspendingEvents(DynamicViewDistanceListener, this)
             DynamicScheduling.start()
         }
+        if (config.overloadWarning.enabled) {
+            OverloadWarning.start()
+        }
 
         disabled = false
     }
@@ -88,6 +91,10 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
         if (config.dynamicScheduling.enabled) {
             DynamicScheduling.stop()
         }
+        if (config.overloadWarning.enabled) {
+            OverloadWarning.stop()
+        }
+
         disabled = true
     }
 
