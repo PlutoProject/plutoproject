@@ -1,9 +1,6 @@
 package ink.pmc.options
 
-import ink.pmc.options.api.OptionDescriptor
-import ink.pmc.options.api.OptionEntry
-import ink.pmc.options.api.OptionsManager
-import ink.pmc.options.api.PlayerOptions
+import ink.pmc.options.api.*
 import ink.pmc.options.repositories.OptionsContainerRepository
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -79,6 +76,7 @@ class OptionsManagerImpl : OptionsManager, KoinComponent {
     }
 
     override fun registerOptionDescriptor(descriptor: OptionDescriptor<*>) {
+        require(descriptor.type != EntryValueType.UNKNOWN) { "UNKNOWN is for internal use only" }
         require(!registeredDescriptors.containsKey(descriptor.key)) { "Descriptor for ${descriptor.key} already registered" }
         registeredDescriptors[descriptor.key] = descriptor
     }
