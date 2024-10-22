@@ -27,7 +27,8 @@ class DynamicSchedulingImpl : DynamicScheduling, KoinComponent {
     private var cycleJob: Job? = null
 
     private var isCurveCalculated = false
-    private var simulateDistanceCurve: Double2IntCurve? = null
+    private var defaultSimulateDistanceCurve: Double2IntCurve? = null
+    private val simulateDistanceCurve = mutableMapOf<World, Double2IntCurve>()
     private val defaultSpawnLimitsCurve = mutableListOf<SpawnCurve>()
     private val spawnLimitsCurve = listMultimapOf<World, SpawnCurve>()
     private val defaultTicksPerSpawnCurve = mutableListOf<SpawnCurve>()
@@ -43,9 +44,6 @@ class DynamicSchedulingImpl : DynamicScheduling, KoinComponent {
         get() = config.spawnLimits.enabled
     override val ticksPerSpawnEnabled: Boolean
         get() = config.ticksPerSpawn.enabled
-    override var currentSimulateDistance: Int = -1
-    override val currentSpawnLimits: MutableMap<SpawnCategory, Int> = mutableMapOf()
-    override val currentTicksPerSpawn: MutableMap<SpawnCategory, Int> = mutableMapOf()
     override var isRunning: Boolean = false
 
     override fun start() {
@@ -68,7 +66,32 @@ class DynamicSchedulingImpl : DynamicScheduling, KoinComponent {
                     }
                 }
                 if (isCurveCalculated) {
+                    paper.worlds.forEach { world ->
+                        val millsPerTick = StatisticProvider.getMillsPerTick(MeasuringTime.SECONDS_10)
 
+                        val simulateDistance = getSimulateDistanceWhen(millsPerTick, world)
+                        val currentSimulateDistance = world.simulationDistance
+                        if (currentSimulateDistance != simulateDistance) {
+                            world.simulationDistance = simulateDistance
+                            pluginLogger.info("Update ${world.name}'s simulate distance: $currentSimulateDistance -> $simulateDistance")
+                        }
+
+                        SpawnCategory.entries.forEach { category ->
+                            val spawnLimit = getSpawnLimitWhen(millsPerTick, world, category)
+                            val currentSpawnLimit = world.getSpawnLimit(category)
+                            if (currentSpawnLimit != spawnLimit) {
+                                world.setSpawnLimit(category, spawnLimit)
+                                pluginLogger.info("Update ${world.name}'s $category spawn limit: $currentSpawnLimit -> $spawnLimit")
+                            }
+
+                            val ticksPerSpawn = getTicksPerSpawnWhen(millsPerTick, world, category)
+                            val currentTicksPerSpawn = world.getTicksPerSpawns(category).toInt()
+                            if (currentTicksPerSpawn != ticksPerSpawn) {
+                                world.setTicksPerSpawns(category, ticksPerSpawn)
+                                pluginLogger.info("Update ${world.name}'s $category ticks per spawn: $currentTicksPerSpawn -> $ticksPerSpawn")
+                            }
+                        }
+                    }
                 }
                 delay(config.cyclePeriod)
             }
@@ -82,6 +105,7 @@ class DynamicSchedulingImpl : DynamicScheduling, KoinComponent {
         cycleJob?.cancel()
         cycleJob = null
         dynamicViewDistanceState.clear()
+        clearCurvesData()
         pluginLogger.info("Dynamic-scheduling cycle job stopped")
     }
 
@@ -147,6 +171,7 @@ class DynamicSchedulingImpl : DynamicScheduling, KoinComponent {
     }
 
     private fun fitDoubleToIntCurve(sample: Double2IntSample): Double2IntCurve {
+        checkSample(sample)
         val points = WeightedObservedPoints()
         sample.forEach { (x, y) ->
             points.add(x, y.toDouble())
@@ -158,23 +183,30 @@ class DynamicSchedulingImpl : DynamicScheduling, KoinComponent {
 
     private fun fitSpawnStrategyCurve(strategy: SpawnStrategy): List<SpawnCurve> {
         return strategy.map { (category, sample) ->
-            checkSample(sample)
             SpawnCurve(category, fitDoubleToIntCurve(sample))
         }
     }
 
-    override fun calculateCurves() {
-        val start = currentUnixTimestamp
-        isCurveCalculated = false
-        simulateDistanceCurve = null
+    private fun clearCurvesData() {
+        defaultSimulateDistanceCurve = null
         defaultSpawnLimitsCurve.clear()
         defaultTicksPerSpawnCurve.clear()
         spawnLimitsCurve.clear()
         ticksPerSpawnCurve.clear()
+    }
 
-        val simSample = config.simulateDistance.curve
-        checkSample(simSample)
-        simulateDistanceCurve = fitDoubleToIntCurve(simSample)
+    override fun calculateCurves() {
+        val start = currentUnixTimestamp
+        clearCurvesData()
+
+        config.simulateDistance.default.also {
+            defaultSimulateDistanceCurve = fitDoubleToIntCurve(it)
+        }
+
+        config.simulateDistance.world.forEach { (world, sample) ->
+            val bukkitWorld = Bukkit.getWorld(world) ?: return@forEach
+            simulateDistanceCurve[bukkitWorld] = fitDoubleToIntCurve(sample)
+        }
 
         config.spawnLimits.default.also {
             defaultSpawnLimitsCurve.addAll(fitSpawnStrategyCurve(it))
@@ -202,24 +234,34 @@ class DynamicSchedulingImpl : DynamicScheduling, KoinComponent {
         return sample.maxByOrNull { it.key }?.toPair() ?: error("Sample is empty")
     }
 
-    override fun getSimulateDistanceWhen(millsPerSecond: Double): Int {
+    override fun getSimulateDistanceWhen(millsPerSecond: Double, world: World?): Int {
         check(isCurveCalculated) { "Curve not calculated" }
-        val highest = getHighestPoint(config.simulateDistance.curve.toMap())
-        if (millsPerSecond > highest.first) {
-            return highest.second
-        }
-        return simulateDistanceCurve!!.function.value(millsPerSecond).roundToInt()
-    }
-
-    override fun getSimulateDistanceCurve(): PolynomialFunction {
-        check(isCurveCalculated) { "Curve not calculated" }
-        return simulateDistanceCurve!!.function
-    }
-
-    override fun getSpawnLimitsWhen(millsPerSecond: Double, world: World?, category: SpawnCategory): Int {
         if (world == null) {
-            val curve =
-                defaultSpawnLimitsCurve.firstOrNull { it.category == category } ?: return Bukkit.getSpawnLimit(category)
+            val highest = defaultSimulateDistanceCurve!!.getHighestPoint()
+            if (millsPerSecond > highest.first) {
+                return highest.second
+            }
+            return defaultSimulateDistanceCurve!!.function.value(millsPerSecond).roundToInt()
+        } else {
+            val curve = simulateDistanceCurve[world] ?: defaultSimulateDistanceCurve!!
+            val highest = curve.getHighestPoint()
+            if (millsPerSecond > highest.first) {
+                return highest.second
+            }
+            return curve.function.value(millsPerSecond).roundToInt()
+        }
+    }
+
+    override fun getSimulateDistanceCurve(world: World?): PolynomialFunction {
+        check(isCurveCalculated) { "Curve not calculated" }
+        return defaultSimulateDistanceCurve!!.function
+    }
+
+    override fun getSpawnLimitWhen(millsPerSecond: Double, world: World?, category: SpawnCategory): Int {
+        check(isCurveCalculated) { "Curve not calculated" }
+        val default = defaultSpawnLimitsCurve.firstOrNull { it.category == category }
+        if (world == null) {
+            val curve = default ?: return Bukkit.getSpawnLimit(category)
             val highest = curve.curve.getHighestPoint()
             if (millsPerSecond >= highest.first) {
                 return highest.second
@@ -227,7 +269,8 @@ class DynamicSchedulingImpl : DynamicScheduling, KoinComponent {
             return curve.curve.function.value(millsPerSecond).roundToInt()
         } else {
             val curve =
-                spawnLimitsCurve[world].firstOrNull { it.category == category } ?: return world.getSpawnLimit(category)
+                spawnLimitsCurve[world].firstOrNull { it.category == category }
+                    ?: default ?: return world.getSpawnLimit(category)
             val highest = curve.curve.getHighestPoint()
             if (millsPerSecond >= highest.first) {
                 return highest.second
@@ -237,18 +280,20 @@ class DynamicSchedulingImpl : DynamicScheduling, KoinComponent {
     }
 
     override fun getSpawnLimitsCurve(world: World?, category: SpawnCategory): PolynomialFunction? {
+        check(isCurveCalculated) { "Curve not calculated" }
+        val default = defaultSpawnLimitsCurve.firstOrNull { it.category == category }?.curve?.function
         return if (world == null) {
-            defaultSpawnLimitsCurve.firstOrNull { it.category == category }?.curve?.function
+            default
         } else {
-            spawnLimitsCurve[world].firstOrNull { it.category == category }?.curve?.function
+            spawnLimitsCurve[world].firstOrNull { it.category == category }?.curve?.function ?: default
         }
     }
 
     override fun getTicksPerSpawnWhen(millsPerSecond: Double, world: World?, category: SpawnCategory): Int {
+        check(isCurveCalculated) { "Curve not calculated" }
+        val default = defaultTicksPerSpawnCurve.firstOrNull { it.category == category }
         if (world == null) {
-            val curve =
-                defaultTicksPerSpawnCurve
-                    .firstOrNull { it.category == category } ?: return Bukkit.getTicksPerSpawns(category)
+            val curve = default ?: return Bukkit.getTicksPerSpawns(category)
             val highest = curve.curve.getHighestPoint()
             if (millsPerSecond >= highest.first) {
                 return highest.second
@@ -256,8 +301,8 @@ class DynamicSchedulingImpl : DynamicScheduling, KoinComponent {
             return curve.curve.function.value(millsPerSecond).roundToInt()
         } else {
             val curve =
-                ticksPerSpawnCurve[world]
-                    .firstOrNull { it.category == category } ?: return world.getTicksPerSpawns(category).toInt()
+                ticksPerSpawnCurve[world].firstOrNull { it.category == category }
+                    ?: default ?: return world.getTicksPerSpawns(category).toInt()
             val highest = curve.curve.getHighestPoint()
             if (millsPerSecond >= highest.first) {
                 return highest.second
@@ -266,11 +311,13 @@ class DynamicSchedulingImpl : DynamicScheduling, KoinComponent {
         }
     }
 
-    override fun getTicksPerSecondCurve(world: World?, category: SpawnCategory): PolynomialFunction? {
+    override fun getTicksPerSpawnCurve(world: World?, category: SpawnCategory): PolynomialFunction? {
+        check(isCurveCalculated) { "Curve not calculated" }
+        val default = defaultTicksPerSpawnCurve.firstOrNull { it.category == category }?.curve?.function
         return if (world == null) {
-            defaultTicksPerSpawnCurve.firstOrNull { it.category == category }?.curve?.function
+            default
         } else {
-            ticksPerSpawnCurve[world].firstOrNull { it.category == category }?.curve?.function
+            ticksPerSpawnCurve[world].firstOrNull { it.category == category }?.curve?.function ?: default
         }
     }
 }

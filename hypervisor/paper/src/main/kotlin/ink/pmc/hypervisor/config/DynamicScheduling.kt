@@ -22,7 +22,8 @@ data class ViewDistance(
 
 data class SimulateDistance(
     val enabled: Boolean,
-    val curve: Double2IntSample,
+    val default: Double2IntSample,
+    val world: Map<String, Double2IntSample>,
 )
 
 data class SpawnSettings(

@@ -14,9 +14,6 @@ interface DynamicScheduling {
     val simulateDistanceEnabled: Boolean
     val spawnLimitsEnabled: Boolean
     val ticksPerSpawnEnabled: Boolean
-    val currentSimulateDistance: Int
-    val currentSpawnLimits: Map<SpawnCategory, Int>
-    val currentTicksPerSpawn: Map<SpawnCategory, Int>
     val isRunning: Boolean
 
     fun start()
@@ -37,15 +34,15 @@ interface DynamicScheduling {
 
     fun calculateCurves()
 
-    fun getSimulateDistanceWhen(millsPerSecond: Double): Int
+    fun getSimulateDistanceWhen(millsPerSecond: Double, world: World?): Int
 
-    fun getSimulateDistanceCurve(): PolynomialFunction
+    fun getSimulateDistanceCurve(world: World?): PolynomialFunction
 
-    fun getSpawnLimitsWhen(millsPerSecond: Double, world: World? = null, category: SpawnCategory): Int
+    fun getSpawnLimitWhen(millsPerSecond: Double, world: World? = null, category: SpawnCategory): Int
 
     fun getSpawnLimitsCurve(world: World? = null, category: SpawnCategory): PolynomialFunction?
 
     fun getTicksPerSpawnWhen(millsPerSecond: Double, world: World? = null, category: SpawnCategory): Int
 
-    fun getTicksPerSecondCurve(world: World? = null, category: SpawnCategory): PolynomialFunction?
+    fun getTicksPerSpawnCurve(world: World? = null, category: SpawnCategory): PolynomialFunction?
 }
