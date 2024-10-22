@@ -5,9 +5,9 @@ import com.github.shynixn.mccoroutine.bukkit.registerSuspendingEvents
 import com.sksamuel.hoplite.PropertySource
 import ink.pmc.hypervisor.StatisticProviderType.NATIVE
 import ink.pmc.hypervisor.StatisticProviderType.SPARK
-import ink.pmc.hypervisor.commands.HypervisorCommand
-import ink.pmc.hypervisor.commands.StatusCommand
+import ink.pmc.hypervisor.commands.*
 import ink.pmc.hypervisor.config.HypervisorConfig
+import ink.pmc.hypervisor.listeners.DynamicSchedulingListener
 import ink.pmc.hypervisor.providers.NativeStatisticProvider
 import ink.pmc.hypervisor.providers.SparkStatisticProvider
 import ink.pmc.options.api.OptionsManager
@@ -68,6 +68,9 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
             .buildOnEnable(this)
         commandManager.init(HypervisorCommand)
         commandManager.init(StatusCommand)
+        commandManager.command(debugCommand)
+        commandManager.command(enabledCommand)
+        commandManager.command(disabledCommand)
 
         OptionsManager.registerOptionDescriptor(DYNAMIC_VIEW_DISTANCE)
 

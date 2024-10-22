@@ -2,7 +2,7 @@ package ink.pmc.hypervisor.config
 
 import org.bukkit.entity.SpawnCategory
 
-typealias Double2IntCurve = Map<Double, Int>
+typealias Double2IntCurve = List<Pair<Double, Int>>
 typealias SpawnStrategy = Map<SpawnCategory, Double2IntCurve>
 
 data class DynamicScheduling(

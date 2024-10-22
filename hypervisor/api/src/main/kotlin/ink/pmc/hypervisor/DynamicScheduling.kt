@@ -26,4 +26,6 @@ interface DynamicScheduling {
     fun getDynamicViewDistance(player: Player): Boolean
 
     fun getDynamicViewDistanceLocally(player: Player): DynamicViewDistanceState
+
+    fun removeLocalDynamicViewDistanceState(player: Player)
 }
