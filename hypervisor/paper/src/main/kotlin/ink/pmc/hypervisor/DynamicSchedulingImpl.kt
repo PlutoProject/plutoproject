@@ -51,7 +51,7 @@ class DynamicSchedulingImpl : DynamicScheduling, KoinComponent {
     override fun start() {
         check(!isRunning) { "Dynamic-scheduling cycle job already running" }
         isRunning = true
-        calculateCurve()
+        calculateCurves()
         cycleJob = submitAsync {
             while (isRunning) {
                 paper.onlinePlayers.forEach { player ->
@@ -163,7 +163,7 @@ class DynamicSchedulingImpl : DynamicScheduling, KoinComponent {
         }
     }
 
-    override fun calculateCurve() {
+    override fun calculateCurves() {
         val start = currentUnixTimestamp
         isCurveCalculated = false
         simulateDistanceCurve = null
@@ -194,7 +194,7 @@ class DynamicSchedulingImpl : DynamicScheduling, KoinComponent {
             ticksPerSpawnCurve[bukkitWorld] = fitSpawnStrategyCurve(strategy)
         }
 
-        pluginLogger.info("Finished function calculations in ${currentUnixTimestamp - start}ms")
+        pluginLogger.info("Finished curve calculations in ${currentUnixTimestamp - start}ms")
         isCurveCalculated = true
     }
 

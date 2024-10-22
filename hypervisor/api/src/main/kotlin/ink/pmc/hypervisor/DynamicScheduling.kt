@@ -35,7 +35,7 @@ interface DynamicScheduling {
 
     fun removeLocalViewDistanceState(player: Player)
 
-    fun calculateCurve()
+    fun calculateCurves()
 
     fun getSimulateDistanceWhen(millsPerSecond: Double): Int
 
