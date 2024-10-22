@@ -30,6 +30,8 @@ object DynamicSchedulingListener : Listener, KoinComponent {
             DynamicScheduling.getDynamicViewDistanceLocally(this) == DynamicViewDistanceState.ENABLED
                     && viewDistance < configured -> {
                 after = configured
+                // 设置之后会变成指定值 -1，所以输出可能和预期不同
+                // 暂时不清楚是不是 Paper 的问题，不在此处做处理
                 viewDistance = after
             }
 
