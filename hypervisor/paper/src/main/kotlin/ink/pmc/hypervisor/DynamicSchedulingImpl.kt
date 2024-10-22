@@ -42,7 +42,7 @@ class DynamicSchedulingImpl : DynamicScheduling, KoinComponent {
                             setDynamicViewDistanceLocally(player, DynamicViewDistanceState.ENABLED)
                     }
                 }
-                delay(config.dynamicScheduling.cyclePeriod.ticks)
+                delay(config.dynamicScheduling.cyclePeriod)
             }
         }
         pluginLogger.info("Dynamic-scheduling cycle job started")
