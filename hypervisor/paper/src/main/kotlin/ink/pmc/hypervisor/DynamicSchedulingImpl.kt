@@ -76,7 +76,8 @@ class DynamicSchedulingImpl : DynamicScheduling, KoinComponent {
                                 pluginLogger.info("Update ${world.name}'s simulate distance: $currentSimulateDistance -> $simulateDistance")
                             }
 
-                            SpawnCategory.entries.forEach { category ->
+                            SpawnCategory.entries.forEach categoryLoop@{ category ->
+                                if (category == SpawnCategory.MISC) return@categoryLoop // Bukkit 不支持
                                 val spawnLimit = getSpawnLimitWhen(millsPerTick, world, category)
                                 val currentSpawnLimit = world.getSpawnLimit(category)
                                 if (currentSpawnLimit != spawnLimit) {
