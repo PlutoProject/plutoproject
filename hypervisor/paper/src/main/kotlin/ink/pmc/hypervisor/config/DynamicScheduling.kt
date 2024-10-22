@@ -17,7 +17,8 @@ data class ViewDistance(
     val enabled: Boolean,
     val virtualHosts: List<String>,
     val maximumPing: Double,
-    val value: Int
+    val standard: Int,
+    val boost: Int
 )
 
 data class SimulateDistance(

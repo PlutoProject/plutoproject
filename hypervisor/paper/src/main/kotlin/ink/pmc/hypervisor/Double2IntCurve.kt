@@ -6,7 +6,11 @@ data class Double2IntCurve(
     val sample: Double2IntSample,
     val function: PolynomialFunction
 ) {
-    fun getHighestPoint(): Double2IntPoint {
-        return sample.maxByOrNull { it.first } ?: error("No point on function")
+    fun getMinByY(): Double2IntPoint {
+        return sample.minByOrNull { it.second } ?: error("No point")
+    }
+
+    fun getMaxByY(): Double2IntPoint {
+        return sample.maxByOrNull { it.second } ?: error("No point")
     }
 }

@@ -50,6 +50,15 @@ class DynamicSchedulingImpl : DynamicScheduling, KoinComponent {
         check(!isRunning) { "Dynamic-scheduling cycle job already running" }
         isRunning = true
         calculateCurves()
+        // 视距不能小于模拟距离
+        // hypervisor 会完全接管视距和模拟距离，起始视距需要在插件配置里调整
+        paper.worlds.forEach { world ->
+            val curve = simulateDistanceCurve[world] ?: defaultSimulateDistanceCurve!!
+            val max = curve.getMaxByY().second
+            if (world.viewDistance < max) {
+                world.viewDistance = max
+            }
+        }
         cycleJob = submitAsync {
             while (isRunning) {
                 paper.onlinePlayers.forEach { player ->
@@ -235,18 +244,14 @@ class DynamicSchedulingImpl : DynamicScheduling, KoinComponent {
     override fun getSimulateDistanceWhen(millsPerSecond: Double, world: World?): Int {
         check(isCurveCalculated) { "Curve not calculated" }
         if (world == null) {
-            val highest = defaultSimulateDistanceCurve!!.getHighestPoint()
-            if (millsPerSecond > highest.first) {
-                return highest.second
-            }
-            return defaultSimulateDistanceCurve!!.function.value(millsPerSecond).roundToInt()
+            val min = defaultSimulateDistanceCurve!!.getMinByY().second
+            val max = defaultSimulateDistanceCurve!!.getMaxByY().second
+            return defaultSimulateDistanceCurve!!.function.value(millsPerSecond).roundToInt().coerceIn(min, max)
         } else {
             val curve = simulateDistanceCurve[world] ?: defaultSimulateDistanceCurve!!
-            val highest = curve.getHighestPoint()
-            if (millsPerSecond > highest.first) {
-                return highest.second
-            }
-            return curve.function.value(millsPerSecond).roundToInt()
+            val min = curve.getMinByY().second
+            val max = curve.getMaxByY().second
+            return curve.function.value(millsPerSecond).roundToInt().coerceIn(min, max)
         }
     }
 
@@ -260,20 +265,16 @@ class DynamicSchedulingImpl : DynamicScheduling, KoinComponent {
         val default = defaultSpawnLimitsCurve.firstOrNull { it.category == category }
         if (world == null) {
             val curve = default ?: return Bukkit.getSpawnLimit(category)
-            val highest = curve.curve.getHighestPoint()
-            if (millsPerSecond >= highest.first) {
-                return highest.second
-            }
-            return curve.curve.function.value(millsPerSecond).roundToInt()
+            val min = curve.curve.getMinByY().second
+            val max = curve.curve.getMaxByY().second
+            return curve.curve.function.value(millsPerSecond).roundToInt().coerceIn(min, max)
         } else {
             val curve =
                 spawnLimitsCurve[world].firstOrNull { it.category == category }
                     ?: default ?: return world.getSpawnLimit(category)
-            val highest = curve.curve.getHighestPoint()
-            if (millsPerSecond >= highest.first) {
-                return highest.second
-            }
-            return curve.curve.function.value(millsPerSecond).roundToInt()
+            val min = curve.curve.getMinByY().second
+            val max = curve.curve.getMaxByY().second
+            return curve.curve.function.value(millsPerSecond).roundToInt().coerceIn(min, max)
         }
     }
 
@@ -292,20 +293,16 @@ class DynamicSchedulingImpl : DynamicScheduling, KoinComponent {
         val default = defaultTicksPerSpawnCurve.firstOrNull { it.category == category }
         if (world == null) {
             val curve = default ?: return Bukkit.getTicksPerSpawns(category)
-            val highest = curve.curve.getHighestPoint()
-            if (millsPerSecond >= highest.first) {
-                return highest.second
-            }
-            return curve.curve.function.value(millsPerSecond).roundToInt()
+            val min = curve.curve.getMinByY().second
+            val max = curve.curve.getMaxByY().second
+            return curve.curve.function.value(millsPerSecond).roundToInt().coerceIn(min, max)
         } else {
             val curve =
                 ticksPerSpawnCurve[world].firstOrNull { it.category == category }
                     ?: default ?: return world.getTicksPerSpawns(category).toInt()
-            val highest = curve.curve.getHighestPoint()
-            if (millsPerSecond >= highest.first) {
-                return highest.second
-            }
-            return curve.curve.function.value(millsPerSecond).roundToInt()
+            val min = curve.curve.getMinByY().second
+            val max = curve.curve.getMaxByY().second
+            return curve.curve.function.value(millsPerSecond).roundToInt().coerceIn(min, max)
         }
     }
 
