@@ -47,7 +47,7 @@ object StatusCommand {
             text("$entityCount ") with mochaLavender
             text("(") with mochaText
             text("$tickingEntityCount ") with mochaLavender
-            text("个正在计算)") with mochaText
+            text("个活跃中)") with mochaText
             newline()
             text("- ") with mochaSubtext0
             text("在线人数：") with mochaText

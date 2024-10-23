@@ -4,7 +4,6 @@ import com.destroystokyo.paper.event.player.PlayerPostRespawnEvent
 import ink.pmc.hypervisor.DynamicScheduling
 import ink.pmc.hypervisor.DynamicViewDistanceState
 import ink.pmc.hypervisor.config.HypervisorConfig
-import ink.pmc.hypervisor.pluginLogger
 import ink.pmc.utils.network.formatted
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -23,27 +22,16 @@ object DynamicViewDistanceListener : Listener, KoinComponent {
     private fun Player.refreshViewDistance() {
         val boost = config.viewDistance.boost
         val standard = config.viewDistance.standard
-        val before = viewDistance
-        // 不知道为什么在设置 viewDistance 后，立即获取出来的值并不是刚刚设置的
-        // 所以缓存一下
-        var after = before
         when {
             DynamicScheduling.getViewDistanceLocally(this) == DynamicViewDistanceState.ENABLED
                     && viewDistance < boost -> {
-                after = boost
-                // 设置之后会变成指定值 -1，所以输出可能和预期不同
-                // 暂时不清楚是不是 Paper 的问题，不在此处做处理
-                viewDistance = after
+                viewDistance = boost
             }
 
             DynamicScheduling.getViewDistanceLocally(this) != DynamicViewDistanceState.ENABLED
                     && viewDistance > standard -> {
-                after = standard
-                viewDistance = after
+                viewDistance = standard
             }
-        }
-        if (before != after) {
-            pluginLogger.info("Update $name's view distance: $before -> $after")
         }
     }
 
