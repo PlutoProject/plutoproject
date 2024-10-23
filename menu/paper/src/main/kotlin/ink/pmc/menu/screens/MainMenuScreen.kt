@@ -15,6 +15,8 @@ import ink.pmc.essentials.api.Essentials
 import ink.pmc.essentials.config.EssentialsConfig
 import ink.pmc.essentials.screens.home.HomeViewerScreen
 import ink.pmc.essentials.screens.warp.DefaultWarpPickerScreen
+import ink.pmc.hypervisor.DynamicScheduling
+import ink.pmc.hypervisor.DynamicViewDistanceState.*
 import ink.pmc.interactive.api.LocalPlayer
 import ink.pmc.interactive.api.inventory.components.*
 import ink.pmc.interactive.api.inventory.components.canvases.Chest
@@ -189,7 +191,8 @@ class MainMenuScreen : Screen, KoinComponent {
     private fun AssistTab() {
         Row(modifier = Modifier.fillMaxWidth().height(1), horizontalArrangement = Arrangement.Center) {
             Lookup()
-            repeat(4) {
+            ViewBoost()
+            repeat(3) {
                 Space()
             }
         }
@@ -353,7 +356,7 @@ class MainMenuScreen : Screen, KoinComponent {
         val player = LocalPlayer.current
         val model = localScreenModel.current
         Item(
-            material = Material.SPYGLASS,
+            material = Material.ENDER_EYE,
             name = if (!model.lookupModeEnabled) MAIN_MENU_ITEM_HOME_LOOKUP_OFF else MAIN_MENU_ITEM_HOME_LOOKUP_ON,
             lore = if (!model.lookupModeEnabled) MAIN_MENU_ITEM_HOME_LOOKUP_LORE else MAIN_MENU_ITEM_HOME_LOOKUP_ENABLED_LORE,
             enchantmentGlint = model.lookupModeEnabled,
@@ -418,6 +421,65 @@ class MainMenuScreen : Screen, KoinComponent {
             material = Material.SUNFLOWER,
             name = MAIN_MENU_ITEM_COINS,
             lore = MAIN_MENU_ITEM_COINS_LORE(player),
+        )
+    }
+
+    @Composable
+    @Suppress("FunctionName")
+    private fun ViewBoost() {
+        val player = LocalPlayer.current
+        var state by mutableStateOf(DynamicScheduling.getViewDistanceLocally(player))
+        Item(
+            material = Material.SPYGLASS,
+            name = when (state) {
+                ENABLED -> MAIN_MENU_ITEM_VIEW_BOOST
+                    .append(Component.text(" "))
+                    .append(ITEM_ENABLED)
+
+                DISABLED -> MAIN_MENU_ITEM_VIEW_BOOST
+                    .append(Component.text(" "))
+                    .append(ITEM_DISABLED)
+
+                DISABLED_DUE_PING -> MAIN_MENU_ITEM_VIEW_BOOST
+                    .append(Component.text(" "))
+                    .append(ITEM_DISABLED)
+
+                ENABLED_BUT_DISABLED_DUE_PING -> MAIN_MENU_ITEM_VIEW_BOOST
+                    .append(Component.text(" "))
+                    .append(ITEM_DISABLED)
+
+                DISABLED_DUE_VHOST -> MAIN_MENU_ITEM_VIEW_BOOST
+                    .append(Component.text(" "))
+                    .append(ITEM_DISABLED)
+            },
+            enchantmentGlint = state == ENABLED,
+            lore = when (state) {
+                ENABLED -> MAIN_MENU_ITEM_VIEW_BOOST_LORE_ENABLED
+                DISABLED -> MAIN_MENU_ITEM_VIEW_BOOST_LORE_DISABLED
+                DISABLED_DUE_PING -> MAIN_MENU_ITEM_VIEW_BOOST_LORE_DISABLED_DUE_PING
+                ENABLED_BUT_DISABLED_DUE_PING -> MAIN_MENU_ITEM_VIEW_BOOST_LORE_DISABLED_DUE_PING
+                DISABLED_DUE_VHOST -> MAIN_MENU_ITEM_VIEW_BOOST_LORE_DISABLED_DUE_VHOST
+            },
+            modifier = Modifier.clickable {
+                if (clickType != ClickType.LEFT) return@clickable
+                when (state) {
+                    ENABLED -> {
+                        DynamicScheduling.setViewDistance(player, false)
+                        player.playSound(UI_SUCCEED_SOUND)
+                        state = DISABLED
+                    }
+
+                    DISABLED -> {
+                        DynamicScheduling.setViewDistance(player, true)
+                        player.playSound(UI_SUCCEED_SOUND)
+                        state = ENABLED
+                    }
+
+                    DISABLED_DUE_PING -> return@clickable
+                    DISABLED_DUE_VHOST -> return@clickable
+                    ENABLED_BUT_DISABLED_DUE_PING -> return@clickable
+                }
+            }
         )
     }
 

@@ -321,7 +321,10 @@ allprojects {
         maven(uri("https://repo.william278.net/releases"))
     }
 
-    fun DependencyHandlerScope.dep(dep: Provider<*>, dependencyConfiguration: Action<ExternalModuleDependency> = Action {  }) {
+    fun DependencyHandlerScope.dep(
+        dep: Provider<*>,
+        dependencyConfiguration: Action<ExternalModuleDependency> = Action { }
+    ) {
         if (project.name.contains("dependency-loader")) {
             implementation(dep, dependencyConfiguration)
             return
@@ -352,6 +355,9 @@ allprojects {
         compileOnly(rootProject.libs.vault.api) {
             isTransitive = false
         }
+        dep(rootProject.libs.bundles.hoplite)
+        dep(rootProject.libs.commons.math)
+        kapt(rootProject.libs.cloud.annotations)
     }
 
     tasks.shadowJar {

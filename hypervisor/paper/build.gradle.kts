@@ -1,3 +1,4 @@
 bukkitPluginYaml {
-    depend.add("spark")
+    depend.add("options")
+    softDepend.add("spark")
 }

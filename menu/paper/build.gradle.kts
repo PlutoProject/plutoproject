@@ -5,4 +5,5 @@ bukkitPluginYaml {
     softDepend.add("player-database")
     softDepend.add("Vault")
     softDepend.add("CoreProtect")
+    softDepend.add("hypervisor")
 }

@@ -10,7 +10,10 @@ val byteBuddy = ByteBuddy().also {
 }
 
 @Suppress("UNUSED")
-fun loadClassesInPackages(vararg packageName: String, classLoader: ClassLoader = Thread.currentThread().contextClassLoader) {
+fun loadClassesInPackages(
+    vararg packageName: String,
+    classLoader: ClassLoader = Thread.currentThread().contextClassLoader
+) {
     ClassGraph()
         .acceptPackages(*packageName)
         .scan().use { result ->
@@ -20,4 +23,11 @@ fun loadClassesInPackages(vararg packageName: String, classLoader: ClassLoader =
                 }
             }
         }
+}
+
+@Suppress("NOTHING_TO_INLINE")
+inline fun findClass(fqn: String): Class<*>? {
+    return runCatching {
+        Class.forName(fqn)
+    }.getOrNull()
 }
