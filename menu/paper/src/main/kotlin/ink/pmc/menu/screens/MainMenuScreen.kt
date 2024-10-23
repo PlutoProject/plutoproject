@@ -444,6 +444,10 @@ class MainMenuScreen : Screen, KoinComponent {
                     .append(Component.text(" "))
                     .append(ITEM_DISABLED)
 
+                ENABLED_BUT_DISABLED_DUE_PING -> MAIN_MENU_ITEM_VIEW_BOOST
+                    .append(Component.text(" "))
+                    .append(ITEM_DISABLED)
+
                 DISABLED_DUE_VHOST -> MAIN_MENU_ITEM_VIEW_BOOST
                     .append(Component.text(" "))
                     .append(ITEM_DISABLED)
@@ -453,6 +457,7 @@ class MainMenuScreen : Screen, KoinComponent {
                 ENABLED -> MAIN_MENU_ITEM_VIEW_BOOST_LORE_ENABLED
                 DISABLED -> MAIN_MENU_ITEM_VIEW_BOOST_LORE_DISABLED
                 DISABLED_DUE_PING -> MAIN_MENU_ITEM_VIEW_BOOST_LORE_DISABLED_DUE_PING
+                ENABLED_BUT_DISABLED_DUE_PING -> MAIN_MENU_ITEM_VIEW_BOOST_LORE_DISABLED_DUE_PING
                 DISABLED_DUE_VHOST -> MAIN_MENU_ITEM_VIEW_BOOST_LORE_DISABLED_DUE_VHOST
             },
             modifier = Modifier.clickable {
@@ -472,6 +477,7 @@ class MainMenuScreen : Screen, KoinComponent {
 
                     DISABLED_DUE_PING -> return@clickable
                     DISABLED_DUE_VHOST -> return@clickable
+                    ENABLED_BUT_DISABLED_DUE_PING -> return@clickable
                 }
             }
         )

@@ -33,7 +33,7 @@ class SparkStatisticProvider(private val spark: Spark) : StatisticProvider {
                 MINUTES_10 -> StatisticWindow.MillisPerTick.MINUTES_5
                 MINUTES_15 -> StatisticWindow.MillisPerTick.MINUTES_5
             }
-        ).mean()
+        ).median()
     }
 
     override fun getCpuUsageSystem(time: MeasuringTime): Double {

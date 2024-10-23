@@ -64,13 +64,23 @@ class DynamicSchedulingImpl : DynamicScheduling, KoinComponent {
                     val ping = player.ping
                     when {
                         ping > config.viewDistance.maximumPing
+                                && !getViewDistance(player)
                                 && !getViewDistanceLocally(player).isDisabledLocally ->
                             setViewDistanceLocally(player, DynamicViewDistanceState.DISABLED_DUE_PING)
 
+                        ping > config.viewDistance.maximumPing
+                                && getViewDistance(player)
+                                && !getViewDistanceLocally(player).isDisabledLocally ->
+                            setViewDistanceLocally(player, DynamicViewDistanceState.ENABLED_BUT_DISABLED_DUE_PING)
+
                         ping <= config.viewDistance.maximumPing
                                 && getViewDistance(player)
-                                && getViewDistanceLocally(player) == DynamicViewDistanceState.DISABLED_DUE_PING ->
+                                && getViewDistanceLocally(player) == DynamicViewDistanceState.ENABLED_BUT_DISABLED_DUE_PING ->
                             setViewDistanceLocally(player, DynamicViewDistanceState.ENABLED)
+
+                        ping <= config.viewDistance.maximumPing
+                                && getViewDistanceLocally(player) == DynamicViewDistanceState.DISABLED_DUE_PING ->
+                            setViewDistanceLocally(player, DynamicViewDistanceState.DISABLED)
                     }
                 }
                 if (isCurveCalculated) {
@@ -81,7 +91,6 @@ class DynamicSchedulingImpl : DynamicScheduling, KoinComponent {
                             val currentSimulateDistance = world.simulationDistance
                             if (currentSimulateDistance != simulateDistance) {
                                 world.simulationDistance = simulateDistance
-                                pluginLogger.info("Update ${world.name}'s simulate distance: $currentSimulateDistance -> $simulateDistance")
                             }
 
                             SpawnCategory.entries.forEach categoryLoop@{ category ->
@@ -90,14 +99,12 @@ class DynamicSchedulingImpl : DynamicScheduling, KoinComponent {
                                 val currentSpawnLimit = world.getSpawnLimit(category)
                                 if (currentSpawnLimit != spawnLimit) {
                                     world.setSpawnLimit(category, spawnLimit)
-                                    pluginLogger.info("Update ${world.name}'s $category spawn limit: $currentSpawnLimit -> $spawnLimit")
                                 }
 
                                 val ticksPerSpawn = getTicksPerSpawnWhen(millsPerTick, world, category)
                                 val currentTicksPerSpawn = world.getTicksPerSpawns(category).toInt()
                                 if (currentTicksPerSpawn != ticksPerSpawn) {
                                     world.setTicksPerSpawns(category, ticksPerSpawn)
-                                    pluginLogger.info("Update ${world.name}'s $category ticks per spawn: $currentTicksPerSpawn -> $ticksPerSpawn")
                                 }
                             }
                         }
@@ -137,12 +144,7 @@ class DynamicSchedulingImpl : DynamicScheduling, KoinComponent {
     }
 
     override fun setViewDistanceLocally(player: Player, state: DynamicViewDistanceState) {
-        val before = getViewDistanceLocally(player)
         dynamicViewDistanceState[player] = state
-        val after = getViewDistanceLocally(player)
-        if (before != after) {
-            pluginLogger.info("Update ${player.name}'s dynamic view distance state: $before -> $after")
-        }
     }
 
     override fun toggleViewDistance(player: Player) {

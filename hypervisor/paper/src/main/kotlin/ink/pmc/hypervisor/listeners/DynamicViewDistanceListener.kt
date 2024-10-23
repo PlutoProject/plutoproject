@@ -5,6 +5,7 @@ import ink.pmc.hypervisor.DynamicScheduling
 import ink.pmc.hypervisor.DynamicViewDistanceState
 import ink.pmc.hypervisor.config.HypervisorConfig
 import ink.pmc.hypervisor.pluginLogger
+import ink.pmc.utils.network.formatted
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -48,15 +49,7 @@ object DynamicViewDistanceListener : Listener, KoinComponent {
 
     private val Player.formattedVhost: String?
         get() {
-            /*
-            return this.virtualHost?.let {
-                val host = it.hostString.takeIf { str -> str != "<unresolved>" } ?: it.address?.hostAddress
-                "$host:${it.port}"
-            }
-            */
-            return virtualHost?.let {
-                "${it.hostString}:${it.port}"
-            }
+            return virtualHost?.formatted
         }
 
     @EventHandler

@@ -13,7 +13,7 @@ import org.incendo.cloud.kotlin.coroutines.extension.suspendingHandler
 
 val debugCommand = commandManager.commandBuilder("vd_debug")
     .suspendingHandler {
-        val sender = it.sender.sender as? Player ?: return@suspendingHandler
+        val sender = it.sender as? Player ?: return@suspendingHandler
         sender.send {
             text("Current server view distance: ${paper.viewDistance}")
             newline()
@@ -30,7 +30,7 @@ val debugCommand = commandManager.commandBuilder("vd_debug")
 val enabledCommand = commandManager.commandBuilder("vd_debug")
     .literal("enable")
     .suspendingHandler {
-        val sender = it.sender.sender as? Player ?: return@suspendingHandler
+        val sender = it.sender as? Player ?: return@suspendingHandler
         runBlocking {
             DynamicScheduling.setViewDistance(sender, true)
             sender.send {
@@ -42,7 +42,7 @@ val enabledCommand = commandManager.commandBuilder("vd_debug")
 val disabledCommand = commandManager.commandBuilder("vd_debug")
     .literal("disable")
     .suspendingHandler {
-        val sender = it.sender.sender as? Player ?: return@suspendingHandler
+        val sender = it.sender as? Player ?: return@suspendingHandler
         runBlocking {
             DynamicScheduling.setViewDistance(sender, false)
             sender.send {

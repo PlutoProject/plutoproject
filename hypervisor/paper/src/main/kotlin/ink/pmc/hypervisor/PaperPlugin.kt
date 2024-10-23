@@ -16,16 +16,19 @@ import ink.pmc.utils.config.preconfiguredConfigLoaderBuilder
 import ink.pmc.utils.inject.startKoinIfNotPresent
 import ink.pmc.utils.jvm.findClass
 import ink.pmc.utils.storage.saveResourceIfNotExisted
-import io.papermc.paper.command.brigadier.CommandSourceStack
+import org.bukkit.command.CommandSender
 import org.bukkit.plugin.java.JavaPlugin
+import org.incendo.cloud.annotations.AnnotationParser
 import org.incendo.cloud.execution.ExecutionCoordinator
-import org.incendo.cloud.paper.PaperCommandManager
+import org.incendo.cloud.kotlin.coroutines.annotations.installCoroutineSupport
+import org.incendo.cloud.paper.LegacyPaperCommandManager
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.dsl.module
 import java.util.logging.Logger
 
-lateinit var commandManager: PaperCommandManager<CommandSourceStack>
+lateinit var commandManager: LegacyPaperCommandManager<CommandSender>
+lateinit var annotationParser: AnnotationParser<CommandSender>
 lateinit var plugin: JavaPlugin
 lateinit var pluginLogger: Logger
 var disabled = true
@@ -65,11 +68,20 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
 
         logger.info("Using statistic provider: ${StatisticProvider.type}")
 
-        commandManager = PaperCommandManager.builder()
-            .executionCoordinator(ExecutionCoordinator.asyncCoordinator())
-            .buildOnEnable(this)
-        commandManager.init(HypervisorCommand)
-        commandManager.init(StatusCommand)
+
+
+        commandManager = LegacyPaperCommandManager.createNative(
+            this,
+            ExecutionCoordinator.asyncCoordinator()
+        )
+        commandManager.registerBrigadier()
+
+        annotationParser = AnnotationParser(commandManager, CommandSender::class.java)
+        annotationParser.installCoroutineSupport()
+        annotationParser.parse(DynamicSchedulingCommand)
+
+        // commandManager.init(HypervisorCommand)
+        // commandManager.init(StatusCommand)
         commandManager.command(debugCommand)
         commandManager.command(enabledCommand)
         commandManager.command(disabledCommand)
