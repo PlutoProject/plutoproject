@@ -198,6 +198,7 @@ class DynamicSchedulingImpl : DynamicScheduling, KoinComponent {
     }
 
     private fun clearCurvesData() {
+        isCurveCalculated = false
         defaultSimulateDistanceCurve = null
         defaultSpawnLimitsCurve.clear()
         defaultTicksPerSpawnCurve.clear()
