@@ -304,3 +304,75 @@ val MAIN_MENU_ITEM_WIKI_LORE = listOf(
         text("获取百科链接") with mochaText without italic()
     }
 )
+
+val ITEM_DISABLED = component {
+    text("关") with mochaMaroon without italic()
+}
+
+val ITEM_ENABLED = component {
+    text("开") with mochaGreen without italic()
+}
+
+val MAIN_MENU_ITEM_VIEW_BOOST = component {
+    text("视距拓展") with mochaText without italic()
+}
+
+private val MAIN_MENU_ITEM_VIEW_BOOST_LORE_COMMON = listOf(
+    component {
+        text("可让服务器为你发送至多 ") with mochaSubtext0 without italic()
+        text("16 ") with mochaText without italic()
+        text("视距") with mochaSubtext0 without italic()
+    },
+    component {
+        text("使观景体验大幅提升") with mochaSubtext0 without italic()
+    }
+)
+
+val MAIN_MENU_ITEM_VIEW_BOOST_LORE_DISABLED = buildList {
+    addAll(MAIN_MENU_ITEM_VIEW_BOOST_LORE_COMMON)
+    add(Component.empty())
+    add(component {
+        text("左键 ") with mochaLavender without italic()
+        text("开启功能") with mochaText without italic()
+    })
+}
+
+val MAIN_MENU_ITEM_VIEW_BOOST_LORE_ENABLED = listOf(
+    component {
+        text("请将渲染距离调整至 ") with mochaSubtext0 without italic()
+        text("16 ") with mochaText without italic()
+        text("或更高") with mochaSubtext0 without italic()
+    },
+    component {
+        text("以使此功能生效") with mochaSubtext0 without italic()
+    },
+    Component.empty(),
+    component {
+        text("左键 ") with mochaLavender without italic()
+        text("关闭功能") with mochaText without italic()
+    }
+)
+
+val MAIN_MENU_ITEM_VIEW_BOOST_LORE_DISABLED_DUE_PING = buildList {
+    addAll(MAIN_MENU_ITEM_VIEW_BOOST_LORE_COMMON)
+    add(Component.empty())
+    add(component {
+        text("此功能仅在延迟小于 ") with mochaYellow without italic()
+        text("100ms ") with mochaText without italic()
+        text("时可用") with mochaYellow without italic()
+    })
+    add(component {
+        text("可尝试切换到一个质量更好的网络接入点") with mochaYellow without italic()
+    })
+}
+
+val MAIN_MENU_ITEM_VIEW_BOOST_LORE_DISABLED_DUE_VHOST = buildList {
+    addAll(MAIN_MENU_ITEM_VIEW_BOOST_LORE_COMMON)
+    add(Component.empty())
+    add(component {
+        text("你正在使用的连接线路不支持此功能") with mochaYellow without italic()
+    })
+    add(component {
+        text("此功能仅在使用主线路时可用") with mochaYellow without italic()
+    })
+}

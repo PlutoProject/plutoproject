@@ -7,6 +7,7 @@ subprojects {
         compileOnly(project(":daily:paper"))
         compileOnly(project(":daily:api"))
         compileOnly(project(":player-database:api"))
+        compileOnly(project(":hypervisor:api"))
         compileOnly(rootProject.libs.coreprotect)
     }
 }
