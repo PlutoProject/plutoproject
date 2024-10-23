@@ -115,12 +115,11 @@ private suspend fun VelocityCtx.handleAdd(name: String, fetcher: ProfileFetcher)
         }
         return
     }
-    val actualName = if (fetcher.id == "bedrock") ".${profileData.name}" else profileData.name
-    val model = createWhitelistModel(profileData.uuid, actualName, fetcher)
+    val model = createWhitelistModel(profileData.uuid, profileData.name, fetcher)
     repo.saveOrUpdate(model)
     sender.send {
         text("已为玩家 ") with mochaPink
-        text("$actualName ") with mochaText
+        text("${profileData.name} ") with mochaText
         text("添加白名单") with mochaPink
     }
 }
