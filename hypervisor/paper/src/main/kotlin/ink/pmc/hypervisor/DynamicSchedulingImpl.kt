@@ -19,7 +19,6 @@ import org.bukkit.entity.Player
 import org.bukkit.entity.SpawnCategory
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
-import kotlin.math.roundToInt
 
 class DynamicSchedulingImpl : DynamicScheduling, KoinComponent {
     private val config by lazy { get<HypervisorConfig>().dynamicScheduling }
@@ -243,16 +242,11 @@ class DynamicSchedulingImpl : DynamicScheduling, KoinComponent {
 
     override fun getSimulateDistanceWhen(millsPerSecond: Double, world: World?): Int {
         check(isCurveCalculated) { "Curve not calculated" }
-        if (world == null) {
-            val min = defaultSimulateDistanceCurve!!.getMinByY().second
-            val max = defaultSimulateDistanceCurve!!.getMaxByY().second
-            return defaultSimulateDistanceCurve!!.function.value(millsPerSecond).roundToInt().coerceIn(min, max)
-        } else {
-            val curve = simulateDistanceCurve[world] ?: defaultSimulateDistanceCurve!!
-            val min = curve.getMinByY().second
-            val max = curve.getMaxByY().second
-            return curve.function.value(millsPerSecond).roundToInt().coerceIn(min, max)
-        }
+        val curve = if (world == null) defaultSimulateDistanceCurve!! else simulateDistanceCurve[world]
+            ?: defaultSimulateDistanceCurve!!
+        val min = curve.getMinByY().second
+        val max = curve.getMaxByY().second
+        return curve.function.value(millsPerSecond).toInt().coerceIn(min, max)
     }
 
     override fun getSimulateDistanceCurve(world: World?): PolynomialFunction {
@@ -263,19 +257,12 @@ class DynamicSchedulingImpl : DynamicScheduling, KoinComponent {
     override fun getSpawnLimitWhen(millsPerSecond: Double, world: World?, category: SpawnCategory): Int {
         check(isCurveCalculated) { "Curve not calculated" }
         val default = defaultSpawnLimitsCurve.firstOrNull { it.category == category }
-        if (world == null) {
-            val curve = default ?: return Bukkit.getSpawnLimit(category)
-            val min = curve.curve.getMinByY().second
-            val max = curve.curve.getMaxByY().second
-            return curve.curve.function.value(millsPerSecond).roundToInt().coerceIn(min, max)
-        } else {
-            val curve =
-                spawnLimitsCurve[world].firstOrNull { it.category == category }
-                    ?: default ?: return world.getSpawnLimit(category)
-            val min = curve.curve.getMinByY().second
-            val max = curve.curve.getMaxByY().second
-            return curve.curve.function.value(millsPerSecond).roundToInt().coerceIn(min, max)
-        }
+        val curve = if (world == null) default
+            ?: return Bukkit.getSpawnLimit(category) else spawnLimitsCurve[world].firstOrNull { it.category == category }
+            ?: default ?: return world.getSpawnLimit(category)
+        val min = curve.curve.getMinByY().second
+        val max = curve.curve.getMaxByY().second
+        return curve.curve.function.value(millsPerSecond).toInt().coerceIn(min, max)
     }
 
     override fun getSpawnLimitsCurve(world: World?, category: SpawnCategory): PolynomialFunction? {
@@ -291,20 +278,14 @@ class DynamicSchedulingImpl : DynamicScheduling, KoinComponent {
     override fun getTicksPerSpawnWhen(millsPerSecond: Double, world: World?, category: SpawnCategory): Int {
         check(isCurveCalculated) { "Curve not calculated" }
         val default = defaultTicksPerSpawnCurve.firstOrNull { it.category == category }
-        if (world == null) {
-            val curve = default ?: return Bukkit.getTicksPerSpawns(category)
-            val min = curve.curve.getMinByY().second
-            val max = curve.curve.getMaxByY().second
-            return curve.curve.function.value(millsPerSecond).roundToInt().coerceIn(min, max)
-        } else {
-            val curve =
-                ticksPerSpawnCurve[world].firstOrNull { it.category == category }
-                    ?: default ?: return world.getTicksPerSpawns(category).toInt()
-            val min = curve.curve.getMinByY().second
-            val max = curve.curve.getMaxByY().second
-            return curve.curve.function.value(millsPerSecond).roundToInt().coerceIn(min, max)
-        }
+        val curve = if (world == null) default
+            ?: return Bukkit.getTicksPerSpawns(category) else ticksPerSpawnCurve[world].firstOrNull { it.category == category }
+            ?: default ?: return world.getTicksPerSpawns(category).toInt()
+        val min = curve.curve.getMinByY().second
+        val max = curve.curve.getMaxByY().second
+        return curve.curve.function.value(millsPerSecond).toInt().coerceIn(min, max)
     }
+
 
     override fun getTicksPerSpawnCurve(world: World?, category: SpawnCategory): PolynomialFunction? {
         check(isCurveCalculated) { "Curve not calculated" }
