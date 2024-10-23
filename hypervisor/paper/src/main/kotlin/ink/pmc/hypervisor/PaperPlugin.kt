@@ -5,13 +5,12 @@ import com.github.shynixn.mccoroutine.bukkit.registerSuspendingEvents
 import com.sksamuel.hoplite.PropertySource
 import ink.pmc.hypervisor.StatisticProviderType.NATIVE
 import ink.pmc.hypervisor.StatisticProviderType.SPARK
-import ink.pmc.hypervisor.commands.*
+import ink.pmc.hypervisor.commands.DynamicSchedulingCommand
 import ink.pmc.hypervisor.config.HypervisorConfig
 import ink.pmc.hypervisor.listeners.DynamicViewDistanceListener
 import ink.pmc.hypervisor.providers.NativeStatisticProvider
 import ink.pmc.hypervisor.providers.SparkStatisticProvider
 import ink.pmc.options.api.OptionsManager
-import ink.pmc.utils.command.init
 import ink.pmc.utils.config.preconfiguredConfigLoaderBuilder
 import ink.pmc.utils.inject.startKoinIfNotPresent
 import ink.pmc.utils.jvm.findClass
@@ -54,7 +53,6 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
                 }
             }
         }
-        single<Hypervisor> { HypervisorImpl() }
         single<DynamicScheduling> { DynamicSchedulingImpl() }
     }
 
@@ -68,8 +66,6 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
 
         logger.info("Using statistic provider: ${StatisticProvider.type}")
 
-
-
         commandManager = LegacyPaperCommandManager.createNative(
             this,
             ExecutionCoordinator.asyncCoordinator()
@@ -79,12 +75,6 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
         annotationParser = AnnotationParser(commandManager, CommandSender::class.java)
         annotationParser.installCoroutineSupport()
         annotationParser.parse(DynamicSchedulingCommand)
-
-        // commandManager.init(HypervisorCommand)
-        // commandManager.init(StatusCommand)
-        commandManager.command(debugCommand)
-        commandManager.command(enabledCommand)
-        commandManager.command(disabledCommand)
 
         OptionsManager.registerOptionDescriptor(DYNAMIC_VIEW_DISTANCE)
 
