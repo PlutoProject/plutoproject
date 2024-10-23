@@ -2,12 +2,11 @@ package ink.pmc.hypervisor.providers
 
 import ink.pmc.hypervisor.MeasuringTime
 import ink.pmc.hypervisor.MeasuringTime.*
-import ink.pmc.hypervisor.StatisticProvider
 import ink.pmc.hypervisor.StatisticProviderType
 import me.lucko.spark.api.Spark
 import me.lucko.spark.api.statistic.StatisticWindow
 
-class SparkStatisticProvider(private val spark: Spark) : StatisticProvider {
+class SparkStatisticProvider(private val spark: Spark) : AbstractStatisticProvider() {
     override val type: StatisticProviderType = StatisticProviderType.SPARK
 
     override fun getTicksPerSecond(time: MeasuringTime): Double? {

@@ -6,8 +6,10 @@ import com.sksamuel.hoplite.PropertySource
 import ink.pmc.hypervisor.StatisticProviderType.NATIVE
 import ink.pmc.hypervisor.StatisticProviderType.SPARK
 import ink.pmc.hypervisor.commands.DynamicSchedulingCommand
+import ink.pmc.hypervisor.commands.StatusCommand
 import ink.pmc.hypervisor.config.HypervisorConfig
 import ink.pmc.hypervisor.listeners.DynamicViewDistanceListener
+import ink.pmc.hypervisor.listeners.StatusCommandListener
 import ink.pmc.hypervisor.providers.NativeStatisticProvider
 import ink.pmc.hypervisor.providers.SparkStatisticProvider
 import ink.pmc.options.api.OptionsManager
@@ -84,6 +86,10 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
         }
         if (config.overloadWarning.enabled) {
             OverloadWarning.start()
+        }
+        if (config.statusCommand.enabled) {
+            annotationParser.parse(StatusCommand)
+            server.pluginManager.registerSuspendingEvents(StatusCommandListener, this)
         }
 
         disabled = false

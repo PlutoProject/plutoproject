@@ -7,6 +7,8 @@ interface StatisticProvider {
 
     val type: StatisticProviderType
 
+    fun getLoadLevel(): LoadLevel?
+
     fun getTicksPerSecond(time: MeasuringTime): Double?
 
     fun getMillsPerTick(time: MeasuringTime): Double?

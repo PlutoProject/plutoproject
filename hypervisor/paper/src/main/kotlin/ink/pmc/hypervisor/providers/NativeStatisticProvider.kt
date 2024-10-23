@@ -2,13 +2,12 @@ package ink.pmc.hypervisor.providers
 
 import ink.pmc.hypervisor.MeasuringTime
 import ink.pmc.hypervisor.MeasuringTime.*
-import ink.pmc.hypervisor.StatisticProvider
 import ink.pmc.hypervisor.StatisticProviderType
 import ink.pmc.utils.platform.internal
 import ink.pmc.utils.platform.paper
 import org.bukkit.Bukkit
 
-class NativeStatisticProvider : StatisticProvider {
+class NativeStatisticProvider : AbstractStatisticProvider() {
     override val type: StatisticProviderType = StatisticProviderType.NATIVE
 
     override fun getTicksPerSecond(time: MeasuringTime): Double? {
