@@ -14,6 +14,7 @@ import ink.pmc.utils.roundToTwoDecimals
 import ink.pmc.utils.visual.*
 import net.kyori.adventure.text.Component
 import org.bukkit.command.CommandSender
+import org.bukkit.entity.Entity
 import org.incendo.cloud.annotations.Command
 import org.incendo.cloud.annotations.Permission
 
@@ -22,34 +23,42 @@ object StatusCommand {
     @Command("status|tps|mspt")
     @Permission("hypervisor.status")
     suspend fun status(sender: CommandSender) {
-        sync {
-            sender.send {
-                text("» ") with mochaSubtext0
-                text("\uD83D\uDD0D 服务器状态") with mochaFlamingo
-                newline()
-                text("- ") with mochaSubtext0
-                text("TPS：") with mochaText
-                raw(getTicksPerSecond())
-                newline()
-                text("- ") with mochaSubtext0
-                text("MSPT：") with mochaText
-                raw(getMillsPerTick())
-                newline()
-                text("- ") with mochaSubtext0
-                text("实体数：") with mochaText
-                text(paper.worlds.sumOf { it.entityCount }) with mochaLavender
-                newline()
-                text("- ") with mochaSubtext0
-                text("在线人数：") with mochaText
-                text(paper.onlinePlayers.size) with mochaLavender
-                newline()
-                newline()
-                text("» ") with mochaSubtext0
-                text("ℹ 说明") with mochaBlue
-                newline()
-                text("- ") with mochaSubtext0
-                raw(getPromptMessage())
+        val entities = sync<List<Entity>> {
+            paper.worlds.fold(mutableListOf()) { entities, world ->
+                entities.apply { addAll(world.entities) }
             }
+        }
+        val entityCount = entities.size
+        val tickingEntityCount = entities.filter { it.isTicking }.size
+        sender.send {
+            text("» ") with mochaSubtext0
+            text("\uD83D\uDD0D 服务器状态") with mochaFlamingo
+            newline()
+            text("- ") with mochaSubtext0
+            text("TPS：") with mochaText
+            raw(getTicksPerSecond())
+            newline()
+            text("- ") with mochaSubtext0
+            text("MSPT：") with mochaText
+            raw(getMillsPerTick())
+            newline()
+            text("- ") with mochaSubtext0
+            text("实体数：") with mochaText
+            text("$entityCount ") with mochaLavender
+            text("(") with mochaText
+            text("$tickingEntityCount ") with mochaLavender
+            text("个正在计算)") with mochaText
+            newline()
+            text("- ") with mochaSubtext0
+            text("在线人数：") with mochaText
+            text(paper.onlinePlayers.size) with mochaLavender
+            newline()
+            newline()
+            text("» ") with mochaSubtext0
+            text("ℹ 说明") with mochaBlue
+            newline()
+            text("- ") with mochaSubtext0
+            raw(getPromptMessage())
         }
     }
 
