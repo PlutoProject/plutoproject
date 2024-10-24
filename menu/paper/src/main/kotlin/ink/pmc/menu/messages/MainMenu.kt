@@ -50,7 +50,7 @@ val LOADING_LORE = listOf(
 )
 
 private val MAIN_MENU_ITEM_HOME_DESC = component {
-    text("在长夜中为你指明归家路的一盏灯。") with mochaSubtext0 without italic()
+    text("为你指明归家路的一盏灯") with mochaSubtext0 without italic()
 }
 
 private val MAIN_MENU_ITEM_HOME_OPEN_LIST = component {
@@ -72,7 +72,7 @@ val MAIN_MENU_ITEM_HOME_LORE_NO_PREFER = listOf(
     MAIN_MENU_ITEM_HOME_DESC,
     Component.empty(),
     component {
-        text("你还没有首选的家，") with mochaSubtext0 without italic()
+        text("你还没有首选的家") with mochaSubtext0 without italic()
     },
     component {
         text("请在编辑家页面中点击「设为首选」") with mochaSubtext0 without italic()
@@ -105,7 +105,7 @@ private val SPAWN_OPERATION_2 = component {
 }
 
 private val SPAWN_DESC = component {
-    text("行向云海之志。") with mochaSubtext0 without italic()
+    text("行向云海之志") with mochaSubtext0 without italic()
 }
 
 val MAIN_MENU_ITEM_SPAWN_LORE = listOf(
@@ -127,10 +127,10 @@ val MAIN_MENU_ITEM_SPAWN_LORE_UNPICKED = listOf(
 val MAIN_MENU_ITEM_SPAWN_LORE_NO_PREFERRED = listOf(
     Component.empty(),
     component {
-        text("你还没有首选的主城，") with mochaSubtext0 without italic()
+        text("你还没有首选的主城") with mochaSubtext0 without italic()
     },
     component {
-        text("右键点击来设置。") with mochaSubtext0 without italic()
+        text("右键点击来设置") with mochaSubtext0 without italic()
     }
 )
 
@@ -140,7 +140,7 @@ val MAIN_MENU_ITEM_TP = component {
 
 val MAIN_MENU_ITEM_TP_LORE = listOf(
     component {
-        text("拜访世界中的其他玩家。") with mochaSubtext0 without italic()
+        text("拜访世界中的其他玩家") with mochaSubtext0 without italic()
     },
     Component.empty(),
     component {
@@ -152,7 +152,7 @@ val MAIN_MENU_ITEM_TP_LORE = listOf(
 val MAIN_MENU_ITEM_TP_EXISTED_LORE = listOf(
     Component.empty(),
     component {
-        text("你还有未完成的传送请求，") with mochaSubtext0 without italic()
+        text("你还有未完成的传送请求") with mochaSubtext0 without italic()
     },
     component {
         text("可使用 ") with mochaSubtext0 without italic()
@@ -169,10 +169,10 @@ val MAIN_MENU_RTP_COST = "${Essentials.randomTeleportManager.defaultOptions.cost
 
 val MAIN_MENU_ITEM_HOME_RTP_LORE = listOf(
     component {
-        text("具有魔力的紫水晶，") with mochaSubtext0 without italic()
+        text("具有魔力的紫水晶") with mochaSubtext0 without italic()
     },
     component {
-        text("可以带你去世界上的另一个角落。") with mochaSubtext0 without italic()
+        text("可以带你去世界上的另一个角落") with mochaSubtext0 without italic()
     },
     Component.empty(),
     component {
@@ -185,7 +185,7 @@ val MAIN_MENU_ITEM_HOME_RTP_LORE = listOf(
 val MAIN_MENU_ITEM_HOME_RTP_COIN_NOT_ENOUGH_LORE = listOf(
     Component.empty(),
     component {
-        text("货币不足，") with mochaSubtext0 without italic()
+        text("货币不足") with mochaSubtext0 without italic()
     },
     component {
         text("进行随机传送需要 ") with mochaSubtext0 without italic()
@@ -195,27 +195,27 @@ val MAIN_MENU_ITEM_HOME_RTP_COIN_NOT_ENOUGH_LORE = listOf(
 
 val MAIN_MENU_ITEM_HOME_RTP_NOT_ENABLED_LORE = listOf(
     Component.empty(),
-    component { text("该世界未启用随机传送。") with mochaSubtext0 without italic() },
+    component { text("该世界未启用随机传送") with mochaSubtext0 without italic() },
 )
 
 val MAIN_MENU_ITEM_HOME_LOOKUP_OFF = component {
-    text("查询模式 ") with mochaText without italic()
+    text("观察模式 ") with mochaText without italic()
     text("关") with mochaMaroon without italic()
 }
 
 val MAIN_MENU_ITEM_HOME_LOOKUP_ON = component {
-    text("查询模式 ") with mochaText without italic()
+    text("观察模式 ") with mochaText without italic()
     text("开") with mochaGreen without italic()
 }
 
 val MAIN_MENU_ITEM_HOME_LOOKUP_LORE = listOf(
     component {
-        text("将周围的变化一览无余。") with mochaSubtext0 without italic()
+        text("将周围的变化一览无余") with mochaSubtext0 without italic()
     },
     Component.empty(),
     component {
         text("左键 ") with mochaLavender without italic()
-        text("开启查询模式") with mochaText without italic()
+        text("开启观察模式") with mochaText without italic()
     },
     component {
         text("右键 ") with mochaLavender without italic()
@@ -225,15 +225,15 @@ val MAIN_MENU_ITEM_HOME_LOOKUP_LORE = listOf(
 
 val MAIN_MENU_ITEM_HOME_LOOKUP_ENABLED_LORE = listOf(
     component {
-        text("查询模式已开启，") with mochaSubtext0 without italic()
+        text("观察模式已开启") with mochaSubtext0 without italic()
     },
     component {
-        text("使用左键或右键点击来查询一个位置。") with mochaSubtext0 without italic()
+        text("使用左键或右键点击来观察变化") with mochaSubtext0 without italic()
     },
     Component.empty(),
     component {
         text("左键 ") with mochaLavender without italic()
-        text("关闭查询模式") with mochaText without italic()
+        text("关闭观察模式") with mochaText without italic()
     },
 )
 
@@ -247,7 +247,7 @@ private val DAILY_LORE_OPERATION = component {
 }
 
 private val DAILY_LORE_INTRODUCTION = component {
-    text("时光与点滴足迹。") with mochaSubtext0 without italic()
+    text("时光与点滴足迹") with mochaSubtext0 without italic()
 }
 
 val MAIN_MENU_ITEMS_DAILY_LORE = listOf(
@@ -293,10 +293,10 @@ val MAIN_MENU_ITEM_WIKI = component {
 
 val MAIN_MENU_ITEM_WIKI_LORE = listOf(
     component {
-        text("服务器的百科全书，") with mochaSubtext0 without italic()
+        text("服务器的百科全书") with mochaSubtext0 without italic()
     },
     component {
-        text("里面记载了有关星社的一切。") with mochaSubtext0 without italic()
+        text("里面记载了有关星社的一切") with mochaSubtext0 without italic()
     },
     Component.empty(),
     component {
