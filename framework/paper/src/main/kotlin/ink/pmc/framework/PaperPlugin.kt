@@ -64,13 +64,13 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
         }
         RpcClient.start()
         preload()
+    }
+
+    override suspend fun onEnableAsync() {
         paper.pluginManager.registerSuspendingEvents(GuiListener, frameworkPaper)
         paper.pluginManager.registerSuspendingEvents(BukkitOptionsListener, frameworkPaper)
         paper.pluginManager.registerSuspendingEvents(TextDisplayListener, frameworkPaper)
         startOptionsMonitor()
-    }
-
-    override suspend fun onEnableAsync() {
         initPaperHooks()
     }
 

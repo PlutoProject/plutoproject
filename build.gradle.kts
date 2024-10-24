@@ -163,7 +163,7 @@ fun Project.configureVelocityPlugin() {
     afterEvaluate {
         velocityPluginJson {
             main = "${parent?.group}.VelocityPlugin"
-            id = parent?.name
+            id = "plutoproject_${parent?.name}"
             name = "plutoproject_${parent?.name}"
             if (name.get().contains("framework")) {
                 return@velocityPluginJson

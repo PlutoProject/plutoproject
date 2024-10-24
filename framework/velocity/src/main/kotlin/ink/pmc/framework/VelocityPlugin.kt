@@ -2,6 +2,7 @@ package ink.pmc.framework
 
 import com.github.shynixn.mccoroutine.velocity.SuspendingPluginContainer
 import com.github.shynixn.mccoroutine.velocity.registerSuspend
+import com.google.inject.Inject
 import com.velocitypowered.api.command.CommandSource
 import com.velocitypowered.api.event.Subscribe
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent
@@ -13,8 +14,8 @@ import ink.pmc.framework.options.OptionsUpdateNotifier
 import ink.pmc.framework.options.ProxyOptionsUpdateNotifier
 import ink.pmc.framework.options.listeners.VelocityOptionsListener
 import ink.pmc.framework.playerdb.Notifier
-import ink.pmc.framework.playerdb.playerDbScope
 import ink.pmc.framework.playerdb.ProxyNotifier
+import ink.pmc.framework.playerdb.playerDbScope
 import ink.pmc.provider.Provider
 import ink.pmc.rpc.api.RpcServer
 import ink.pmc.utils.inject.startKoinIfNotPresent
@@ -34,7 +35,7 @@ import java.nio.file.Path
 import java.util.logging.Logger
 
 @Suppress("UNUSED", "UnusedReceiverParameter")
-class VelocityPlugin(private val spc: SuspendingPluginContainer) {
+class VelocityPlugin @Inject constructor(private val spc: SuspendingPluginContainer) {
     private val velocityModule = module {
         single<File>(FRAMEWORK_CONFIG) { saveDefaultConfig(VelocityPlugin::class.java, dataFolder) }
         single<OptionsUpdateNotifier> { ProxyOptionsUpdateNotifier() }
@@ -46,6 +47,7 @@ class VelocityPlugin(private val spc: SuspendingPluginContainer) {
         spc.initialize(this)
     }
 
+    @Inject
     fun framework(server: ProxyServer, logger: Logger, @DataDirectory dataDirectoryPath: Path) {
         proxy = server
         frameworkLogger = logger
