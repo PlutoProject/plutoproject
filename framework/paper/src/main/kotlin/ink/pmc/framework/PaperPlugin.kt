@@ -4,6 +4,7 @@ import com.github.shynixn.mccoroutine.bukkit.SuspendingJavaPlugin
 import com.github.shynixn.mccoroutine.bukkit.registerSuspendingEvents
 import ink.pmc.framework.interactive.GuiListener
 import ink.pmc.framework.interactive.GuiManagerImpl
+import ink.pmc.framework.interactive.inventory.InventoryListener
 import ink.pmc.framework.options.BackendOptionsUpdateNotifier
 import ink.pmc.framework.options.OptionsUpdateNotifier
 import ink.pmc.framework.options.listeners.BukkitOptionsListener
@@ -68,6 +69,7 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
 
     override suspend fun onEnableAsync() {
         paper.pluginManager.registerSuspendingEvents(GuiListener, frameworkPaper)
+        paper.pluginManager.registerSuspendingEvents(InventoryListener, frameworkPaper)
         paper.pluginManager.registerSuspendingEvents(BukkitOptionsListener, frameworkPaper)
         paper.pluginManager.registerSuspendingEvents(TextDisplayListener, frameworkPaper)
         startOptionsMonitor()
