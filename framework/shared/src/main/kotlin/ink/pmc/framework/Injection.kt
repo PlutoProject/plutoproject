@@ -19,8 +19,6 @@ import ink.pmc.rpc.api.RpcClient
 import ink.pmc.rpc.api.RpcServer
 import ink.pmc.utils.config.preconfiguredConfigLoaderBuilder
 import ink.pmc.visual.api.toast.ToastFactory
-import ink.pmc.visual.api.toast.ToastRenderer
-import org.bukkit.entity.Player
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import java.io.File
