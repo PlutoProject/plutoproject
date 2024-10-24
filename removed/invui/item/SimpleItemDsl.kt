@@ -1,6 +1,6 @@
-package ink.pmc.utils.dsl.invui.item
+package ink.pmc.framework.utils.dsl.invui.item
 
-import ink.pmc.utils.dsl.invui.gui.GuiDsl
+import ink.pmc.framework.utils.dsl.invui.gui.GuiDsl
 import xyz.xenondevs.invui.item.Item
 import xyz.xenondevs.invui.item.impl.SimpleItem
 

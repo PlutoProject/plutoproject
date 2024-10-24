@@ -5,7 +5,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import ink.pmc.framework.frameworkPaper
 import ink.pmc.interactive.api.LocalGuiScope
 import ink.pmc.interactive.api.LocalPlayer
-import ink.pmc.utils.concurrent.submitSync
+import ink.pmc.framework.utils.concurrent.submitSync
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import net.wesjd.anvilgui.AnvilGUI

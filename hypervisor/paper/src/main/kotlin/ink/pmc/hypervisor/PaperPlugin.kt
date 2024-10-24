@@ -13,10 +13,10 @@ import ink.pmc.hypervisor.listeners.StatusCommandListener
 import ink.pmc.hypervisor.providers.NativeStatisticProvider
 import ink.pmc.hypervisor.providers.SparkStatisticProvider
 import ink.pmc.options.api.OptionsManager
-import ink.pmc.utils.config.preconfiguredConfigLoaderBuilder
-import ink.pmc.utils.inject.startKoinIfNotPresent
-import ink.pmc.utils.jvm.findClass
-import ink.pmc.utils.storage.saveResourceIfNotExisted
+import ink.pmc.framework.utils.config.preconfiguredConfigLoaderBuilder
+import ink.pmc.framework.utils.inject.startKoinIfNotPresent
+import ink.pmc.framework.utils.jvm.findClass
+import ink.pmc.framework.utils.storage.saveResourceIfNotExisted
 import org.bukkit.command.CommandSender
 import org.bukkit.plugin.java.JavaPlugin
 import org.incendo.cloud.annotations.AnnotationParser

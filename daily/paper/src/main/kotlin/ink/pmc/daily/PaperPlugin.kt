@@ -8,10 +8,10 @@ import ink.pmc.daily.listeners.DailyListener
 import ink.pmc.daily.repositories.DailyHistoryRepository
 import ink.pmc.daily.repositories.DailyUserRepository
 import ink.pmc.provider.Provider
-import ink.pmc.utils.PaperCm
-import ink.pmc.utils.command.registerCommands
-import ink.pmc.utils.inject.startKoinIfNotPresent
-import ink.pmc.utils.storage.saveResourceIfNotExisted
+import ink.pmc.framework.utils.PaperCm
+import ink.pmc.framework.utils.command.registerCommands
+import ink.pmc.framework.utils.inject.startKoinIfNotPresent
+import ink.pmc.framework.utils.storage.saveResourceIfNotExisted
 import net.milkbowl.vault.economy.Economy
 import org.incendo.cloud.execution.ExecutionCoordinator
 import org.koin.core.component.KoinComponent

@@ -3,8 +3,8 @@ package ink.pmc.member
 import com.mongodb.client.model.Filters.eq
 import ink.pmc.member.api.AuthType
 import ink.pmc.member.bedrock.newLinkedPlayerInstance
-import ink.pmc.utils.bedrock.xuid
-import ink.pmc.utils.concurrent.submitAsync
+import ink.pmc.framework.utils.bedrock.xuid
+import ink.pmc.framework.utils.concurrent.submitAsync
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.future.asCompletableFuture
 import org.geysermc.floodgate.api.link.LinkRequestResult

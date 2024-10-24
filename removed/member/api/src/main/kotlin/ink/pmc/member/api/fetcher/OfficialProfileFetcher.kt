@@ -1,7 +1,7 @@
 package ink.pmc.member.api.fetcher
 
 import com.google.gson.JsonParser
-import ink.pmc.utils.player.shortUUIDToLong
+import ink.pmc.framework.utils.player.shortUUIDToLong
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.Request

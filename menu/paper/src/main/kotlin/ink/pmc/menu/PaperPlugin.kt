@@ -1,7 +1,7 @@
 package ink.pmc.menu
 
 import com.github.shynixn.mccoroutine.bukkit.SuspendingJavaPlugin
-import ink.pmc.utils.command.registerCommands
+import ink.pmc.framework.utils.command.registerCommands
 import io.papermc.paper.command.brigadier.CommandSourceStack
 import net.milkbowl.vault.economy.Economy
 import org.bukkit.plugin.java.JavaPlugin

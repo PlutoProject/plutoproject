@@ -6,7 +6,7 @@ import ink.pmc.essentials.api.afk.AfkManager
 import ink.pmc.essentials.config.EssentialsConfig
 import ink.pmc.essentials.disabled
 import ink.pmc.essentials.essentialsScope
-import ink.pmc.utils.chat.replace
+import ink.pmc.framework.utils.chat.replace
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.bukkit.Bukkit

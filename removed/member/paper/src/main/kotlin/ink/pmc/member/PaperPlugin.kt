@@ -4,7 +4,7 @@ import com.github.shynixn.mccoroutine.bukkit.registerSuspendingEvents
 import ink.pmc.member.api.IMemberService
 import ink.pmc.member.bedrock.GeyserSimpleFloodgateApiReplacement
 import ink.pmc.provider.ProviderService
-import ink.pmc.utils.isInDebugMode
+import ink.pmc.framework.utils.isInDebugMode
 import org.bukkit.plugin.java.JavaPlugin
 
 lateinit var plugin: JavaPlugin

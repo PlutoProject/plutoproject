@@ -1,7 +1,7 @@
 package ink.pmc.misc
 
-import ink.pmc.utils.chat.replace
-import ink.pmc.utils.platform.paper
+import ink.pmc.framework.utils.chat.replace
+import ink.pmc.framework.utils.platform.paper
 import io.papermc.paper.chat.ChatRenderer
 import io.papermc.paper.event.player.AsyncChatEvent
 import net.kyori.adventure.audience.Audience

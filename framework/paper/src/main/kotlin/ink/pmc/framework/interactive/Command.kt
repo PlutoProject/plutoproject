@@ -6,11 +6,11 @@ import ink.pmc.interactive.api.GuiManager
 import ink.pmc.framework.interactive.examples.ExampleScreen1
 import ink.pmc.framework.interactive.examples.ExampleScreen2
 import ink.pmc.framework.interactive.examples.ExampleScreen3
-import ink.pmc.utils.PaperCm
-import ink.pmc.utils.PaperCtx
-import ink.pmc.utils.chat.NON_PLAYER
-import ink.pmc.utils.dsl.cloud.invoke
-import ink.pmc.utils.dsl.cloud.sender
+import ink.pmc.framework.utils.PaperCm
+import ink.pmc.framework.utils.PaperCtx
+import ink.pmc.framework.utils.chat.NON_PLAYER
+import ink.pmc.framework.utils.dsl.cloud.invoke
+import ink.pmc.framework.utils.dsl.cloud.sender
 import org.bukkit.entity.Player
 
 private const val PERMISSION = "interactive.example"

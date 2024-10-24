@@ -1,7 +1,7 @@
 package ink.pmc.misc.impl.head
 
 import ink.pmc.misc.api.head.HeadManager
-import ink.pmc.utils.player.fetchPlayerUuidFromApi
+import ink.pmc.framework.utils.player.fetchPlayerUuidFromApi
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack

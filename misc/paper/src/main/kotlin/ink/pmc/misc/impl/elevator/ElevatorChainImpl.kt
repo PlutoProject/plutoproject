@@ -4,8 +4,8 @@ import ink.pmc.misc.ELEVATOR_WORK_SOUND
 import ink.pmc.misc.api.elevator.ElevatorChain
 import ink.pmc.misc.elevatorGoDownTitle
 import ink.pmc.misc.elevatorGoUpTitle
-import ink.pmc.utils.player.threadSafeTeleport
-import ink.pmc.utils.world.eraseAngle
+import ink.pmc.framework.utils.player.threadSafeTeleport
+import ink.pmc.framework.utils.world.eraseAngle
 import org.bukkit.Location
 import org.bukkit.entity.Player
 

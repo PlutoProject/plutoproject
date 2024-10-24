@@ -3,7 +3,7 @@ package ink.pmc.member.api.velocity
 import com.velocitypowered.api.proxy.Player
 import ink.pmc.member.api.Member
 import ink.pmc.member.api.MemberService
-import ink.pmc.utils.platform.proxy
+import ink.pmc.framework.utils.platform.proxy
 
 @Suppress("UNUSED")
 val Member.player: Player?

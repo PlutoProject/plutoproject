@@ -8,9 +8,9 @@ import ink.pmc.essentials.*
 import ink.pmc.essentials.api.home.HomeManager
 import ink.pmc.interactive.api.LocalPlayer
 import ink.pmc.interactive.api.inventory.components.canvases.Anvil
-import ink.pmc.utils.chat.isValidIdentifier
-import ink.pmc.utils.concurrent.submitAsync
-import ink.pmc.utils.dsl.itemStack
+import ink.pmc.framework.utils.chat.isValidIdentifier
+import ink.pmc.framework.utils.concurrent.submitAsync
+import ink.pmc.framework.utils.dsl.itemStack
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import net.wesjd.anvilgui.AnvilGUI.Slot.*

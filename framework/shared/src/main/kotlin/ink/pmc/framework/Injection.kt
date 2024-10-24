@@ -17,7 +17,7 @@ import ink.pmc.playerdb.api.PlayerDb
 import ink.pmc.provider.Provider
 import ink.pmc.rpc.api.RpcClient
 import ink.pmc.rpc.api.RpcServer
-import ink.pmc.utils.config.preconfiguredConfigLoaderBuilder
+import ink.pmc.framework.utils.config.preconfiguredConfigLoaderBuilder
 import ink.pmc.visual.api.toast.ToastFactory
 import org.koin.core.qualifier.named
 import org.koin.dsl.module

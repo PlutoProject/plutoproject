@@ -1,10 +1,10 @@
 package ink.pmc.essentials.config
 
 import com.electronwill.nightconfig.core.Config
-import ink.pmc.utils.config.toMapViaEntry
-import ink.pmc.utils.data.mapKv
-import ink.pmc.utils.item.KeyedMaterial
-import ink.pmc.utils.item.bukkit
+import ink.pmc.framework.utils.config.toMapViaEntry
+import ink.pmc.framework.utils.data.mapKv
+import ink.pmc.framework.utils.item.KeyedMaterial
+import ink.pmc.framework.utils.item.bukkit
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.World

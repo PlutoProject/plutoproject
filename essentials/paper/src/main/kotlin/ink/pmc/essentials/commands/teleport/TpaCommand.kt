@@ -5,12 +5,12 @@ import ink.pmc.essentials.api.Essentials
 import ink.pmc.essentials.api.teleport.TeleportDirection
 import ink.pmc.essentials.api.teleport.TeleportDirection.COME
 import ink.pmc.essentials.api.teleport.TeleportDirection.GO
-import ink.pmc.utils.command.annotation.Command
-import ink.pmc.utils.chat.DURATION
-import ink.pmc.utils.chat.replace
-import ink.pmc.utils.command.checkPlayer
-import ink.pmc.utils.dsl.cloud.invoke
-import ink.pmc.utils.dsl.cloud.sender
+import ink.pmc.framework.utils.command.annotation.Command
+import ink.pmc.framework.utils.chat.DURATION
+import ink.pmc.framework.utils.chat.replace
+import ink.pmc.framework.utils.command.checkPlayer
+import ink.pmc.framework.utils.dsl.cloud.invoke
+import ink.pmc.framework.utils.dsl.cloud.sender
 import org.bukkit.entity.Player
 import org.incendo.cloud.bukkit.parser.PlayerParser
 

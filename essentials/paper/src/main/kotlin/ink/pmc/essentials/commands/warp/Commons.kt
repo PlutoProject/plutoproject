@@ -1,7 +1,7 @@
 package ink.pmc.essentials.commands.warp
 
 import ink.pmc.essentials.api.Essentials
-import ink.pmc.utils.concurrent.submitAsync
+import ink.pmc.framework.utils.concurrent.submitAsync
 import io.papermc.paper.command.brigadier.CommandSourceStack
 import kotlinx.coroutines.future.asCompletableFuture
 import org.bukkit.entity.Player

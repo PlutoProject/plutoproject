@@ -1,11 +1,11 @@
 package ink.pmc.framework.visual.toast.renderers
 
-import ink.pmc.utils.chat.internal
-import ink.pmc.utils.data.namespacedKey
-import ink.pmc.utils.item.bukkit
-import ink.pmc.utils.player.sendPacket
-import ink.pmc.utils.structure.emptyOptional
-import ink.pmc.utils.structure.optional
+import ink.pmc.framework.utils.chat.internal
+import ink.pmc.framework.utils.data.namespacedKey
+import ink.pmc.framework.utils.item.bukkit
+import ink.pmc.framework.utils.player.sendPacket
+import ink.pmc.framework.utils.structure.emptyOptional
+import ink.pmc.framework.utils.structure.optional
 import ink.pmc.visual.api.toast.Toast
 import ink.pmc.visual.api.toast.ToastRenderer
 import ink.pmc.visual.api.toast.ToastType

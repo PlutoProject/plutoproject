@@ -5,8 +5,8 @@ import ink.pmc.advkt.component.component
 import ink.pmc.advkt.component.italic
 import ink.pmc.advkt.component.text
 import ink.pmc.interactive.api.inventory.components.Item
-import ink.pmc.utils.visual.mochaSubtext0
-import ink.pmc.utils.visual.mochaText
+import ink.pmc.framework.utils.visual.mochaSubtext0
+import ink.pmc.framework.utils.visual.mochaText
 import net.kyori.adventure.text.Component
 import org.bukkit.Material
 

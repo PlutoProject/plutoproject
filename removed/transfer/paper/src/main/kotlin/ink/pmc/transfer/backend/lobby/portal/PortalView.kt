@@ -1,8 +1,8 @@
 package ink.pmc.transfer.backend.lobby.portal
 
 import ink.pmc.advkt.sound.*
-import ink.pmc.utils.world.maxLocation
-import ink.pmc.utils.world.minLocation
+import ink.pmc.framework.utils.world.maxLocation
+import ink.pmc.framework.utils.world.minLocation
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.sound.Sound
 import org.bukkit.Location

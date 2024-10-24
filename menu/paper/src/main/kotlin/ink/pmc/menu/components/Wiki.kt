@@ -8,7 +8,7 @@ import ink.pmc.interactive.api.inventory.modifiers.click.clickable
 import ink.pmc.menu.messages.MAIN_MENU_ITEM_WIKI
 import ink.pmc.menu.messages.MAIN_MENU_ITEM_WIKI_LORE
 import ink.pmc.menu.messages.MAIN_MENU_WIKI
-import ink.pmc.utils.chat.MESSAGE_SOUND
+import ink.pmc.framework.utils.chat.MESSAGE_SOUND
 import org.bukkit.Material
 import org.bukkit.event.inventory.ClickType
 

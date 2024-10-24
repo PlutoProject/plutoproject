@@ -1,6 +1,6 @@
 package ink.pmc.misc.api.sit
 
-import ink.pmc.utils.inject.inlinedGet
+import ink.pmc.framework.utils.inject.inlinedGet
 import org.bukkit.Location
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player

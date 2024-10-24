@@ -11,7 +11,7 @@ import ink.pmc.interactive.api.inventory.components.canvases.Chest
 import ink.pmc.interactive.api.inventory.modifiers.Modifier
 import ink.pmc.interactive.api.inventory.modifiers.click.clickable
 import ink.pmc.interactive.api.inventory.modifiers.fillMaxSize
-import ink.pmc.utils.visual.mochaText
+import ink.pmc.framework.utils.visual.mochaText
 import net.kyori.adventure.text.Component
 import org.bukkit.Material
 

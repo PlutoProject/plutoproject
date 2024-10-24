@@ -1,6 +1,6 @@
 package ink.pmc.framework
 
-import ink.pmc.utils.jvm.findClass
+import ink.pmc.framework.utils.jvm.findClass
 import java.util.logging.Logger
 
 lateinit var frameworkLogger: Logger

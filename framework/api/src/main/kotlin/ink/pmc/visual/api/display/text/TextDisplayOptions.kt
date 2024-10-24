@@ -1,6 +1,6 @@
 package ink.pmc.visual.api.display.text
 
-import ink.pmc.utils.chat.rgbaColor
+import ink.pmc.framework.utils.chat.rgbaColor
 import ink.pmc.visual.api.display.DisplayOptions
 import org.bukkit.entity.Display.Billboard
 import org.bukkit.entity.TextDisplay.TextAlignment

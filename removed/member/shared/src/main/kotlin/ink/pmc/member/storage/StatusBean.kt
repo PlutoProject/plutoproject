@@ -1,7 +1,7 @@
 package ink.pmc.member.storage
 
 import ink.pmc.member.UID_START
-import ink.pmc.utils.concurrent.withLock
+import ink.pmc.framework.utils.concurrent.withLock
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

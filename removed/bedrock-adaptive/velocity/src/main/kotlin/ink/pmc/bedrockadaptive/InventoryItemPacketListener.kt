@@ -7,8 +7,8 @@ import dev.simplix.protocolize.api.listener.AbstractPacketListener
 import dev.simplix.protocolize.api.listener.PacketReceiveEvent
 import dev.simplix.protocolize.api.listener.PacketSendEvent
 import dev.simplix.protocolize.data.packets.WindowItems
-import ink.pmc.utils.bedrock.isFloodgatePlayer
-import ink.pmc.utils.bedrock.useBedrockColors
+import ink.pmc.framework.utils.bedrock.isFloodgatePlayer
+import ink.pmc.framework.utils.bedrock.useBedrockColors
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 
 @Suppress("UNUSED")

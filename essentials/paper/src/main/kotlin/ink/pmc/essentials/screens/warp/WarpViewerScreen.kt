@@ -23,8 +23,8 @@ import ink.pmc.interactive.api.inventory.layout.Column
 import ink.pmc.interactive.api.inventory.layout.Row
 import ink.pmc.interactive.api.inventory.modifiers.*
 import ink.pmc.interactive.api.inventory.modifiers.click.clickable
-import ink.pmc.utils.chat.UI_BACK
-import ink.pmc.utils.chat.replace
+import ink.pmc.framework.utils.chat.UI_BACK
+import ink.pmc.framework.utils.chat.replace
 import org.bukkit.Material
 import org.bukkit.event.inventory.ClickType
 import org.koin.compose.koinInject

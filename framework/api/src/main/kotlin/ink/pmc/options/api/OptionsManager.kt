@@ -1,6 +1,6 @@
 package ink.pmc.options.api
 
-import ink.pmc.utils.inject.inlinedGet
+import ink.pmc.framework.utils.inject.inlinedGet
 import java.util.*
 
 interface OptionsManager {

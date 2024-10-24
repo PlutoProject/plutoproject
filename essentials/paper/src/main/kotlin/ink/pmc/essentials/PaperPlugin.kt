@@ -12,11 +12,11 @@ import ink.pmc.essentials.hooks.EconomyHook
 import ink.pmc.essentials.hooks.HuskHomesHook
 import ink.pmc.essentials.listeners.*
 import ink.pmc.essentials.recipes.MENU_ITEM_RECIPE
-import ink.pmc.utils.command.CommandRegistrationResult
-import ink.pmc.utils.command.command
-import ink.pmc.utils.command.registerCommands
-import ink.pmc.utils.inject.startKoinIfNotPresent
-import ink.pmc.utils.storage.saveResourceIfNotExisted
+import ink.pmc.framework.utils.command.CommandRegistrationResult
+import ink.pmc.framework.utils.command.command
+import ink.pmc.framework.utils.command.registerCommands
+import ink.pmc.framework.utils.inject.startKoinIfNotPresent
+import ink.pmc.framework.utils.storage.saveResourceIfNotExisted
 import io.papermc.paper.command.brigadier.CommandSourceStack
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

@@ -24,10 +24,10 @@ import ink.pmc.interactive.api.inventory.layout.Column
 import ink.pmc.interactive.api.inventory.layout.Row
 import ink.pmc.interactive.api.inventory.modifiers.*
 import ink.pmc.interactive.api.inventory.modifiers.click.clickable
-import ink.pmc.utils.chat.isValidIdentifier
-import ink.pmc.utils.chat.replace
-import ink.pmc.utils.concurrent.submitAsync
-import ink.pmc.utils.dsl.itemStack
+import ink.pmc.framework.utils.chat.isValidIdentifier
+import ink.pmc.framework.utils.chat.replace
+import ink.pmc.framework.utils.concurrent.submitAsync
+import ink.pmc.framework.utils.dsl.itemStack
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import net.wesjd.anvilgui.AnvilGUI.Slot.INPUT_LEFT

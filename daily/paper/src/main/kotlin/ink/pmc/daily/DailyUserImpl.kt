@@ -8,11 +8,11 @@ import ink.pmc.daily.models.DailyUserModel
 import ink.pmc.daily.models.toModel
 import ink.pmc.daily.repositories.DailyHistoryRepository
 import ink.pmc.daily.repositories.DailyUserRepository
-import ink.pmc.utils.chat.replace
-import ink.pmc.utils.currentUnixTimestamp
-import ink.pmc.utils.player.uuid
-import ink.pmc.utils.time.currentZoneId
-import ink.pmc.utils.time.instant
+import ink.pmc.framework.utils.chat.replace
+import ink.pmc.framework.utils.currentUnixTimestamp
+import ink.pmc.framework.utils.player.uuid
+import ink.pmc.framework.utils.time.currentZoneId
+import ink.pmc.framework.utils.time.instant
 import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
 import org.koin.core.component.KoinComponent

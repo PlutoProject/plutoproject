@@ -5,10 +5,10 @@ import ink.pmc.misc.api.sit.SitManager
 import ink.pmc.misc.api.sit.isSitting
 import ink.pmc.misc.api.sit.sitter
 import ink.pmc.misc.api.sit.stand
-import ink.pmc.utils.entity.entity
-import ink.pmc.utils.player.bukkitPlayer
-import ink.pmc.utils.player.threadSafeTeleport
-import ink.pmc.utils.world.eraseAngle
+import ink.pmc.framework.utils.entity.entity
+import ink.pmc.framework.utils.player.bukkitPlayer
+import ink.pmc.framework.utils.player.threadSafeTeleport
+import ink.pmc.framework.utils.world.eraseAngle
 import net.kyori.adventure.text.Component
 import org.bukkit.Location
 import org.bukkit.block.data.type.Campfire

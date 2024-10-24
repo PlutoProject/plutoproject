@@ -1,6 +1,6 @@
 package ink.pmc.visual.api.toast
 
-import ink.pmc.utils.inject.inlinedGet
+import ink.pmc.framework.utils.inject.inlinedGet
 import org.bukkit.entity.Player
 import org.koin.core.qualifier.named
 

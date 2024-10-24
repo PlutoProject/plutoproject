@@ -4,7 +4,7 @@ import ink.pmc.framework.options.UnknownDescriptor
 import ink.pmc.options.api.EntryValueType
 import ink.pmc.options.api.EntryValueType.*
 import ink.pmc.options.api.OptionEntry
-import ink.pmc.utils.json.gson
+import ink.pmc.framework.utils.json.gson
 import kotlinx.serialization.*
 import kotlinx.serialization.json.Json
 

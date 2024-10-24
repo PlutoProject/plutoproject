@@ -1,9 +1,9 @@
 package ink.pmc.transfer.scripting
 
 import ink.pmc.transfer.PaperPlugin
-import ink.pmc.utils.scripting.PaperScriptCompilationConfiguration
-import ink.pmc.utils.scripting.evalCustomScript
-import ink.pmc.utils.scripting.importClasspath
+import ink.pmc.framework.utils.scripting.PaperScriptCompilationConfiguration
+import ink.pmc.framework.utils.scripting.evalCustomScript
+import ink.pmc.framework.utils.scripting.importClasspath
 import kotlin.script.experimental.annotations.KotlinScript
 import kotlin.script.experimental.api.SourceCode
 import kotlin.script.experimental.api.constructorArgs

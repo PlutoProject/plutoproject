@@ -19,10 +19,10 @@ import ink.pmc.framework.playerdb.ProxyDatabaseNotifier
 import ink.pmc.framework.playerdb.proto.PlayerDbRpc
 import ink.pmc.provider.Provider
 import ink.pmc.rpc.api.RpcServer
-import ink.pmc.utils.inject.startKoinIfNotPresent
-import ink.pmc.utils.platform.proxy
-import ink.pmc.utils.platform.proxyThread
-import ink.pmc.utils.platform.saveDefaultConfig
+import ink.pmc.framework.utils.inject.startKoinIfNotPresent
+import ink.pmc.framework.utils.platform.proxy
+import ink.pmc.framework.utils.platform.proxyThread
+import ink.pmc.framework.utils.platform.saveDefaultConfig
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.incendo.cloud.SenderMapper

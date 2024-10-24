@@ -7,9 +7,9 @@ import ink.pmc.essentials.config.EssentialsConfig
 import ink.pmc.essentials.dtos.WarpDto
 import ink.pmc.essentials.repositories.WarpRepository
 import ink.pmc.playerdb.api.PlayerDb
-import ink.pmc.utils.concurrent.submitAsync
-import ink.pmc.utils.player.uuidOrNull
-import ink.pmc.utils.storage.model
+import ink.pmc.framework.utils.concurrent.submitAsync
+import ink.pmc.framework.utils.player.uuidOrNull
+import ink.pmc.framework.utils.storage.model
 import org.bson.types.ObjectId
 import org.bukkit.Location
 import org.bukkit.OfflinePlayer

@@ -1,6 +1,6 @@
 package ink.pmc.visual.api.toast
 
-import ink.pmc.utils.item.KeyedMaterial
+import ink.pmc.framework.utils.item.KeyedMaterial
 import net.kyori.adventure.text.Component
 
 @Suppress("UNUSED")

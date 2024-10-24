@@ -1,6 +1,6 @@
 package ink.pmc.member.bedrock
 
-import ink.pmc.utils.bedrock.floodgateApi
+import ink.pmc.framework.utils.bedrock.floodgateApi
 import org.geysermc.floodgate.api.link.PlayerLink
 import org.geysermc.floodgate.util.LinkedPlayer
 import java.util.*

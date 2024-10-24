@@ -2,12 +2,12 @@ package ink.pmc.essentials.commands.teleport
 
 import ink.pmc.essentials.*
 import ink.pmc.essentials.api.Essentials
-import ink.pmc.utils.command.annotation.Command
-import ink.pmc.utils.chat.NON_PLAYER
-import ink.pmc.utils.chat.NO_PERMISSON
-import ink.pmc.utils.chat.replace
-import ink.pmc.utils.dsl.cloud.invoke
-import ink.pmc.utils.dsl.cloud.sender
+import ink.pmc.framework.utils.command.annotation.Command
+import ink.pmc.framework.utils.chat.NON_PLAYER
+import ink.pmc.framework.utils.chat.NO_PERMISSON
+import ink.pmc.framework.utils.chat.replace
+import ink.pmc.framework.utils.dsl.cloud.invoke
+import ink.pmc.framework.utils.dsl.cloud.sender
 import org.bukkit.entity.Player
 import org.incendo.cloud.bukkit.parser.PlayerParser
 import kotlin.jvm.optionals.getOrNull

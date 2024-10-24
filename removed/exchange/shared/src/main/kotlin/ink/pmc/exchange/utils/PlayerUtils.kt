@@ -1,14 +1,14 @@
 package ink.pmc.exchange.utils
 
 import ink.pmc.exchange.*
-import ink.pmc.utils.bedrock.isBedrock
-import ink.pmc.utils.bedrock.useFallbackColors
-import ink.pmc.utils.chat.replace
-import ink.pmc.utils.concurrent.submitSync
-import ink.pmc.utils.concurrent.sync
-import ink.pmc.utils.platform.paper
-import ink.pmc.utils.platform.paperUtilsPlugin
-import ink.pmc.utils.visual.mochaFlamingo
+import ink.pmc.framework.utils.bedrock.isBedrock
+import ink.pmc.framework.utils.bedrock.useFallbackColors
+import ink.pmc.framework.utils.chat.replace
+import ink.pmc.framework.utils.concurrent.submitSync
+import ink.pmc.framework.utils.concurrent.sync
+import ink.pmc.framework.utils.platform.paper
+import ink.pmc.framework.utils.platform.paperUtilsPlugin
+import ink.pmc.framework.utils.visual.mochaFlamingo
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.GameMode

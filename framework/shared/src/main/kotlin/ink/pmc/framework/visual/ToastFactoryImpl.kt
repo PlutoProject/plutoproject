@@ -1,6 +1,6 @@
 package ink.pmc.framework.visual
 
-import ink.pmc.utils.item.KeyedMaterial
+import ink.pmc.framework.utils.item.KeyedMaterial
 import ink.pmc.visual.api.toast.Toast
 import ink.pmc.visual.api.toast.ToastFactory
 import ink.pmc.visual.api.toast.ToastFrame

@@ -2,8 +2,8 @@ package ink.pmc.exchange.lobby.commands
 
 import ink.pmc.exchange.lobby.checkout
 import ink.pmc.exchange.paperCommandManager
-import ink.pmc.utils.chat.NON_PLAYER
-import ink.pmc.utils.command.PaperCommand
+import ink.pmc.framework.utils.chat.NON_PLAYER
+import ink.pmc.framework.utils.command.PaperCommand
 import org.bukkit.entity.Player
 import org.incendo.cloud.kotlin.coroutines.extension.suspendingHandler
 import org.incendo.cloud.kotlin.extension.commandBuilder

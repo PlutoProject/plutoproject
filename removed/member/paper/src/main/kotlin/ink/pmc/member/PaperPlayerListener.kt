@@ -1,7 +1,7 @@
 package ink.pmc.member
 
 import ink.pmc.member.bedrock.removeFloodgatePlayer
-import ink.pmc.utils.bedrock.uuidFromXuid
+import ink.pmc.framework.utils.bedrock.uuidFromXuid
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener

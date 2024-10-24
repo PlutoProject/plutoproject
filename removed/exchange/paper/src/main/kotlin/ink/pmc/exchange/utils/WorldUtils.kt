@@ -1,6 +1,6 @@
 package ink.pmc.exchange.utils
 
-import ink.pmc.utils.platform.paperUtilsPlugin
+import ink.pmc.framework.utils.platform.paperUtilsPlugin
 import org.bukkit.NamespacedKey
 import org.bukkit.block.Block
 import org.bukkit.block.Sign

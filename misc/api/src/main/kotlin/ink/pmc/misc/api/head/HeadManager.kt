@@ -1,6 +1,6 @@
 package ink.pmc.misc.api.head
 
-import ink.pmc.utils.inject.inlinedGet
+import ink.pmc.framework.utils.inject.inlinedGet
 import org.bukkit.inventory.ItemStack
 import java.util.*
 

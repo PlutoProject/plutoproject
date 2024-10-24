@@ -37,10 +37,10 @@ import ink.pmc.menu.screens.models.MainMenuModel.PreferredSpawnState
 import ink.pmc.menu.screens.models.MainMenuModel.Tab.ASSIST
 import ink.pmc.menu.screens.models.MainMenuModel.Tab.HOME
 import ink.pmc.playerdb.api.PlayerDb
-import ink.pmc.utils.chat.UI_SUCCEED_SOUND
-import ink.pmc.utils.chat.replace
-import ink.pmc.utils.visual.mochaSubtext0
-import ink.pmc.utils.visual.mochaText
+import ink.pmc.framework.utils.chat.UI_SUCCEED_SOUND
+import ink.pmc.framework.utils.chat.replace
+import ink.pmc.framework.utils.visual.mochaSubtext0
+import ink.pmc.framework.utils.visual.mochaText
 import net.kyori.adventure.text.Component
 import org.bukkit.Material
 import org.bukkit.event.inventory.ClickType

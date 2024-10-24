@@ -5,10 +5,10 @@ import ink.pmc.framework.options.proto.OptionsRpcGrpcKt
 import ink.pmc.framework.options.proto.optionsUpdateNotify
 import ink.pmc.options.api.OptionsManager
 import ink.pmc.rpc.api.RpcClient
-import ink.pmc.utils.concurrent.submitAsync
-import ink.pmc.utils.player.isBukkitOnline
-import ink.pmc.utils.player.uuid
-import ink.pmc.utils.proto.empty
+import ink.pmc.framework.utils.concurrent.submitAsync
+import ink.pmc.framework.utils.player.isBukkitOnline
+import ink.pmc.framework.utils.player.uuid
+import ink.pmc.framework.utils.proto.empty
 import io.grpc.StatusException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay

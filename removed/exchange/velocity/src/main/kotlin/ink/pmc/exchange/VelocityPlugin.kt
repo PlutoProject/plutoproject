@@ -13,9 +13,9 @@ import com.velocitypowered.api.proxy.ProxyServer
 import ink.pmc.exchange.api.IExchangeService
 import ink.pmc.exchange.commands.ProxyExchangeCommand
 import ink.pmc.exchange.commands.ProxyTicketsCommand
-import ink.pmc.utils.command.init
-import ink.pmc.utils.platform.proxy
-import ink.pmc.utils.platform.saveConfig
+import ink.pmc.framework.utils.command.init
+import ink.pmc.framework.utils.platform.proxy
+import ink.pmc.framework.utils.platform.saveConfig
 import org.incendo.cloud.SenderMapper
 import org.incendo.cloud.execution.ExecutionCoordinator
 import org.incendo.cloud.velocity.VelocityCommandManager

@@ -8,7 +8,7 @@ import ink.pmc.transfer.proto.ProtoDestinationOuterClass.ProtoDestination
 import ink.pmc.transfer.proto.ProtoDestinationStatusOuterClass.ProtoDestinationStatus
 import ink.pmc.transfer.proto.protoCategory
 import ink.pmc.transfer.proto.protoDestination
-import ink.pmc.utils.chat.json
+import ink.pmc.framework.utils.chat.json
 
 val Destination.proto: ProtoDestination
     get() {

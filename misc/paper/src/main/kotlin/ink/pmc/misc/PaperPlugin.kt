@@ -16,8 +16,8 @@ import ink.pmc.misc.listeners.ChatListener
 import ink.pmc.misc.listeners.CreeperAntiExplodeListener
 import ink.pmc.misc.listeners.ElevatorListener
 import ink.pmc.misc.listeners.SitListener
-import ink.pmc.utils.command.init
-import ink.pmc.utils.inject.startKoinIfNotPresent
+import ink.pmc.framework.utils.command.init
+import ink.pmc.framework.utils.inject.startKoinIfNotPresent
 import io.papermc.paper.command.brigadier.CommandSourceStack
 import org.bukkit.plugin.java.JavaPlugin
 import org.incendo.cloud.execution.ExecutionCoordinator

@@ -4,9 +4,9 @@ import ink.pmc.advkt.component.component
 import ink.pmc.advkt.component.newline
 import ink.pmc.advkt.component.raw
 import ink.pmc.advkt.component.text
-import ink.pmc.utils.bedrock.bedrock
-import ink.pmc.utils.chat.PLUTO_PROJECT
-import ink.pmc.utils.visual.*
+import ink.pmc.framework.utils.bedrock.bedrock
+import ink.pmc.framework.utils.chat.PLUTO_PROJECT
+import ink.pmc.framework.utils.visual.*
 
 val MEMBER_NOT_WHITELISTED = component {
     raw(PLUTO_PROJECT)

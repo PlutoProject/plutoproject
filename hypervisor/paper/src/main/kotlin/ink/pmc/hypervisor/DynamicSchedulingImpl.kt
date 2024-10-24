@@ -2,11 +2,11 @@ package ink.pmc.hypervisor
 
 import ink.pmc.hypervisor.config.HypervisorConfig
 import ink.pmc.options.api.OptionsManager
-import ink.pmc.utils.concurrent.submitAsync
-import ink.pmc.utils.currentUnixTimestamp
-import ink.pmc.utils.data.listMultimapOf
-import ink.pmc.utils.data.set
-import ink.pmc.utils.platform.paper
+import ink.pmc.framework.utils.concurrent.submitAsync
+import ink.pmc.framework.utils.currentUnixTimestamp
+import ink.pmc.framework.utils.data.listMultimapOf
+import ink.pmc.framework.utils.data.set
+import ink.pmc.framework.utils.platform.paper
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking

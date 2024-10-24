@@ -7,7 +7,7 @@ import ink.pmc.rpc.api.RpcClient
 import ink.pmc.transfer.backend.BackendTransferService
 import ink.pmc.transfer.backend.lobby.TransferLobby
 import ink.pmc.transfer.proto.TransferRpcGrpcKt.TransferRpcCoroutineStub
-import ink.pmc.utils.platform.paper
+import ink.pmc.framework.utils.platform.paper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.bukkit.Bukkit

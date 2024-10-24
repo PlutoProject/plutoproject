@@ -4,8 +4,8 @@ import ink.pmc.advkt.component.*
 import ink.pmc.essentials.DEFAULT_ECONOMY_SYMBOL
 import ink.pmc.essentials.api.Essentials
 import ink.pmc.menu.economy
-import ink.pmc.utils.trimmed
-import ink.pmc.utils.visual.*
+import ink.pmc.framework.utils.trimmed
+import ink.pmc.framework.utils.visual.*
 import net.kyori.adventure.text.Component
 import org.bukkit.entity.Player
 

@@ -5,8 +5,8 @@ import ink.pmc.advkt.component.raw
 import ink.pmc.advkt.component.text
 import ink.pmc.advkt.send
 import ink.pmc.hypervisor.DynamicScheduling
-import ink.pmc.utils.network.formatted
-import ink.pmc.utils.visual.*
+import ink.pmc.framework.utils.network.formatted
+import ink.pmc.framework.utils.visual.*
 import net.kyori.adventure.text.Component
 import org.bukkit.World
 import org.bukkit.command.CommandSender

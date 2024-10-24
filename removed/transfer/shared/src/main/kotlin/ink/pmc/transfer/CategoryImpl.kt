@@ -1,6 +1,6 @@
 package ink.pmc.transfer
 
-import ink.pmc.utils.multiplaform.item.KeyedMaterial
+import ink.pmc.framework.utils.multiplaform.item.KeyedMaterial
 import net.kyori.adventure.text.Component
 
 class CategoryImpl(

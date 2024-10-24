@@ -17,9 +17,9 @@ import com.velocitypowered.api.proxy.server.RegisteredServer
 import ink.pmc.advkt.component.component
 import ink.pmc.advkt.component.miniMessage
 import ink.pmc.advkt.component.replace
-import ink.pmc.utils.platform.namedServer
-import ink.pmc.utils.platform.proxy
-import ink.pmc.utils.platform.saveConfig
+import ink.pmc.framework.utils.platform.namedServer
+import ink.pmc.framework.utils.platform.proxy
+import ink.pmc.framework.utils.platform.saveConfig
 import net.kyori.adventure.text.Component
 import java.io.File
 import java.nio.file.Path

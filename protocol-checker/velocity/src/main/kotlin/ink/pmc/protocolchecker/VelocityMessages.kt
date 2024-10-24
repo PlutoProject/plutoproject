@@ -3,8 +3,8 @@ package ink.pmc.protocolchecker
 import ink.pmc.advkt.component.component
 import ink.pmc.advkt.component.newline
 import ink.pmc.advkt.component.text
-import ink.pmc.utils.visual.mochaMaroon
-import ink.pmc.utils.visual.mochaText
+import ink.pmc.framework.utils.visual.mochaMaroon
+import ink.pmc.framework.utils.visual.mochaText
 
 val VERSION_RANGE
     get() = if (protocolRange.first == protocolRange.last && protocolRange.first.gameVersion.size == 1) {

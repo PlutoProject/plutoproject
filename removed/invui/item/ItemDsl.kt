@@ -1,8 +1,8 @@
-package ink.pmc.utils.dsl.invui.item
+package ink.pmc.framework.utils.dsl.invui.item
 
-import ink.pmc.utils.concurrent.submitAsync
-import ink.pmc.utils.dsl.ItemStackDsl
-import ink.pmc.utils.structure.Builder
+import ink.pmc.framework.utils.concurrent.submitAsync
+import ink.pmc.framework.utils.dsl.ItemStackDsl
+import ink.pmc.framework.utils.structure.Builder
 import kotlinx.coroutines.*
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
@@ -26,7 +26,7 @@ abstract class ItemDsl<T : Item> : Builder<T> {
     }
 
     fun provider(material: Material, amount: Int = 1, itemStack: ItemStackDsl.() -> Unit) {
-        itemProvider = ItemBuilder(ink.pmc.utils.dsl.itemStack(material, amount, itemStack))
+        itemProvider = ItemBuilder(ink.pmc.framework.utils.dsl.itemStack(material, amount, itemStack))
     }
 
     fun onClick(handler: ClickHandler) {

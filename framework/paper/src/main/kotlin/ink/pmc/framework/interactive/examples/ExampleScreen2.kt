@@ -21,9 +21,9 @@ import ink.pmc.interactive.api.inventory.modifiers.click.clickable
 import ink.pmc.interactive.api.inventory.modifiers.fillMaxSize
 import ink.pmc.interactive.api.inventory.modifiers.fillMaxWidth
 import ink.pmc.interactive.api.inventory.modifiers.height
-import ink.pmc.utils.concurrent.submitAsync
-import ink.pmc.utils.visual.mochaRed
-import ink.pmc.utils.visual.mochaSubtext0
+import ink.pmc.framework.utils.concurrent.submitAsync
+import ink.pmc.framework.utils.visual.mochaRed
+import ink.pmc.framework.utils.visual.mochaSubtext0
 import net.kyori.adventure.text.Component
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack

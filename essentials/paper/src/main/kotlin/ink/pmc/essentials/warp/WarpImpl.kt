@@ -8,9 +8,9 @@ import ink.pmc.essentials.api.warp.WarpType
 import ink.pmc.essentials.dtos.WarpDto
 import ink.pmc.essentials.home.loadFailed
 import ink.pmc.essentials.repositories.WarpRepository
-import ink.pmc.utils.concurrent.async
-import ink.pmc.utils.concurrent.submitAsync
-import ink.pmc.utils.storage.model
+import ink.pmc.framework.utils.concurrent.async
+import ink.pmc.framework.utils.concurrent.submitAsync
+import ink.pmc.framework.utils.storage.model
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.jetbrains.annotations.ApiStatus.Internal

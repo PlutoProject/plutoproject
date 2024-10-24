@@ -2,11 +2,11 @@ package ink.pmc.misc.commands
 
 import ink.pmc.misc.*
 import ink.pmc.misc.api.head.HeadManager
-import ink.pmc.utils.chat.NON_PLAYER
-import ink.pmc.utils.chat.replace
-import ink.pmc.utils.command.PaperCommand
-import ink.pmc.utils.command.paperRequiredOnlinePlayersArgument
-import ink.pmc.utils.visual.mochaYellow
+import ink.pmc.framework.utils.chat.NON_PLAYER
+import ink.pmc.framework.utils.chat.replace
+import ink.pmc.framework.utils.command.PaperCommand
+import ink.pmc.framework.utils.command.paperRequiredOnlinePlayersArgument
+import ink.pmc.framework.utils.visual.mochaYellow
 import net.kyori.adventure.text.Component
 import org.bukkit.entity.Player
 import org.incendo.cloud.kotlin.coroutines.extension.suspendingHandler

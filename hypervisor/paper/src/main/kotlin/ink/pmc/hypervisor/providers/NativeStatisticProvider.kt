@@ -3,8 +3,8 @@ package ink.pmc.hypervisor.providers
 import ink.pmc.hypervisor.MeasuringTime
 import ink.pmc.hypervisor.MeasuringTime.*
 import ink.pmc.hypervisor.StatisticProviderType
-import ink.pmc.utils.platform.internal
-import ink.pmc.utils.platform.paper
+import ink.pmc.framework.utils.platform.internal
+import ink.pmc.framework.utils.platform.paper
 import org.bukkit.Bukkit
 
 class NativeStatisticProvider : AbstractStatisticProvider() {

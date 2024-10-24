@@ -3,7 +3,7 @@ package ink.pmc.exchange
 import ink.pmc.advkt.component.component
 import ink.pmc.advkt.component.newline
 import ink.pmc.advkt.component.text
-import ink.pmc.utils.visual.*
+import ink.pmc.framework.utils.visual.*
 
 val MATERIAL_NOT_AVAILABLE_NAME = component {
     text("<material> 不可购买") with mochaMaroon

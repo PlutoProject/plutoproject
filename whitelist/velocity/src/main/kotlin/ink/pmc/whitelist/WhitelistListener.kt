@@ -5,7 +5,7 @@ import com.velocitypowered.api.event.connection.PostLoginEvent
 import ink.pmc.advkt.component.component
 import ink.pmc.advkt.component.newline
 import ink.pmc.advkt.component.text
-import ink.pmc.utils.visual.mochaMaroon
+import ink.pmc.framework.utils.visual.mochaMaroon
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 

@@ -4,8 +4,8 @@ import ink.pmc.advkt.component.component
 import ink.pmc.advkt.component.italic
 import ink.pmc.advkt.component.text
 import ink.pmc.essentials.config.EssentialsConfig
-import ink.pmc.utils.chat.replace
-import ink.pmc.utils.visual.*
+import ink.pmc.framework.utils.chat.replace
+import ink.pmc.framework.utils.visual.*
 import net.kyori.adventure.text.Component
 import org.bukkit.entity.Player
 import org.koin.java.KoinJavaComponent.getKoin

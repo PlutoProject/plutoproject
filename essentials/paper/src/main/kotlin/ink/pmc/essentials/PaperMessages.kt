@@ -9,8 +9,8 @@ import ink.pmc.essentials.api.home.Home
 import ink.pmc.essentials.api.warp.Warp
 import ink.pmc.essentials.config.EssentialsConfig
 import ink.pmc.essentials.listeners.TeleportListener.getKoin
-import ink.pmc.utils.chat.DURATION
-import ink.pmc.utils.visual.*
+import ink.pmc.framework.utils.chat.DURATION
+import ink.pmc.framework.utils.visual.*
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.util.Ticks

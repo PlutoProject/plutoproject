@@ -17,7 +17,7 @@ import ink.pmc.interactive.api.inventory.layout.InventoryNode
 import ink.pmc.interactive.api.inventory.modifiers.Constraints
 import ink.pmc.interactive.api.inventory.modifiers.click.ClickScope
 import ink.pmc.interactive.api.inventory.modifiers.drag.DragScope
-import ink.pmc.utils.concurrent.submitSync
+import ink.pmc.framework.utils.concurrent.submitSync
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.bukkit.entity.Player
 import java.util.logging.Level

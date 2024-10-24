@@ -3,7 +3,7 @@ package ink.pmc.misc.impl.elevator
 import ink.pmc.misc.api.elevator.ElevatorBuilder
 import ink.pmc.misc.api.elevator.ElevatorChain
 import ink.pmc.misc.api.elevator.ElevatorManager
-import ink.pmc.utils.world.eraseAngle
+import ink.pmc.framework.utils.world.eraseAngle
 import org.bukkit.Location
 import org.bukkit.Material
 

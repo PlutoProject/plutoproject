@@ -4,11 +4,11 @@ import ink.pmc.advkt.component.text
 import ink.pmc.advkt.send
 import ink.pmc.daily.PERMISSION_CMD_DAILY
 import ink.pmc.daily.plugin
-import ink.pmc.utils.PaperCm
-import ink.pmc.utils.command.annotation.Command
-import ink.pmc.utils.dsl.cloud.invoke
-import ink.pmc.utils.dsl.cloud.sender
-import ink.pmc.utils.visual.mochaPink
+import ink.pmc.framework.utils.PaperCm
+import ink.pmc.framework.utils.command.annotation.Command
+import ink.pmc.framework.utils.dsl.cloud.invoke
+import ink.pmc.framework.utils.dsl.cloud.sender
+import ink.pmc.framework.utils.visual.mochaPink
 
 @Command("daily")
 @Suppress("UNUSED")

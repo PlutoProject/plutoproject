@@ -3,7 +3,7 @@ package ink.pmc.misc
 import ink.pmc.advkt.component.*
 import ink.pmc.advkt.sound.*
 import ink.pmc.advkt.title.*
-import ink.pmc.utils.visual.*
+import ink.pmc.framework.utils.visual.*
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.sound.Sound
 import net.kyori.adventure.title.Title
