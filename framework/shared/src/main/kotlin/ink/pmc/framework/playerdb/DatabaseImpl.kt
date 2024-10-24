@@ -17,7 +17,7 @@ import java.util.logging.Level
 @Suppress("UNCHECKED_CAST")
 class DatabaseImpl(model: DatabaseModel) : Database, KoinComponent {
     private val repo by inject<DatabaseRepository>()
-    private val notifier by inject<Notifier>()
+    private val databaseNotifier by inject<DatabaseNotifier>()
 
     override val id: UUID = model.id.uuid
     override val contents: BsonDocument = model.contents.clone()
@@ -285,6 +285,6 @@ class DatabaseImpl(model: DatabaseModel) : Database, KoinComponent {
 
     override suspend fun update() {
         repo.saveOrUpdate(toModel())
-        notifier.notify(id)
+        databaseNotifier.notify(id)
     }
 }

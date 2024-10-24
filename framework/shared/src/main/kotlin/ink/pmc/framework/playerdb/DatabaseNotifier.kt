@@ -2,8 +2,6 @@ package ink.pmc.framework.playerdb
 
 import java.util.*
 
-interface Notifier {
-    val id: UUID
-
+interface DatabaseNotifier {
     suspend fun notify(id: UUID)
 }

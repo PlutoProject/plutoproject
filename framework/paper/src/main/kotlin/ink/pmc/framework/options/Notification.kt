@@ -13,7 +13,6 @@ import io.grpc.StatusException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import java.util.*
-import java.util.logging.Level
 import kotlin.time.Duration.Companion.seconds
 
 private lateinit var monitorJob: Job
@@ -34,7 +33,7 @@ fun startOptionsMonitor() {
         while (true) {
             try {
                 stub.monitorOptionsUpdate(empty).also {
-                    frameworkLogger.info("Monitor stream connected")
+                    frameworkLogger.info("Options monitor stream connected")
                 }.collect {
                     val serverId = it.serverId.uuid
                     val player = it.player.uuid
@@ -44,7 +43,6 @@ fun startOptionsMonitor() {
                     OptionsManager.reloadOptions(player)
                 }
             } catch (e: StatusException) {
-                frameworkLogger.log(Level.SEVERE, "Monitor stream interrupted, reconnect after 10 seconds", e)
                 delay(10.seconds)
             }
         }

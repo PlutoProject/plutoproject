@@ -14,9 +14,8 @@ import ink.pmc.framework.options.OptionsUpdateNotifier
 import ink.pmc.framework.options.ProxyOptionsUpdateNotifier
 import ink.pmc.framework.options.listeners.VelocityOptionsListener
 import ink.pmc.framework.options.proto.OptionsRpc
-import ink.pmc.framework.playerdb.Notifier
-import ink.pmc.framework.playerdb.ProxyNotifier
-import ink.pmc.framework.playerdb.playerDbScope
+import ink.pmc.framework.playerdb.DatabaseNotifier
+import ink.pmc.framework.playerdb.ProxyDatabaseNotifier
 import ink.pmc.provider.Provider
 import ink.pmc.rpc.api.RpcServer
 import ink.pmc.utils.inject.startKoinIfNotPresent
@@ -24,7 +23,6 @@ import ink.pmc.utils.platform.proxy
 import ink.pmc.utils.platform.proxyThread
 import ink.pmc.utils.platform.saveDefaultConfig
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.withContext
 import org.incendo.cloud.SenderMapper
 import org.incendo.cloud.annotations.AnnotationParser
@@ -41,7 +39,7 @@ class VelocityPlugin @Inject constructor(private val spc: SuspendingPluginContai
     private val velocityModule = module {
         single<File>(FRAMEWORK_CONFIG) { saveDefaultConfig(VelocityPlugin::class.java, dataFolder) }
         single<OptionsUpdateNotifier> { ProxyOptionsUpdateNotifier() }
-        single<Notifier> { ProxyNotifier() }
+        single<DatabaseNotifier> { ProxyDatabaseNotifier() }
     }
     private lateinit var dataFolder: File
 
@@ -63,7 +61,7 @@ class VelocityPlugin @Inject constructor(private val spc: SuspendingPluginContai
         }
         RpcServer.apply {
             addService(OptionsRpc)
-            addService(getKoin().get<Notifier>() as ProxyNotifier)
+            addService(getKoin().get<DatabaseNotifier>() as ProxyDatabaseNotifier)
         }
         server.eventManager.registerSuspend(this, VelocityOptionsListener)
     }
@@ -85,7 +83,6 @@ class VelocityPlugin @Inject constructor(private val spc: SuspendingPluginContai
 
     @Subscribe
     suspend fun ProxyShutdownEvent.e() {
-        playerDbScope.cancel()
         withContext(Dispatchers.IO) {
             Provider.close()
         }

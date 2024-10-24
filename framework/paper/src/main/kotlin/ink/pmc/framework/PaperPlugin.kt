@@ -10,9 +10,10 @@ import ink.pmc.framework.options.OptionsUpdateNotifier
 import ink.pmc.framework.options.listeners.BukkitOptionsListener
 import ink.pmc.framework.options.startOptionsMonitor
 import ink.pmc.framework.options.stopOptionsMonitor
-import ink.pmc.framework.playerdb.BackendNotifier
-import ink.pmc.framework.playerdb.Notifier
-import ink.pmc.framework.playerdb.playerDbScope
+import ink.pmc.framework.playerdb.BackendDatabaseNotifier
+import ink.pmc.framework.playerdb.DatabaseNotifier
+import ink.pmc.framework.playerdb.startPlayerDbMonitor
+import ink.pmc.framework.playerdb.stopPlayerDbMonitor
 import ink.pmc.framework.visual.display.text.TextDisplayFactoryImpl
 import ink.pmc.framework.visual.display.text.TextDisplayListener
 import ink.pmc.framework.visual.display.text.TextDisplayManagerImpl
@@ -33,7 +34,6 @@ import ink.pmc.visual.api.display.text.TextDisplayManager
 import ink.pmc.visual.api.display.text.TextDisplayRenderer
 import ink.pmc.visual.api.toast.ToastRenderer
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.withContext
 import org.bukkit.entity.Player
 import org.koin.core.component.KoinComponent
@@ -49,7 +49,7 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
         single<File>(FRAMEWORK_CONFIG) { saveResourceIfNotExisted("config.conf") }
         single<GuiManager> { GuiManagerImpl() }
         single<OptionsUpdateNotifier> { BackendOptionsUpdateNotifier() }
-        single<Notifier> { BackendNotifier() }
+        single<DatabaseNotifier> { BackendDatabaseNotifier() }
         single<ToastRenderer<Player>>(named("internal")) { NmsToastRenderer() }
         single<TextDisplayManager> { TextDisplayManagerImpl() }
         single<TextDisplayFactory> { TextDisplayFactoryImpl() }
@@ -72,13 +72,14 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
         paper.pluginManager.registerSuspendingEvents(InventoryListener, frameworkPaper)
         paper.pluginManager.registerSuspendingEvents(BukkitOptionsListener, frameworkPaper)
         paper.pluginManager.registerSuspendingEvents(TextDisplayListener, frameworkPaper)
+        startPlayerDbMonitor()
         startOptionsMonitor()
         initPaperHooks()
     }
 
     override suspend fun onDisableAsync() {
         GuiManager.disposeAll()
-        playerDbScope.cancel()
+        stopPlayerDbMonitor()
         stopOptionsMonitor()
         withContext(Dispatchers.IO) {
             Provider.close()
@@ -93,9 +94,13 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
 
     private fun preload() {
         val start = currentUnixTimestamp
-        frameworkLogger.info("Preloading Compose Runtime & Voyager to improve performance...")
-        loadClassesInPackages("androidx", "cafe.adriel.voyager", classLoader = frameworkClassLoader)
-        loadClassesInPackages("ink.pmc.interactive.api", classLoader = frameworkClassLoader)
+        frameworkLogger.info("Preloading necessary classes to improve performance...")
+        loadClassesInPackages(
+            "androidx",
+            "cafe.adriel.voyager",
+            "ink.pmc.framework",
+            classLoader = frameworkClassLoader
+        )
         val end = currentUnixTimestamp
         frameworkLogger.info("Preloading finished, took ${end - start}ms")
     }

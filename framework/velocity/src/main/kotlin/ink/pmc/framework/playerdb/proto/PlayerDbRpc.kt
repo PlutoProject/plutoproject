@@ -1,37 +1,40 @@
-package ink.pmc.framework.playerdb
+package ink.pmc.framework.playerdb.proto
 
 import com.google.protobuf.Empty
 import ink.pmc.framework.playerdb.proto.PlayerDbRpcGrpcKt.PlayerDbRpcCoroutineImplBase
 import ink.pmc.framework.playerdb.proto.PlayerDbRpcOuterClass.DatabaseIdentifier
-import ink.pmc.framework.playerdb.proto.databaseIdentifier
 import ink.pmc.playerdb.api.PlayerDb
+import ink.pmc.utils.concurrent.submitAsync
 import ink.pmc.utils.player.uuid
+import ink.pmc.utils.proto.empty
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import org.koin.core.component.KoinComponent
 import java.util.*
 
-class ProxyNotifier : Notifier, PlayerDbRpcCoroutineImplBase() {
-    override val id: UUID = UUID.randomUUID()
-    private val flow = MutableSharedFlow<DatabaseIdentifier>()
-    private val empty = Empty.getDefaultInstance()
+object PlayerDbRpc : PlayerDbRpcCoroutineImplBase(), KoinComponent {
+    private val identity = UUID.randomUUID()
+    private val broadcast = MutableSharedFlow<DatabaseIdentifier>()
 
     override suspend fun notify(request: DatabaseIdentifier): Empty {
         val id = request.uuid.uuid
         if (PlayerDb.isLoaded(id)) {
             PlayerDb.reload(id)
         }
-        notify(id)
+        broadcast.emit(request)
         return empty
     }
 
     override fun monitorNotify(request: Empty): Flow<DatabaseIdentifier> {
-        return flow
+        return broadcast
     }
 
-    override suspend fun notify(id: UUID) {
-        flow.emit(databaseIdentifier {
-            serverId = id.toString()
-            uuid = id.toString()
-        })
+    fun notifyDatabaseUpdate(player: UUID) {
+        submitAsync {
+            broadcast.emit(databaseIdentifier {
+                serverId = identity.toString()
+                uuid = player.toString()
+            })
+        }
     }
 }
