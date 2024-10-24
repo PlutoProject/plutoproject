@@ -59,7 +59,7 @@ class VelocityPlugin @Inject constructor(suspendingPluginContainer: SuspendingPl
 
     @Subscribe
     fun proxyInitializeEvent(event: ProxyInitializeEvent) {
-        pluginContainer = proxy.pluginManager.getPlugin("protocol-checker").get()
+        pluginContainer = proxy.pluginManager.getPlugin("plutoproject_protocol-checker").get()
         disabled = false
     }
 

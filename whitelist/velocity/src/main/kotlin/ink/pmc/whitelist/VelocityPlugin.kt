@@ -45,7 +45,7 @@ class VelocityPlugin @Inject constructor(suspendingPluginContainer: SuspendingPl
 
     @Subscribe
     fun ProxyInitializeEvent.e() {
-        plugin = proxy.pluginManager.getPlugin("whitelist").get()
+        plugin = proxy.pluginManager.getPlugin("plutoproject_whitelist").get()
         commandManager = VelocityCommandManager(
             plugin,
             proxy,

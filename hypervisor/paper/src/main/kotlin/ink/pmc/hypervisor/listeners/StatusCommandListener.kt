@@ -14,12 +14,12 @@ object StatusCommandListener : Listener, KoinComponent {
     @EventHandler(ignoreCancelled = true)
     fun PlayerCommandPreprocessEvent.e() {
         if (message == "/tps" && config.statusCommand.overrideTpsCommand) {
-            player.performCommand("hypervisor:tps")
+            player.performCommand("plutoproject_hypervisor:tps")
             isCancelled = true
             return
         }
         if (message == "/mspt" && config.statusCommand.overrideMsptCommand) {
-            player.performCommand("hypervisor:mspt")
+            player.performCommand("plutoproject_hypervisor:mspt")
             isCancelled = true
             return
         }
