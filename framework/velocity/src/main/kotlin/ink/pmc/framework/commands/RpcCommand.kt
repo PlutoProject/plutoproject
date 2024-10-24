@@ -9,10 +9,12 @@ import ink.pmc.utils.visual.mochaMaroon
 import ink.pmc.utils.visual.mochaSubtext0
 import ink.pmc.utils.visual.mochaText
 import org.incendo.cloud.annotations.Command
+import org.incendo.cloud.annotations.Permission
 
 @Suppress("UNUSED")
 object RpcCommand {
     @Command("rpc")
+    @Permission("rpc.command")
     fun rpcCommand(sender: CommandSource) {
         if (RpcServer.server.services.isEmpty()) {
             sender.send {
