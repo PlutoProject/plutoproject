@@ -219,7 +219,7 @@ val MAIN_MENU_ITEM_HOME_LOOKUP_LORE = listOf(
     },
     component {
         text("右键 ") with mochaLavender without italic()
-        text("查询四周变化") with mochaText without italic()
+        text("观察四周变化") with mochaText without italic()
     },
 )
 
@@ -337,21 +337,23 @@ val MAIN_MENU_ITEM_VIEW_BOOST_LORE_DISABLED = buildList {
     })
 }
 
-val MAIN_MENU_ITEM_VIEW_BOOST_LORE_ENABLED = listOf(
-    component {
+val MAIN_MENU_ITEM_VIEW_BOOST_LORE_ENABLED = buildList {
+    addAll(MAIN_MENU_ITEM_VIEW_BOOST_LORE_COMMON)
+    add(Component.empty())
+    add(component {
         text("请将渲染距离调整至 ") with mochaSubtext0 without italic()
         text("16 ") with mochaText without italic()
         text("或更高") with mochaSubtext0 without italic()
-    },
-    component {
+    })
+    add(component {
         text("以使此功能生效") with mochaSubtext0 without italic()
-    },
-    Component.empty(),
-    component {
+    })
+    add(Component.empty())
+    add(component {
         text("左键 ") with mochaLavender without italic()
         text("关闭功能") with mochaText without italic()
-    }
-)
+    })
+}
 
 val MAIN_MENU_ITEM_VIEW_BOOST_LORE_DISABLED_DUE_PING = buildList {
     addAll(MAIN_MENU_ITEM_VIEW_BOOST_LORE_COMMON)
@@ -373,6 +375,6 @@ val MAIN_MENU_ITEM_VIEW_BOOST_LORE_DISABLED_DUE_VHOST = buildList {
         text("你正在使用的连接线路不支持此功能") with mochaYellow without italic()
     })
     add(component {
-        text("此功能仅在使用主线路时可用") with mochaYellow without italic()
+        text("请切换至主线路") with mochaYellow without italic()
     })
 }
