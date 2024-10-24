@@ -7,7 +7,7 @@ import ink.pmc.daily.api.Daily
 import ink.pmc.daily.listeners.DailyListener
 import ink.pmc.daily.repositories.DailyHistoryRepository
 import ink.pmc.daily.repositories.DailyUserRepository
-import ink.pmc.provider.ProviderService
+import ink.pmc.provider.Provider
 import ink.pmc.utils.PaperCm
 import ink.pmc.utils.command.registerCommands
 import ink.pmc.utils.inject.startKoinIfNotPresent
@@ -23,7 +23,7 @@ internal const val COMMANDS_PACKAGE = "ink.pmc.daily.commands"
 internal const val COLLECTION_PREFIX = "daily_"
 
 private inline fun <reified T : Any> getCollection(name: String): MongoCollection<T> {
-    return ProviderService.defaultMongoDatabase.getCollection("${COLLECTION_PREFIX}$name")
+    return Provider.defaultMongoDatabase.getCollection("${COLLECTION_PREFIX}$name")
 }
 
 private val bukkitModule = module {

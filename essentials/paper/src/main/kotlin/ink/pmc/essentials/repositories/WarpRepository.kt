@@ -4,7 +4,7 @@ import com.github.benmanes.caffeine.cache.Caffeine
 import com.mongodb.client.model.Filters.eq
 import ink.pmc.essentials.config.EssentialsConfig
 import ink.pmc.essentials.dtos.WarpDto
-import ink.pmc.provider.ProviderService
+import ink.pmc.provider.Provider
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.toCollection
 import org.koin.core.component.KoinComponent
@@ -19,7 +19,7 @@ class WarpRepository : KoinComponent {
         .expireAfterWrite(Duration.ofMinutes(10))
         .build<UUID, WarpDto>()
     private val db =
-        ProviderService.defaultMongoDatabase.getCollection<WarpDto>("essentials_${conf.serverName}_warps")
+        Provider.defaultMongoDatabase.getCollection<WarpDto>("essentials_${conf.serverName}_warps")
 
     suspend fun findById(id: UUID): WarpDto? {
         val cached = cache.getIfPresent(id) ?: run {

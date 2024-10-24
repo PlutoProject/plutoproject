@@ -4,7 +4,7 @@ import com.mongodb.client.model.Filters.eq
 import com.mongodb.client.model.ReplaceOptions
 import ink.pmc.essentials.config.EssentialsConfig
 import ink.pmc.essentials.dtos.BackDto
-import ink.pmc.provider.ProviderService
+import ink.pmc.provider.Provider
 import ink.pmc.utils.storage.model
 import kotlinx.coroutines.flow.firstOrNull
 import org.bson.types.ObjectId
@@ -18,7 +18,7 @@ class BackRepository : KoinComponent {
     private val conf by inject<EssentialsConfig>()
     private val options = ReplaceOptions().upsert(true)
     private val db =
-        ProviderService.defaultMongoDatabase.getCollection<BackDto>("essentials_${conf.serverName}_backs")
+        Provider.defaultMongoDatabase.getCollection<BackDto>("essentials_${conf.serverName}_backs")
 
     suspend fun find(player: Player): Location? {
         return findDto(player)?.location?.location

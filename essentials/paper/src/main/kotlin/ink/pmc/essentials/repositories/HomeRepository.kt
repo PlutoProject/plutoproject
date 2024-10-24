@@ -5,7 +5,7 @@ import com.mongodb.client.model.Filters.and
 import com.mongodb.client.model.Filters.eq
 import ink.pmc.essentials.config.EssentialsConfig
 import ink.pmc.essentials.dtos.HomeDto
-import ink.pmc.provider.ProviderService
+import ink.pmc.provider.Provider
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.toCollection
 import org.bukkit.OfflinePlayer
@@ -21,7 +21,7 @@ class HomeRepository : KoinComponent {
         .expireAfterWrite(Duration.ofMinutes(10))
         .build<UUID, HomeDto>()
     private val db =
-        ProviderService.defaultMongoDatabase.getCollection<HomeDto>("essentials_${conf.serverName}_homes")
+        Provider.defaultMongoDatabase.getCollection<HomeDto>("essentials_${conf.serverName}_homes")
 
     suspend fun findById(id: UUID): HomeDto? {
         val cached = cache.getIfPresent(id) ?: run {

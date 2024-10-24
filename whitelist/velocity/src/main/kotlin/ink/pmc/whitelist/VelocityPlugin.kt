@@ -9,7 +9,7 @@ import com.velocitypowered.api.event.proxy.ProxyInitializeEvent
 import com.velocitypowered.api.plugin.PluginContainer
 import com.velocitypowered.api.plugin.annotation.DataDirectory
 import com.velocitypowered.api.proxy.ProxyServer
-import ink.pmc.provider.ProviderService
+import ink.pmc.provider.Provider
 import ink.pmc.utils.inject.startKoinIfNotPresent
 import ink.pmc.utils.platform.proxy
 import org.incendo.cloud.SenderMapper
@@ -24,7 +24,7 @@ lateinit var commandManager: VelocityCommandManager<CommandSource>
 
 private const val COLLECTION_NAME = "whitelist"
 private val whitelistCollection =
-    ProviderService.defaultMongoDatabase.getCollection<WhitelistModel>(COLLECTION_NAME)
+    Provider.defaultMongoDatabase.getCollection<WhitelistModel>(COLLECTION_NAME)
 private val velocityModule = module {
     single<WhitelistRepository> { WhitelistRepository(whitelistCollection) }
 }
