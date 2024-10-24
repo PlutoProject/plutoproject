@@ -7,7 +7,7 @@ import ink.pmc.daily.api.Daily
 import ink.pmc.daily.listeners.DailyListener
 import ink.pmc.daily.repositories.DailyHistoryRepository
 import ink.pmc.daily.repositories.DailyUserRepository
-import ink.pmc.provider.Provider
+import ink.pmc.framework.provider.Provider
 import ink.pmc.framework.utils.PaperCm
 import ink.pmc.framework.utils.command.registerCommands
 import ink.pmc.framework.utils.inject.startKoinIfNotPresent

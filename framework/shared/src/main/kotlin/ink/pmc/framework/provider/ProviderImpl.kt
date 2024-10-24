@@ -3,7 +3,6 @@ package ink.pmc.framework.provider
 import com.mongodb.kotlin.client.coroutine.MongoClient
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
 import ink.pmc.framework.FrameworkConfig
-import ink.pmc.provider.Provider
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 

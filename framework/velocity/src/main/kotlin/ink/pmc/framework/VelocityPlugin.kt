@@ -21,7 +21,7 @@ import ink.pmc.framework.utils.inject.startKoinIfNotPresent
 import ink.pmc.framework.utils.platform.proxy
 import ink.pmc.framework.utils.platform.proxyThread
 import ink.pmc.framework.utils.platform.saveDefaultConfig
-import ink.pmc.provider.Provider
+import ink.pmc.framework.provider.Provider
 import ink.pmc.rpc.api.RpcServer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

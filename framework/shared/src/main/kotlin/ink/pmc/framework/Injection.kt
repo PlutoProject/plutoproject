@@ -16,7 +16,7 @@ import ink.pmc.framework.visual.toast.ToastFactory
 import ink.pmc.framework.options.OptionsManager
 import ink.pmc.framework.options.factory.OptionDescriptorFactory
 import ink.pmc.framework.playerdb.PlayerDb
-import ink.pmc.provider.Provider
+import ink.pmc.framework.provider.Provider
 import ink.pmc.rpc.api.RpcClient
 import ink.pmc.rpc.api.RpcServer
 import org.koin.core.qualifier.named

@@ -4,7 +4,7 @@ import com.mongodb.client.model.Filters.eq
 import com.mongodb.client.model.ReplaceOptions
 import ink.pmc.essentials.config.EssentialsConfig
 import ink.pmc.essentials.dtos.BackDto
-import ink.pmc.provider.Provider
+import ink.pmc.framework.provider.Provider
 import ink.pmc.framework.utils.storage.model
 import kotlinx.coroutines.flow.firstOrNull
 import org.bson.types.ObjectId

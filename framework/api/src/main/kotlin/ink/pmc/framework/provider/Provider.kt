@@ -1,4 +1,4 @@
-package ink.pmc.provider
+package ink.pmc.framework.provider
 
 import com.mongodb.kotlin.client.coroutine.MongoClient
 import com.mongodb.kotlin.client.coroutine.MongoDatabase

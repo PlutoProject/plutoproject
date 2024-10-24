@@ -4,7 +4,7 @@ import com.github.benmanes.caffeine.cache.Caffeine
 import com.mongodb.client.model.Filters.eq
 import ink.pmc.essentials.config.EssentialsConfig
 import ink.pmc.essentials.dtos.WarpDto
-import ink.pmc.provider.Provider
+import ink.pmc.framework.provider.Provider
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.toCollection
 import org.koin.core.component.KoinComponent
