@@ -2,7 +2,7 @@ package ink.pmc.interactive.api.inventory.components
 
 import androidx.compose.runtime.Composable
 import ink.pmc.interactive.api.ComposableFunction
-import ink.pmc.interactive.api.inventory.components.canvases.LocalInventory
+import ink.pmc.framework.interactive.inventory.components.canvases.LocalInventory
 import ink.pmc.framework.interactive.inventory.Modifier
 import ink.pmc.framework.interactive.inventory.fillMaxSize
 

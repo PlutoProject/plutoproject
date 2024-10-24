@@ -18,8 +18,8 @@ import ink.pmc.interactive.api.LocalPlayer
 import ink.pmc.interactive.api.inventory.components.Back
 import ink.pmc.interactive.api.inventory.components.Item
 import ink.pmc.interactive.api.inventory.components.Placeholder
-import ink.pmc.interactive.api.inventory.components.canvases.Anvil
-import ink.pmc.interactive.api.inventory.components.canvases.Chest
+import ink.pmc.framework.interactive.inventory.components.canvases.Anvil
+import ink.pmc.framework.interactive.inventory.components.canvases.Chest
 import ink.pmc.framework.interactive.inventory.layout.Box
 import ink.pmc.framework.interactive.inventory.layout.Column
 import ink.pmc.framework.interactive.inventory.layout.Row

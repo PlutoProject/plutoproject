@@ -1,4 +1,4 @@
-package ink.pmc.interactive.api.inventory.components.canvases
+package ink.pmc.framework.interactive.inventory.components.canvases
 
 import androidx.compose.runtime.*
 import ink.pmc.framework.utils.concurrent.submitSync

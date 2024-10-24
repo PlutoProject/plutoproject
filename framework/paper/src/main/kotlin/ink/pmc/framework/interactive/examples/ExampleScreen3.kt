@@ -8,7 +8,7 @@ import ink.pmc.advkt.send
 import ink.pmc.framework.utils.visual.mochaText
 import ink.pmc.interactive.api.inventory.components.Item
 import ink.pmc.interactive.api.inventory.components.VerticalGrid
-import ink.pmc.interactive.api.inventory.components.canvases.Chest
+import ink.pmc.framework.interactive.inventory.components.canvases.Chest
 import ink.pmc.framework.interactive.inventory.Modifier
 import ink.pmc.framework.interactive.inventory.click.clickable
 import ink.pmc.framework.interactive.inventory.fillMaxSize
