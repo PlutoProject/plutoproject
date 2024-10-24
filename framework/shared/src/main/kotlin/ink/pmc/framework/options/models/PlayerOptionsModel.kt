@@ -1,6 +1,6 @@
 package ink.pmc.framework.options.models
 
-import ink.pmc.options.api.PlayerOptions
+import ink.pmc.framework.options.PlayerOptions
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 

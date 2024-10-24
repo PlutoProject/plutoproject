@@ -12,7 +12,7 @@ import ink.pmc.hypervisor.listeners.DynamicViewDistanceListener
 import ink.pmc.hypervisor.listeners.StatusCommandListener
 import ink.pmc.hypervisor.providers.NativeStatisticProvider
 import ink.pmc.hypervisor.providers.SparkStatisticProvider
-import ink.pmc.options.api.OptionsManager
+import ink.pmc.framework.options.OptionsManager
 import ink.pmc.framework.utils.config.preconfiguredConfigLoaderBuilder
 import ink.pmc.framework.utils.inject.startKoinIfNotPresent
 import ink.pmc.framework.utils.jvm.findClass

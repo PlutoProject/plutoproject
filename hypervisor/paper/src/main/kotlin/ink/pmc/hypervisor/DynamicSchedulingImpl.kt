@@ -1,7 +1,7 @@
 package ink.pmc.hypervisor
 
 import ink.pmc.hypervisor.config.HypervisorConfig
-import ink.pmc.options.api.OptionsManager
+import ink.pmc.framework.options.OptionsManager
 import ink.pmc.framework.utils.concurrent.submitAsync
 import ink.pmc.framework.utils.currentUnixTimestamp
 import ink.pmc.framework.utils.data.listMultimapOf

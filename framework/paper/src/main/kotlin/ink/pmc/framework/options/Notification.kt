@@ -7,7 +7,7 @@ import ink.pmc.framework.utils.concurrent.submitAsync
 import ink.pmc.framework.utils.player.isBukkitOnline
 import ink.pmc.framework.utils.player.uuid
 import ink.pmc.framework.utils.proto.empty
-import ink.pmc.options.api.OptionsManager
+import ink.pmc.framework.options.OptionsManager
 import ink.pmc.rpc.api.RpcClient
 import io.grpc.StatusException
 import kotlinx.coroutines.Job

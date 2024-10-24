@@ -1,9 +1,9 @@
 package ink.pmc.framework.options
 
-import ink.pmc.options.api.EntryValueType
-import ink.pmc.options.api.Limitation
-import ink.pmc.options.api.OptionDescriptor
-import ink.pmc.options.api.factory.OptionDescriptorFactory
+import ink.pmc.framework.options.EntryValueType
+import ink.pmc.framework.options.Limitation
+import ink.pmc.framework.options.OptionDescriptor
+import ink.pmc.framework.options.factory.OptionDescriptorFactory
 
 class OptionDescriptorFactoryImpl : OptionDescriptorFactory {
     override fun <T> create(

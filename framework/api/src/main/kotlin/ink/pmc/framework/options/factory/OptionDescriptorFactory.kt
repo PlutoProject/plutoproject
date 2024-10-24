@@ -1,9 +1,9 @@
-package ink.pmc.options.api.factory
+package ink.pmc.framework.options.factory
 
 import ink.pmc.framework.utils.inject.inlinedGet
-import ink.pmc.options.api.EntryValueType
-import ink.pmc.options.api.Limitation
-import ink.pmc.options.api.OptionDescriptor
+import ink.pmc.framework.options.EntryValueType
+import ink.pmc.framework.options.Limitation
+import ink.pmc.framework.options.OptionDescriptor
 
 interface OptionDescriptorFactory {
     companion object : OptionDescriptorFactory by inlinedGet()

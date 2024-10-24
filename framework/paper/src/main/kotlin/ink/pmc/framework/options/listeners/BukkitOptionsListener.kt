@@ -1,6 +1,6 @@
 package ink.pmc.framework.options.listeners
 
-import ink.pmc.options.api.OptionsManager
+import ink.pmc.framework.options.OptionsManager
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener

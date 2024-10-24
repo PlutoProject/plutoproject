@@ -4,7 +4,7 @@ import com.velocitypowered.api.event.PostOrder
 import com.velocitypowered.api.event.Subscribe
 import com.velocitypowered.api.event.connection.DisconnectEvent
 import com.velocitypowered.api.event.connection.PostLoginEvent
-import ink.pmc.options.api.OptionsManager
+import ink.pmc.framework.options.OptionsManager
 import org.koin.core.component.KoinComponent
 
 @Suppress("UNUSED", "UNUSED_PARAMETER", "UnusedReceiverParameter")

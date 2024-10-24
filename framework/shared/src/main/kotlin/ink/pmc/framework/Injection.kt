@@ -13,8 +13,8 @@ import ink.pmc.framework.rpc.RpcServerImpl
 import ink.pmc.framework.utils.config.preconfiguredConfigLoaderBuilder
 import ink.pmc.framework.visual.ToastFactoryImpl
 import ink.pmc.framework.visual.toast.ToastFactory
-import ink.pmc.options.api.OptionsManager
-import ink.pmc.options.api.factory.OptionDescriptorFactory
+import ink.pmc.framework.options.OptionsManager
+import ink.pmc.framework.options.factory.OptionDescriptorFactory
 import ink.pmc.playerdb.api.PlayerDb
 import ink.pmc.provider.Provider
 import ink.pmc.rpc.api.RpcClient

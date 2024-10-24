@@ -1,4 +1,4 @@
-package ink.pmc.options.api
+package ink.pmc.framework.options
 
 interface OptionEntry<T : Any> {
     val descriptor: OptionDescriptor<T>

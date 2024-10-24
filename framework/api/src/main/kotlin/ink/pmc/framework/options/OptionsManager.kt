@@ -1,4 +1,4 @@
-package ink.pmc.options.api
+package ink.pmc.framework.options
 
 import ink.pmc.framework.utils.inject.inlinedGet
 import java.util.*
