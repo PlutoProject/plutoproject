@@ -3,10 +3,10 @@ package ink.pmc.framework.interactive.inventory.layout
 import ink.pmc.framework.interactive.canvas.Canvas
 import ink.pmc.framework.interactive.canvas.ClickResult
 import ink.pmc.framework.interactive.canvas.OffsetCanvas
-import ink.pmc.interactive.api.inventory.components.state.IntCoordinates
-import ink.pmc.interactive.api.inventory.components.state.IntOffset
-import ink.pmc.interactive.api.inventory.components.state.IntSize
-import ink.pmc.interactive.api.inventory.components.state.ItemPositions
+import ink.pmc.framework.interactive.inventory.state.IntCoordinates
+import ink.pmc.framework.interactive.inventory.state.IntOffset
+import ink.pmc.framework.interactive.inventory.state.IntSize
+import ink.pmc.framework.interactive.inventory.state.ItemPositions
 import ink.pmc.framework.interactive.inventory.Constraints
 import ink.pmc.framework.interactive.inventory.LayoutChangingModifier
 import ink.pmc.framework.interactive.inventory.Modifier

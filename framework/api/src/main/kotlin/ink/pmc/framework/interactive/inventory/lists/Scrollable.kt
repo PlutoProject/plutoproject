@@ -1,4 +1,4 @@
-package ink.pmc.interactive.api.inventory.components.lists
+package ink.pmc.framework.interactive.inventory.lists
 
 import androidx.compose.runtime.*
 import ink.pmc.framework.interactive.inventory.layout.Box

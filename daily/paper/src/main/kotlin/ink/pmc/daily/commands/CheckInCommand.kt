@@ -4,7 +4,7 @@ import cafe.adriel.voyager.navigator.Navigator
 import ink.pmc.daily.CHECKED_IN
 import ink.pmc.daily.api.Daily
 import ink.pmc.daily.screens.DailyCalenderScreen
-import ink.pmc.interactive.api.GuiManager
+import ink.pmc.framework.interactive.GuiManager
 import ink.pmc.framework.utils.PaperCm
 import ink.pmc.framework.utils.command.annotation.Command
 import ink.pmc.framework.utils.chat.UI_SUCCEED_SOUND

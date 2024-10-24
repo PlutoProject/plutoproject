@@ -1,4 +1,4 @@
-package ink.pmc.interactive.api.inventory.components.state
+package ink.pmc.framework.interactive.inventory.state
 
 import androidx.compose.runtime.Immutable
 import org.bukkit.inventory.ItemStack

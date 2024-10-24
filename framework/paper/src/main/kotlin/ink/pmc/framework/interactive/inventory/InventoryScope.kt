@@ -7,10 +7,10 @@ import ink.pmc.framework.frameworkPaper
 import ink.pmc.framework.interactive.UI_RENDER_FAILED
 import ink.pmc.framework.interactive.scope.BaseScope
 import ink.pmc.framework.utils.concurrent.submitSync
-import ink.pmc.interactive.api.ComposableFunction
-import ink.pmc.interactive.api.LocalGuiScope
-import ink.pmc.interactive.api.LocalPlayer
-import ink.pmc.interactive.api.inventory.LocalClickHandler
+import ink.pmc.framework.interactive.ComposableFunction
+import ink.pmc.framework.interactive.LocalGuiScope
+import ink.pmc.framework.interactive.LocalPlayer
+import ink.pmc.framework.interactive.inventory.LocalClickHandler
 import ink.pmc.framework.interactive.canvas.ClickHandler
 import ink.pmc.framework.interactive.canvas.ClickResult
 import ink.pmc.framework.interactive.canvas.GuiInventoryHolder

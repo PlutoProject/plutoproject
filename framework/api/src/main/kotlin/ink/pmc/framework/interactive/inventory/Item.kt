@@ -1,4 +1,4 @@
-package ink.pmc.interactive.api.inventory.components
+package ink.pmc.framework.interactive.inventory
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember

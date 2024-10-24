@@ -18,8 +18,8 @@ package ink.pmc.framework.interactive.inventory.jetpack
 
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
-import ink.pmc.interactive.api.inventory.components.state.IntOffset
-import ink.pmc.interactive.api.inventory.components.state.IntSize
+import ink.pmc.framework.interactive.inventory.state.IntOffset
+import ink.pmc.framework.interactive.inventory.state.IntSize
 import kotlin.math.roundToInt
 
 /**

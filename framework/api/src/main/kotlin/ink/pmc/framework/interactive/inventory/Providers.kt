@@ -1,4 +1,4 @@
-package ink.pmc.interactive.api.inventory
+package ink.pmc.framework.interactive.inventory
 
 import androidx.compose.runtime.ProvidableCompositionLocal
 import androidx.compose.runtime.staticCompositionLocalOf

@@ -3,7 +3,7 @@ package ink.pmc.framework.interactive.inventory.layout
 import androidx.compose.runtime.Applier
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ComposeNode
-import ink.pmc.interactive.api.inventory.LocalCanvas
+import ink.pmc.framework.interactive.inventory.LocalCanvas
 import ink.pmc.framework.interactive.inventory.Modifier
 import ink.pmc.framework.interactive.inventory.nodes.BaseInventoryNode
 

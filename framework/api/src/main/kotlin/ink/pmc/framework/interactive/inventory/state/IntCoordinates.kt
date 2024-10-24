@@ -1,4 +1,4 @@
-package ink.pmc.interactive.api.inventory.components.state
+package ink.pmc.framework.interactive.inventory.state
 
 @JvmInline
 value class IntCoordinates(val pair: Long) {

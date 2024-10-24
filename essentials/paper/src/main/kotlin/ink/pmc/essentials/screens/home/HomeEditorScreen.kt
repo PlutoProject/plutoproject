@@ -14,10 +14,10 @@ import ink.pmc.essentials.screens.home.HomeEditorScreen.StarState.NOT_STARRED
 import ink.pmc.essentials.screens.home.HomeEditorScreen.StarState.STARRED
 import ink.pmc.essentials.screens.home.HomeEditorScreen.State.*
 import ink.pmc.framework.interactive.inventory.*
-import ink.pmc.interactive.api.LocalPlayer
-import ink.pmc.interactive.api.inventory.components.Back
-import ink.pmc.interactive.api.inventory.components.Item
-import ink.pmc.interactive.api.inventory.components.Placeholder
+import ink.pmc.framework.interactive.LocalPlayer
+import ink.pmc.framework.interactive.inventory.Back
+import ink.pmc.framework.interactive.inventory.Item
+import ink.pmc.framework.interactive.inventory.Placeholder
 import ink.pmc.framework.interactive.inventory.components.canvases.Anvil
 import ink.pmc.framework.interactive.inventory.components.canvases.Chest
 import ink.pmc.framework.interactive.inventory.layout.Box

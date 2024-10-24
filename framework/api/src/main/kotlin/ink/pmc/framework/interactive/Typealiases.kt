@@ -1,4 +1,4 @@
-package ink.pmc.interactive.api
+package ink.pmc.framework.interactive
 
 import androidx.compose.runtime.Composable
 

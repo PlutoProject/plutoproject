@@ -9,8 +9,6 @@ import ink.pmc.framework.utils.PaperCtx
 import ink.pmc.framework.utils.chat.NON_PLAYER
 import ink.pmc.framework.utils.dsl.cloud.invoke
 import ink.pmc.framework.utils.dsl.cloud.sender
-import ink.pmc.interactive.api.ComposableFunction
-import ink.pmc.interactive.api.GuiManager
 import org.bukkit.entity.Player
 
 private const val PERMISSION = "interactive.example"

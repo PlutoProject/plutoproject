@@ -7,7 +7,7 @@ import ink.pmc.essentials.TELEPORT_FAILED_SOUND
 import ink.pmc.essentials.VIEWER_PAGING_SOUND
 import ink.pmc.essentials.api.home.HomeManager
 import ink.pmc.essentials.screens.home.HomeViewerScreen
-import ink.pmc.interactive.api.GuiManager
+import ink.pmc.framework.interactive.GuiManager
 import ink.pmc.framework.utils.command.annotation.Command
 import ink.pmc.framework.utils.chat.NO_PERMISSON
 import ink.pmc.framework.utils.chat.PLAYER_HAS_NO_HOME

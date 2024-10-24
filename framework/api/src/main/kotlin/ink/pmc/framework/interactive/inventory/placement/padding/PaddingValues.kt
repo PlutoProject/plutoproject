@@ -1,6 +1,6 @@
 package ink.pmc.framework.interactive.inventory.placement.padding
 
-import ink.pmc.interactive.api.inventory.components.state.IntOffset
+import ink.pmc.framework.interactive.inventory.state.IntOffset
 
 data class PaddingValues(
     val start: Int = 0,

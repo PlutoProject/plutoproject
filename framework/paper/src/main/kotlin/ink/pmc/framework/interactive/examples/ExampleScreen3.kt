@@ -6,8 +6,8 @@ import ink.pmc.advkt.component.italic
 import ink.pmc.advkt.component.text
 import ink.pmc.advkt.send
 import ink.pmc.framework.utils.visual.mochaText
-import ink.pmc.interactive.api.inventory.components.Item
-import ink.pmc.interactive.api.inventory.components.VerticalGrid
+import ink.pmc.framework.interactive.inventory.Item
+import ink.pmc.framework.interactive.inventory.VerticalGrid
 import ink.pmc.framework.interactive.inventory.components.canvases.Chest
 import ink.pmc.framework.interactive.inventory.Modifier
 import ink.pmc.framework.interactive.inventory.click.clickable

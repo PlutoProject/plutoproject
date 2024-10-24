@@ -1,7 +1,7 @@
 package ink.pmc.framework.interactive.inventory.drag
 
 import androidx.compose.runtime.Immutable
-import ink.pmc.interactive.api.inventory.components.state.ItemPositions
+import ink.pmc.framework.interactive.inventory.state.ItemPositions
 import org.bukkit.event.inventory.DragType
 import org.bukkit.inventory.ItemStack
 

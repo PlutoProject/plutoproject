@@ -11,9 +11,9 @@ import ink.pmc.advkt.component.text
 import ink.pmc.framework.utils.concurrent.submitAsync
 import ink.pmc.framework.utils.visual.mochaRed
 import ink.pmc.framework.utils.visual.mochaSubtext0
-import ink.pmc.interactive.api.LocalPlayer
-import ink.pmc.interactive.api.inventory.components.Item
-import ink.pmc.interactive.api.inventory.components.Spacer
+import ink.pmc.framework.interactive.LocalPlayer
+import ink.pmc.framework.interactive.inventory.Item
+import ink.pmc.framework.interactive.inventory.Spacer
 import ink.pmc.framework.interactive.inventory.components.canvases.Chest
 import ink.pmc.framework.interactive.inventory.jetpack.Arrangement
 import ink.pmc.framework.interactive.inventory.layout.Box

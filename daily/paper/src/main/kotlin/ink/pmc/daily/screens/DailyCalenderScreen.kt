@@ -11,7 +11,7 @@ import ink.pmc.daily.*
 import ink.pmc.daily.api.Daily
 import ink.pmc.daily.api.DailyHistory
 import ink.pmc.framework.interactive.inventory.*
-import ink.pmc.interactive.api.LocalPlayer
+import ink.pmc.framework.interactive.LocalPlayer
 import ink.pmc.interactive.api.inventory.components.*
 import ink.pmc.framework.interactive.inventory.components.canvases.Chest
 import ink.pmc.framework.interactive.inventory.jetpack.Arrangement

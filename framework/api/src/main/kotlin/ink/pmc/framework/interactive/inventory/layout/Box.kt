@@ -2,7 +2,7 @@ package ink.pmc.framework.interactive.inventory.layout
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import ink.pmc.interactive.api.inventory.components.state.IntSize
+import ink.pmc.framework.interactive.inventory.state.IntSize
 import ink.pmc.framework.interactive.inventory.jetpack.Alignment
 import ink.pmc.framework.interactive.inventory.jetpack.LayoutDirection
 import ink.pmc.framework.interactive.inventory.Modifier

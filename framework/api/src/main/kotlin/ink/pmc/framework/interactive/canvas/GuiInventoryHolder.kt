@@ -3,7 +3,7 @@ package ink.pmc.framework.interactive.canvas
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import ink.pmc.interactive.api.GuiInventoryScope
+import ink.pmc.framework.interactive.GuiInventoryScope
 import ink.pmc.framework.interactive.inventory.click.ClickScope
 import ink.pmc.framework.interactive.inventory.drag.DragScope
 import org.bukkit.entity.Player

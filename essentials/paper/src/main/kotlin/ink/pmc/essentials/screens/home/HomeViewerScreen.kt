@@ -14,9 +14,9 @@ import ink.pmc.essentials.api.home.Home
 import ink.pmc.essentials.api.home.HomeManager
 import ink.pmc.essentials.screens.home.HomeViewerScreen.State.*
 import ink.pmc.framework.interactive.inventory.*
-import ink.pmc.interactive.api.LocalPlayer
-import ink.pmc.interactive.api.inventory.components.Item
-import ink.pmc.interactive.api.inventory.components.Placeholder
+import ink.pmc.framework.interactive.LocalPlayer
+import ink.pmc.framework.interactive.inventory.Item
+import ink.pmc.framework.interactive.inventory.Placeholder
 import ink.pmc.framework.interactive.inventory.components.canvases.Chest
 import ink.pmc.framework.interactive.inventory.jetpack.Arrangement
 import ink.pmc.framework.interactive.inventory.layout.Box

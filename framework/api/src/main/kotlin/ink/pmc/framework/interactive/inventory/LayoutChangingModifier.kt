@@ -1,7 +1,7 @@
 package ink.pmc.framework.interactive.inventory
 
-import ink.pmc.interactive.api.inventory.components.state.IntOffset
-import ink.pmc.interactive.api.inventory.components.state.IntSize
+import ink.pmc.framework.interactive.inventory.state.IntOffset
+import ink.pmc.framework.interactive.inventory.state.IntSize
 
 interface LayoutChangingModifier {
     fun modifyPosition(offset: IntOffset): IntOffset = offset

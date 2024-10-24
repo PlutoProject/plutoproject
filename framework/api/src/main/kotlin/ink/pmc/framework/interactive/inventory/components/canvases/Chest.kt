@@ -2,9 +2,9 @@ package ink.pmc.framework.interactive.inventory.components.canvases
 
 import androidx.compose.runtime.*
 import ink.pmc.framework.utils.inventory.title
-import ink.pmc.interactive.api.GuiInventoryScope
-import ink.pmc.interactive.api.LocalGuiScope
-import ink.pmc.interactive.api.inventory.components.state.IntCoordinates
+import ink.pmc.framework.interactive.GuiInventoryScope
+import ink.pmc.framework.interactive.LocalGuiScope
+import ink.pmc.framework.interactive.inventory.state.IntCoordinates
 import ink.pmc.framework.interactive.inventory.layout.Layout
 import ink.pmc.framework.interactive.inventory.layout.Size
 import ink.pmc.framework.interactive.inventory.Modifier

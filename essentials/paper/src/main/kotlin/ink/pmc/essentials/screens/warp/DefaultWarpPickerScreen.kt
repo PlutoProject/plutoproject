@@ -14,8 +14,8 @@ import ink.pmc.essentials.api.warp.Warp
 import ink.pmc.essentials.api.warp.WarpManager
 import ink.pmc.essentials.config.EssentialsConfig
 import ink.pmc.framework.interactive.inventory.*
-import ink.pmc.interactive.api.ComposableFunction
-import ink.pmc.interactive.api.LocalPlayer
+import ink.pmc.framework.interactive.ComposableFunction
+import ink.pmc.framework.interactive.LocalPlayer
 import ink.pmc.interactive.api.inventory.components.*
 import ink.pmc.framework.interactive.inventory.components.canvases.Chest
 import ink.pmc.framework.interactive.inventory.jetpack.Arrangement

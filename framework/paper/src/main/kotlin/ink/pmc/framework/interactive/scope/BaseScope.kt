@@ -5,9 +5,9 @@ import androidx.compose.runtime.Composition
 import androidx.compose.runtime.Recomposer
 import androidx.compose.runtime.snapshots.ObserverHandle
 import androidx.compose.runtime.snapshots.Snapshot
-import ink.pmc.interactive.api.ComposableFunction
-import ink.pmc.interactive.api.GuiManager
-import ink.pmc.interactive.api.GuiScope
+import ink.pmc.framework.interactive.ComposableFunction
+import ink.pmc.framework.interactive.GuiManager
+import ink.pmc.framework.interactive.GuiScope
 import kotlinx.coroutines.*
 import org.bukkit.entity.Player
 import org.koin.core.component.KoinComponent
