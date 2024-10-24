@@ -2,7 +2,11 @@ package ink.pmc.framework
 
 import com.sksamuel.hoplite.PropertySource
 import ink.pmc.framework.provider.ProviderImpl
+import ink.pmc.framework.rpc.RpcClientImpl
+import ink.pmc.framework.rpc.RpcServerImpl
 import ink.pmc.provider.Provider
+import ink.pmc.rpc.api.RpcClient
+import ink.pmc.rpc.api.RpcServer
 import ink.pmc.utils.config.preconfiguredConfigLoaderBuilder
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -18,4 +22,6 @@ val commonModule = module {
             .loadConfigOrThrow()
     }
     single<Provider> { ProviderImpl() }
+    single<RpcClient> { RpcClientImpl() }
+    single<RpcServer> { RpcServerImpl() }
 }

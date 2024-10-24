@@ -11,16 +11,18 @@ lateinit var proxyThread: Thread
 lateinit var proxy: ProxyServer
 lateinit var velocityUtilsPlugin: PluginContainer
 
-fun saveDefaultConfig(clazz: Class<*>, output: File) {
-    saveConfig(clazz, "config.toml", output)
-}
-
-fun saveConfig(clazz: Class<*>, name: String, output: File) {
+fun saveResourceIfNotExisted(clazz: Class<*>, name: String, output: File): File {
+    if (output.exists()) return output
     val input: InputStream = clazz.getResourceAsStream("/$name")
         ?: throw IllegalArgumentException("Resource not found")
     Files.copy(input, output.toPath(), StandardCopyOption.REPLACE_EXISTING)
     input.close()
+    return output
+}
+
+fun saveDefaultConfig(clazz: Class<*>, folder: File): File {
+    return saveResourceIfNotExisted(clazz, "config.conf", File(folder, "config.conf"))
 }
 
 inline val velocityDepClassLoader: ClassLoader
-    get() = Class.forName("ink.pmc.deploader.VelocityPlugin").classLoader
+    get() = Class.forName("ink.pmc.framework.VelocityPlugin").classLoader

@@ -1,15 +1,17 @@
 package ink.pmc.rpc.api
 
+import ink.pmc.utils.inject.inlinedGet
+import io.grpc.Server
 import io.grpc.ServerBuilder
 
-object RpcServer : IRpcServer by IRpcServer.instance
+interface RpcServer {
+    companion object : RpcServer by inlinedGet()
 
-interface IRpcServer {
-
-    companion object {
-        lateinit var instance: IRpcServer
-    }
+    val server: Server
 
     fun apply(block: ServerBuilder<*>.() -> Unit)
 
+    fun start()
+
+    fun stop()
 }

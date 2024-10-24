@@ -40,12 +40,6 @@ include("member:proto")
 include("member:shared")
 */
 
-include("rpc")
-include("rpc:api")
-include("rpc:paper")
-include("rpc:velocity")
-include("rpc:shared")
-
 include("misc")
 include("misc:api")
 include("misc:paper")

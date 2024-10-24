@@ -1,15 +1,14 @@
 package ink.pmc.rpc.api
 
+import ink.pmc.utils.inject.inlinedGet
 import io.grpc.Channel
 
-object RpcClient : IRpcClient by IRpcClient.instance
-
-interface IRpcClient {
-
-    companion object {
-        lateinit var instance: IRpcClient
-    }
+interface RpcClient {
+    companion object : RpcClient by inlinedGet()
 
     val channel: Channel
 
+    fun start()
+
+    fun stop()
 }
