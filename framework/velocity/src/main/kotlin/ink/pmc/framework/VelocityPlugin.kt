@@ -22,7 +22,7 @@ import ink.pmc.framework.utils.platform.proxy
 import ink.pmc.framework.utils.platform.proxyThread
 import ink.pmc.framework.utils.platform.saveDefaultConfig
 import ink.pmc.framework.provider.Provider
-import ink.pmc.rpc.api.RpcServer
+import ink.pmc.framework.rpc.RpcServer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.incendo.cloud.SenderMapper

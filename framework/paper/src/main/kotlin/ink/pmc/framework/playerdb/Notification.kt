@@ -7,7 +7,7 @@ import ink.pmc.framework.utils.concurrent.submitAsync
 import ink.pmc.framework.utils.concurrent.submitAsyncIO
 import ink.pmc.framework.utils.player.uuid
 import ink.pmc.framework.utils.proto.empty
-import ink.pmc.rpc.api.RpcClient
+import ink.pmc.framework.rpc.RpcClient
 import io.grpc.StatusException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay

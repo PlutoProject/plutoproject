@@ -2,7 +2,6 @@ package ink.pmc.framework.rpc
 
 import ink.pmc.framework.FrameworkConfig
 import ink.pmc.framework.frameworkLogger
-import ink.pmc.rpc.api.RpcClient
 import io.grpc.Channel
 import io.grpc.ManagedChannel
 import io.grpc.StatusException

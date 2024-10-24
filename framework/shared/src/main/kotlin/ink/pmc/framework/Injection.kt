@@ -17,8 +17,8 @@ import ink.pmc.framework.options.OptionsManager
 import ink.pmc.framework.options.factory.OptionDescriptorFactory
 import ink.pmc.framework.playerdb.PlayerDb
 import ink.pmc.framework.provider.Provider
-import ink.pmc.rpc.api.RpcClient
-import ink.pmc.rpc.api.RpcServer
+import ink.pmc.framework.rpc.RpcClient
+import ink.pmc.framework.rpc.RpcServer
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import java.io.File

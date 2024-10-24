@@ -2,7 +2,6 @@ package ink.pmc.framework.rpc
 
 import ink.pmc.framework.FrameworkConfig
 import ink.pmc.framework.frameworkLogger
-import ink.pmc.rpc.api.RpcServer
 import io.grpc.Grpc
 import io.grpc.InsecureServerCredentials
 import io.grpc.Server

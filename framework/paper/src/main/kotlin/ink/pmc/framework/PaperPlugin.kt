@@ -27,7 +27,7 @@ import ink.pmc.framework.visual.toast.ToastRenderer
 import ink.pmc.framework.visual.toast.renderers.NmsToastRenderer
 import ink.pmc.interactive.api.GuiManager
 import ink.pmc.framework.provider.Provider
-import ink.pmc.rpc.api.RpcClient
+import ink.pmc.framework.rpc.RpcClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.bukkit.entity.Player

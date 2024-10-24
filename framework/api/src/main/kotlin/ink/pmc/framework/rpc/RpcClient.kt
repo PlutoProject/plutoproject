@@ -1,4 +1,4 @@
-package ink.pmc.rpc.api
+package ink.pmc.framework.rpc
 
 import ink.pmc.framework.utils.inject.inlinedGet
 import io.grpc.Channel
