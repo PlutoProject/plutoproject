@@ -19,11 +19,11 @@ import ink.pmc.framework.interactive.inventory.jetpack.Arrangement
 import ink.pmc.framework.interactive.inventory.layout.Box
 import ink.pmc.framework.interactive.inventory.layout.Column
 import ink.pmc.framework.interactive.inventory.layout.Row
-import ink.pmc.interactive.api.inventory.modifiers.Modifier
-import ink.pmc.interactive.api.inventory.modifiers.click.clickable
-import ink.pmc.interactive.api.inventory.modifiers.fillMaxSize
-import ink.pmc.interactive.api.inventory.modifiers.fillMaxWidth
-import ink.pmc.interactive.api.inventory.modifiers.height
+import ink.pmc.framework.interactive.inventory.Modifier
+import ink.pmc.framework.interactive.inventory.click.clickable
+import ink.pmc.framework.interactive.inventory.fillMaxSize
+import ink.pmc.framework.interactive.inventory.fillMaxWidth
+import ink.pmc.framework.interactive.inventory.height
 import net.kyori.adventure.text.Component
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack

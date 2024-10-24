@@ -1,4 +1,4 @@
-package ink.pmc.interactive.api.inventory.modifiers.drag
+package ink.pmc.framework.interactive.inventory.drag
 
 import androidx.compose.runtime.Immutable
 import ink.pmc.interactive.api.inventory.components.state.ItemPositions

@@ -1,8 +1,8 @@
-package ink.pmc.interactive.api.inventory.modifiers.placement.absolute
+package ink.pmc.framework.interactive.inventory.placement.absolute
 
 import ink.pmc.interactive.api.inventory.components.state.IntOffset
-import ink.pmc.interactive.api.inventory.modifiers.LayoutChangingModifier
-import ink.pmc.interactive.api.inventory.modifiers.Modifier
+import ink.pmc.framework.interactive.inventory.LayoutChangingModifier
+import ink.pmc.framework.interactive.inventory.Modifier
 
 class PositionModifier(
     val x: Int = 0,

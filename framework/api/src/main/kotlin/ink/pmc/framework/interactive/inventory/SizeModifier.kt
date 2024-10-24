@@ -1,4 +1,4 @@
-package ink.pmc.interactive.api.inventory.modifiers
+package ink.pmc.framework.interactive.inventory
 
 import androidx.compose.runtime.Stable
 import kotlin.math.roundToInt

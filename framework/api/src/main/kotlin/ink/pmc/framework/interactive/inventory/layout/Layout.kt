@@ -4,7 +4,7 @@ import androidx.compose.runtime.Applier
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ComposeNode
 import ink.pmc.interactive.api.inventory.LocalCanvas
-import ink.pmc.interactive.api.inventory.modifiers.Modifier
+import ink.pmc.framework.interactive.inventory.Modifier
 import ink.pmc.framework.interactive.inventory.nodes.BaseInventoryNode
 
 /**

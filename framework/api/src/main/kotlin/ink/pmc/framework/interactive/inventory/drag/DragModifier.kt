@@ -1,6 +1,6 @@
-package ink.pmc.interactive.api.inventory.modifiers.drag
+package ink.pmc.framework.interactive.inventory.drag
 
-import ink.pmc.interactive.api.inventory.modifiers.Modifier
+import ink.pmc.framework.interactive.inventory.Modifier
 
 open class DragModifier(
     val merged: Boolean = false,

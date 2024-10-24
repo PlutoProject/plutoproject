@@ -9,9 +9,9 @@ import ink.pmc.framework.utils.visual.mochaText
 import ink.pmc.interactive.api.inventory.components.Item
 import ink.pmc.interactive.api.inventory.components.VerticalGrid
 import ink.pmc.interactive.api.inventory.components.canvases.Chest
-import ink.pmc.interactive.api.inventory.modifiers.Modifier
-import ink.pmc.interactive.api.inventory.modifiers.click.clickable
-import ink.pmc.interactive.api.inventory.modifiers.fillMaxSize
+import ink.pmc.framework.interactive.inventory.Modifier
+import ink.pmc.framework.interactive.inventory.click.clickable
+import ink.pmc.framework.interactive.inventory.fillMaxSize
 import net.kyori.adventure.text.Component
 import org.bukkit.Material
 

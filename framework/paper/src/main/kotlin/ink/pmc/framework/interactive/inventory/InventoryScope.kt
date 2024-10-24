@@ -15,9 +15,9 @@ import ink.pmc.framework.interactive.canvas.ClickHandler
 import ink.pmc.framework.interactive.canvas.ClickResult
 import ink.pmc.framework.interactive.canvas.GuiInventoryHolder
 import ink.pmc.framework.interactive.inventory.layout.InventoryNode
-import ink.pmc.interactive.api.inventory.modifiers.Constraints
-import ink.pmc.interactive.api.inventory.modifiers.click.ClickScope
-import ink.pmc.interactive.api.inventory.modifiers.drag.DragScope
+import ink.pmc.framework.interactive.inventory.Constraints
+import ink.pmc.framework.interactive.inventory.click.ClickScope
+import ink.pmc.framework.interactive.inventory.drag.DragScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.bukkit.entity.Player
 import java.util.logging.Level

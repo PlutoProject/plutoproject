@@ -15,9 +15,9 @@ import ink.pmc.framework.interactive.canvas.MapBackedCanvas
 import ink.pmc.interactive.api.inventory.components.state.IntCoordinates
 import ink.pmc.framework.interactive.inventory.layout.Layout
 import ink.pmc.framework.interactive.inventory.layout.Renderer
-import ink.pmc.interactive.api.inventory.modifiers.Modifier
-import ink.pmc.interactive.api.inventory.modifiers.click.ClickScope
-import ink.pmc.interactive.api.inventory.modifiers.drag.DragScope
+import ink.pmc.framework.interactive.inventory.Modifier
+import ink.pmc.framework.interactive.inventory.click.ClickScope
+import ink.pmc.framework.interactive.inventory.drag.DragScope
 import ink.pmc.framework.interactive.inventory.nodes.BaseInventoryNode
 import ink.pmc.framework.interactive.inventory.nodes.InventoryCloseScope
 import ink.pmc.framework.interactive.inventory.nodes.StaticMeasurePolicy

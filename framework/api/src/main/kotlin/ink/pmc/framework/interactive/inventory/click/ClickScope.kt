@@ -1,4 +1,4 @@
-package ink.pmc.interactive.api.inventory.modifiers.click
+package ink.pmc.framework.interactive.inventory.click
 
 import org.bukkit.entity.HumanEntity
 import org.bukkit.event.inventory.ClickType

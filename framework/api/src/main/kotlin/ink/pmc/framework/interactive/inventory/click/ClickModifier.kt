@@ -1,6 +1,6 @@
-package ink.pmc.interactive.api.inventory.modifiers.click
+package ink.pmc.framework.interactive.inventory.click
 
-import ink.pmc.interactive.api.inventory.modifiers.Modifier
+import ink.pmc.framework.interactive.inventory.Modifier
 
 open class ClickModifier(
     val merged: Boolean = false,

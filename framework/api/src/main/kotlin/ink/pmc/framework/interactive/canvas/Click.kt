@@ -1,7 +1,7 @@
 package ink.pmc.framework.interactive.canvas
 
-import ink.pmc.interactive.api.inventory.modifiers.click.ClickScope
-import ink.pmc.interactive.api.inventory.modifiers.drag.DragScope
+import ink.pmc.framework.interactive.inventory.click.ClickScope
+import ink.pmc.framework.interactive.inventory.drag.DragScope
 
 data class ClickResult(val cancelBukkitEvent: Boolean? = null) {
 

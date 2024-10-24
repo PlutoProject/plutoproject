@@ -13,6 +13,7 @@ import ink.pmc.advkt.component.text
 import ink.pmc.essentials.api.warp.Warp
 import ink.pmc.essentials.api.warp.WarpManager
 import ink.pmc.essentials.config.EssentialsConfig
+import ink.pmc.framework.interactive.inventory.*
 import ink.pmc.interactive.api.ComposableFunction
 import ink.pmc.interactive.api.LocalPlayer
 import ink.pmc.interactive.api.inventory.components.*
@@ -22,7 +23,7 @@ import ink.pmc.framework.interactive.inventory.layout.Box
 import ink.pmc.framework.interactive.inventory.layout.Column
 import ink.pmc.framework.interactive.inventory.layout.Row
 import ink.pmc.interactive.api.inventory.modifiers.*
-import ink.pmc.interactive.api.inventory.modifiers.click.clickable
+import ink.pmc.framework.interactive.inventory.click.clickable
 import ink.pmc.framework.utils.chat.UI_PAGING_SOUND
 import ink.pmc.framework.utils.chat.UI_SUCCEED_SOUND
 import ink.pmc.framework.utils.concurrent.submitAsync

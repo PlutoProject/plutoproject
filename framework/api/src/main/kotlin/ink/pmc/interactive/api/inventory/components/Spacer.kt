@@ -3,9 +3,9 @@ package ink.pmc.interactive.api.inventory.components
 import androidx.compose.runtime.Composable
 import ink.pmc.framework.interactive.inventory.layout.Layout
 import ink.pmc.framework.interactive.inventory.layout.MeasureResult
-import ink.pmc.interactive.api.inventory.modifiers.Modifier
-import ink.pmc.interactive.api.inventory.modifiers.height
-import ink.pmc.interactive.api.inventory.modifiers.width
+import ink.pmc.framework.interactive.inventory.Modifier
+import ink.pmc.framework.interactive.inventory.height
+import ink.pmc.framework.interactive.inventory.width
 
 /**
  * A layout element that takes up space without drawing anything.

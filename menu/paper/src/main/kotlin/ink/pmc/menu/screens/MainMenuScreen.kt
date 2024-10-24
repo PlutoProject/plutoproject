@@ -15,6 +15,7 @@ import ink.pmc.essentials.api.Essentials
 import ink.pmc.essentials.config.EssentialsConfig
 import ink.pmc.essentials.screens.home.HomeViewerScreen
 import ink.pmc.essentials.screens.warp.DefaultWarpPickerScreen
+import ink.pmc.framework.interactive.inventory.*
 import ink.pmc.hypervisor.DynamicScheduling
 import ink.pmc.hypervisor.DynamicViewDistanceState.*
 import ink.pmc.interactive.api.LocalPlayer
@@ -25,7 +26,7 @@ import ink.pmc.framework.interactive.inventory.layout.Box
 import ink.pmc.framework.interactive.inventory.layout.Column
 import ink.pmc.framework.interactive.inventory.layout.Row
 import ink.pmc.interactive.api.inventory.modifiers.*
-import ink.pmc.interactive.api.inventory.modifiers.click.clickable
+import ink.pmc.framework.interactive.inventory.click.clickable
 import ink.pmc.menu.CO_NEAR_COMMAND
 import ink.pmc.menu.components.Wiki
 import ink.pmc.menu.economy

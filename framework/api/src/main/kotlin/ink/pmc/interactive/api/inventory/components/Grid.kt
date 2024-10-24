@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import ink.pmc.framework.interactive.inventory.layout.Layout
 import ink.pmc.framework.interactive.inventory.layout.MeasurePolicy
 import ink.pmc.framework.interactive.inventory.layout.MeasureResult
-import ink.pmc.interactive.api.inventory.modifiers.Modifier
+import ink.pmc.framework.interactive.inventory.Modifier
 
 /**
  * A grid layout component that finds the largest child size, and then places children in a grid based on this size.

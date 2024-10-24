@@ -13,6 +13,7 @@ import ink.pmc.essentials.screens.home.HomeEditorScreen.PreferState.PRRFERRED
 import ink.pmc.essentials.screens.home.HomeEditorScreen.StarState.NOT_STARRED
 import ink.pmc.essentials.screens.home.HomeEditorScreen.StarState.STARRED
 import ink.pmc.essentials.screens.home.HomeEditorScreen.State.*
+import ink.pmc.framework.interactive.inventory.*
 import ink.pmc.interactive.api.LocalPlayer
 import ink.pmc.interactive.api.inventory.components.Back
 import ink.pmc.interactive.api.inventory.components.Item
@@ -22,8 +23,7 @@ import ink.pmc.interactive.api.inventory.components.canvases.Chest
 import ink.pmc.framework.interactive.inventory.layout.Box
 import ink.pmc.framework.interactive.inventory.layout.Column
 import ink.pmc.framework.interactive.inventory.layout.Row
-import ink.pmc.interactive.api.inventory.modifiers.*
-import ink.pmc.interactive.api.inventory.modifiers.click.clickable
+import ink.pmc.framework.interactive.inventory.click.clickable
 import ink.pmc.framework.utils.chat.isValidIdentifier
 import ink.pmc.framework.utils.chat.replace
 import ink.pmc.framework.utils.concurrent.submitAsync

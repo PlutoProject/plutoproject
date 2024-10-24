@@ -1,4 +1,4 @@
-package ink.pmc.interactive.api.inventory.modifiers
+package ink.pmc.framework.interactive.inventory
 
 import ink.pmc.interactive.api.inventory.components.state.IntOffset
 import ink.pmc.interactive.api.inventory.components.state.IntSize

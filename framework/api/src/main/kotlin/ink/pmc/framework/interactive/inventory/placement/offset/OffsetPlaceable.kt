@@ -1,4 +1,4 @@
-package ink.pmc.interactive.api.inventory.modifiers.placement.offset
+package ink.pmc.framework.interactive.inventory.placement.offset
 
 import ink.pmc.interactive.api.inventory.components.state.IntOffset
 import ink.pmc.framework.interactive.inventory.layout.Placeable

@@ -4,8 +4,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import ink.pmc.interactive.api.GuiInventoryScope
-import ink.pmc.interactive.api.inventory.modifiers.click.ClickScope
-import ink.pmc.interactive.api.inventory.modifiers.drag.DragScope
+import ink.pmc.framework.interactive.inventory.click.ClickScope
+import ink.pmc.framework.interactive.inventory.drag.DragScope
 import org.bukkit.entity.Player
 import org.bukkit.event.Cancellable
 import org.bukkit.event.inventory.InventoryCloseEvent

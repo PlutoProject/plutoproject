@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package ink.pmc.interactive.api.inventory.modifiers
+package ink.pmc.framework.interactive.inventory
 
 /**
  * An ordered, immutable collection of [modifier elements][Modifier.Element] that decorate or add

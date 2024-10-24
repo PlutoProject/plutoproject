@@ -1,9 +1,9 @@
-package ink.pmc.interactive.api.inventory.modifiers.placement.offset
+package ink.pmc.framework.interactive.inventory.placement.offset
 
 import androidx.compose.runtime.Stable
 import ink.pmc.interactive.api.inventory.components.state.IntOffset
-import ink.pmc.interactive.api.inventory.modifiers.LayoutChangingModifier
-import ink.pmc.interactive.api.inventory.modifiers.Modifier
+import ink.pmc.framework.interactive.inventory.LayoutChangingModifier
+import ink.pmc.framework.interactive.inventory.Modifier
 
 data class OffsetModifier(
     val offset: IntOffset

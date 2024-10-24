@@ -13,6 +13,7 @@ import ink.pmc.essentials.*
 import ink.pmc.essentials.api.warp.Warp
 import ink.pmc.essentials.api.warp.WarpManager
 import ink.pmc.essentials.screens.warp.WarpViewerScreen.State.*
+import ink.pmc.framework.interactive.inventory.*
 import ink.pmc.interactive.api.LocalPlayer
 import ink.pmc.interactive.api.inventory.components.Item
 import ink.pmc.interactive.api.inventory.components.Placeholder
@@ -21,8 +22,7 @@ import ink.pmc.framework.interactive.inventory.jetpack.Arrangement
 import ink.pmc.framework.interactive.inventory.layout.Box
 import ink.pmc.framework.interactive.inventory.layout.Column
 import ink.pmc.framework.interactive.inventory.layout.Row
-import ink.pmc.interactive.api.inventory.modifiers.*
-import ink.pmc.interactive.api.inventory.modifiers.click.clickable
+import ink.pmc.framework.interactive.inventory.click.clickable
 import ink.pmc.framework.utils.chat.UI_BACK
 import ink.pmc.framework.utils.chat.replace
 import org.bukkit.Material

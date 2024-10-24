@@ -1,6 +1,6 @@
 package ink.pmc.framework.interactive.inventory.layout
 
-import ink.pmc.interactive.api.inventory.modifiers.Constraints
+import ink.pmc.framework.interactive.inventory.Constraints
 import kotlin.math.max
 
 abstract class RowColumnMeasurePolicy(
