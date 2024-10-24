@@ -109,13 +109,6 @@ include("player-database:shared")
 include("player-database:velocity")
 include("player-database:paper")
 include("player-database:proto")
-
-include("options")
-include("options:api")
-include("options:shared")
-include("options:paper")
-include("options:velocity")
-include("options:proto")
 */
 
 include("framework")
@@ -123,3 +116,5 @@ include("framework:api")
 include("framework:velocity")
 include("framework:paper")
 include("framework:shared")
+include("framework:proto")
+findProject(":framework:proto")?.name = "proto"

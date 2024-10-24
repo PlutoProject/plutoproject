@@ -2,10 +2,10 @@ package ink.pmc.interactive.api.inventory.components.canvases
 
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
+import ink.pmc.framework.frameworkPaper
 import ink.pmc.interactive.api.LocalGuiScope
 import ink.pmc.interactive.api.LocalPlayer
 import ink.pmc.utils.concurrent.submitSync
-import ink.pmc.utils.platform.paperUtilsPlugin
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import net.wesjd.anvilgui.AnvilGUI
@@ -32,7 +32,7 @@ fun Anvil(
     var textState by rememberSaveable { mutableStateOf(text) }
     remember(title, left, right, output) {
         AnvilGUI.Builder()
-            .plugin(paperUtilsPlugin)
+            .plugin(frameworkPaper)
             .jsonTitle(GsonComponentSerializer.gson().serialize(title))
             .text(textState)
             .apply {

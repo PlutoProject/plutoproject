@@ -1,6 +1,7 @@
 package ink.pmc.framework
 
 import com.github.shynixn.mccoroutine.velocity.SuspendingPluginContainer
+import com.github.shynixn.mccoroutine.velocity.registerSuspend
 import com.velocitypowered.api.command.CommandSource
 import com.velocitypowered.api.event.Subscribe
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent
@@ -8,6 +9,9 @@ import com.velocitypowered.api.event.proxy.ProxyShutdownEvent
 import com.velocitypowered.api.plugin.annotation.DataDirectory
 import com.velocitypowered.api.proxy.ProxyServer
 import ink.pmc.framework.commands.RpcCommand
+import ink.pmc.framework.options.OptionsUpdateNotifier
+import ink.pmc.framework.options.ProxyOptionsUpdateNotifier
+import ink.pmc.framework.options.listeners.VelocityOptionsListener
 import ink.pmc.provider.Provider
 import ink.pmc.rpc.api.RpcServer
 import ink.pmc.utils.inject.startKoinIfNotPresent
@@ -29,6 +33,7 @@ import java.util.logging.Logger
 class VelocityPlugin(private val spc: SuspendingPluginContainer) {
     private val velocityModule = module {
         single<File>(FRAMEWORK_CONFIG) { saveDefaultConfig(VelocityPlugin::class.java, dataFolder) }
+        single<OptionsUpdateNotifier> { ProxyOptionsUpdateNotifier() }
     }
     private lateinit var dataFolder: File
 
@@ -47,6 +52,7 @@ class VelocityPlugin(private val spc: SuspendingPluginContainer) {
         startKoinIfNotPresent {
             modules(commonModule, velocityModule)
         }
+        server.eventManager.registerSuspend(this, VelocityOptionsListener)
     }
 
     @Subscribe

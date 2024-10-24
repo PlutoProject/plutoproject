@@ -3,7 +3,9 @@ package ink.pmc.framework.interactive.inventory
 import androidx.compose.runtime.Applier
 import androidx.compose.runtime.Composition
 import androidx.compose.runtime.CompositionLocalProvider
+import ink.pmc.framework.frameworkPaper
 import ink.pmc.framework.interactive.UI_RENDER_FAILED
+import ink.pmc.framework.interactive.scope.BaseScope
 import ink.pmc.interactive.api.ComposableFunction
 import ink.pmc.interactive.api.LocalGuiScope
 import ink.pmc.interactive.api.LocalPlayer
@@ -15,8 +17,6 @@ import ink.pmc.interactive.api.inventory.layout.InventoryNode
 import ink.pmc.interactive.api.inventory.modifiers.Constraints
 import ink.pmc.interactive.api.inventory.modifiers.click.ClickScope
 import ink.pmc.interactive.api.inventory.modifiers.drag.DragScope
-import ink.pmc.framework.interactive.plugin
-import ink.pmc.framework.interactive.scope.BaseScope
 import ink.pmc.utils.concurrent.submitSync
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.bukkit.entity.Player
@@ -79,7 +79,7 @@ class InventoryScope(owner: Player, contents: ComposableFunction) : BaseScope<In
 
     private fun renderExceptionCallback(e: Throwable) {
         owner.sendMessage(UI_RENDER_FAILED)
-        plugin.logger.log(Level.SEVERE, "Inventory render failed while rendering for ${owner.name}", e)
+        frameworkPaper.logger.log(Level.SEVERE, "Inventory render failed while rendering for ${owner.name}", e)
         dispose()
     }
 

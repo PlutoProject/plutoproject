@@ -1,3 +1,0 @@
-bukkitPluginYaml {
-    depend.add("provider")
-}

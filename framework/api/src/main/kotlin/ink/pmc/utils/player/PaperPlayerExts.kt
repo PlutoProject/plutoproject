@@ -1,11 +1,11 @@
 package ink.pmc.utils.player
 
 import com.google.common.io.ByteStreams
+import ink.pmc.framework.frameworkPaper
 import ink.pmc.utils.concurrent.io
 import ink.pmc.utils.concurrent.submitSync
 import ink.pmc.utils.platform.isAsync
 import ink.pmc.utils.platform.isFolia
-import ink.pmc.utils.platform.paperUtilsPlugin
 import net.minecraft.network.protocol.Packet
 import org.bukkit.Location
 import org.bukkit.craftbukkit.entity.CraftPlayer
@@ -21,7 +21,7 @@ suspend fun Player.switchServer(name: String) {
         val out = ByteStreams.newDataOutput()
         out.writeUTF("Connect")
         out.writeUTF(name)
-        player?.sendPluginMessage(paperUtilsPlugin, "BungeeCord", out.toByteArray())
+        player?.sendPluginMessage(frameworkPaper, "BungeeCord", out.toByteArray())
     }
 }
 

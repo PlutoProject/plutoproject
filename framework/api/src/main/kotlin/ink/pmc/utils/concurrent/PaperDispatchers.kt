@@ -1,9 +1,9 @@
 package ink.pmc.utils.concurrent
 
 import com.github.shynixn.mccoroutine.bukkit.minecraftDispatcher
+import ink.pmc.framework.frameworkPaper
 import ink.pmc.utils.platform.isFolia
 import ink.pmc.utils.platform.paper
-import ink.pmc.utils.platform.paperUtilsPlugin
 import kotlinx.coroutines.CoroutineDispatcher
 import org.bukkit.Chunk
 import org.bukkit.Location
@@ -12,14 +12,14 @@ import kotlin.coroutines.CoroutineContext
 
 private val globalRegionDispatcher = object : CoroutineDispatcher() {
     override fun dispatch(context: CoroutineContext, block: Runnable) {
-        paper.globalRegionScheduler.execute(paperUtilsPlugin, block)
+        paper.globalRegionScheduler.execute(frameworkPaper, block)
     }
 }
 
 val paperDispatcher: CoroutineContext
     get() {
         if (isFolia) return globalRegionDispatcher
-        return paperUtilsPlugin.minecraftDispatcher
+        return frameworkPaper.minecraftDispatcher
     }
 
 val Entity.dispatcher: CoroutineContext
@@ -28,7 +28,7 @@ val Entity.dispatcher: CoroutineContext
             val entity = this
             return object : CoroutineDispatcher() {
                 override fun dispatch(context: CoroutineContext, block: Runnable) {
-                    entity.scheduler.execute(paperUtilsPlugin, block, {}, 0L)
+                    entity.scheduler.execute(frameworkPaper, block, {}, 0L)
                 }
             }
         }
@@ -41,7 +41,7 @@ val Chunk.dispatcher: CoroutineContext
             return object : CoroutineDispatcher() {
                 override fun dispatch(context: CoroutineContext, block: Runnable) {
                     val chunk = this@dispatcher
-                    paper.regionScheduler.execute(paperUtilsPlugin, chunk.world, chunk.x, chunk.z, block)
+                    paper.regionScheduler.execute(frameworkPaper, chunk.world, chunk.x, chunk.z, block)
                 }
             }
         }

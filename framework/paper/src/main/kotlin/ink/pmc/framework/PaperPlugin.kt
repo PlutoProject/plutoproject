@@ -4,6 +4,11 @@ import com.github.shynixn.mccoroutine.bukkit.SuspendingJavaPlugin
 import com.github.shynixn.mccoroutine.bukkit.registerSuspendingEvents
 import ink.pmc.framework.interactive.GuiListener
 import ink.pmc.framework.interactive.GuiManagerImpl
+import ink.pmc.framework.options.BackendOptionsUpdateNotifier
+import ink.pmc.framework.options.OptionsUpdateNotifier
+import ink.pmc.framework.options.listeners.BukkitOptionsListener
+import ink.pmc.framework.options.startOptionsMonitor
+import ink.pmc.framework.options.stopOptionsMonitor
 import ink.pmc.interactive.api.GuiManager
 import ink.pmc.provider.Provider
 import ink.pmc.rpc.api.RpcClient
@@ -27,6 +32,7 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
     private val bukkitModule = module {
         single<File>(FRAMEWORK_CONFIG) { saveResourceIfNotExisted("config.conf") }
         single<GuiManager> { GuiManagerImpl() }
+        single<OptionsUpdateNotifier> { BackendOptionsUpdateNotifier() }
     }
 
     override fun onLoad() {
@@ -39,6 +45,8 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
         RpcClient.start()
         preload()
         paper.pluginManager.registerSuspendingEvents(GuiListener, frameworkPaper)
+        paper.pluginManager.registerSuspendingEvents(BukkitOptionsListener, frameworkPaper)
+        startOptionsMonitor()
     }
 
     override suspend fun onEnableAsync() {
@@ -47,6 +55,7 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
 
     override suspend fun onDisableAsync() {
         GuiManager.disposeAll()
+        stopOptionsMonitor()
         withContext(Dispatchers.IO) {
             Provider.close()
         }
