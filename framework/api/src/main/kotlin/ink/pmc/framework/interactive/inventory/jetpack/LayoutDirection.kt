@@ -1,4 +1,4 @@
-package ink.pmc.interactive.api.inventory.jetpack
+package ink.pmc.framework.interactive.inventory.jetpack
 
 /**
  * A class for defining layout directions.

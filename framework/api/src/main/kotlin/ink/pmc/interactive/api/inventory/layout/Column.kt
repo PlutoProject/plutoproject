@@ -2,9 +2,9 @@ package ink.pmc.interactive.api.inventory.layout
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import ink.pmc.interactive.api.inventory.jetpack.Alignment
-import ink.pmc.interactive.api.inventory.jetpack.Arrangement
-import ink.pmc.interactive.api.inventory.jetpack.LayoutDirection
+import ink.pmc.framework.interactive.inventory.jetpack.Alignment
+import ink.pmc.framework.interactive.inventory.jetpack.Arrangement
+import ink.pmc.framework.interactive.inventory.jetpack.LayoutDirection
 import ink.pmc.interactive.api.inventory.modifiers.Modifier
 
 /**

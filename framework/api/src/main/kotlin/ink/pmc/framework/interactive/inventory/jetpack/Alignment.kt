@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package ink.pmc.interactive.api.inventory.jetpack
+package ink.pmc.framework.interactive.inventory.jetpack
 
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable

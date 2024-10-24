@@ -15,7 +15,7 @@ import ink.pmc.interactive.api.LocalPlayer
 import ink.pmc.interactive.api.inventory.components.Item
 import ink.pmc.interactive.api.inventory.components.Spacer
 import ink.pmc.interactive.api.inventory.components.canvases.Chest
-import ink.pmc.interactive.api.inventory.jetpack.Arrangement
+import ink.pmc.framework.interactive.inventory.jetpack.Arrangement
 import ink.pmc.interactive.api.inventory.layout.Box
 import ink.pmc.interactive.api.inventory.layout.Column
 import ink.pmc.interactive.api.inventory.layout.Row
