@@ -1,4 +1,4 @@
-package ink.pmc.utils.dsl.invui.window
+package ink.pmc.framework.utils.dsl.invui.window
 
 import xyz.xenondevs.inventoryaccess.component.AdventureComponentWrapper
 import xyz.xenondevs.invui.window.AbstractSingleWindow

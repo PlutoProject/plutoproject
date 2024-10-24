@@ -1,8 +1,8 @@
-package ink.pmc.utils.dsl.invui.window
+package ink.pmc.framework.utils.dsl.invui.window
 
 import ink.pmc.advkt.component.RootComponentKt
 import ink.pmc.advkt.component.black
-import ink.pmc.utils.structure.Builder
+import ink.pmc.framework.utils.structure.Builder
 import net.kyori.adventure.text.Component
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.InventoryClickEvent

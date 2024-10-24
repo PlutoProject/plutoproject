@@ -13,9 +13,9 @@ import ink.pmc.exchange.lobby.LogicDisabler
 import ink.pmc.exchange.lobby.PlayerActionHandler
 import ink.pmc.exchange.lobby.commands.LobbyCheckoutCommand
 import ink.pmc.exchange.paper.lobbyWorldName
-import ink.pmc.utils.command.init
-import ink.pmc.utils.isInDebugMode
-import ink.pmc.utils.platform.paper
+import ink.pmc.framework.utils.command.init
+import ink.pmc.framework.utils.isInDebugMode
+import ink.pmc.framework.utils.platform.paper
 import io.papermc.paper.command.brigadier.CommandSourceStack
 import org.bukkit.Bukkit
 import org.bukkit.World

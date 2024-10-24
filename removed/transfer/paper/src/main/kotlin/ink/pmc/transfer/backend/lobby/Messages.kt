@@ -6,7 +6,7 @@ import ink.pmc.advkt.component.text
 import ink.pmc.advkt.title.*
 import ink.pmc.transfer.api.Destination
 import ink.pmc.transfer.api.DestinationStatus
-import ink.pmc.utils.visual.*
+import ink.pmc.framework.utils.visual.*
 import net.kyori.adventure.text.Component
 import kotlin.time.Duration.Companion.seconds
 

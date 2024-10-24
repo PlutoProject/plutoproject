@@ -3,7 +3,7 @@ package ink.pmc.transfer
 import ink.pmc.advkt.component.component
 import ink.pmc.advkt.component.newline
 import ink.pmc.advkt.component.text
-import ink.pmc.utils.visual.*
+import ink.pmc.framework.utils.visual.*
 
 val DESTINATION_NOT_EXISTED = component {
     text("无法传送，ID 为 ") with mochaMaroon

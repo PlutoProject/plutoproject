@@ -5,7 +5,7 @@ import com.velocitypowered.api.event.player.GameProfileRequestEvent
 import com.velocitypowered.api.util.GameProfile
 import ink.pmc.member.memberService
 import ink.pmc.member.serverLogger
-import ink.pmc.utils.bedrock.xuid
+import ink.pmc.framework.utils.bedrock.xuid
 import kotlinx.coroutines.flow.firstOrNull
 
 object BedrockAdapter : AuthAdapter {

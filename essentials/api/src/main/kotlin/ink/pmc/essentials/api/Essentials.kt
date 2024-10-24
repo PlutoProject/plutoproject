@@ -6,7 +6,7 @@ import ink.pmc.essentials.api.home.HomeManager
 import ink.pmc.essentials.api.teleport.TeleportManager
 import ink.pmc.essentials.api.teleport.random.RandomTeleportManager
 import ink.pmc.essentials.api.warp.WarpManager
-import ink.pmc.utils.inject.inlinedGet
+import ink.pmc.framework.utils.inject.inlinedGet
 
 @Suppress("UNUSED")
 interface Essentials {

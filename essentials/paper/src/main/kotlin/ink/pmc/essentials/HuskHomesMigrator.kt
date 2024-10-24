@@ -2,7 +2,7 @@ package ink.pmc.essentials
 
 import ink.pmc.essentials.api.home.HomeManager
 import ink.pmc.essentials.api.warp.WarpManager
-import ink.pmc.utils.platform.paper
+import ink.pmc.framework.utils.platform.paper
 import kotlinx.coroutines.future.await
 import org.bukkit.Bukkit
 import org.bukkit.Location

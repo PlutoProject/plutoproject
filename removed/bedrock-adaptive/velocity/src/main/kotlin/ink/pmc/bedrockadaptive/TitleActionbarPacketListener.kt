@@ -6,7 +6,7 @@ import dev.simplix.protocolize.api.listener.AbstractPacketListener
 import dev.simplix.protocolize.api.listener.PacketReceiveEvent
 import dev.simplix.protocolize.api.listener.PacketSendEvent
 import ink.pmc.bedrockadaptive.utils.replaceFallbackColor
-import ink.pmc.utils.bedrock.isFloodgatePlayer
+import ink.pmc.framework.utils.bedrock.isFloodgatePlayer
 
 @Suppress("UNUSED")
 object TitleActionbarPacketListener : AbstractPacketListener<TitleActionbarPacket>(

@@ -147,16 +147,12 @@ fun Project.configurePaperPlugin() {
     afterEvaluate {
         bukkitPluginYaml {
             main = "${parent?.group}.PaperPlugin"
-            name = parent?.name
+            name = "plutoproject_${parent?.name}"
             apiVersion = bukkitApiVersion
-            if (name.get().contains("dependency-loader")) {
+            if (name.get().contains("framework")) {
                 return@bukkitPluginYaml
-            }
-            if (!name.get().contains("dependency-loader")) {
-                depend.add("dependency-loader")
-            }
-            if (!name.get().contains("utils")) {
-                depend.add("utils")
+            } else {
+                depend.add("plutoproject_framework")
             }
         }
     }
@@ -167,16 +163,12 @@ fun Project.configureVelocityPlugin() {
     afterEvaluate {
         velocityPluginJson {
             main = "${parent?.group}.VelocityPlugin"
-            id = parent?.name
-            name = parent?.name
-            if (name.get().contains("dependency-loader")) {
+            id = "plutoproject_${parent?.name}"
+            name = "plutoproject_${parent?.name}"
+            if (name.get().contains("framework")) {
                 return@velocityPluginJson
-            }
-            if (!name.get().contains("dependency-loader")) {
-                dependency("dependency-loader")
-            }
-            if (!name.get().contains("utils")) {
-                dependency("utils")
+            } else {
+                dependency("plutoproject_framework")
             }
         }
     }
@@ -325,7 +317,7 @@ allprojects {
         dep: Provider<*>,
         dependencyConfiguration: Action<ExternalModuleDependency> = Action { }
     ) {
-        if (project.name.contains("dependency-loader")) {
+        if (project.name.contains("framework")) {
             implementation(dep, dependencyConfiguration)
             return
         }

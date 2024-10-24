@@ -8,10 +8,10 @@ import ink.pmc.advkt.send
 import ink.pmc.hypervisor.LoadLevel.*
 import ink.pmc.hypervisor.MeasuringTime
 import ink.pmc.hypervisor.StatisticProvider
-import ink.pmc.utils.concurrent.sync
-import ink.pmc.utils.platform.paper
-import ink.pmc.utils.roundToTwoDecimals
-import ink.pmc.utils.visual.*
+import ink.pmc.framework.utils.concurrent.sync
+import ink.pmc.framework.utils.platform.paper
+import ink.pmc.framework.utils.roundToTwoDecimals
+import ink.pmc.framework.utils.visual.*
 import net.kyori.adventure.text.Component
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Entity

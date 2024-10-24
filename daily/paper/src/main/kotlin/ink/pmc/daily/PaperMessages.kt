@@ -1,8 +1,8 @@
 package ink.pmc.daily
 
 import ink.pmc.advkt.component.*
-import ink.pmc.utils.chat.ECONOMY_SYMBOL
-import ink.pmc.utils.visual.*
+import ink.pmc.framework.utils.chat.ECONOMY_SYMBOL
+import ink.pmc.framework.utils.visual.*
 import net.kyori.adventure.text.Component
 
 val CHECK_IN = component {
@@ -111,5 +111,5 @@ val PLAYER_NOT_CHECKIN_JOIN = component {
     text("✨ 今日尚未到访，到访可获取货币奖励 ") with mochaText
     text("[打开礼记]") with mochaLavender with showText {
         text("点此打开礼记") with mochaText
-    } with runCommand("/daily:checkin gui")
+    } with runCommand("/plutoproject_daily:checkin gui")
 }

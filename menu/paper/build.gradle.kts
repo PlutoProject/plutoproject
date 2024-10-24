@@ -1,9 +1,7 @@
 bukkitPluginYaml {
-    depend.add("interactive")
-    softDepend.add("essentials")
-    softDepend.add("daily")
-    softDepend.add("player-database")
+    softDepend.add("plutoproject_essentials")
+    softDepend.add("plutoproject_daily")
     softDepend.add("Vault")
     softDepend.add("CoreProtect")
-    softDepend.add("hypervisor")
+    softDepend.add("plutoproject_hypervisor")
 }

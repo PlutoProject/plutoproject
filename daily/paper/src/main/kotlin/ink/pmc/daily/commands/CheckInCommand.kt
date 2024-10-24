@@ -4,13 +4,13 @@ import cafe.adriel.voyager.navigator.Navigator
 import ink.pmc.daily.CHECKED_IN
 import ink.pmc.daily.api.Daily
 import ink.pmc.daily.screens.DailyCalenderScreen
-import ink.pmc.interactive.api.GuiManager
-import ink.pmc.utils.PaperCm
-import ink.pmc.utils.command.annotation.Command
-import ink.pmc.utils.chat.UI_SUCCEED_SOUND
-import ink.pmc.utils.command.checkPlayer
-import ink.pmc.utils.dsl.cloud.invoke
-import ink.pmc.utils.dsl.cloud.sender
+import ink.pmc.framework.interactive.GuiManager
+import ink.pmc.framework.utils.PaperCm
+import ink.pmc.framework.utils.command.annotation.Command
+import ink.pmc.framework.utils.chat.UI_SUCCEED_SOUND
+import ink.pmc.framework.utils.command.checkPlayer
+import ink.pmc.framework.utils.dsl.cloud.invoke
+import ink.pmc.framework.utils.dsl.cloud.sender
 import org.koin.java.KoinJavaComponent.getKoin
 
 @Command("checkin")

@@ -8,5 +8,5 @@ subprojects {
 }
 
 tasks.shadowJar {
-    relocate("ink.pmc.utils.proto", "ink.pmc.exchange.proto.utils")
+    relocate("ink.pmc.framework.utils.proto", "ink.pmc.exchange.proto.utils")
 }

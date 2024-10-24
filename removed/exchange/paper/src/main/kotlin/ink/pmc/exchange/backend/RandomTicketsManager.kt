@@ -3,7 +3,7 @@ package ink.pmc.exchange.backend
 import com.github.shynixn.mccoroutine.bukkit.registerSuspendingEvents
 import ink.pmc.exchange.paperExchangePlugin
 import ink.pmc.member.api.paper.member
-import ink.pmc.utils.platform.paper
+import ink.pmc.framework.utils.platform.paper
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.HandlerList

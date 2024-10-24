@@ -2,8 +2,8 @@ package ink.pmc.exchange.lobby
 
 import ink.pmc.exchange.backend.AbstractBackendExchangeService
 import ink.pmc.exchange.proto.lobby2proxy.lobbyHealthReport
-import ink.pmc.utils.concurrent.submitAsyncIO
-import ink.pmc.utils.platform.paper
+import ink.pmc.framework.utils.concurrent.submitAsyncIO
+import ink.pmc.framework.utils.platform.paper
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.delay

@@ -1,7 +1,7 @@
 package ink.pmc.member.api.fetcher
 
 import com.google.gson.JsonParser
-import ink.pmc.utils.bedrock.uuidFromXuid
+import ink.pmc.framework.utils.bedrock.uuidFromXuid
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope

@@ -4,7 +4,7 @@ import com.destroystokyo.paper.event.player.PlayerPostRespawnEvent
 import ink.pmc.hypervisor.DynamicScheduling
 import ink.pmc.hypervisor.DynamicViewDistanceState
 import ink.pmc.hypervisor.config.HypervisorConfig
-import ink.pmc.utils.network.formatted
+import ink.pmc.framework.utils.network.formatted
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener

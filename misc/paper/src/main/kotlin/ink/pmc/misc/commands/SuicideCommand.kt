@@ -2,9 +2,9 @@ package ink.pmc.misc.commands
 
 import ink.pmc.misc.SUICIDE
 import ink.pmc.misc.commandManager
-import ink.pmc.utils.chat.NON_PLAYER
-import ink.pmc.utils.command.PaperCommand
-import ink.pmc.utils.concurrent.sync
+import ink.pmc.framework.utils.chat.NON_PLAYER
+import ink.pmc.framework.utils.command.PaperCommand
+import ink.pmc.framework.utils.concurrent.sync
 import org.bukkit.entity.Player
 import org.incendo.cloud.kotlin.coroutines.extension.suspendingHandler
 

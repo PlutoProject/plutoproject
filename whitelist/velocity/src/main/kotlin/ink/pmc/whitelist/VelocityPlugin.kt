@@ -9,9 +9,9 @@ import com.velocitypowered.api.event.proxy.ProxyInitializeEvent
 import com.velocitypowered.api.plugin.PluginContainer
 import com.velocitypowered.api.plugin.annotation.DataDirectory
 import com.velocitypowered.api.proxy.ProxyServer
-import ink.pmc.provider.ProviderService
-import ink.pmc.utils.inject.startKoinIfNotPresent
-import ink.pmc.utils.platform.proxy
+import ink.pmc.framework.provider.Provider
+import ink.pmc.framework.utils.inject.startKoinIfNotPresent
+import ink.pmc.framework.utils.platform.proxy
 import org.incendo.cloud.SenderMapper
 import org.incendo.cloud.execution.ExecutionCoordinator
 import org.incendo.cloud.velocity.VelocityCommandManager
@@ -24,7 +24,7 @@ lateinit var commandManager: VelocityCommandManager<CommandSource>
 
 private const val COLLECTION_NAME = "whitelist"
 private val whitelistCollection =
-    ProviderService.defaultMongoDatabase.getCollection<WhitelistModel>(COLLECTION_NAME)
+    Provider.defaultMongoDatabase.getCollection<WhitelistModel>(COLLECTION_NAME)
 private val velocityModule = module {
     single<WhitelistRepository> { WhitelistRepository(whitelistCollection) }
 }
@@ -45,7 +45,7 @@ class VelocityPlugin @Inject constructor(suspendingPluginContainer: SuspendingPl
 
     @Subscribe
     fun ProxyInitializeEvent.e() {
-        plugin = proxy.pluginManager.getPlugin("whitelist").get()
+        plugin = proxy.pluginManager.getPlugin("plutoproject_whitelist").get()
         commandManager = VelocityCommandManager(
             plugin,
             proxy,

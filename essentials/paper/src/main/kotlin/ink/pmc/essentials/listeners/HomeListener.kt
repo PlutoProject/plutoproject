@@ -1,7 +1,7 @@
 package ink.pmc.essentials.listeners
 
 import ink.pmc.essentials.api.home.HomeManager
-import ink.pmc.utils.concurrent.submitAsync
+import ink.pmc.framework.utils.concurrent.submitAsync
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent

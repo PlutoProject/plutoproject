@@ -2,10 +2,10 @@ package ink.pmc.essentials.commands
 
 import ink.pmc.essentials.*
 import ink.pmc.essentials.teleport.random.PerfTest
-import ink.pmc.utils.command.annotation.Command
-import ink.pmc.utils.command.checkPlayer
-import ink.pmc.utils.dsl.cloud.invoke
-import ink.pmc.utils.dsl.cloud.sender
+import ink.pmc.framework.utils.command.annotation.Command
+import ink.pmc.framework.utils.command.checkPlayer
+import ink.pmc.framework.utils.dsl.cloud.invoke
+import ink.pmc.framework.utils.dsl.cloud.sender
 
 @Command("essentials")
 @Suppress("UNUSED")

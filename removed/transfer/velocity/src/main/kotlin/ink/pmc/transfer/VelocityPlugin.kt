@@ -14,9 +14,9 @@ import ink.pmc.rpc.api.RpcServer
 import ink.pmc.transfer.proxy.AbstractProxyTransferService
 import ink.pmc.transfer.proxy.ProxyTransferService
 import ink.pmc.transfer.proxy.commands.TransferCommand
-import ink.pmc.utils.command.init
-import ink.pmc.utils.platform.proxy
-import ink.pmc.utils.platform.saveConfig
+import ink.pmc.framework.utils.command.init
+import ink.pmc.framework.utils.platform.proxy
+import ink.pmc.framework.utils.platform.saveConfig
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.incendo.cloud.SenderMapper

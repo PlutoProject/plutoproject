@@ -1,8 +1,8 @@
 package ink.pmc.daily
 
 import ink.pmc.daily.api.PostCheckInCallback
-import ink.pmc.utils.chat.replace
-import ink.pmc.utils.trimmed
+import ink.pmc.framework.utils.chat.replace
+import ink.pmc.framework.utils.trimmed
 import org.koin.java.KoinJavaComponent.getKoin
 import java.time.LocalDate
 

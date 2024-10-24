@@ -3,9 +3,9 @@ package ink.pmc.essentials.item
 import ink.pmc.advkt.component.italic
 import ink.pmc.advkt.component.text
 import ink.pmc.essentials.plugin
-import ink.pmc.utils.dsl.itemStack
-import ink.pmc.utils.visual.mochaLavender
-import ink.pmc.utils.visual.mochaSubtext0
+import ink.pmc.framework.utils.dsl.itemStack
+import ink.pmc.framework.utils.visual.mochaLavender
+import ink.pmc.framework.utils.visual.mochaSubtext0
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.inventory.ItemStack

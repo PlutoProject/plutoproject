@@ -1,3 +1,0 @@
-velocityPluginJson {
-    dependency("utils")
-}

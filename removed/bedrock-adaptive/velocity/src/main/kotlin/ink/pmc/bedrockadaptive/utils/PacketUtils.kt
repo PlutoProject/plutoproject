@@ -3,7 +3,7 @@ package ink.pmc.bedrockadaptive.utils
 import com.velocitypowered.proxy.protocol.MinecraftPacket
 import com.velocitypowered.proxy.protocol.packet.chat.ComponentHolder
 import ink.pmc.bedrockadaptive.protocolVersion
-import ink.pmc.utils.bedrock.useBedrockColors
+import ink.pmc.framework.utils.bedrock.useBedrockColors
 
 fun replaceFallbackColor(packet: MinecraftPacket, holderFieldName: String = "component") {
     val componentHolderField = packet.javaClass.getDeclaredField(holderFieldName)

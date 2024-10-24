@@ -1,6 +1,6 @@
 package ink.pmc.daily.api
 
-import ink.pmc.utils.inject.inlinedGet
+import ink.pmc.framework.utils.inject.inlinedGet
 import org.bukkit.OfflinePlayer
 import java.time.Instant
 import java.time.LocalDate

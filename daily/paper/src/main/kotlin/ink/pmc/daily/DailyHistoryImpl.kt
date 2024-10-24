@@ -2,9 +2,9 @@ package ink.pmc.daily
 
 import ink.pmc.daily.api.DailyHistory
 import ink.pmc.daily.models.DailyHistoryModel
-import ink.pmc.utils.player.uuid
-import ink.pmc.utils.time.currentZoneId
-import ink.pmc.utils.time.instant
+import ink.pmc.framework.utils.player.uuid
+import ink.pmc.framework.utils.time.currentZoneId
+import ink.pmc.framework.utils.time.instant
 import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
 import java.time.LocalDate

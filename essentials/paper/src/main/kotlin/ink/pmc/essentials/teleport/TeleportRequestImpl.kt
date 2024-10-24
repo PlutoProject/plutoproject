@@ -4,8 +4,8 @@ import ink.pmc.essentials.*
 import ink.pmc.essentials.api.teleport.*
 import ink.pmc.essentials.api.teleport.TeleportDirection.COME
 import ink.pmc.essentials.api.teleport.TeleportDirection.GO
-import ink.pmc.utils.chat.replace
-import ink.pmc.utils.platform.paperThread
+import ink.pmc.framework.utils.chat.replace
+import ink.pmc.framework.utils.platform.paperThread
 import org.bukkit.entity.Player
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject

@@ -15,8 +15,8 @@ import com.velocitypowered.api.plugin.annotation.DataDirectory
 import com.velocitypowered.api.proxy.ProxyServer
 import com.velocitypowered.api.proxy.server.ServerPing
 import com.velocitypowered.api.proxy.server.ServerPing.SamplePlayer
-import ink.pmc.utils.platform.proxy
-import ink.pmc.utils.platform.saveConfig
+import ink.pmc.framework.utils.platform.proxy
+import ink.pmc.framework.utils.platform.saveDefaultConfig
 import java.io.File
 import java.nio.file.Path
 import java.util.logging.Logger
@@ -49,21 +49,17 @@ class VelocityPlugin @Inject constructor(suspendingPluginContainer: SuspendingPl
     fun velocityProtocolChecker(server: ProxyServer, logger: Logger, @DataDirectory dataDirectoryPath: Path) {
         serverLogger = logger
         dataDir = dataDirectoryPath.toFile()
-
         if (!dataDir.exists()) {
             dataDir.mkdirs()
         }
-        val configFile = File(dataDir, "proxy_config.conf")
-        if (!configFile.exists()) {
-            saveConfig(VelocityPlugin::class.java, "proxy_config.conf", configFile)
-        }
+        val configFile = saveDefaultConfig(this::class.java, dataDir)
         config = configFile.loadConfig()
         loadConfigValues()
     }
 
     @Subscribe
     fun proxyInitializeEvent(event: ProxyInitializeEvent) {
-        pluginContainer = proxy.pluginManager.getPlugin("protocol-checker").get()
+        pluginContainer = proxy.pluginManager.getPlugin("plutoproject_protocol-checker").get()
         disabled = false
     }
 

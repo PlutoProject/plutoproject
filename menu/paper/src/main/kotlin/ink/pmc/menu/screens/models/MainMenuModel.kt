@@ -9,7 +9,7 @@ import ink.pmc.essentials.api.Essentials
 import ink.pmc.essentials.api.home.Home
 import ink.pmc.essentials.api.warp.Warp
 import ink.pmc.menu.inspecting
-import ink.pmc.utils.concurrent.submitAsync
+import ink.pmc.framework.utils.concurrent.submitAsync
 import org.bukkit.entity.Player
 
 class MainMenuModel(private val player: Player) : ScreenModel {

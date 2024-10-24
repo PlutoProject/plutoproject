@@ -2,7 +2,7 @@ package ink.pmc.bedrockadaptive.replacements
 
 import com.velocitypowered.proxy.protocol.packet.chat.SystemChatPacket
 import ink.pmc.bedrockadaptive.delegations.SystemChatPacketDecodeDelegation
-import ink.pmc.utils.jvm.byteBuddy
+import ink.pmc.framework.utils.jvm.byteBuddy
 import net.bytebuddy.asm.Advice
 import net.bytebuddy.dynamic.loading.ClassReloadingStrategy
 import net.bytebuddy.implementation.StubMethod

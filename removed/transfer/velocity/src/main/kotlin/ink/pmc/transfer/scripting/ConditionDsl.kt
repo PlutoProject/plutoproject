@@ -1,7 +1,7 @@
 package ink.pmc.transfer.scripting
 
 import ink.pmc.advkt.component.RootComponentKt
-import ink.pmc.utils.structure.Builder
+import ink.pmc.framework.utils.structure.Builder
 import net.kyori.adventure.text.Component
 
 class ConditionDsl(private val destination: String): Builder<Condition> {

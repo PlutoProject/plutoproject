@@ -13,11 +13,11 @@ import ink.pmc.transfer.proto.TransferRpcGrpcKt.TransferRpcCoroutineImplBase
 import ink.pmc.transfer.proto.TransferRspOuterClass.TransferResult
 import ink.pmc.transfer.proto.TransferRspOuterClass.TransferRsp
 import ink.pmc.transfer.proxy.AbstractProxyTransferService
-import ink.pmc.utils.chat.json
-import ink.pmc.utils.concurrent.submitAsync
-import ink.pmc.utils.multiplaform.player.velocity.wrapped
-import ink.pmc.utils.platform.proxy
-import ink.pmc.utils.player.uuid
+import ink.pmc.framework.utils.chat.json
+import ink.pmc.framework.utils.concurrent.submitAsync
+import ink.pmc.framework.utils.multiplaform.player.velocity.wrapped
+import ink.pmc.framework.utils.platform.proxy
+import ink.pmc.framework.utils.player.uuid
 import java.io.Closeable
 import java.time.Instant
 import kotlin.jvm.optionals.getOrNull

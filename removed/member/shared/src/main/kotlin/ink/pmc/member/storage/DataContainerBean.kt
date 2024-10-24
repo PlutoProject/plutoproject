@@ -1,6 +1,6 @@
 package ink.pmc.member.storage
 
-import ink.pmc.utils.storage.asBson
+import ink.pmc.framework.utils.storage.asBson
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

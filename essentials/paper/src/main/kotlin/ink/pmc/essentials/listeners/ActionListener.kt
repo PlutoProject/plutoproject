@@ -24,7 +24,7 @@ object ActionListener : Listener, KoinComponent {
         if (!config.sneakSwapMenu) return
         if (!player.isSneaking) return
         isCancelled = true
-        player.performCommand("menu:menu")
+        player.performCommand("plutoproject_menu:menu")
     }
 
 }

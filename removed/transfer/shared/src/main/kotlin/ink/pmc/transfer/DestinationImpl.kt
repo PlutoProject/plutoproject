@@ -2,8 +2,8 @@ package ink.pmc.transfer
 
 import ink.pmc.transfer.api.Category
 import ink.pmc.transfer.api.DestinationStatus
-import ink.pmc.utils.multiplaform.item.KeyedMaterial
-import ink.pmc.utils.multiplaform.player.PlayerWrapper
+import ink.pmc.framework.utils.multiplaform.item.KeyedMaterial
+import ink.pmc.framework.utils.multiplaform.player.PlayerWrapper
 import net.kyori.adventure.text.Component
 
 class DestinationImpl(

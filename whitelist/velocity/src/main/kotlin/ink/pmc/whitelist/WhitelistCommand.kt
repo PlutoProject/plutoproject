@@ -2,14 +2,14 @@ package ink.pmc.whitelist
 
 import ink.pmc.advkt.component.text
 import ink.pmc.advkt.send
-import ink.pmc.utils.VelocityCm
-import ink.pmc.utils.VelocityCtx
-import ink.pmc.utils.dsl.cloud.sender
-import ink.pmc.utils.player.uuid
-import ink.pmc.utils.visual.mochaMaroon
-import ink.pmc.utils.visual.mochaPink
-import ink.pmc.utils.visual.mochaSubtext0
-import ink.pmc.utils.visual.mochaText
+import ink.pmc.framework.utils.VelocityCm
+import ink.pmc.framework.utils.VelocityCtx
+import ink.pmc.framework.utils.dsl.cloud.sender
+import ink.pmc.framework.utils.player.uuid
+import ink.pmc.framework.utils.visual.mochaMaroon
+import ink.pmc.framework.utils.visual.mochaPink
+import ink.pmc.framework.utils.visual.mochaSubtext0
+import ink.pmc.framework.utils.visual.mochaText
 import ink.pmc.whitelist.profile.MojangProfileFetcher
 import ink.pmc.whitelist.profile.ProfileFetcher
 import kotlinx.coroutines.TimeoutCancellationException

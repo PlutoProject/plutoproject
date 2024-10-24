@@ -2,8 +2,8 @@ package ink.pmc.bedrockadaptive.replacements
 
 import ink.pmc.bedrockadaptive.delegations.BedrockSerializerDelegation
 import ink.pmc.bedrockadaptive.utils.messageTranslatorClass
-import ink.pmc.utils.bedrock.bedrockFormats
-import ink.pmc.utils.jvm.byteBuddy
+import ink.pmc.framework.utils.bedrock.bedrockFormats
+import ink.pmc.framework.utils.jvm.byteBuddy
 import net.bytebuddy.asm.Advice
 import net.bytebuddy.description.method.MethodDescription
 import net.bytebuddy.dynamic.loading.ClassReloadingStrategy

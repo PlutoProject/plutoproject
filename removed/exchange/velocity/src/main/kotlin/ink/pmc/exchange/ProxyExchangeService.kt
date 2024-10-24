@@ -3,7 +3,7 @@ package ink.pmc.exchange
 import com.velocitypowered.api.proxy.Player
 import ink.pmc.exchange.proto.ExchangeRpc
 import ink.pmc.rpc.api.RpcServer
-import ink.pmc.utils.player.switchServer
+import ink.pmc.framework.utils.player.switchServer
 import kotlinx.coroutines.flow.MutableStateFlow
 import java.time.Instant
 

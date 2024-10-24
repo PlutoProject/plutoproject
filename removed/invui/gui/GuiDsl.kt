@@ -1,7 +1,7 @@
-package ink.pmc.utils.dsl.invui.gui
+package ink.pmc.framework.utils.dsl.invui.gui
 
-import ink.pmc.utils.dsl.ItemStackDsl
-import ink.pmc.utils.structure.Builder
+import ink.pmc.framework.utils.dsl.ItemStackDsl
+import ink.pmc.framework.utils.structure.Builder
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
 import xyz.xenondevs.invui.gui.Gui
@@ -58,7 +58,7 @@ abstract class GuiDsl<T : Gui> : Builder<T> {
     }
 
     fun ingredient(char: Char, material: Material, amount: Int = 1, itemStack: ItemStackDsl.() -> Unit) {
-        ingredient(char, ink.pmc.utils.dsl.itemStack(material, amount, itemStack))
+        ingredient(char, ink.pmc.framework.utils.dsl.itemStack(material, amount, itemStack))
     }
 
     fun ingredient(char: Char, marker: Marker) {

@@ -5,10 +5,10 @@ import com.velocitypowered.api.event.player.ServerConnectedEvent
 import ink.pmc.member.api.Member
 import ink.pmc.member.api.velocity.member
 import ink.pmc.member.api.velocity.player
-import ink.pmc.utils.chat.replace
-import ink.pmc.utils.concurrent.submitAsync
-import ink.pmc.utils.platform.proxy
-import ink.pmc.utils.visual.mochaPink
+import ink.pmc.framework.utils.chat.replace
+import ink.pmc.framework.utils.concurrent.submitAsync
+import ink.pmc.framework.utils.platform.proxy
+import ink.pmc.framework.utils.visual.mochaPink
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.delay

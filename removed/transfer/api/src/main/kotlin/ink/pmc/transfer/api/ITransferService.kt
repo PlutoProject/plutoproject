@@ -1,6 +1,6 @@
 package ink.pmc.transfer.api
 
-import ink.pmc.utils.multiplaform.player.PlayerWrapper
+import ink.pmc.framework.utils.multiplaform.player.PlayerWrapper
 
 @Suppress("UNUSED")
 object TransferService : ITransferService by ITransferService.instance

@@ -1,6 +1,6 @@
-package ink.pmc.utils.dsl.invui.gui
+package ink.pmc.framework.utils.dsl.invui.gui
 
-import ink.pmc.utils.dsl.invui.window.WindowDsl
+import ink.pmc.framework.utils.dsl.invui.window.WindowDsl
 import xyz.xenondevs.invui.gui.Gui
 import java.util.function.Consumer
 

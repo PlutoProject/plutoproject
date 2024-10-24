@@ -16,8 +16,8 @@ import ink.pmc.member.bedrock.replacePlayerLinkInstance
 import ink.pmc.member.commands.MemberCommand
 import ink.pmc.provider.ProviderService
 import ink.pmc.rpc.api.RpcServer
-import ink.pmc.utils.command.init
-import ink.pmc.utils.platform.proxy
+import ink.pmc.framework.utils.command.init
+import ink.pmc.framework.utils.platform.proxy
 import org.incendo.cloud.SenderMapper
 import org.incendo.cloud.execution.ExecutionCoordinator
 import org.incendo.cloud.velocity.VelocityCommandManager

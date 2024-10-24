@@ -1,7 +1,7 @@
 package ink.pmc.member.bedrock
 
 import ink.pmc.member.delegations.SimpleFloodgateApiDelegations
-import ink.pmc.utils.jvm.byteBuddy
+import ink.pmc.framework.utils.jvm.byteBuddy
 import net.bytebuddy.asm.Advice
 import net.bytebuddy.dynamic.loading.ClassReloadingStrategy
 import net.bytebuddy.matcher.ElementMatchers.named

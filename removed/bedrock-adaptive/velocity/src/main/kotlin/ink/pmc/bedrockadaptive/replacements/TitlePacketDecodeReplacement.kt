@@ -2,7 +2,7 @@ package ink.pmc.bedrockadaptive.replacements
 
 import com.velocitypowered.proxy.protocol.packet.title.GenericTitlePacket
 import ink.pmc.bedrockadaptive.delegations.TitlePacketsDecodeDelegation
-import ink.pmc.utils.jvm.byteBuddy
+import ink.pmc.framework.utils.jvm.byteBuddy
 import net.bytebuddy.asm.Advice
 import net.bytebuddy.dynamic.loading.ClassReloadingStrategy
 import net.bytebuddy.implementation.StubMethod

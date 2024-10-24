@@ -13,7 +13,7 @@ import ink.pmc.bedrockadaptive.replacements.BedrockColorSerializerReplacement
 import ink.pmc.bedrockadaptive.replacements.GeyserAttackIndicatorReplacement
 import ink.pmc.bedrockadaptive.replacements.SystemChatPacketDecodeReplacement
 import ink.pmc.bedrockadaptive.replacements.TitlePacketDecodeReplacement
-import ink.pmc.utils.platform.proxy
+import ink.pmc.framework.utils.platform.proxy
 import java.nio.file.Path
 import java.util.logging.Logger
 

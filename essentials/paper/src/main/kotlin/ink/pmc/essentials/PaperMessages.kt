@@ -9,8 +9,8 @@ import ink.pmc.essentials.api.home.Home
 import ink.pmc.essentials.api.warp.Warp
 import ink.pmc.essentials.config.EssentialsConfig
 import ink.pmc.essentials.listeners.TeleportListener.getKoin
-import ink.pmc.utils.chat.DURATION
-import ink.pmc.utils.visual.*
+import ink.pmc.framework.utils.chat.DURATION
+import ink.pmc.framework.utils.visual.*
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.util.Ticks
@@ -256,7 +256,7 @@ val TELEPORT_REQUEST_RECEIVED_SOUND = sound {
 }
 
 private val TELEPORT_REQUEST_OPERATION = component {
-    text("[× 取消]") with mochaYellow with showText { text("点击以取消") with mochaYellow } with runCommand("/essentials:tpcancel")
+    text("[× 取消]") with mochaYellow with showText { text("点击以取消") with mochaYellow } with runCommand("/plutoproject_essentials:essentials:tpcancel")
 }
 
 val COMMAND_TPA_SUCCEED = component {
@@ -368,8 +368,8 @@ val COMMAND_TPCANCEL_NO_REQUEST_OTHER = component {
 
 @Suppress("FunctionName")
 fun TELEPORT_OPERATION(id: UUID) = component {
-    text("[✔ 接受] ") with mochaGreen with showText { text("点击以接受") with mochaGreen } with runCommand("/essentials:tpaccept $id")
-    text("[❌ 拒绝] ") with mochaMaroon with showText { text("点击以拒绝") with mochaMaroon } with runCommand("/essentials:tpdeny $id")
+    text("[✔ 接受] ") with mochaGreen with showText { text("点击以接受") with mochaGreen } with runCommand("/plutoproject_essentials:essentials:tpaccept $id")
+    text("[❌ 拒绝] ") with mochaMaroon with showText { text("点击以拒绝") with mochaMaroon } with runCommand("/plutoproject_essentials:essentials:tpdeny $id")
 }
 
 val COMMAND_ETP_SUCCEED = component {
