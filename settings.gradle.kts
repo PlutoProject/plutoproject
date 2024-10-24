@@ -14,7 +14,13 @@ plugins {
 
 rootProject.name = "plutoproject"
 
-/*
+include("framework")
+include("framework:api")
+include("framework:velocity")
+include("framework:paper")
+include("framework:shared")
+include("framework:proto")
+
 include("misc")
 include("misc:api")
 include("misc:paper")
@@ -39,11 +45,3 @@ include("daily:paper")
 
 include("whitelist")
 include("whitelist:velocity")
- */
-
-include("framework")
-include("framework:api")
-include("framework:velocity")
-include("framework:paper")
-include("framework:shared")
-include("framework:proto")

@@ -1,3 +1,3 @@
 velocityPluginJson {
-    dependency("provider")
+    dependency("plutoproject_framework")
 }
