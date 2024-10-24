@@ -19,9 +19,6 @@ val isFolia = try {
 inline val paper: Server
     get() = Bukkit.getServer()
 
-inline val paperUtilsPlugin: JavaPlugin
-    get() = Bukkit.getPluginManager().getPlugin("utils") as JavaPlugin
-
 inline val Thread.isPaperThread: Boolean
     get() = this == paperThread
 
@@ -36,6 +33,3 @@ inline val Server.internal: MinecraftServer
 
 inline val Server.executor: Executor
     get() = internal
-
-inline val paperDepClassLoader: ClassLoader
-    get() = Class.forName("ink.pmc.deploader.PaperPlugin").classLoader

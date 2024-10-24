@@ -14,7 +14,6 @@ import ink.pmc.utils.inject.startKoinIfNotPresent
 import ink.pmc.utils.platform.proxy
 import ink.pmc.utils.platform.proxyThread
 import ink.pmc.utils.platform.saveDefaultConfig
-import ink.pmc.utils.platform.velocityUtilsPlugin
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.incendo.cloud.SenderMapper
@@ -41,7 +40,7 @@ class VelocityPlugin(private val spc: SuspendingPluginContainer) {
         proxy = server
         frameworkLogger = logger
         proxyThread = Thread.currentThread()
-        velocityUtilsPlugin = spc.pluginContainer
+        frameworkVelocity = spc.pluginContainer
         dataFolder = dataDirectoryPath.toFile().also {
             if (!it.exists()) it.mkdirs()
         }

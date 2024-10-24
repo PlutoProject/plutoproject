@@ -87,11 +87,6 @@ include("essentials")
 include("essentials:paper")
 include("essentials:api")
 
-include("interactive")
-include("interactive:api")
-include("interactive:paper")
-include("interactive:velocity")
-
 include("menu")
 include("menu:paper")
 
