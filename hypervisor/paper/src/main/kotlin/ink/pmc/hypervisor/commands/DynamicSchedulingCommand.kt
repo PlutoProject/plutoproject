@@ -4,9 +4,9 @@ import ink.pmc.advkt.component.newline
 import ink.pmc.advkt.component.raw
 import ink.pmc.advkt.component.text
 import ink.pmc.advkt.send
-import ink.pmc.hypervisor.DynamicScheduling
 import ink.pmc.framework.utils.network.formatted
 import ink.pmc.framework.utils.visual.*
+import ink.pmc.hypervisor.DynamicScheduling
 import net.kyori.adventure.text.Component
 import org.bukkit.World
 import org.bukkit.command.CommandSender
@@ -31,23 +31,35 @@ object DynamicSchedulingCommand {
         }
     }
 
+    @Command("dynamic_scheduling start")
+    @Permission("hypervisor.dynamic_scheduling")
+    fun start(sender: CommandSender) {
+        if (DynamicScheduling.isRunning) {
+            sender.send {
+                text("动态资源调度已运行") with mochaMaroon
+            }
+            return
+        }
+        DynamicScheduling.start()
+        sender.send {
+            text("已启动动态资源调度后台任务") with mochaGreen
+        }
+    }
+
     @Command("dynamic_scheduling stop")
     @Permission("hypervisor.dynamic_scheduling")
     fun stop(sender: CommandSender) {
+        if (!DynamicScheduling.isRunning) {
+            sender.send {
+                text("动态资源调度未运行") with mochaMaroon
+            }
+            return
+        }
         DynamicScheduling.stop()
         sender.send {
             text("已停止动态资源调度后台任务") with mochaMaroon
             newline()
             text("部分由该功能接管的配置项无法自动恢复，请重启服务器") with mochaSubtext0
-        }
-    }
-
-    @Command("dynamic_scheduling start")
-    @Permission("hypervisor.dynamic_scheduling")
-    fun start(sender: CommandSender) {
-        DynamicScheduling.start()
-        sender.send {
-            text("已启动动态资源调度后台任务") with mochaGreen
         }
     }
 
