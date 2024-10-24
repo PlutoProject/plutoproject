@@ -152,7 +152,7 @@ fun Project.configurePaperPlugin() {
             if (name.get().contains("framework")) {
                 return@bukkitPluginYaml
             } else {
-                depend.add("framework")
+                depend.add("plutoproject_framework")
             }
         }
     }
@@ -168,7 +168,7 @@ fun Project.configureVelocityPlugin() {
             if (name.get().contains("framework")) {
                 return@velocityPluginJson
             } else {
-                dependency("framework")
+                dependency("plutoproject_framework")
             }
         }
     }
