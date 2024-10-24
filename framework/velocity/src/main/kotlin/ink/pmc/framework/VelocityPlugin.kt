@@ -16,6 +16,7 @@ import ink.pmc.framework.options.listeners.VelocityOptionsListener
 import ink.pmc.framework.options.proto.OptionsRpc
 import ink.pmc.framework.playerdb.DatabaseNotifier
 import ink.pmc.framework.playerdb.ProxyDatabaseNotifier
+import ink.pmc.framework.playerdb.proto.PlayerDbRpc
 import ink.pmc.provider.Provider
 import ink.pmc.rpc.api.RpcServer
 import ink.pmc.utils.inject.startKoinIfNotPresent
@@ -29,7 +30,6 @@ import org.incendo.cloud.annotations.AnnotationParser
 import org.incendo.cloud.execution.ExecutionCoordinator
 import org.incendo.cloud.velocity.VelocityCommandManager
 import org.koin.dsl.module
-import org.koin.java.KoinJavaComponent.getKoin
 import java.io.File
 import java.nio.file.Path
 import java.util.logging.Logger
@@ -61,7 +61,7 @@ class VelocityPlugin @Inject constructor(private val spc: SuspendingPluginContai
         }
         RpcServer.apply {
             addService(OptionsRpc)
-            addService(getKoin().get<DatabaseNotifier>() as ProxyDatabaseNotifier)
+            addService(PlayerDbRpc)
         }
         server.eventManager.registerSuspend(this, VelocityOptionsListener)
     }
