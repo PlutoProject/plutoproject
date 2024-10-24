@@ -11,9 +11,9 @@ import ink.pmc.interactive.api.ComposableFunction
 import ink.pmc.interactive.api.LocalGuiScope
 import ink.pmc.interactive.api.LocalPlayer
 import ink.pmc.interactive.api.inventory.LocalClickHandler
-import ink.pmc.interactive.api.inventory.canvas.ClickHandler
-import ink.pmc.interactive.api.inventory.canvas.ClickResult
-import ink.pmc.interactive.api.inventory.canvas.GuiInventoryHolder
+import ink.pmc.framework.interactive.canvas.ClickHandler
+import ink.pmc.framework.interactive.canvas.ClickResult
+import ink.pmc.framework.interactive.canvas.GuiInventoryHolder
 import ink.pmc.interactive.api.inventory.layout.InventoryNode
 import ink.pmc.interactive.api.inventory.modifiers.Constraints
 import ink.pmc.interactive.api.inventory.modifiers.click.ClickScope

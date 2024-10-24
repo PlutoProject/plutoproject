@@ -1,6 +1,6 @@
 package ink.pmc.framework.interactive.inventory
 
-import ink.pmc.interactive.api.inventory.canvas.GuiInventoryHolder
+import ink.pmc.framework.interactive.canvas.GuiInventoryHolder
 import ink.pmc.interactive.api.inventory.modifiers.click.ClickScope
 import org.bukkit.Material
 import org.bukkit.entity.Player

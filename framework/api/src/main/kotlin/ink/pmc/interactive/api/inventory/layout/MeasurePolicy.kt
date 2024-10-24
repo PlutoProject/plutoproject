@@ -1,7 +1,7 @@
 package ink.pmc.interactive.api.inventory.layout
 
 import androidx.compose.runtime.Stable
-import ink.pmc.interactive.api.inventory.canvas.Canvas
+import ink.pmc.framework.interactive.canvas.Canvas
 import ink.pmc.interactive.api.inventory.components.state.IntOffset
 import ink.pmc.interactive.api.inventory.components.state.IntSize
 import ink.pmc.interactive.api.inventory.modifiers.Constraints

@@ -9,9 +9,9 @@ import ink.pmc.interactive.api.LocalGuiScope
 import ink.pmc.interactive.api.LocalPlayer
 import ink.pmc.interactive.api.inventory.LocalCanvas
 import ink.pmc.interactive.api.inventory.LocalClickHandler
-import ink.pmc.interactive.api.inventory.canvas.Canvas
-import ink.pmc.interactive.api.inventory.canvas.GuiInventoryHolder
-import ink.pmc.interactive.api.inventory.canvas.MapBackedCanvas
+import ink.pmc.framework.interactive.canvas.Canvas
+import ink.pmc.framework.interactive.canvas.GuiInventoryHolder
+import ink.pmc.framework.interactive.canvas.MapBackedCanvas
 import ink.pmc.interactive.api.inventory.components.state.IntCoordinates
 import ink.pmc.interactive.api.inventory.layout.Layout
 import ink.pmc.interactive.api.inventory.layout.Renderer

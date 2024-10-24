@@ -1,4 +1,4 @@
-package ink.pmc.interactive.api.inventory.canvas
+package ink.pmc.framework.interactive.canvas
 
 import ink.pmc.interactive.api.inventory.modifiers.click.ClickScope
 import ink.pmc.interactive.api.inventory.modifiers.drag.DragScope

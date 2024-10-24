@@ -1,8 +1,8 @@
 package ink.pmc.interactive.api.inventory.layout
 
-import ink.pmc.interactive.api.inventory.canvas.Canvas
-import ink.pmc.interactive.api.inventory.canvas.ClickResult
-import ink.pmc.interactive.api.inventory.canvas.OffsetCanvas
+import ink.pmc.framework.interactive.canvas.Canvas
+import ink.pmc.framework.interactive.canvas.ClickResult
+import ink.pmc.framework.interactive.canvas.OffsetCanvas
 import ink.pmc.interactive.api.inventory.components.state.IntCoordinates
 import ink.pmc.interactive.api.inventory.components.state.IntOffset
 import ink.pmc.interactive.api.inventory.components.state.IntSize

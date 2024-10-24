@@ -2,7 +2,7 @@ package ink.pmc.interactive.api.inventory.components
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import ink.pmc.interactive.api.inventory.canvas.Canvas
+import ink.pmc.framework.interactive.canvas.Canvas
 import ink.pmc.interactive.api.inventory.layout.Layout
 import ink.pmc.interactive.api.inventory.layout.MeasureResult
 import ink.pmc.interactive.api.inventory.layout.Renderer

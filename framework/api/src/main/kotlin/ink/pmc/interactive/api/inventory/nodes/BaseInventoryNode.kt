@@ -1,6 +1,6 @@
 package ink.pmc.interactive.api.inventory.nodes
 
-import ink.pmc.interactive.api.inventory.canvas.Canvas
+import ink.pmc.framework.interactive.canvas.Canvas
 import ink.pmc.interactive.api.inventory.layout.InventoryNode
 import ink.pmc.interactive.api.inventory.layout.MeasurePolicy
 import ink.pmc.interactive.api.inventory.layout.Renderer

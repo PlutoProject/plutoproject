@@ -1,4 +1,4 @@
-package ink.pmc.interactive.api.inventory.canvas
+package ink.pmc.framework.interactive.canvas
 
 import ink.pmc.interactive.api.inventory.components.state.IntCoordinates
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap

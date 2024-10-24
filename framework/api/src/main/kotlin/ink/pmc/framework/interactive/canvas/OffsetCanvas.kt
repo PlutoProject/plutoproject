@@ -1,4 +1,4 @@
-package ink.pmc.interactive.api.inventory.canvas
+package ink.pmc.framework.interactive.canvas
 
 import org.bukkit.inventory.ItemStack
 
