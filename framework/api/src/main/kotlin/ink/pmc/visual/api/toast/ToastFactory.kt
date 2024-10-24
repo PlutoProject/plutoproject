@@ -6,7 +6,6 @@ import net.kyori.adventure.text.Component
 
 @Suppress("UNUSED")
 interface ToastFactory {
-
     companion object : ToastFactory by inlinedGet()
 
     fun of(
@@ -15,5 +14,4 @@ interface ToastFactory {
         type: ToastType,
         frame: ToastFrame
     ): Toast
-
 }

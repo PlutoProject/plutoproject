@@ -12,6 +12,9 @@ import ink.pmc.framework.commands.RpcCommand
 import ink.pmc.framework.options.OptionsUpdateNotifier
 import ink.pmc.framework.options.ProxyOptionsUpdateNotifier
 import ink.pmc.framework.options.listeners.VelocityOptionsListener
+import ink.pmc.framework.playerdb.Notifier
+import ink.pmc.framework.playerdb.playerDbScope
+import ink.pmc.framework.playerdb.ProxyNotifier
 import ink.pmc.provider.Provider
 import ink.pmc.rpc.api.RpcServer
 import ink.pmc.utils.inject.startKoinIfNotPresent
@@ -19,6 +22,7 @@ import ink.pmc.utils.platform.proxy
 import ink.pmc.utils.platform.proxyThread
 import ink.pmc.utils.platform.saveDefaultConfig
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.withContext
 import org.incendo.cloud.SenderMapper
 import org.incendo.cloud.annotations.AnnotationParser
@@ -34,6 +38,7 @@ class VelocityPlugin(private val spc: SuspendingPluginContainer) {
     private val velocityModule = module {
         single<File>(FRAMEWORK_CONFIG) { saveDefaultConfig(VelocityPlugin::class.java, dataFolder) }
         single<OptionsUpdateNotifier> { ProxyOptionsUpdateNotifier() }
+        single<Notifier> { ProxyNotifier() }
     }
     private lateinit var dataFolder: File
 
@@ -72,6 +77,7 @@ class VelocityPlugin(private val spc: SuspendingPluginContainer) {
 
     @Subscribe
     suspend fun ProxyShutdownEvent.e() {
+        playerDbScope.cancel()
         withContext(Dispatchers.IO) {
             Provider.close()
         }

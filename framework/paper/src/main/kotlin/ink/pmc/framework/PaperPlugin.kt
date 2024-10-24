@@ -9,6 +9,14 @@ import ink.pmc.framework.options.OptionsUpdateNotifier
 import ink.pmc.framework.options.listeners.BukkitOptionsListener
 import ink.pmc.framework.options.startOptionsMonitor
 import ink.pmc.framework.options.stopOptionsMonitor
+import ink.pmc.framework.playerdb.BackendNotifier
+import ink.pmc.framework.playerdb.Notifier
+import ink.pmc.framework.playerdb.playerDbScope
+import ink.pmc.framework.visual.display.text.TextDisplayFactoryImpl
+import ink.pmc.framework.visual.display.text.TextDisplayListener
+import ink.pmc.framework.visual.display.text.TextDisplayManagerImpl
+import ink.pmc.framework.visual.display.text.renderers.NmsTextDisplayRenderer
+import ink.pmc.framework.visual.toast.renderers.NmsToastRenderer
 import ink.pmc.interactive.api.GuiManager
 import ink.pmc.provider.Provider
 import ink.pmc.rpc.api.RpcClient
@@ -19,10 +27,17 @@ import ink.pmc.utils.jvm.loadClassesInPackages
 import ink.pmc.utils.platform.paper
 import ink.pmc.utils.platform.paperThread
 import ink.pmc.utils.storage.saveResourceIfNotExisted
+import ink.pmc.visual.api.display.text.TextDisplayFactory
+import ink.pmc.visual.api.display.text.TextDisplayManager
+import ink.pmc.visual.api.display.text.TextDisplayRenderer
+import ink.pmc.visual.api.toast.ToastRenderer
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.withContext
+import org.bukkit.entity.Player
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import java.io.File
 
@@ -33,6 +48,11 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
         single<File>(FRAMEWORK_CONFIG) { saveResourceIfNotExisted("config.conf") }
         single<GuiManager> { GuiManagerImpl() }
         single<OptionsUpdateNotifier> { BackendOptionsUpdateNotifier() }
+        single<Notifier> { BackendNotifier() }
+        single<ToastRenderer<Player>>(named("internal")) { NmsToastRenderer() }
+        single<TextDisplayManager> { TextDisplayManagerImpl() }
+        single<TextDisplayFactory> { TextDisplayFactoryImpl() }
+        single<TextDisplayRenderer>(named("internal")) { NmsTextDisplayRenderer() }
     }
 
     override fun onLoad() {
@@ -46,6 +66,7 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
         preload()
         paper.pluginManager.registerSuspendingEvents(GuiListener, frameworkPaper)
         paper.pluginManager.registerSuspendingEvents(BukkitOptionsListener, frameworkPaper)
+        paper.pluginManager.registerSuspendingEvents(TextDisplayListener, frameworkPaper)
         startOptionsMonitor()
     }
 
@@ -55,6 +76,7 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
 
     override suspend fun onDisableAsync() {
         GuiManager.disposeAll()
+        playerDbScope.cancel()
         stopOptionsMonitor()
         withContext(Dispatchers.IO) {
             Provider.close()
