@@ -10,15 +10,15 @@ import ink.pmc.framework.playerdb.PlayerDbImpl
 import ink.pmc.framework.provider.ProviderImpl
 import ink.pmc.framework.rpc.RpcClientImpl
 import ink.pmc.framework.rpc.RpcServerImpl
+import ink.pmc.framework.utils.config.preconfiguredConfigLoaderBuilder
 import ink.pmc.framework.visual.ToastFactoryImpl
+import ink.pmc.framework.visual.toast.ToastFactory
 import ink.pmc.options.api.OptionsManager
 import ink.pmc.options.api.factory.OptionDescriptorFactory
 import ink.pmc.playerdb.api.PlayerDb
 import ink.pmc.provider.Provider
 import ink.pmc.rpc.api.RpcClient
 import ink.pmc.rpc.api.RpcServer
-import ink.pmc.framework.utils.config.preconfiguredConfigLoaderBuilder
-import ink.pmc.visual.api.toast.ToastFactory
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import java.io.File

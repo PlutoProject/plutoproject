@@ -1,9 +1,9 @@
-package ink.pmc.visual.api.display
+package ink.pmc.framework.visual.display
 
-import ink.pmc.visual.api.display.text.TextDisplayView
+import ink.pmc.framework.visual.display.text.TextDisplayView
 import org.bukkit.Location
 import org.bukkit.entity.Player
-import java.util.UUID
+import java.util.*
 
 interface Display<V : DisplayView> {
 

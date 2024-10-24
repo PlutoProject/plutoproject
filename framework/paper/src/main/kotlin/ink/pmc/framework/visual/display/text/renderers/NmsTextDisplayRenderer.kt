@@ -2,8 +2,8 @@ package ink.pmc.framework.visual.display.text.renderers
 
 import ink.pmc.framework.utils.player.sendPacket
 import ink.pmc.framework.utils.visual.bukkitColor
-import ink.pmc.visual.api.display.text.TextDisplayRenderer
-import ink.pmc.visual.api.display.text.TextDisplayView
+import ink.pmc.framework.visual.display.text.TextDisplayRenderer
+import ink.pmc.framework.visual.display.text.TextDisplayView
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.TextComponent
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket

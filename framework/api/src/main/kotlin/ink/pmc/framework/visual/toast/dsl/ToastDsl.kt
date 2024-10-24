@@ -1,11 +1,11 @@
-package ink.pmc.visual.api.toast.dsl
+package ink.pmc.framework.visual.toast.dsl
 
 import ink.pmc.advkt.component.RootComponentKt
 import ink.pmc.framework.utils.item.KeyedMaterial
-import ink.pmc.visual.api.toast.Toast
-import ink.pmc.visual.api.toast.ToastFactory
-import ink.pmc.visual.api.toast.ToastFrame
-import ink.pmc.visual.api.toast.ToastType
+import ink.pmc.framework.visual.toast.Toast
+import ink.pmc.framework.visual.toast.ToastFactory
+import ink.pmc.framework.visual.toast.ToastFrame
+import ink.pmc.framework.visual.toast.ToastType
 import net.kyori.adventure.text.Component
 
 @Suppress("UNUSED")

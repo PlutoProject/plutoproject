@@ -1,7 +1,7 @@
 package ink.pmc.interactive.api
 
-import ink.pmc.interactive.api.inventory.layout.InventoryNode
 import ink.pmc.framework.utils.inject.inlinedGet
+import ink.pmc.interactive.api.inventory.layout.InventoryNode
 import org.bukkit.entity.Player
 
 typealias GuiInventoryScope = GuiScope<InventoryNode>

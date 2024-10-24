@@ -1,8 +1,5 @@
 package ink.pmc.framework.visual.display.text
 
-import ink.pmc.visual.api.display.text.TextDisplayOptions
-import ink.pmc.visual.api.display.text.TextDisplayRenderer
-import ink.pmc.visual.api.display.text.TextDisplayView
 import net.kyori.adventure.text.Component
 import org.bukkit.Location
 import org.bukkit.entity.Player

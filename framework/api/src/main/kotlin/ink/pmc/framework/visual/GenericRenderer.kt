@@ -1,4 +1,4 @@
-package ink.pmc.visual.api
+package ink.pmc.framework.visual
 
 interface GenericRenderer<P, T> {
 

@@ -1,4 +1,4 @@
-package ink.pmc.visual.api.toast
+package ink.pmc.framework.visual.toast
 
 import ink.pmc.framework.utils.inject.inlinedGet
 import ink.pmc.framework.utils.item.KeyedMaterial

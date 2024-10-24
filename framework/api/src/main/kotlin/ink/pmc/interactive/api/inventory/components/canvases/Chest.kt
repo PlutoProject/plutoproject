@@ -1,6 +1,7 @@
 package ink.pmc.interactive.api.inventory.components.canvases
 
 import androidx.compose.runtime.*
+import ink.pmc.framework.utils.inventory.title
 import ink.pmc.interactive.api.GuiInventoryScope
 import ink.pmc.interactive.api.LocalGuiScope
 import ink.pmc.interactive.api.inventory.components.state.IntCoordinates
@@ -11,7 +12,6 @@ import ink.pmc.interactive.api.inventory.modifiers.onSizeChanged
 import ink.pmc.interactive.api.inventory.modifiers.sizeIn
 import ink.pmc.interactive.api.inventory.nodes.InventoryCloseScope
 import ink.pmc.interactive.api.inventory.nodes.StaticMeasurePolicy
-import ink.pmc.framework.utils.inventory.title
 import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player

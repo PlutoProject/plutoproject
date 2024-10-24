@@ -1,4 +1,4 @@
-package ink.pmc.visual.api.display
+package ink.pmc.framework.visual.display
 
 import org.bukkit.Location
 import org.bukkit.entity.Player

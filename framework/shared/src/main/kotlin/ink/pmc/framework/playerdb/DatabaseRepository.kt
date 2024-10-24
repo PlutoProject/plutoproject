@@ -3,7 +3,6 @@ package ink.pmc.framework.playerdb
 import com.mongodb.client.model.Filters.eq
 import com.mongodb.client.model.ReplaceOptions
 import com.mongodb.kotlin.client.coroutine.MongoCollection
-import ink.pmc.framework.playerdb.DatabaseModel
 import kotlinx.coroutines.flow.firstOrNull
 import java.util.*
 

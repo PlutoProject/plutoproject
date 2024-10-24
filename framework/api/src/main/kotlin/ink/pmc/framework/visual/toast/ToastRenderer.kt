@@ -1,6 +1,6 @@
-package ink.pmc.visual.api.toast
+package ink.pmc.framework.visual.toast
 
-import ink.pmc.visual.api.GenericRenderer
+import ink.pmc.framework.visual.GenericRenderer
 
 @Suppress("UNUSED")
 interface ToastRenderer<P> : GenericRenderer<P, Toast> {

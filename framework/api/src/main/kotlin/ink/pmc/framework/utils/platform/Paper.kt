@@ -4,7 +4,6 @@ import net.minecraft.server.MinecraftServer
 import org.bukkit.Bukkit
 import org.bukkit.Server
 import org.bukkit.craftbukkit.CraftServer
-import org.bukkit.plugin.java.JavaPlugin
 import java.util.concurrent.Executor
 
 lateinit var paperThread: Thread

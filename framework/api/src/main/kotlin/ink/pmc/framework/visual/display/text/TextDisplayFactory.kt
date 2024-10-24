@@ -1,4 +1,4 @@
-package ink.pmc.visual.api.display.text
+package ink.pmc.framework.visual.display.text
 
 import net.kyori.adventure.text.Component
 import org.bukkit.Location
@@ -11,6 +11,10 @@ interface TextDisplayFactory {
         val instance by inject<TextDisplayFactory>()
     }.instance
 
-    fun create(location: Location, contents: Collection<Component>, options: TextDisplayOptions): TextDisplay
+    fun create(
+        location: Location,
+        contents: Collection<Component>,
+        options: TextDisplayOptions
+    ): TextDisplay
 
 }

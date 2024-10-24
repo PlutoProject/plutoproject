@@ -1,9 +1,8 @@
 package ink.pmc.framework.visual
 
 import ink.pmc.framework.utils.item.KeyedMaterial
-import ink.pmc.visual.api.toast.Toast
-import ink.pmc.visual.api.toast.ToastFrame
-import ink.pmc.visual.api.toast.ToastType
+import ink.pmc.framework.visual.toast.ToastFrame
+import ink.pmc.framework.visual.toast.ToastType
 import net.kyori.adventure.text.Component
 
 data class ToastImpl(
@@ -11,4 +10,4 @@ data class ToastImpl(
     override val message: Component,
     override val type: ToastType,
     override val frame: ToastFrame
-) : Toast
+) : ink.pmc.framework.visual.toast.Toast

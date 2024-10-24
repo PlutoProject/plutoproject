@@ -6,6 +6,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import ink.pmc.framework.frameworkPaper
 import ink.pmc.framework.interactive.UI_RENDER_FAILED
 import ink.pmc.framework.interactive.scope.BaseScope
+import ink.pmc.framework.utils.concurrent.submitSync
 import ink.pmc.interactive.api.ComposableFunction
 import ink.pmc.interactive.api.LocalGuiScope
 import ink.pmc.interactive.api.LocalPlayer
@@ -17,7 +18,6 @@ import ink.pmc.interactive.api.inventory.layout.InventoryNode
 import ink.pmc.interactive.api.inventory.modifiers.Constraints
 import ink.pmc.interactive.api.inventory.modifiers.click.ClickScope
 import ink.pmc.interactive.api.inventory.modifiers.drag.DragScope
-import ink.pmc.framework.utils.concurrent.submitSync
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.bukkit.entity.Player
 import java.util.logging.Level

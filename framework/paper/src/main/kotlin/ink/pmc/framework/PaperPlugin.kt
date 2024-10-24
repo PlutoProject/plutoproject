@@ -14,14 +14,6 @@ import ink.pmc.framework.playerdb.BackendDatabaseNotifier
 import ink.pmc.framework.playerdb.DatabaseNotifier
 import ink.pmc.framework.playerdb.startPlayerDbMonitor
 import ink.pmc.framework.playerdb.stopPlayerDbMonitor
-import ink.pmc.framework.visual.display.text.TextDisplayFactoryImpl
-import ink.pmc.framework.visual.display.text.TextDisplayListener
-import ink.pmc.framework.visual.display.text.TextDisplayManagerImpl
-import ink.pmc.framework.visual.display.text.renderers.NmsTextDisplayRenderer
-import ink.pmc.framework.visual.toast.renderers.NmsToastRenderer
-import ink.pmc.interactive.api.GuiManager
-import ink.pmc.provider.Provider
-import ink.pmc.rpc.api.RpcClient
 import ink.pmc.framework.utils.currentUnixTimestamp
 import ink.pmc.framework.utils.hook.initPaperHooks
 import ink.pmc.framework.utils.inject.startKoinIfNotPresent
@@ -29,10 +21,13 @@ import ink.pmc.framework.utils.jvm.loadClassesInPackages
 import ink.pmc.framework.utils.platform.paper
 import ink.pmc.framework.utils.platform.paperThread
 import ink.pmc.framework.utils.storage.saveResourceIfNotExisted
-import ink.pmc.visual.api.display.text.TextDisplayFactory
-import ink.pmc.visual.api.display.text.TextDisplayManager
-import ink.pmc.visual.api.display.text.TextDisplayRenderer
-import ink.pmc.visual.api.toast.ToastRenderer
+import ink.pmc.framework.visual.display.text.*
+import ink.pmc.framework.visual.display.text.renderers.NmsTextDisplayRenderer
+import ink.pmc.framework.visual.toast.ToastRenderer
+import ink.pmc.framework.visual.toast.renderers.NmsToastRenderer
+import ink.pmc.interactive.api.GuiManager
+import ink.pmc.provider.Provider
+import ink.pmc.rpc.api.RpcClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.bukkit.entity.Player
@@ -51,7 +46,7 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
         single<OptionsUpdateNotifier> { BackendOptionsUpdateNotifier() }
         single<DatabaseNotifier> { BackendDatabaseNotifier() }
         single<ToastRenderer<Player>>(named("internal")) { NmsToastRenderer() }
-        single<TextDisplayManager> { TextDisplayManagerImpl() }
+        single<ink.pmc.framework.visual.display.text.TextDisplayManager> { TextDisplayManagerImpl() }
         single<TextDisplayFactory> { TextDisplayFactoryImpl() }
         single<TextDisplayRenderer>(named("internal")) { NmsTextDisplayRenderer() }
     }

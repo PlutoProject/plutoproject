@@ -6,9 +6,8 @@ import ink.pmc.framework.utils.item.bukkit
 import ink.pmc.framework.utils.player.sendPacket
 import ink.pmc.framework.utils.structure.emptyOptional
 import ink.pmc.framework.utils.structure.optional
-import ink.pmc.visual.api.toast.Toast
-import ink.pmc.visual.api.toast.ToastRenderer
-import ink.pmc.visual.api.toast.ToastType
+import ink.pmc.framework.visual.toast.ToastRenderer
+import ink.pmc.framework.visual.toast.ToastType
 import net.kyori.adventure.text.Component
 import net.minecraft.advancements.*
 import net.minecraft.advancements.critereon.ImpossibleTrigger
@@ -40,7 +39,7 @@ open class NmsToastRenderer : ToastRenderer<Player> {
             }
         }
 
-    override fun render(player: Player, obj: Toast) {
+    override fun render(player: Player, obj: ink.pmc.framework.visual.toast.Toast) {
         val material = obj.icon.bukkit
         val item = ItemStack(material, 1)
         val display = optional(

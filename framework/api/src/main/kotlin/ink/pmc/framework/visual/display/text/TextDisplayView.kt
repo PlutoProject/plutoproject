@@ -1,6 +1,6 @@
-package ink.pmc.visual.api.display.text
+package ink.pmc.framework.visual.display.text
 
-import ink.pmc.visual.api.display.DisplayView
+import ink.pmc.framework.visual.display.DisplayView
 import net.kyori.adventure.text.Component
 
 interface TextDisplayView : DisplayView {

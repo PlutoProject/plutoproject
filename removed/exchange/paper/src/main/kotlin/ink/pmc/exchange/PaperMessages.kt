@@ -10,8 +10,8 @@ import ink.pmc.framework.utils.visual.mochaFlamingo
 import ink.pmc.framework.utils.visual.mochaMaroon
 import ink.pmc.framework.utils.visual.mochaText
 import ink.pmc.framework.utils.visual.mochaYellow
-import ink.pmc.visual.api.toast.Toast
-import ink.pmc.visual.api.toast.dsl.toast
+import ink.pmc.framework.visual.toast.Toast
+import ink.pmc.framework.visual.toast.dsl.toast
 import net.kyori.adventure.text.Component
 import org.bukkit.Material
 

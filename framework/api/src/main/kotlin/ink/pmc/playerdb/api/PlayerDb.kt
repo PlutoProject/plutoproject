@@ -1,7 +1,7 @@
 package ink.pmc.playerdb.api
 
 import ink.pmc.framework.utils.inject.inlinedGet
-import java.util.UUID
+import java.util.*
 
 interface PlayerDb {
 

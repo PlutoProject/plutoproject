@@ -1,4 +1,4 @@
-package ink.pmc.visual.api.toast
+package ink.pmc.framework.visual.toast
 
 @Suppress("UNUSED")
 enum class ToastFrame(val texture: String) {

@@ -1,7 +1,6 @@
 package ink.pmc.framework.visual.display.text
 
 import com.destroystokyo.paper.event.server.ServerTickEndEvent
-import ink.pmc.visual.api.display.text.TextDisplayManager
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.koin.core.component.KoinComponent

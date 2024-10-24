@@ -3,11 +3,7 @@ package ink.pmc.framework.visual.display.text
 import com.google.common.collect.HashMultimap
 import com.google.common.collect.Multimap
 import com.google.common.collect.Multimaps
-import ink.pmc.visual.api.display.DisplayRenderer
-import ink.pmc.visual.api.display.text.TextDisplay
-import ink.pmc.visual.api.display.text.TextDisplayManager
-import ink.pmc.visual.api.display.text.TextDisplayRenderer
-import ink.pmc.visual.api.display.text.TextDisplayView
+import ink.pmc.framework.visual.display.DisplayRenderer
 import org.bukkit.entity.Player
 
 class TextDisplayManagerImpl : TextDisplayManager {

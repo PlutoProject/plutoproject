@@ -5,13 +5,13 @@ import ink.pmc.advkt.component.component
 import ink.pmc.advkt.component.italic
 import ink.pmc.advkt.component.text
 import ink.pmc.advkt.send
+import ink.pmc.framework.utils.visual.mochaText
 import ink.pmc.interactive.api.inventory.components.Item
 import ink.pmc.interactive.api.inventory.components.VerticalGrid
 import ink.pmc.interactive.api.inventory.components.canvases.Chest
 import ink.pmc.interactive.api.inventory.modifiers.Modifier
 import ink.pmc.interactive.api.inventory.modifiers.click.clickable
 import ink.pmc.interactive.api.inventory.modifiers.fillMaxSize
-import ink.pmc.framework.utils.visual.mochaText
 import net.kyori.adventure.text.Component
 import org.bukkit.Material
 

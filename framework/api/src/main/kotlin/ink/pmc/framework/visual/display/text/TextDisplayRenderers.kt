@@ -1,4 +1,4 @@
-package ink.pmc.visual.api.display.text
+package ink.pmc.framework.visual.display.text
 
 import ink.pmc.framework.utils.inject.inlinedGet
 import org.koin.core.qualifier.named

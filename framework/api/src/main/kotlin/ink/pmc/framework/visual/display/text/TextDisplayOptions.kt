@@ -1,7 +1,7 @@
-package ink.pmc.visual.api.display.text
+package ink.pmc.framework.visual.display.text
 
 import ink.pmc.framework.utils.chat.rgbaColor
-import ink.pmc.visual.api.display.DisplayOptions
+import ink.pmc.framework.visual.display.DisplayOptions
 import org.bukkit.entity.Display.Billboard
 import org.bukkit.entity.TextDisplay.TextAlignment
 import java.awt.Color

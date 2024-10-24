@@ -9,6 +9,8 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import ink.pmc.advkt.component.component
 import ink.pmc.advkt.component.italic
 import ink.pmc.advkt.component.text
+import ink.pmc.framework.utils.time.ticks
+import ink.pmc.framework.utils.visual.*
 import ink.pmc.interactive.api.LocalPlayer
 import ink.pmc.interactive.api.inventory.components.Item
 import ink.pmc.interactive.api.inventory.components.Spacer
@@ -22,8 +24,6 @@ import ink.pmc.interactive.api.inventory.modifiers.click.clickable
 import ink.pmc.interactive.api.inventory.modifiers.fillMaxSize
 import ink.pmc.interactive.api.inventory.modifiers.fillMaxWidth
 import ink.pmc.interactive.api.inventory.modifiers.height
-import ink.pmc.framework.utils.time.ticks
-import ink.pmc.framework.utils.visual.*
 import kotlinx.coroutines.delay
 import net.kyori.adventure.text.Component
 import org.bukkit.Material

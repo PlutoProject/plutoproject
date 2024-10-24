@@ -1,6 +1,6 @@
 package ink.pmc.framework.utils.structure
 
-import java.util.Optional
+import java.util.*
 
 @Suppress("UNCHECKED_CAST", "NOTHING_TO_INLINE")
 inline fun <T> optional(obj: T?): Optional<T> {

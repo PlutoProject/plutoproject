@@ -19,7 +19,7 @@ fun MutableState<Int>.stateTransition(
         val keep = value
         value = new
         delay(delay)
-        if(!pop || navigator == null) value = resume ?: keep
+        if (!pop || navigator == null) value = resume ?: keep
         if (pop && navigator != null) navigator.pop()
     }
 }

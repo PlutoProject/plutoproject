@@ -1,6 +1,9 @@
 package ink.pmc.interactive.api.inventory.components.canvases
 
 import androidx.compose.runtime.*
+import ink.pmc.framework.utils.concurrent.submitSync
+import ink.pmc.framework.utils.concurrent.sync
+import ink.pmc.framework.utils.time.ticks
 import ink.pmc.interactive.api.GuiInventoryScope
 import ink.pmc.interactive.api.LocalGuiScope
 import ink.pmc.interactive.api.LocalPlayer
@@ -18,9 +21,6 @@ import ink.pmc.interactive.api.inventory.modifiers.drag.DragScope
 import ink.pmc.interactive.api.inventory.nodes.BaseInventoryNode
 import ink.pmc.interactive.api.inventory.nodes.InventoryCloseScope
 import ink.pmc.interactive.api.inventory.nodes.StaticMeasurePolicy
-import ink.pmc.framework.utils.concurrent.submitSync
-import ink.pmc.framework.utils.concurrent.sync
-import ink.pmc.framework.utils.time.ticks
 import kotlinx.coroutines.delay
 import org.bukkit.entity.Player
 import org.bukkit.event.Cancellable

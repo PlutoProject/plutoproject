@@ -1,10 +1,11 @@
-package ink.pmc.visual.api.display.text
+package ink.pmc.framework.visual.display.text
 
 import ink.pmc.framework.utils.inject.inlinedGet
-import ink.pmc.visual.api.display.DisplayManager
+import ink.pmc.framework.visual.display.DisplayManager
 import org.bukkit.entity.Player
 
-interface TextDisplayManager : DisplayManager<TextDisplay, TextDisplayView> {
+interface TextDisplayManager :
+    DisplayManager<TextDisplay, TextDisplayView> {
 
     companion object : TextDisplayManager by inlinedGet()
 
