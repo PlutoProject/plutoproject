@@ -1,6 +1,5 @@
 package ink.pmc.framework.playerdb
 
-import ink.pmc.playerdb.api.Database
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

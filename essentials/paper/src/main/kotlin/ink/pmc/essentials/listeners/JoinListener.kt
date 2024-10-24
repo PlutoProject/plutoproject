@@ -3,7 +3,7 @@ package ink.pmc.essentials.listeners
 import ink.pmc.essentials.JOIN_MENU_ITEM_GIVEN_KEY
 import ink.pmc.essentials.config.EssentialsConfig
 import ink.pmc.essentials.item.MENU_ITEM
-import ink.pmc.playerdb.api.PlayerDb
+import ink.pmc.framework.playerdb.PlayerDb
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent

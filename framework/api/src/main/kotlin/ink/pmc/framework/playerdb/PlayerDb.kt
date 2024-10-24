@@ -1,4 +1,4 @@
-package ink.pmc.playerdb.api
+package ink.pmc.framework.playerdb
 
 import ink.pmc.framework.utils.inject.inlinedGet
 import java.util.*

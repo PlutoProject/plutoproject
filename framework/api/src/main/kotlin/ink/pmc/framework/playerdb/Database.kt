@@ -1,4 +1,4 @@
-package ink.pmc.playerdb.api
+package ink.pmc.framework.playerdb
 
 import org.bson.BsonDocument
 import org.bson.BsonValue

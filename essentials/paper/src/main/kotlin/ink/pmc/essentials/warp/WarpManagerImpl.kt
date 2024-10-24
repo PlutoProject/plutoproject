@@ -6,7 +6,7 @@ import ink.pmc.essentials.api.warp.WarpType
 import ink.pmc.essentials.config.EssentialsConfig
 import ink.pmc.essentials.dtos.WarpDto
 import ink.pmc.essentials.repositories.WarpRepository
-import ink.pmc.playerdb.api.PlayerDb
+import ink.pmc.framework.playerdb.PlayerDb
 import ink.pmc.framework.utils.concurrent.submitAsync
 import ink.pmc.framework.utils.player.uuidOrNull
 import ink.pmc.framework.utils.storage.model

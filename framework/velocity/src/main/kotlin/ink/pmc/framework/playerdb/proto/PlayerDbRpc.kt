@@ -6,7 +6,7 @@ import ink.pmc.framework.playerdb.proto.PlayerDbRpcOuterClass.DatabaseIdentifier
 import ink.pmc.framework.utils.concurrent.submitAsync
 import ink.pmc.framework.utils.player.uuid
 import ink.pmc.framework.utils.proto.empty
-import ink.pmc.playerdb.api.PlayerDb
+import ink.pmc.framework.playerdb.PlayerDb
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import org.koin.core.component.KoinComponent
