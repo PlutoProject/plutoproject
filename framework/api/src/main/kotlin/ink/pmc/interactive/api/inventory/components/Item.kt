@@ -8,7 +8,7 @@ import ink.pmc.interactive.api.inventory.layout.MeasureResult
 import ink.pmc.interactive.api.inventory.layout.Renderer
 import ink.pmc.interactive.api.inventory.modifiers.Modifier
 import ink.pmc.interactive.api.inventory.modifiers.sizeIn
-import ink.pmc.interactive.api.inventory.nodes.BaseInventoryNode
+import ink.pmc.framework.interactive.inventory.nodes.BaseInventoryNode
 import net.kyori.adventure.text.Component
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack

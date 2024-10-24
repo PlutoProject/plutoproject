@@ -1,4 +1,4 @@
-package ink.pmc.interactive.api.inventory.nodes
+package ink.pmc.framework.interactive.inventory.nodes
 
 import ink.pmc.framework.interactive.canvas.Canvas
 import ink.pmc.interactive.api.inventory.layout.InventoryNode

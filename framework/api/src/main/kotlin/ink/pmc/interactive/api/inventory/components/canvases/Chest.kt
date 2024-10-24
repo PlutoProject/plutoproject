@@ -10,8 +10,8 @@ import ink.pmc.interactive.api.inventory.layout.Size
 import ink.pmc.interactive.api.inventory.modifiers.Modifier
 import ink.pmc.interactive.api.inventory.modifiers.onSizeChanged
 import ink.pmc.interactive.api.inventory.modifiers.sizeIn
-import ink.pmc.interactive.api.inventory.nodes.InventoryCloseScope
-import ink.pmc.interactive.api.inventory.nodes.StaticMeasurePolicy
+import ink.pmc.framework.interactive.inventory.nodes.InventoryCloseScope
+import ink.pmc.framework.interactive.inventory.nodes.StaticMeasurePolicy
 import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player

@@ -15,7 +15,7 @@ import ink.pmc.interactive.api.inventory.modifiers.click.ClickModifier
 import ink.pmc.interactive.api.inventory.modifiers.click.ClickScope
 import ink.pmc.interactive.api.inventory.modifiers.drag.DragModifier
 import ink.pmc.interactive.api.inventory.modifiers.drag.DragScope
-import ink.pmc.interactive.api.inventory.nodes.BaseInventoryNode
+import ink.pmc.framework.interactive.inventory.nodes.BaseInventoryNode
 import org.bukkit.inventory.ItemStack
 import kotlin.reflect.KClass
 

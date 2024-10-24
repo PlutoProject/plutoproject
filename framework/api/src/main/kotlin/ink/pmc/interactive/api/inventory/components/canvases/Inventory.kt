@@ -18,9 +18,9 @@ import ink.pmc.interactive.api.inventory.layout.Renderer
 import ink.pmc.interactive.api.inventory.modifiers.Modifier
 import ink.pmc.interactive.api.inventory.modifiers.click.ClickScope
 import ink.pmc.interactive.api.inventory.modifiers.drag.DragScope
-import ink.pmc.interactive.api.inventory.nodes.BaseInventoryNode
-import ink.pmc.interactive.api.inventory.nodes.InventoryCloseScope
-import ink.pmc.interactive.api.inventory.nodes.StaticMeasurePolicy
+import ink.pmc.framework.interactive.inventory.nodes.BaseInventoryNode
+import ink.pmc.framework.interactive.inventory.nodes.InventoryCloseScope
+import ink.pmc.framework.interactive.inventory.nodes.StaticMeasurePolicy
 import kotlinx.coroutines.delay
 import org.bukkit.entity.Player
 import org.bukkit.event.Cancellable

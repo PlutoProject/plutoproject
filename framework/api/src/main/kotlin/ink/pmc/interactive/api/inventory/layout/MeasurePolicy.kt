@@ -5,7 +5,7 @@ import ink.pmc.framework.interactive.canvas.Canvas
 import ink.pmc.interactive.api.inventory.components.state.IntOffset
 import ink.pmc.interactive.api.inventory.components.state.IntSize
 import ink.pmc.interactive.api.inventory.modifiers.Constraints
-import ink.pmc.interactive.api.inventory.nodes.BaseInventoryNode
+import ink.pmc.framework.interactive.inventory.nodes.BaseInventoryNode
 
 data class MeasureResult(
     val width: Int,

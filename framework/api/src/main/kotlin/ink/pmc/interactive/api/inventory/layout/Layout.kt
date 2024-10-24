@@ -5,7 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ComposeNode
 import ink.pmc.interactive.api.inventory.LocalCanvas
 import ink.pmc.interactive.api.inventory.modifiers.Modifier
-import ink.pmc.interactive.api.inventory.nodes.BaseInventoryNode
+import ink.pmc.framework.interactive.inventory.nodes.BaseInventoryNode
 
 /**
  * The main component for layout, it measures and positions zero or more children.

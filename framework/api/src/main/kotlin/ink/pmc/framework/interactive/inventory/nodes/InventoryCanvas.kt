@@ -1,4 +1,4 @@
-package ink.pmc.interactive.api.inventory.nodes
+package ink.pmc.framework.interactive.inventory.nodes
 
 import ink.pmc.interactive.api.inventory.layout.MeasurePolicy
 import ink.pmc.interactive.api.inventory.layout.MeasureResult
