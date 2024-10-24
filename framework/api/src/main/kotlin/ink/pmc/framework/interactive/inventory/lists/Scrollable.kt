@@ -1,10 +1,10 @@
 package ink.pmc.framework.interactive.inventory.lists
 
 import androidx.compose.runtime.*
-import ink.pmc.framework.interactive.inventory.layout.Box
-import ink.pmc.framework.interactive.inventory.layout.Size
 import ink.pmc.framework.interactive.inventory.Modifier
 import ink.pmc.framework.interactive.inventory.fillMaxSize
+import ink.pmc.framework.interactive.inventory.layout.Box
+import ink.pmc.framework.interactive.inventory.layout.Size
 import ink.pmc.framework.interactive.inventory.onSizeChanged
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack

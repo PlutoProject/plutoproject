@@ -3,9 +3,9 @@ package ink.pmc.framework.interactive.inventory.components.canvases
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import ink.pmc.framework.frameworkPaper
-import ink.pmc.framework.utils.concurrent.submitSync
 import ink.pmc.framework.interactive.LocalGuiScope
 import ink.pmc.framework.interactive.LocalPlayer
+import ink.pmc.framework.utils.concurrent.submitSync
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import net.wesjd.anvilgui.AnvilGUI

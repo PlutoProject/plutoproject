@@ -2,10 +2,6 @@ package ink.pmc.framework.interactive
 
 import ink.pmc.framework.frameworkPaper
 import ink.pmc.framework.interactive.inventory.InventoryScope
-import ink.pmc.framework.interactive.ComposableFunction
-import ink.pmc.framework.interactive.GuiInventoryScope
-import ink.pmc.framework.interactive.GuiManager
-import ink.pmc.framework.interactive.GuiScope
 import org.bukkit.entity.Player
 import java.util.concurrent.ConcurrentHashMap
 

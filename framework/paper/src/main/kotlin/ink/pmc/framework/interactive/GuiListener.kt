@@ -1,6 +1,5 @@
 package ink.pmc.framework.interactive
 
-import ink.pmc.framework.interactive.GuiManager
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener

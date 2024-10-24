@@ -2,8 +2,6 @@ package ink.pmc.framework.interactive.inventory.lists
 
 import androidx.compose.runtime.*
 import ink.pmc.framework.interactive.inventory.*
-import ink.pmc.framework.interactive.inventory.Item
-import ink.pmc.framework.interactive.inventory.Spacer
 import ink.pmc.framework.interactive.inventory.jetpack.Arrangement
 import ink.pmc.framework.interactive.inventory.layout.Box
 import ink.pmc.framework.interactive.inventory.layout.Column

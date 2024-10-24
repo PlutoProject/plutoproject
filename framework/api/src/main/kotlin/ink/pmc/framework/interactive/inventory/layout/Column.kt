@@ -2,10 +2,10 @@ package ink.pmc.framework.interactive.inventory.layout
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import ink.pmc.framework.interactive.inventory.Modifier
 import ink.pmc.framework.interactive.inventory.jetpack.Alignment
 import ink.pmc.framework.interactive.inventory.jetpack.Arrangement
 import ink.pmc.framework.interactive.inventory.jetpack.LayoutDirection
-import ink.pmc.framework.interactive.inventory.Modifier
 
 /**
  * A layout component that places contents in a column top-to-bottom.

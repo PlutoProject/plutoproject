@@ -6,8 +6,6 @@ import ink.pmc.framework.interactive.canvas.Canvas
 import ink.pmc.framework.interactive.inventory.layout.Layout
 import ink.pmc.framework.interactive.inventory.layout.MeasureResult
 import ink.pmc.framework.interactive.inventory.layout.Renderer
-import ink.pmc.framework.interactive.inventory.Modifier
-import ink.pmc.framework.interactive.inventory.sizeIn
 import ink.pmc.framework.interactive.inventory.nodes.BaseInventoryNode
 import net.kyori.adventure.text.Component
 import org.bukkit.Material

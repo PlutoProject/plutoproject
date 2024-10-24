@@ -2,10 +2,10 @@ package ink.pmc.framework.interactive.inventory.layout
 
 import androidx.compose.runtime.Stable
 import ink.pmc.framework.interactive.canvas.Canvas
-import ink.pmc.framework.interactive.inventory.state.IntOffset
-import ink.pmc.framework.interactive.inventory.state.IntSize
 import ink.pmc.framework.interactive.inventory.Constraints
 import ink.pmc.framework.interactive.inventory.nodes.BaseInventoryNode
+import ink.pmc.framework.interactive.inventory.state.IntOffset
+import ink.pmc.framework.interactive.inventory.state.IntSize
 
 data class MeasureResult(
     val width: Int,

@@ -3,6 +3,7 @@ package ink.pmc.framework
 import com.github.shynixn.mccoroutine.bukkit.SuspendingJavaPlugin
 import com.github.shynixn.mccoroutine.bukkit.registerSuspendingEvents
 import ink.pmc.framework.interactive.GuiListener
+import ink.pmc.framework.interactive.GuiManager
 import ink.pmc.framework.interactive.GuiManagerImpl
 import ink.pmc.framework.interactive.inventory.InventoryListener
 import ink.pmc.framework.options.BackendOptionsUpdateNotifier
@@ -14,6 +15,8 @@ import ink.pmc.framework.playerdb.BackendDatabaseNotifier
 import ink.pmc.framework.playerdb.DatabaseNotifier
 import ink.pmc.framework.playerdb.startPlayerDbMonitor
 import ink.pmc.framework.playerdb.stopPlayerDbMonitor
+import ink.pmc.framework.provider.Provider
+import ink.pmc.framework.rpc.RpcClient
 import ink.pmc.framework.utils.currentUnixTimestamp
 import ink.pmc.framework.utils.hook.initPaperHooks
 import ink.pmc.framework.utils.inject.startKoinIfNotPresent
@@ -25,9 +28,6 @@ import ink.pmc.framework.visual.display.text.*
 import ink.pmc.framework.visual.display.text.renderers.NmsTextDisplayRenderer
 import ink.pmc.framework.visual.toast.ToastRenderer
 import ink.pmc.framework.visual.toast.renderers.NmsToastRenderer
-import ink.pmc.framework.interactive.GuiManager
-import ink.pmc.framework.provider.Provider
-import ink.pmc.framework.rpc.RpcClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.bukkit.entity.Player

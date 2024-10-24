@@ -1,9 +1,5 @@
 package ink.pmc.framework.options
 
-import ink.pmc.framework.options.EntryValueType
-import ink.pmc.framework.options.Limitation
-import ink.pmc.framework.options.OptionDescriptor
-
 /*
 * 仅运行时存在，内部使用。
 * */

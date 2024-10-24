@@ -2,7 +2,6 @@ package ink.pmc.framework.playerdb
 
 import ink.pmc.framework.frameworkLogger
 import ink.pmc.framework.utils.player.uuid
-import ink.pmc.framework.playerdb.Database
 import org.bson.*
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject

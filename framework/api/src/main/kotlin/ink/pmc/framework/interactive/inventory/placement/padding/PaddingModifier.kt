@@ -1,12 +1,12 @@
 package ink.pmc.framework.interactive.inventory.placement.padding
 
 import androidx.compose.runtime.Stable
-import ink.pmc.framework.interactive.inventory.state.IntOffset
-import ink.pmc.framework.interactive.inventory.state.IntSize
 import ink.pmc.framework.interactive.inventory.Constraints
 import ink.pmc.framework.interactive.inventory.LayoutChangingModifier
 import ink.pmc.framework.interactive.inventory.Modifier
 import ink.pmc.framework.interactive.inventory.offset
+import ink.pmc.framework.interactive.inventory.state.IntOffset
+import ink.pmc.framework.interactive.inventory.state.IntSize
 import kotlin.math.max
 
 data class PaddingModifier(
