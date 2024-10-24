@@ -16,7 +16,6 @@ import ink.pmc.essentials.config.EssentialsConfig
 import ink.pmc.framework.interactive.inventory.*
 import ink.pmc.framework.interactive.ComposableFunction
 import ink.pmc.framework.interactive.LocalPlayer
-import ink.pmc.interactive.api.inventory.components.*
 import ink.pmc.framework.interactive.inventory.components.canvases.Chest
 import ink.pmc.framework.interactive.inventory.jetpack.Arrangement
 import ink.pmc.framework.interactive.inventory.layout.Box
