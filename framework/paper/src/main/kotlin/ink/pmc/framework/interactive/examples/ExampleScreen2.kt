@@ -16,9 +16,9 @@ import ink.pmc.interactive.api.inventory.components.Item
 import ink.pmc.interactive.api.inventory.components.Spacer
 import ink.pmc.interactive.api.inventory.components.canvases.Chest
 import ink.pmc.framework.interactive.inventory.jetpack.Arrangement
-import ink.pmc.interactive.api.inventory.layout.Box
-import ink.pmc.interactive.api.inventory.layout.Column
-import ink.pmc.interactive.api.inventory.layout.Row
+import ink.pmc.framework.interactive.inventory.layout.Box
+import ink.pmc.framework.interactive.inventory.layout.Column
+import ink.pmc.framework.interactive.inventory.layout.Row
 import ink.pmc.interactive.api.inventory.modifiers.Modifier
 import ink.pmc.interactive.api.inventory.modifiers.click.clickable
 import ink.pmc.interactive.api.inventory.modifiers.fillMaxSize

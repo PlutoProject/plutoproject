@@ -1,8 +1,8 @@
 package ink.pmc.interactive.api.inventory.components.lists
 
 import androidx.compose.runtime.*
-import ink.pmc.interactive.api.inventory.layout.Box
-import ink.pmc.interactive.api.inventory.layout.Size
+import ink.pmc.framework.interactive.inventory.layout.Box
+import ink.pmc.framework.interactive.inventory.layout.Size
 import ink.pmc.interactive.api.inventory.modifiers.Modifier
 import ink.pmc.interactive.api.inventory.modifiers.fillMaxSize
 import ink.pmc.interactive.api.inventory.modifiers.onSizeChanged

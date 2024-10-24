@@ -4,10 +4,10 @@ import androidx.compose.runtime.*
 import ink.pmc.interactive.api.inventory.components.Item
 import ink.pmc.interactive.api.inventory.components.Spacer
 import ink.pmc.framework.interactive.inventory.jetpack.Arrangement
-import ink.pmc.interactive.api.inventory.layout.Box
-import ink.pmc.interactive.api.inventory.layout.Column
-import ink.pmc.interactive.api.inventory.layout.Row
-import ink.pmc.interactive.api.inventory.layout.Size
+import ink.pmc.framework.interactive.inventory.layout.Box
+import ink.pmc.framework.interactive.inventory.layout.Column
+import ink.pmc.framework.interactive.inventory.layout.Row
+import ink.pmc.framework.interactive.inventory.layout.Size
 import ink.pmc.interactive.api.inventory.modifiers.*
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack

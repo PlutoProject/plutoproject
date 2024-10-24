@@ -5,8 +5,8 @@ import ink.pmc.framework.utils.inventory.title
 import ink.pmc.interactive.api.GuiInventoryScope
 import ink.pmc.interactive.api.LocalGuiScope
 import ink.pmc.interactive.api.inventory.components.state.IntCoordinates
-import ink.pmc.interactive.api.inventory.layout.Layout
-import ink.pmc.interactive.api.inventory.layout.Size
+import ink.pmc.framework.interactive.inventory.layout.Layout
+import ink.pmc.framework.interactive.inventory.layout.Size
 import ink.pmc.interactive.api.inventory.modifiers.Modifier
 import ink.pmc.interactive.api.inventory.modifiers.onSizeChanged
 import ink.pmc.interactive.api.inventory.modifiers.sizeIn

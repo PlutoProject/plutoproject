@@ -1,6 +1,6 @@
 package ink.pmc.interactive.api.inventory.modifiers
 
-import ink.pmc.interactive.api.inventory.layout.Size
+import ink.pmc.framework.interactive.inventory.layout.Size
 
 
 class OnSizeChangedModifier(

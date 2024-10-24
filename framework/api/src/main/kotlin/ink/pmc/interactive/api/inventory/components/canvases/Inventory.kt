@@ -13,8 +13,8 @@ import ink.pmc.framework.interactive.canvas.Canvas
 import ink.pmc.framework.interactive.canvas.GuiInventoryHolder
 import ink.pmc.framework.interactive.canvas.MapBackedCanvas
 import ink.pmc.interactive.api.inventory.components.state.IntCoordinates
-import ink.pmc.interactive.api.inventory.layout.Layout
-import ink.pmc.interactive.api.inventory.layout.Renderer
+import ink.pmc.framework.interactive.inventory.layout.Layout
+import ink.pmc.framework.interactive.inventory.layout.Renderer
 import ink.pmc.interactive.api.inventory.modifiers.Modifier
 import ink.pmc.interactive.api.inventory.modifiers.click.ClickScope
 import ink.pmc.interactive.api.inventory.modifiers.drag.DragScope

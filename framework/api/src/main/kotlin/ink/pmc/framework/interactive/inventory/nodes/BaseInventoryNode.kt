@@ -1,9 +1,9 @@
 package ink.pmc.framework.interactive.inventory.nodes
 
 import ink.pmc.framework.interactive.canvas.Canvas
-import ink.pmc.interactive.api.inventory.layout.InventoryNode
-import ink.pmc.interactive.api.inventory.layout.MeasurePolicy
-import ink.pmc.interactive.api.inventory.layout.Renderer
+import ink.pmc.framework.interactive.inventory.layout.InventoryNode
+import ink.pmc.framework.interactive.inventory.layout.MeasurePolicy
+import ink.pmc.framework.interactive.inventory.layout.Renderer
 import ink.pmc.interactive.api.inventory.modifiers.Modifier
 
 interface BaseInventoryNode {

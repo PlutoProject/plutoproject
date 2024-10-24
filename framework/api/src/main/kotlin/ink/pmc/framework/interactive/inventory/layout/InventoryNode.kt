@@ -1,4 +1,4 @@
-package ink.pmc.interactive.api.inventory.layout
+package ink.pmc.framework.interactive.inventory.layout
 
 import ink.pmc.framework.interactive.canvas.Canvas
 import ink.pmc.framework.interactive.canvas.ClickResult

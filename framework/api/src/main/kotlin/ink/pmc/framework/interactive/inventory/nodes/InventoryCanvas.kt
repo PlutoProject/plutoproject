@@ -1,7 +1,7 @@
 package ink.pmc.framework.interactive.inventory.nodes
 
-import ink.pmc.interactive.api.inventory.layout.MeasurePolicy
-import ink.pmc.interactive.api.inventory.layout.MeasureResult
+import ink.pmc.framework.interactive.inventory.layout.MeasurePolicy
+import ink.pmc.framework.interactive.inventory.layout.MeasureResult
 
 interface InventoryCloseScope {
     fun reopen()

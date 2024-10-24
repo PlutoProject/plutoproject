@@ -21,9 +21,9 @@ import ink.pmc.interactive.api.LocalPlayer
 import ink.pmc.interactive.api.inventory.components.*
 import ink.pmc.interactive.api.inventory.components.canvases.Chest
 import ink.pmc.framework.interactive.inventory.jetpack.Arrangement
-import ink.pmc.interactive.api.inventory.layout.Box
-import ink.pmc.interactive.api.inventory.layout.Column
-import ink.pmc.interactive.api.inventory.layout.Row
+import ink.pmc.framework.interactive.inventory.layout.Box
+import ink.pmc.framework.interactive.inventory.layout.Column
+import ink.pmc.framework.interactive.inventory.layout.Row
 import ink.pmc.interactive.api.inventory.modifiers.*
 import ink.pmc.interactive.api.inventory.modifiers.click.clickable
 import ink.pmc.menu.CO_NEAR_COMMAND

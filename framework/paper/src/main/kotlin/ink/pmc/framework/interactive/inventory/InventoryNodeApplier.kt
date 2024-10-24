@@ -1,7 +1,7 @@
 package ink.pmc.framework.interactive.inventory
 
 import androidx.compose.runtime.AbstractApplier
-import ink.pmc.interactive.api.inventory.layout.InventoryNode
+import ink.pmc.framework.interactive.inventory.layout.InventoryNode
 
 class InventoryNodeApplier(root: InventoryNode, private val endChangesCallback: () -> Unit) :
     AbstractApplier<InventoryNode>(root) {

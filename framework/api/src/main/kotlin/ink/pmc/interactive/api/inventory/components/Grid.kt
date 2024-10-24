@@ -1,9 +1,9 @@
 package ink.pmc.interactive.api.inventory.components
 
 import androidx.compose.runtime.Composable
-import ink.pmc.interactive.api.inventory.layout.Layout
-import ink.pmc.interactive.api.inventory.layout.MeasurePolicy
-import ink.pmc.interactive.api.inventory.layout.MeasureResult
+import ink.pmc.framework.interactive.inventory.layout.Layout
+import ink.pmc.framework.interactive.inventory.layout.MeasurePolicy
+import ink.pmc.framework.interactive.inventory.layout.MeasureResult
 import ink.pmc.interactive.api.inventory.modifiers.Modifier
 
 /**

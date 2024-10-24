@@ -14,7 +14,7 @@ import ink.pmc.interactive.api.inventory.LocalClickHandler
 import ink.pmc.framework.interactive.canvas.ClickHandler
 import ink.pmc.framework.interactive.canvas.ClickResult
 import ink.pmc.framework.interactive.canvas.GuiInventoryHolder
-import ink.pmc.interactive.api.inventory.layout.InventoryNode
+import ink.pmc.framework.interactive.inventory.layout.InventoryNode
 import ink.pmc.interactive.api.inventory.modifiers.Constraints
 import ink.pmc.interactive.api.inventory.modifiers.click.ClickScope
 import ink.pmc.interactive.api.inventory.modifiers.drag.DragScope
