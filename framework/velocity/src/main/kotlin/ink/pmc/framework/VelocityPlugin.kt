@@ -13,6 +13,7 @@ import ink.pmc.framework.commands.RpcCommand
 import ink.pmc.framework.options.OptionsUpdateNotifier
 import ink.pmc.framework.options.ProxyOptionsUpdateNotifier
 import ink.pmc.framework.options.listeners.VelocityOptionsListener
+import ink.pmc.framework.options.proto.OptionsRpc
 import ink.pmc.framework.playerdb.Notifier
 import ink.pmc.framework.playerdb.ProxyNotifier
 import ink.pmc.framework.playerdb.playerDbScope
@@ -30,6 +31,7 @@ import org.incendo.cloud.annotations.AnnotationParser
 import org.incendo.cloud.execution.ExecutionCoordinator
 import org.incendo.cloud.velocity.VelocityCommandManager
 import org.koin.dsl.module
+import org.koin.java.KoinJavaComponent.getKoin
 import java.io.File
 import java.nio.file.Path
 import java.util.logging.Logger
@@ -58,6 +60,10 @@ class VelocityPlugin @Inject constructor(private val spc: SuspendingPluginContai
         }
         startKoinIfNotPresent {
             modules(commonModule, velocityModule)
+        }
+        RpcServer.apply {
+            addService(OptionsRpc)
+            addService(getKoin().get<Notifier>() as ProxyNotifier)
         }
         server.eventManager.registerSuspend(this, VelocityOptionsListener)
     }

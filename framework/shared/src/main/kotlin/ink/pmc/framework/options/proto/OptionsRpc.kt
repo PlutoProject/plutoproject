@@ -1,6 +1,7 @@
 package ink.pmc.framework.options.proto
 
 import com.google.protobuf.Empty
+import ink.pmc.framework.options.proto.OptionsRpcGrpcKt.OptionsRpcCoroutineImplBase
 import ink.pmc.framework.options.proto.OptionsUpdateNotifyOuterClass.OptionsUpdateNotify
 import ink.pmc.options.api.OptionsManager
 import ink.pmc.utils.concurrent.submitAsyncIO
@@ -10,7 +11,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import java.util.*
 
-object OptionsRpc : OptionsRpcGrpcKt.OptionsRpcCoroutineImplBase() {
+object OptionsRpc : OptionsRpcCoroutineImplBase() {
     private val id: UUID = UUID.randomUUID()
     private val broadcast = MutableSharedFlow<OptionsUpdateNotify>()
 
