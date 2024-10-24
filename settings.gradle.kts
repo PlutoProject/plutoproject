@@ -20,6 +20,7 @@ include("bedrock-adaptive")
 include("bedrock-adaptive:velocity")
 */
 
+/*
 include("dependency-loader")
 include("dependency-loader:paper")
 include("dependency-loader:velocity")
@@ -67,12 +68,6 @@ include("visual")
 include("visual:api")
 include("visual:paper")
 include("visual:shared")
-
-include("provider")
-include("provider:api")
-include("provider:paper")
-include("provider:velocity")
-include("provider:shared")
 
 // 删除：1.1.0
 /*
@@ -132,3 +127,10 @@ include("options:shared")
 include("options:paper")
 include("options:velocity")
 include("options:proto")
+*/
+
+include("framework")
+include("framework:api")
+include("framework:velocity")
+include("framework:paper")
+include("framework:shared")
