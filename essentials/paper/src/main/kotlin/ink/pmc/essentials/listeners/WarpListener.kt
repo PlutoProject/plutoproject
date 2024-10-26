@@ -10,7 +10,6 @@ import org.koin.core.component.inject
 
 @Suppress("UNUSED", "UnusedReceiverParameter")
 object WarpListener : Listener, KoinComponent {
-
     private val manager by inject<WarpManager>()
 
     @EventHandler
@@ -21,5 +20,4 @@ object WarpListener : Listener, KoinComponent {
             manager.setPreferredSpawn(player, default)
         }
     }
-
 }

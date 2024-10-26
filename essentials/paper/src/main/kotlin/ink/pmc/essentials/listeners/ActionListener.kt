@@ -11,8 +11,7 @@ import org.koin.core.component.inject
 
 @Suppress("UNUSED", "UnusedReceiverParameter")
 object ActionListener : Listener, KoinComponent {
-
-    private val config by lazy { get<EssentialsConfig>().Action() }
+    private val config by lazy { get<EssentialsConfig>().action }
     private val teleportManager by inject<TeleportManager>()
 
     /*
@@ -26,5 +25,4 @@ object ActionListener : Listener, KoinComponent {
         isCancelled = true
         player.performCommand("plutoproject_menu:menu")
     }
-
 }

@@ -5,7 +5,7 @@ import ink.pmc.advkt.component.text
 import ink.pmc.essentials.COMMAND_PREFERRED_SPAWN_FAILED_ALREADY
 import ink.pmc.essentials.COMMAND_PREFERRED_SPAWN_SUCCEED
 import ink.pmc.essentials.COMMAND_SPAWN_NOT_EXISTED
-import ink.pmc.essentials.api.Essentials
+import ink.pmc.essentials.api.warp.WarpManager
 import ink.pmc.essentials.commandManager
 import ink.pmc.essentials.commands.parseWarp
 import ink.pmc.essentials.commands.parseWarpName
@@ -34,7 +34,7 @@ private object SpawnSuggestion : SuggestionProvider<CommandSourceStack> {
         input: CommandInput
     ): CompletableFuture<List<Suggestion>> {
         return submitAsync<List<Suggestion>> {
-            val spawns = Essentials.warpManager.listSpawns()
+            val spawns = WarpManager.listSpawns()
             spawns.map { Suggestion.suggestion(it.name) }
         }.asCompletableFuture()
     }
@@ -62,7 +62,7 @@ val defaultSpawnCommand = commandManager.commandBuilder("preferredspawn")
             sender.sendMessage(COMMAND_SPAWN_NOT_EXISTED.replace("<name>", name))
             return@suspendingHandler
         }
-        val current = Essentials.warpManager.getPreferredSpawn(sender)
+        val current = WarpManager.getPreferredSpawn(sender)
 
         if (current?.name == spawn.name) {
             sender.sendMessage(
@@ -73,7 +73,7 @@ val defaultSpawnCommand = commandManager.commandBuilder("preferredspawn")
             return@suspendingHandler
         }
 
-        Essentials.warpManager.setPreferredSpawn(sender, spawn)
+        WarpManager.setPreferredSpawn(sender, spawn)
         sender.sendMessage(
             COMMAND_PREFERRED_SPAWN_SUCCEED.replace("<name>", if (spawn.alias != null) component {
                 text("${spawn.alias} ") with mochaText

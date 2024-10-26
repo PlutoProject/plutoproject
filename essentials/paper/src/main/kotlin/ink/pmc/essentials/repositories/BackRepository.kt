@@ -14,11 +14,10 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
 class BackRepository : KoinComponent {
-
-    private val conf by inject<EssentialsConfig>()
+    private val config by inject<EssentialsConfig>()
     private val options = ReplaceOptions().upsert(true)
     private val db =
-        Provider.defaultMongoDatabase.getCollection<BackDto>("essentials_${conf.serverName}_backs")
+        Provider.defaultMongoDatabase.getCollection<BackDto>("essentials_${config.serverName}_backs")
 
     suspend fun find(player: Player): Location? {
         return findDto(player)?.location?.location
@@ -52,5 +51,4 @@ class BackRepository : KoinComponent {
     suspend fun delete(player: Player) {
         db.deleteOne(eq("owner", player.uniqueId.toString()))
     }
-
 }

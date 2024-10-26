@@ -1,5 +1,6 @@
 package ink.pmc.essentials.api.teleport
 
+import ink.pmc.framework.utils.inject.inlinedGet
 import ink.pmc.framework.utils.world.ValueVec2
 import org.bukkit.Location
 import org.bukkit.World
@@ -8,15 +9,14 @@ import org.bukkit.entity.Player
 import java.util.*
 
 enum class TeleportManagerState {
-
     IDLE, TICKING
-
 }
 
 typealias LocationChecker = suspend (Location, TeleportOptions) -> Boolean
 
 @Suppress("UNUSED")
 interface TeleportManager {
+    companion object : TeleportManager by inlinedGet()
 
     val teleportRequests: Collection<TeleportRequest>
     val queue: Queue<TeleportTask>
@@ -116,5 +116,4 @@ interface TeleportManager {
     fun isBlacklisted(world: World): Boolean
 
     suspend fun tick()
-
 }

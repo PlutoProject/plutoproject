@@ -1,9 +1,9 @@
 package ink.pmc.essentials.commands.teleport
 
 import ink.pmc.essentials.*
-import ink.pmc.essentials.api.Essentials
-import ink.pmc.framework.utils.command.annotation.Command
+import ink.pmc.essentials.api.teleport.TeleportManager
 import ink.pmc.framework.utils.chat.replace
+import ink.pmc.framework.utils.command.annotation.Command
 import ink.pmc.framework.utils.command.checkPlayer
 import ink.pmc.framework.utils.command.paperOptionalOnlinePlayersArgument
 import ink.pmc.framework.utils.dsl.cloud.invoke
@@ -44,15 +44,14 @@ fun Cm.tpdeny(aliases: Array<String>) {
 
 private suspend fun CommandContext<CommandSourceStack>.handleOperation(type: Operation) {
     checkPlayer(sender.sender) {
-        val manager = Essentials.teleportManager
         val input = optional<String>("request").getOrNull()
 
         val argPlayer = input?.let { Bukkit.getPlayer(it) }
         val argUuid = input?.uuidOrNull
 
-        val emptyArgRequest = manager.getPendingRequest(this) // 没有参数的情况
-        val playerArgRequest = argPlayer?.let { manager.getUnfinishedRequest(it) } // 参数是玩家名情况
-        val uuidArgRequest = argUuid?.let { manager.getRequest(it) } // 参数是请求 ID 的情况
+        val emptyArgRequest = TeleportManager.getPendingRequest(this) // 没有参数的情况
+        val playerArgRequest = argPlayer?.let { TeleportManager.getUnfinishedRequest(it) } // 参数是玩家名情况
+        val uuidArgRequest = argUuid?.let { TeleportManager.getRequest(it) } // 参数是请求 ID 的情况
 
         if (input != null) {
             val destination = uuidArgRequest?.destination ?: playerArgRequest?.destination

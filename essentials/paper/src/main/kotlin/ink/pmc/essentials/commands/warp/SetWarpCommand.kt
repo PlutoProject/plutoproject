@@ -1,10 +1,10 @@
 package ink.pmc.essentials.commands.warp
 
 import ink.pmc.essentials.*
-import ink.pmc.essentials.api.Essentials
-import ink.pmc.framework.utils.command.annotation.Command
+import ink.pmc.essentials.api.warp.WarpManager
 import ink.pmc.framework.utils.chat.isValidIdentifier
 import ink.pmc.framework.utils.chat.replace
+import ink.pmc.framework.utils.command.annotation.Command
 import ink.pmc.framework.utils.command.checkPlayer
 import ink.pmc.framework.utils.concurrent.submitAsync
 import ink.pmc.framework.utils.dsl.cloud.invoke
@@ -21,11 +21,10 @@ fun Cm.setwarp(aliases: Array<String>) {
         optional("alias", StringParser.quotedStringParser())
         handler {
             checkPlayer(sender.sender) {
-                val manager = Essentials.warpManager
                 val name = get<String>("name")
                 val alias = optional<String>("alias").getOrNull()
 
-                if (manager.has(name)) {
+                if (WarpManager.has(name)) {
                     sendMessage(COMMAND_SETWARP_FAILED_EXISTED.replace("<name>", name))
                     playSound(TELEPORT_FAILED_SOUND)
                     return@checkPlayer
@@ -37,13 +36,13 @@ fun Cm.setwarp(aliases: Array<String>) {
                     return@checkPlayer
                 }
 
-                if (name.length > manager.nameLengthLimit) {
+                if (name.length > WarpManager.nameLengthLimit) {
                     sendMessage(COMMAND_SETWARP_FAILED_LENGTN_LIMIT)
                     playSound(TELEPORT_FAILED_SOUND)
                     return@checkPlayer
                 }
 
-                submitAsync { manager.create(name, location, alias) }
+                submitAsync { WarpManager.create(name, location, alias) }
                 if (alias == null) {
                     sendMessage(COMMAND_SETWARP_SUCCEED.replace("<name>", name))
                 } else {

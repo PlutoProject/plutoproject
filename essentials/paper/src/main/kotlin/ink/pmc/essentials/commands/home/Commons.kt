@@ -1,6 +1,6 @@
 package ink.pmc.essentials.commands.home
 
-import ink.pmc.essentials.api.Essentials
+import ink.pmc.essentials.api.home.HomeManager
 import ink.pmc.framework.utils.concurrent.submitAsync
 import io.papermc.paper.command.brigadier.CommandSourceStack
 import kotlinx.coroutines.future.asCompletableFuture
@@ -13,11 +13,10 @@ import java.util.concurrent.CompletableFuture
 internal fun homes(argName: String) =
     CommandComponent.builder<CommandSourceStack, String>()
         .suggestionProvider { ctx, _ ->
-            val manager = Essentials.homeManager
             val sender = ctx.sender().sender
             if (sender is Player) {
                 submitAsync<List<Suggestion>> {
-                    manager.list(sender).map { Suggestion.suggestion(it.name) }
+                    HomeManager.list(sender).map { Suggestion.suggestion(it.name) }
                 }.asCompletableFuture()
             } else {
                 CompletableFuture.completedFuture(listOf())

@@ -13,16 +13,14 @@ import ink.pmc.essentials.*
 import ink.pmc.essentials.api.home.Home
 import ink.pmc.essentials.api.home.HomeManager
 import ink.pmc.essentials.screens.home.HomeViewerScreen.State.*
-import ink.pmc.framework.interactive.inventory.*
 import ink.pmc.framework.interactive.LocalPlayer
-import ink.pmc.framework.interactive.inventory.Item
-import ink.pmc.framework.interactive.inventory.Placeholder
+import ink.pmc.framework.interactive.inventory.*
+import ink.pmc.framework.interactive.inventory.click.clickable
 import ink.pmc.framework.interactive.inventory.components.canvases.Chest
 import ink.pmc.framework.interactive.inventory.jetpack.Arrangement
 import ink.pmc.framework.interactive.inventory.layout.Box
 import ink.pmc.framework.interactive.inventory.layout.Column
 import ink.pmc.framework.interactive.inventory.layout.Row
-import ink.pmc.framework.interactive.inventory.click.clickable
 import ink.pmc.framework.utils.chat.UI_BACK
 import ink.pmc.framework.utils.chat.replace
 import org.bukkit.Material
@@ -32,7 +30,6 @@ import org.koin.compose.koinInject
 import java.util.*
 
 class HomeViewerScreen(private val viewing: OfflinePlayer) : Screen {
-
     private val localState: ProvidableCompositionLocal<State> = staticCompositionLocalOf { error("") }
     private val localCurrIndex: ProvidableCompositionLocal<MutableState<Int>> = staticCompositionLocalOf { error("") }
     private val localMaxIndex: ProvidableCompositionLocal<Int> = staticCompositionLocalOf { error("") }
@@ -400,5 +397,4 @@ class HomeViewerScreen(private val viewing: OfflinePlayer) : Screen {
             lore = if (player == viewing) UI_HOME_EMPTY_LORE else UI_HOME_EMPTY_LORE_OTHER
         )
     }
-
 }

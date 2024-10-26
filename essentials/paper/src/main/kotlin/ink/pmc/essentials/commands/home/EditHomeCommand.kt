@@ -1,8 +1,8 @@
 package ink.pmc.essentials.commands.home
 
 import ink.pmc.essentials.*
-import ink.pmc.essentials.api.Essentials
 import ink.pmc.essentials.api.home.Home
+import ink.pmc.essentials.api.home.HomeManager
 import ink.pmc.framework.utils.PaperCtx
 import ink.pmc.framework.utils.chat.NON_PLAYER
 import ink.pmc.framework.utils.chat.isValidIdentifier
@@ -25,7 +25,7 @@ private suspend fun PaperCtx.preprocess(): Pair<CommandSender, Home>? {
         return null
     }
     val input = get<String>("home")
-    val home = Essentials.homeManager.get(sender, input) ?: run {
+    val home = HomeManager.get(sender, input) ?: run {
         sender.sendMessage(COMMAND_HOME_NOT_EXISTED.replace("<name>", input))
         return null
     }
@@ -68,7 +68,7 @@ private val rename = base.literal("rename")
             sender.sendMessage(COMMAND_SETHOME_FAILED_NOT_VALID)
             return@suspendingHandler
         }
-        if (newName.length > Essentials.homeManager.nameLengthLimit) {
+        if (newName.length > HomeManager.nameLengthLimit) {
             sender.sendMessage(COMMAND_SETHOME_FAILED_LENGTN_LIMIT)
             return@suspendingHandler
         }

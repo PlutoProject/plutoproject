@@ -1,10 +1,10 @@
 package ink.pmc.essentials.commands.home
 
 import ink.pmc.essentials.*
-import ink.pmc.essentials.api.Essentials
-import ink.pmc.framework.utils.command.annotation.Command
+import ink.pmc.essentials.api.home.HomeManager
 import ink.pmc.framework.utils.chat.NO_PERMISSON
 import ink.pmc.framework.utils.chat.replace
+import ink.pmc.framework.utils.command.annotation.Command
 import ink.pmc.framework.utils.command.checkPlayer
 import ink.pmc.framework.utils.concurrent.submitAsync
 import ink.pmc.framework.utils.dsl.cloud.invoke
@@ -19,34 +19,33 @@ fun Cm.delhome(aliases: Array<String>) {
         argument(homes("name").required())
         handler {
             checkPlayer(sender.sender) {
-                val manager = Essentials.homeManager
                 val name = get<String>("name")
                 val argUuid = name.uuidOrNull
 
                 if (argUuid != null) {
-                    val uuidHome = manager.get(argUuid)
+                    val uuidHome = HomeManager.get(argUuid)
                     if (uuidHome?.owner != this && !hasPermission("essentials.delhome.other")) {
                         sendMessage(NO_PERMISSON)
                         return@checkPlayer
                     }
-                    if (!manager.has(argUuid)) {
+                    if (!HomeManager.has(argUuid)) {
                         sendMessage(COMMAND_HOME_NOT_EXISTED_UUID)
                         playSound(TELEPORT_FAILED_SOUND)
                         return@checkPlayer
                     }
-                    val home = manager.get(argUuid)
-                    submitAsync { manager.remove(argUuid) }
+                    val home = HomeManager.get(argUuid)
+                    submitAsync { HomeManager.remove(argUuid) }
                     sendMessage(COMMAND_HOME_SUCCEED.replace("<name>", home!!.name))
                     return@checkPlayer
                 }
 
-                if (!manager.has(this, name)) {
+                if (!HomeManager.has(this, name)) {
                     sendMessage(COMMAND_HOME_NOT_EXISTED.replace("<name>", name))
                     playSound(TELEPORT_FAILED_SOUND)
                     return@checkPlayer
                 }
 
-                submitAsync { manager.remove(this@checkPlayer, name) }
+                submitAsync { HomeManager.remove(this@checkPlayer, name) }
                 sendMessage(COMMAND_DELHOME_SUCCEED.replace("<name>", name))
                 playSound(TELEPORT_REQUEST_RECEIVED_SOUND)
             }

@@ -2,10 +2,10 @@ package ink.pmc.menu.messages
 
 import ink.pmc.advkt.component.*
 import ink.pmc.essentials.DEFAULT_ECONOMY_SYMBOL
-import ink.pmc.essentials.api.Essentials
-import ink.pmc.menu.economy
+import ink.pmc.essentials.api.teleport.random.RandomTeleportManager
 import ink.pmc.framework.utils.trimmed
 import ink.pmc.framework.utils.visual.*
+import ink.pmc.menu.economy
 import net.kyori.adventure.text.Component
 import org.bukkit.entity.Player
 
@@ -165,7 +165,7 @@ val MAIN_MENU_ITEM_HOME_RTP = component {
     text("神奇水晶") with mochaMauve without italic()
 }
 
-val MAIN_MENU_RTP_COST = "${Essentials.randomTeleportManager.defaultOptions.cost.trimmed()}$DEFAULT_ECONOMY_SYMBOL"
+val MAIN_MENU_RTP_COST = "${RandomTeleportManager.defaultOptions.cost.trimmed()}$DEFAULT_ECONOMY_SYMBOL"
 
 val MAIN_MENU_ITEM_HOME_RTP_LORE = listOf(
     component {

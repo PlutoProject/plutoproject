@@ -8,6 +8,7 @@ import ink.pmc.essentials.dtos.WarpDto
 import ink.pmc.essentials.repositories.WarpRepository
 import ink.pmc.framework.playerdb.PlayerDb
 import ink.pmc.framework.utils.concurrent.submitAsync
+import ink.pmc.framework.utils.platform.paper
 import ink.pmc.framework.utils.player.uuidOrNull
 import ink.pmc.framework.utils.storage.model
 import org.bson.types.ObjectId
@@ -23,12 +24,13 @@ import java.util.concurrent.ConcurrentHashMap
 private const val PREFERRED_SPAWN_KEY = "essentials.warp.preferred_spawn"
 
 class WarpManagerImpl : WarpManager, KoinComponent {
-
-    private val conf by lazy { get<EssentialsConfig>().Warp() }
+    private val config by lazy { get<EssentialsConfig>().warp }
     private val repo by inject<WarpRepository>()
 
-    override val blacklistedWorlds: Collection<World> = conf.blacklistedWorlds
-    override val nameLengthLimit: Int = conf.nameLengthLimit
+    override val blacklistedWorlds: Collection<World> = config.blacklistedWorlds
+        .filter { name -> paper.worlds.any { it.name == name } }
+        .map { paper.getWorld(it)!! }
+    override val nameLengthLimit: Int = config.nameLengthLimit
     override val loadedWarps: MutableMap<UUID, Warp> = ConcurrentHashMap()
 
     init {
@@ -188,5 +190,4 @@ class WarpManagerImpl : WarpManager, KoinComponent {
     override fun isBlacklisted(world: World): Boolean {
         return blacklistedWorlds.contains(world)
     }
-
 }

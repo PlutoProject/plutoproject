@@ -13,21 +13,22 @@ import ink.pmc.advkt.component.text
 import ink.pmc.essentials.api.warp.Warp
 import ink.pmc.essentials.api.warp.WarpManager
 import ink.pmc.essentials.config.EssentialsConfig
-import ink.pmc.framework.interactive.inventory.*
 import ink.pmc.framework.interactive.ComposableFunction
 import ink.pmc.framework.interactive.LocalPlayer
+import ink.pmc.framework.interactive.inventory.*
+import ink.pmc.framework.interactive.inventory.click.clickable
 import ink.pmc.framework.interactive.inventory.components.canvases.Chest
 import ink.pmc.framework.interactive.inventory.jetpack.Arrangement
 import ink.pmc.framework.interactive.inventory.layout.Box
 import ink.pmc.framework.interactive.inventory.layout.Column
 import ink.pmc.framework.interactive.inventory.layout.Row
-import ink.pmc.framework.interactive.inventory.click.clickable
 import ink.pmc.framework.utils.chat.UI_PAGING_SOUND
 import ink.pmc.framework.utils.chat.UI_SUCCEED_SOUND
 import ink.pmc.framework.utils.concurrent.submitAsync
 import ink.pmc.framework.utils.data.safeSubList
 import ink.pmc.framework.utils.dsl.itemStack
 import ink.pmc.framework.utils.visual.*
+import ink.pmc.framework.utils.world.aliasOrName
 import kotlinx.coroutines.delay
 import net.kyori.adventure.text.Component
 import org.bukkit.Material
@@ -41,7 +42,6 @@ private const val COLUMNS_PRE_PAGE = 3
 private const val WARPS_PRE_PAGE = WARPS_PRE_COLUMN * COLUMNS_PRE_PAGE
 
 class DefaultWarpPickerScreen : Screen, KoinComponent {
-
     private val warpManager by inject<WarpManager>()
     private val conf by inject<EssentialsConfig>()
 
@@ -219,7 +219,7 @@ class DefaultWarpPickerScreen : Screen, KoinComponent {
                     when (state) {
                         0 -> listOf(
                             component {
-                                val world = conf.WorldAliases()[spawn.location.world]
+                                val world = spawn.location.world.aliasOrName
                                 val x = spawn.location.blockX
                                 val y = spawn.location.blockY
                                 val z = spawn.location.blockZ

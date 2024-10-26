@@ -6,6 +6,8 @@ import org.bukkit.block.Biome
 data class RandomTeleportOptions(
     val center: Vec2,
     val spawnPointAsCenter: Boolean,
+    val chunkPreserveRadius: Int,
+    val cacheAmount: Int,
     val startRadius: Int,
     val endRadius: Int,
     val maxHeight: Int,

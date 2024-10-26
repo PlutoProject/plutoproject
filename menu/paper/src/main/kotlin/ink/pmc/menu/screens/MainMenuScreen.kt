@@ -11,20 +11,26 @@ import ink.pmc.advkt.component.italic
 import ink.pmc.advkt.component.text
 import ink.pmc.daily.screens.DailyCalenderScreen
 import ink.pmc.essentials.RANDOM_TELEPORT_COST_BYPASS
-import ink.pmc.essentials.api.Essentials
-import ink.pmc.essentials.config.EssentialsConfig
+import ink.pmc.essentials.api.teleport.TeleportManager
+import ink.pmc.essentials.api.teleport.random.RandomTeleportManager
 import ink.pmc.essentials.screens.home.HomeViewerScreen
 import ink.pmc.essentials.screens.warp.DefaultWarpPickerScreen
-import ink.pmc.framework.interactive.inventory.*
-import ink.pmc.hypervisor.DynamicScheduling
-import ink.pmc.hypervisor.DynamicViewDistanceState.*
 import ink.pmc.framework.interactive.LocalPlayer
+import ink.pmc.framework.interactive.inventory.*
+import ink.pmc.framework.interactive.inventory.click.clickable
 import ink.pmc.framework.interactive.inventory.components.canvases.Chest
 import ink.pmc.framework.interactive.inventory.jetpack.Arrangement
 import ink.pmc.framework.interactive.inventory.layout.Box
 import ink.pmc.framework.interactive.inventory.layout.Column
 import ink.pmc.framework.interactive.inventory.layout.Row
-import ink.pmc.framework.interactive.inventory.click.clickable
+import ink.pmc.framework.playerdb.PlayerDb
+import ink.pmc.framework.utils.chat.UI_SUCCEED_SOUND
+import ink.pmc.framework.utils.chat.replace
+import ink.pmc.framework.utils.visual.mochaSubtext0
+import ink.pmc.framework.utils.visual.mochaText
+import ink.pmc.framework.utils.world.aliasOrName
+import ink.pmc.hypervisor.DynamicScheduling
+import ink.pmc.hypervisor.DynamicViewDistanceState.*
 import ink.pmc.menu.CO_NEAR_COMMAND
 import ink.pmc.menu.components.Wiki
 import ink.pmc.menu.economy
@@ -35,16 +41,10 @@ import ink.pmc.menu.screens.models.MainMenuModel.PreferredHomeState
 import ink.pmc.menu.screens.models.MainMenuModel.PreferredSpawnState
 import ink.pmc.menu.screens.models.MainMenuModel.Tab.ASSIST
 import ink.pmc.menu.screens.models.MainMenuModel.Tab.HOME
-import ink.pmc.framework.playerdb.PlayerDb
-import ink.pmc.framework.utils.chat.UI_SUCCEED_SOUND
-import ink.pmc.framework.utils.chat.replace
-import ink.pmc.framework.utils.visual.mochaSubtext0
-import ink.pmc.framework.utils.visual.mochaText
 import net.kyori.adventure.text.Component
 import org.bukkit.Material
 import org.bukkit.event.inventory.ClickType
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 
 private const val PANE_COLUMNS = 4
 private const val PANE_COLUMN_WIDTH = 7
@@ -52,8 +52,6 @@ private const val PANE_GRIDS = PANE_COLUMNS * PANE_COLUMN_WIDTH
 private const val FIRST_OPEN_PROMPT_KEY = "main_menu.showed_first_open_prompt"
 
 class MainMenuScreen : Screen, KoinComponent {
-
-    private val conf by inject<EssentialsConfig>()
     private val localScreenModel: ProvidableCompositionLocal<MainMenuModel> =
         staticCompositionLocalOf { error("Unexpected") }
 
@@ -259,7 +257,7 @@ class MainMenuScreen : Screen, KoinComponent {
                         else -> component { text(spawn.alias!!) with mochaText without italic() }
                     }
                     val loc = spawn.let {
-                        val world = conf.WorldAliases()[it.location.world]
+                        val world = it.location.world.aliasOrName
                         val x = it.location.blockX
                         val y = it.location.blockY
                         val z = it.location.blockZ
@@ -292,7 +290,7 @@ class MainMenuScreen : Screen, KoinComponent {
     private fun Teleport() {
         val player = LocalPlayer.current
         val navigator = LocalNavigator.currentOrThrow
-        val hasUnfinishedTpRequest = Essentials.teleportManager.hasUnfinishedRequest(player)
+        val hasUnfinishedTpRequest = TeleportManager.hasUnfinishedRequest(player)
 
         Item(
             material = Material.MINECART,
@@ -321,11 +319,11 @@ class MainMenuScreen : Screen, KoinComponent {
         val player = LocalPlayer.current
         val world = player.world
         val balance = economy.getBalance(player)
-        val requirement = Essentials.randomTeleportManager.getRandomTeleportOptions(world).cost
+        val requirement = RandomTeleportManager.getRandomTeleportOptions(world).cost
 
         val state = when {
             !player.hasPermission(RANDOM_TELEPORT_COST_BYPASS) && balance < requirement -> RandomTeleportState.COIN_NOT_ENOUGH
-            !Essentials.randomTeleportManager.isEnabled(world) -> RandomTeleportState.NOT_AVAILABLE
+            !RandomTeleportManager.isEnabled(world) -> RandomTeleportState.NOT_AVAILABLE
             else -> RandomTeleportState.AVAILABLE
         }
 
@@ -341,7 +339,7 @@ class MainMenuScreen : Screen, KoinComponent {
                 if (state != RandomTeleportState.AVAILABLE) return@clickable
                 if (clickType != ClickType.LEFT) return@clickable
                 player.closeInventory()
-                Essentials.randomTeleportManager.launch(player, player.world)
+                RandomTeleportManager.launch(player, player.world)
             }
         )
     }
@@ -481,5 +479,4 @@ class MainMenuScreen : Screen, KoinComponent {
             }
         )
     }
-
 }

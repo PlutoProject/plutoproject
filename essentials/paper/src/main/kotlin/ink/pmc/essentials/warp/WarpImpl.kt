@@ -20,7 +20,6 @@ import java.time.Instant
 import java.util.*
 
 class WarpImpl(private val dto: WarpDto) : Warp, KoinComponent {
-
     private val manager by inject<WarpManager>()
     private val repo by inject<WarpRepository>()
     private val teleport by inject<TeleportManager>()
@@ -69,5 +68,4 @@ class WarpImpl(private val dto: WarpDto) : Warp, KoinComponent {
     override suspend fun update() {
         repo.update(toDto())
     }
-
 }

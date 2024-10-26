@@ -6,9 +6,7 @@ import org.bukkit.entity.Player
 import java.util.*
 
 enum class TeleportTaskState {
-
     PENDING, TICKING, FINISHED
-
 }
 
 interface TeleportTask {

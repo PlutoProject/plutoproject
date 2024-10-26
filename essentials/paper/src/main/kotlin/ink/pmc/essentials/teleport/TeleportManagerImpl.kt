@@ -14,8 +14,7 @@ import ink.pmc.framework.utils.concurrent.compose
 import ink.pmc.framework.utils.concurrent.submitAsync
 import ink.pmc.framework.utils.data.mapKv
 import ink.pmc.framework.utils.entity.teleportSuspend
-import ink.pmc.framework.utils.item.KeyedMaterial
-import ink.pmc.framework.utils.item.bukkit
+import ink.pmc.framework.utils.platform.paper
 import ink.pmc.framework.utils.world.ValueVec2
 import ink.pmc.framework.utils.world.getChunkViaSource
 import kotlinx.coroutines.*
@@ -33,12 +32,10 @@ import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentLinkedQueue
 import kotlin.math.floor
-import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
 class TeleportManagerImpl : TeleportManager, KoinComponent {
-
-    private val conf by lazy { get<EssentialsConfig>().Teleport() }
+    private val config by lazy { get<EssentialsConfig>().teleport }
 
     // 用于在完成队列任务时通知
     private val notifyChannel = Channel<UUID>()
@@ -46,27 +43,30 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
     override val teleportRequests: MutableList<TeleportRequest> = mutableListOf()
     override val queue: Queue<TeleportTask> = ConcurrentLinkedQueue()
     override val defaultRequestOptions: RequestOptions = RequestOptions(
-        Duration.parse(conf.requestExpireAfter),
-        Duration.parse(conf.requestRemoveAfter)
+        config.request.expireAfter,
+        config.request.removeAfter
     )
     override val defaultTeleportOptions: TeleportOptions = TeleportOptions(
         false,
-        conf.avoidVoid,
-        conf.safeLocationSearchRadius,
-        conf.chunkPrepareRadius,
-        conf.blacklistedBlocks.toSet(),
+        config.default.avoidVoid,
+        config.default.safeLocationSearchRadius,
+        config.default.chunkPrepareRadius,
+        config.default.blacklistedBlocks.toSet(),
     )
-    override val worldTeleportOptions: Map<World, TeleportOptions> = conf.worldOptions.mapKv {
-        it.key to TeleportOptions(
+    override val worldTeleportOptions: Map<World, TeleportOptions> = config.worlds.filter { (key, _) ->
+        paper.worlds.any { it.name == key }
+    }.mapKv { (key, value) ->
+        paper.getWorld(key)!! to TeleportOptions(
             false,
-            it.value.get("avoid-void") ?: defaultTeleportOptions.avoidVoid,
-            it.value.get("safe-location-search-radius") ?: defaultTeleportOptions.safeLocationSearchRadius,
-            it.value.get("chunk-prepare-radius") ?: defaultTeleportOptions.chunkPrepareRadius,
-            it.value.get<List<String>>("blacklisted-blocks")?.map { m -> KeyedMaterial(m).bukkit }?.toSet()
-                ?: defaultTeleportOptions.blacklistedBlocks
+            value.avoidVoid,
+            value.safeLocationSearchRadius,
+            value.chunkPrepareRadius,
+            value.blacklistedBlocks.toSet()
         )
     }
-    override val blacklistedWorlds: Collection<World> = conf.blacklistedWorlds
+    override val blacklistedWorlds: Collection<World> = config.blacklistedWorlds
+        .filter { name -> paper.worlds.any { it.name == name } }
+        .map { paper.getWorld(it)!! }
     override val locationCheckers: MutableMap<String, LocationChecker> = mutableMapOf()
     override var tickingTask: TeleportTask? = null
     override var tickCount = 0L
@@ -122,7 +122,7 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
         coroutineScope {
             forEach {
                 submitAsync {
-                    when (conf.chunkPrepareMethod) {
+                    when (config.chunkPrepareMethod) {
                         SYNC -> world.getChunkAt(it.x, it.y)
                         ASYNC -> world.getChunkAtAsync(it.x, it.y).await()
                         ASYNC_FAST -> world.getChunkAtAsyncUrgently(it.x, it.y).await()
@@ -297,7 +297,7 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
             return null
         }
 
-        if (conf.blacklistedWorlds.contains(destination.world)) {
+        if (config.blacklistedWorlds.contains(destination.world.name)) {
             return null
         }
 
@@ -312,7 +312,7 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
         destination.sendMessage(TELEPORT_OPERATION(request.id))
         destination.playSound(TELEPORT_REQUEST_RECEIVED_SOUND)
 
-        if (teleportRequests.size == conf.maxRequestsStored) {
+        if (teleportRequests.size == config.maxRequestsStored) {
             teleportRequests.removeAt(0).cancel()
         }
 
@@ -495,7 +495,7 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
         state = TeleportManagerState.TICKING
         val start = System.currentTimeMillis()
 
-        repeat(conf.queueProcessPerTick) {
+        repeat(config.queueProcessPerTick) {
             val task = queue.poll() ?: return@repeat
             tickingTask = task
             task.tick()
@@ -508,5 +508,4 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
         tickCount++
         state = TeleportManagerState.IDLE
     }
-
 }

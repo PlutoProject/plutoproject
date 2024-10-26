@@ -1,9 +1,9 @@
 package ink.pmc.essentials.commands
 
 import ink.pmc.essentials.*
-import ink.pmc.framework.utils.command.annotation.Command
 import ink.pmc.framework.utils.chat.NON_PLAYER
 import ink.pmc.framework.utils.chat.replace
+import ink.pmc.framework.utils.command.annotation.Command
 import ink.pmc.framework.utils.concurrent.sync
 import ink.pmc.framework.utils.dsl.cloud.alias
 import ink.pmc.framework.utils.dsl.cloud.invoke

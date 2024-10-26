@@ -19,7 +19,6 @@ import java.time.Instant
 import java.util.*
 
 class HomeImpl(private val dto: HomeDto) : Home, KoinComponent {
-
     private val manager by inject<HomeManager>()
     private val repo by inject<HomeRepository>()
     private val teleport by inject<TeleportManager>()
@@ -104,5 +103,4 @@ class HomeImpl(private val dto: HomeDto) : Home, KoinComponent {
         result = 31 * result + isPreferred.hashCode()
         return result
     }
-
 }

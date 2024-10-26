@@ -1,7 +1,8 @@
 package ink.pmc.essentials.listeners
 
 import ink.pmc.essentials.config.EssentialsConfig
-import ink.pmc.essentials.item.isMenuItem
+import ink.pmc.essentials.items.isMenuItem
+import ink.pmc.essentials.items.isServerSelectorItem
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
@@ -12,26 +13,40 @@ import org.koin.core.component.get
 
 @Suppress("UNUSED", "UnusedReceiverParameter")
 object ItemListener : Listener, KoinComponent {
+    private val config by lazy { get<EssentialsConfig>().item }
 
-    private val config by lazy { get<EssentialsConfig>().Item() }
-
-    @EventHandler
-    fun PlayerInteractEvent.menu() {
-        if (!config.menu) return
+    private fun PlayerInteractEvent.checkCondition(): Boolean {
         if (hand != EquipmentSlot.HAND) {
             if (player.inventory.itemInMainHand.isMenuItem) {
                 isCancelled = true
             }
-            return
+            return false
         }
         if (action != Action.RIGHT_CLICK_AIR && action != Action.RIGHT_CLICK_BLOCK) {
-            return
+            return false
         }
+        return true
+    }
+
+    @EventHandler
+    fun PlayerInteractEvent.menu() {
+        if (!config.menu) return
+        if (!checkCondition()) return
         item?.let {
             if (!it.isMenuItem) return
             isCancelled = true
-            player.performCommand("menu:menu")
+            player.performCommand("plutoproject_menu:menu")
         }
     }
 
+    @EventHandler
+    fun PlayerInteractEvent.serverSelector() {
+        if (!config.serverSelector) return
+        if (!checkCondition()) return
+        item?.let {
+            if (!it.isServerSelectorItem) return
+            isCancelled = true
+            player.performCommand("plutoproject_menu:serverselector")
+        }
+    }
 }

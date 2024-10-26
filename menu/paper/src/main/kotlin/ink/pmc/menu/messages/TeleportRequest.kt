@@ -6,6 +6,7 @@ import ink.pmc.advkt.component.text
 import ink.pmc.essentials.config.EssentialsConfig
 import ink.pmc.framework.utils.chat.replace
 import ink.pmc.framework.utils.visual.*
+import ink.pmc.framework.utils.world.aliasOrName
 import net.kyori.adventure.text.Component
 import org.bukkit.entity.Player
 import org.koin.java.KoinJavaComponent.getKoin
@@ -34,12 +35,10 @@ private val TR_PLAYER_INFO = component {
     text("<world> <x>, <y>, <z>") with mochaSubtext0 without italic()
 }
 
-private val essentialsConfig = getKoin().get<EssentialsConfig>()
-
 @Suppress("FunctionName")
 fun TR_PLAYER_LORE(player: Player) = listOf(
     TR_PLAYER_INFO
-        .replace("<world>", essentialsConfig.WorldAliases()[player.world])
+        .replace("<world>", player.world.aliasOrName)
         .replace("<x>", player.location.blockX)
         .replace("<y>", player.location.blockY)
         .replace("<z>", player.location.blockZ),

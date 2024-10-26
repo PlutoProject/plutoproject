@@ -13,7 +13,6 @@ import java.time.Duration
 import java.util.*
 
 class WarpRepository : KoinComponent {
-
     private val conf by inject<EssentialsConfig>()
     private val cache = Caffeine.newBuilder()
         .expireAfterWrite(Duration.ofMinutes(10))
@@ -73,5 +72,4 @@ class WarpRepository : KoinComponent {
         require(hasById(dto.id)) { "WarpDto with id ${dto.id} not exist" }
         db.replaceOne(eq("id", dto.id.toString()), dto)
     }
-
 }

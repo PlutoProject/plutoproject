@@ -46,7 +46,7 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
         single<OptionsUpdateNotifier> { BackendOptionsUpdateNotifier() }
         single<DatabaseNotifier> { BackendDatabaseNotifier() }
         single<ToastRenderer<Player>>(named("internal")) { NmsToastRenderer() }
-        single<ink.pmc.framework.visual.display.text.TextDisplayManager> { TextDisplayManagerImpl() }
+        single<TextDisplayManager> { TextDisplayManagerImpl() }
         single<TextDisplayFactory> { TextDisplayFactoryImpl() }
         single<TextDisplayRenderer>(named("internal")) { NmsTextDisplayRenderer() }
     }

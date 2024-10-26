@@ -1,12 +1,12 @@
 package ink.pmc.essentials.api.back
 
+import ink.pmc.framework.utils.inject.inlinedGet
 import org.bukkit.Location
 import org.bukkit.entity.Player
 
 @Suppress("UNUSED")
 interface BackManager {
-
-    val maxLocations: Int
+    companion object : BackManager by inlinedGet()
 
     suspend fun has(player: Player): Boolean
 
@@ -19,5 +19,4 @@ interface BackManager {
     suspend fun set(player: Player, location: Location)
 
     suspend fun remove(player: Player)
-
 }

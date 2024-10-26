@@ -11,7 +11,6 @@ import org.koin.core.component.inject
 import kotlin.jvm.optionals.getOrNull
 
 object HuskHomesMigrator : KoinComponent {
-
     private val homeManager by inject<HomeManager>()
     private val warpManager by inject<WarpManager>()
     private val huskHomesApi = huskHomesHook?.huskHomesApi
@@ -70,5 +69,4 @@ object HuskHomesMigrator : KoinComponent {
 
         logger.info("Done!")
     }
-
 }

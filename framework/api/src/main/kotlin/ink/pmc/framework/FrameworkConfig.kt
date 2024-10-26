@@ -2,7 +2,8 @@ package ink.pmc.framework
 
 data class FrameworkConfig(
     val provider: ProviderConfig,
-    val rpc: RpcConfig
+    val rpc: RpcConfig,
+    val worldAliases: Map<String, String>
 )
 
 data class ProviderConfig(

@@ -8,6 +8,7 @@ import org.bukkit.craftbukkit.entity.CraftPlayer
 import org.bukkit.craftbukkit.inventory.CraftContainer
 import org.bukkit.entity.Player
 import org.bukkit.inventory.InventoryView
+import org.bukkit.inventory.PlayerInventory
 
 fun InventoryView.title(component: Component) {
     val player = player as Player
@@ -19,3 +20,6 @@ fun InventoryView.title(component: Component) {
     player.sendPacket(packet)
     serverPlayer.containerMenu.sendAllDataToRemote()
 }
+
+val PlayerInventory.isFull: Boolean
+    get() = !storageContents.contains(null)

@@ -2,6 +2,7 @@ package ink.pmc.essentials.api.teleport.random
 
 import com.google.common.collect.Multimap
 import ink.pmc.essentials.api.teleport.ManagerState
+import ink.pmc.framework.utils.inject.inlinedGet
 import ink.pmc.framework.utils.world.Vec2
 import org.bukkit.Location
 import org.bukkit.World
@@ -10,10 +11,10 @@ import java.util.*
 
 @Suppress("UNUSED")
 interface RandomTeleportManager {
+    companion object : RandomTeleportManager by inlinedGet()
 
     val cacheTasks: Queue<CacheTask>
     val caches: Multimap<World, RandomTeleportCache>
-    val chunkPreserveRadius: Int
     val defaultOptions: RandomTeleportOptions
     val worldOptions: Map<World, RandomTeleportOptions>
     val enabledWorlds: Collection<World>
@@ -24,8 +25,6 @@ interface RandomTeleportManager {
     fun getRandomTeleportOptions(world: World): RandomTeleportOptions
 
     fun getCenterLocation(world: World, options: RandomTeleportOptions? = null): Vec2
-
-    fun getCacheAmount(world: World): Int
 
     fun getCaches(world: World): Collection<RandomTeleportCache>
 
@@ -53,5 +52,4 @@ interface RandomTeleportManager {
     fun isEnabled(world: World): Boolean
 
     suspend fun tick()
-
 }

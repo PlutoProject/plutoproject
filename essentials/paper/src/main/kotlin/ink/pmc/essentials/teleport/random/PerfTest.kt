@@ -11,7 +11,6 @@ import org.koin.core.component.inject
 import java.util.concurrent.ConcurrentHashMap
 
 object PerfTest : KoinComponent {
-
     private val manager by inject<RandomTeleportManager>()
     private val inTest = ConcurrentHashMap.newKeySet<Player>()
 
@@ -38,5 +37,4 @@ object PerfTest : KoinComponent {
         }
         inTest.remove(player)
     }
-
 }

@@ -18,7 +18,6 @@ import org.koin.core.component.inject
 
 @Suppress("UNUSED", "UnusedReceiverParameter")
 object BackListener : Listener, KoinComponent {
-
     private val manager by inject<BackManager>()
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -74,5 +73,4 @@ object BackListener : Listener, KoinComponent {
             manager.set(player, player.location)
         }
     }
-
 }

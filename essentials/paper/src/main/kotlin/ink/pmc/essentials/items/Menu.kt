@@ -1,4 +1,4 @@
-package ink.pmc.essentials.item
+package ink.pmc.essentials.items
 
 import ink.pmc.advkt.component.italic
 import ink.pmc.advkt.component.text
@@ -11,12 +11,12 @@ import org.bukkit.NamespacedKey
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 
-val MENU_ITEM_KEY = NamespacedKey(plugin, "menu_item")
+private val key = NamespacedKey(plugin, "menu_item")
 
 val MENU_ITEM = itemStack(Material.BOOK) {
     meta {
         setEnchantmentGlintOverride(true)
-        persistentDataContainer.set(MENU_ITEM_KEY, PersistentDataType.BOOLEAN, true)
+        persistentDataContainer.set(key, PersistentDataType.BOOLEAN, true)
     }
     displayName {
         text("手账") with mochaLavender without italic()
@@ -32,7 +32,7 @@ val MENU_ITEM = itemStack(Material.BOOK) {
 val ItemStack.isMenuItem: Boolean
     get() {
         return itemMeta?.persistentDataContainer?.getOrDefault(
-            MENU_ITEM_KEY,
+            key,
             PersistentDataType.BOOLEAN,
             false
         ) ?: false
