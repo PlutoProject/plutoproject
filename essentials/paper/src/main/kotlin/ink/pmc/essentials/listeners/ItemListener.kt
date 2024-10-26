@@ -1,7 +1,7 @@
 package ink.pmc.essentials.listeners
 
 import ink.pmc.essentials.config.EssentialsConfig
-import ink.pmc.essentials.item.isMenuItem
+import ink.pmc.essentials.items.isMenuItem
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
@@ -12,8 +12,7 @@ import org.koin.core.component.get
 
 @Suppress("UNUSED", "UnusedReceiverParameter")
 object ItemListener : Listener, KoinComponent {
-
-    private val config by lazy { get<EssentialsConfig>().Item() }
+    private val config by lazy { get<EssentialsConfig>().item }
 
     @EventHandler
     fun PlayerInteractEvent.menu() {
@@ -33,5 +32,4 @@ object ItemListener : Listener, KoinComponent {
             player.performCommand("menu:menu")
         }
     }
-
 }

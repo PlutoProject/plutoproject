@@ -1,6 +1,5 @@
 package ink.pmc.essentials.commands
 
-import ink.pmc.essentials.api.Essentials
 import ink.pmc.essentials.api.warp.Warp
 
 fun parseWarpName(input: String): String {

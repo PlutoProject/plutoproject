@@ -38,7 +38,6 @@ import org.koin.compose.koinInject
 import kotlin.time.Duration.Companion.seconds
 
 class HomeEditorScreen(private val home: Home) : Screen {
-
     override val key: ScreenKey = "essentials_home_editor_${home.id}"
 
     @Composable
@@ -383,5 +382,4 @@ class HomeEditorScreen(private val home: Home) : Screen {
             }
         )
     }
-
 }

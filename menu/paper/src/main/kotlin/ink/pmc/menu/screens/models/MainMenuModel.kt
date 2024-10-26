@@ -5,7 +5,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import cafe.adriel.voyager.core.model.ScreenModel
 import ink.pmc.daily.api.Daily
-import ink.pmc.essentials.api.Essentials
 import ink.pmc.essentials.api.home.Home
 import ink.pmc.essentials.api.warp.Warp
 import ink.pmc.menu.inspecting

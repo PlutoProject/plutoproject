@@ -1,7 +1,6 @@
 package ink.pmc.essentials.commands.teleport
 
 import ink.pmc.essentials.*
-import ink.pmc.essentials.api.Essentials
 import ink.pmc.essentials.api.teleport.TeleportDirection
 import ink.pmc.essentials.api.teleport.TeleportDirection.COME
 import ink.pmc.essentials.api.teleport.TeleportDirection.GO

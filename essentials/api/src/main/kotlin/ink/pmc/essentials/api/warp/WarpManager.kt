@@ -1,5 +1,6 @@
 package ink.pmc.essentials.api.warp
 
+import ink.pmc.framework.utils.inject.inlinedGet
 import org.bukkit.Location
 import org.bukkit.OfflinePlayer
 import org.bukkit.World
@@ -7,6 +8,7 @@ import java.util.*
 
 @Suppress("UNUSED")
 interface WarpManager {
+    companion object : WarpManager by inlinedGet()
 
     val blacklistedWorlds: Collection<World>
     val nameLengthLimit: Int
@@ -57,5 +59,4 @@ interface WarpManager {
     suspend fun update(warp: Warp)
 
     fun isBlacklisted(world: World): Boolean
-
 }

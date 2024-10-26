@@ -19,7 +19,6 @@ import org.koin.compose.koinInject
 import kotlin.time.Duration.Companion.seconds
 
 class HomeCreatorScreen : Screen {
-
     @Composable
     override fun Content() {
         val player = LocalPlayer.current
@@ -118,5 +117,4 @@ class HomeCreatorScreen : Screen {
             }
         )
     }
-
 }

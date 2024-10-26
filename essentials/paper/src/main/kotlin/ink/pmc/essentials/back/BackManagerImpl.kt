@@ -3,7 +3,6 @@ package ink.pmc.essentials.back
 import ink.pmc.essentials.api.back.BackManager
 import ink.pmc.essentials.api.back.BackTeleportEvent
 import ink.pmc.essentials.api.teleport.TeleportManager
-import ink.pmc.essentials.config.EssentialsConfig
 import ink.pmc.essentials.repositories.BackRepository
 import ink.pmc.framework.utils.concurrent.async
 import ink.pmc.framework.utils.concurrent.submitAsync

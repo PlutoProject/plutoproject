@@ -11,7 +11,6 @@ import org.koin.core.component.inject
 
 @Suppress("UNUSED", "UnusedReceiverParameter")
 object HomeListener : Listener, KoinComponent {
-
     private val manager by inject<HomeManager>()
 
     @EventHandler
@@ -26,5 +25,4 @@ object HomeListener : Listener, KoinComponent {
     fun PlayerQuitEvent.e() {
         manager.unloadAll(player)
     }
-
 }

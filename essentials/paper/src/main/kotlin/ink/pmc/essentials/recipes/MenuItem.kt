@@ -1,6 +1,6 @@
 package ink.pmc.essentials.recipes
 
-import ink.pmc.essentials.item.MENU_ITEM
+import ink.pmc.essentials.items.MENU_ITEM
 import ink.pmc.essentials.plugin
 import org.bukkit.Material
 import org.bukkit.NamespacedKey

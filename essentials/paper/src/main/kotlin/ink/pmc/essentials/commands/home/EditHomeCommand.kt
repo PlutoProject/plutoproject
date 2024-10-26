@@ -1,7 +1,6 @@
 package ink.pmc.essentials.commands.home
 
 import ink.pmc.essentials.*
-import ink.pmc.essentials.api.Essentials
 import ink.pmc.essentials.api.home.Home
 import ink.pmc.framework.utils.PaperCtx
 import ink.pmc.framework.utils.chat.NON_PLAYER

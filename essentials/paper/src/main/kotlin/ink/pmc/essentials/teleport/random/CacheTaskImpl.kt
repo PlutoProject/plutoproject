@@ -19,7 +19,6 @@ class CacheTaskImpl(
     override val world: World,
     override val options: RandomTeleportOptions,
 ) : CacheTask, KoinComponent {
-
     private var scope: CoroutineScope? = null
     private var manager = get<RandomTeleportManager>() as RandomTeleportManagerImpl
     private val teleport by inject<TeleportManager>()
@@ -74,5 +73,4 @@ class CacheTaskImpl(
         state = TaskState.FINISHED
         cached.forEach { it.removeTeleportTicket() }
     }
-
 }

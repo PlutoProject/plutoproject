@@ -11,8 +11,6 @@ import ink.pmc.advkt.component.italic
 import ink.pmc.advkt.component.text
 import ink.pmc.daily.screens.DailyCalenderScreen
 import ink.pmc.essentials.RANDOM_TELEPORT_COST_BYPASS
-import ink.pmc.essentials.api.Essentials
-import ink.pmc.essentials.config.EssentialsConfig
 import ink.pmc.essentials.screens.home.HomeViewerScreen
 import ink.pmc.essentials.screens.warp.DefaultWarpPickerScreen
 import ink.pmc.framework.interactive.inventory.*

@@ -30,7 +30,6 @@ import org.bukkit.event.inventory.ClickType
 import org.koin.compose.koinInject
 
 class WarpViewerScreen : Screen {
-
     private val localState: ProvidableCompositionLocal<State> = staticCompositionLocalOf { error("") }
     private val localCurrIndex: ProvidableCompositionLocal<MutableState<Int>> = staticCompositionLocalOf { error("") }
     private val localMaxIndex: ProvidableCompositionLocal<Int> = staticCompositionLocalOf { error("") }
@@ -344,5 +343,4 @@ class WarpViewerScreen : Screen {
             lore = UI_WARP_EMPTY_LORE
         )
     }
-
 }

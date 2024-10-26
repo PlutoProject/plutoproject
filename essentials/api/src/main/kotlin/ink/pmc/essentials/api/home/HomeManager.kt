@@ -1,6 +1,7 @@
 package ink.pmc.essentials.api.home
 
 import com.google.common.collect.ListMultimap
+import ink.pmc.framework.utils.inject.inlinedGet
 import org.bukkit.Location
 import org.bukkit.OfflinePlayer
 import org.bukkit.World
@@ -9,6 +10,7 @@ import java.util.*
 
 @Suppress("UNUSED")
 interface HomeManager {
+    companion object : HomeManager by inlinedGet()
 
     val maxHomes: Int
     val nameLengthLimit: Int
@@ -52,5 +54,4 @@ interface HomeManager {
     suspend fun update(home: Home)
 
     fun isBlacklisted(world: World): Boolean
-
 }

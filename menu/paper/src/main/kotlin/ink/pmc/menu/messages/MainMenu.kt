@@ -2,7 +2,6 @@ package ink.pmc.menu.messages
 
 import ink.pmc.advkt.component.*
 import ink.pmc.essentials.DEFAULT_ECONOMY_SYMBOL
-import ink.pmc.essentials.api.Essentials
 import ink.pmc.menu.economy
 import ink.pmc.framework.utils.trimmed
 import ink.pmc.framework.utils.visual.*

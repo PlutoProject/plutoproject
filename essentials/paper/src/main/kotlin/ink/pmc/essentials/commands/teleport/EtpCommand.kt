@@ -6,7 +6,6 @@ import ink.pmc.essentials.COMMAND_ETP_SUCCEED
 import ink.pmc.essentials.COMMAND_ETP_SUCCEED_OTHER
 import ink.pmc.essentials.Cm
 import ink.pmc.essentials.TELEPORT_SUCCEED_SOUND
-import ink.pmc.essentials.api.Essentials
 import ink.pmc.framework.utils.command.annotation.Command
 import ink.pmc.framework.utils.chat.NON_PLAYER
 import ink.pmc.framework.utils.chat.replace

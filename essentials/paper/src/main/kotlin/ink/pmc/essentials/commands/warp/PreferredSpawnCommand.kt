@@ -5,7 +5,6 @@ import ink.pmc.advkt.component.text
 import ink.pmc.essentials.COMMAND_PREFERRED_SPAWN_FAILED_ALREADY
 import ink.pmc.essentials.COMMAND_PREFERRED_SPAWN_SUCCEED
 import ink.pmc.essentials.COMMAND_SPAWN_NOT_EXISTED
-import ink.pmc.essentials.api.Essentials
 import ink.pmc.essentials.commandManager
 import ink.pmc.essentials.commands.parseWarp
 import ink.pmc.essentials.commands.parseWarpName

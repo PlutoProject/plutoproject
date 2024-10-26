@@ -18,7 +18,6 @@ class TeleportRequestImpl(
     override val destination: Player,
     override val direction: TeleportDirection
 ) : TeleportRequest, KoinComponent {
-
     private val manager by inject<TeleportManager>()
 
     override val id: UUID = UUID.randomUUID()
@@ -110,5 +109,4 @@ class TeleportRequestImpl(
         )
         destination.playSound(TELEPORT_REQUEST_CANCELLED_SOUND)
     }
-
 }

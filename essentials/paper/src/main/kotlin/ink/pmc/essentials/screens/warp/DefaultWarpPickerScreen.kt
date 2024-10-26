@@ -41,7 +41,6 @@ private const val COLUMNS_PRE_PAGE = 3
 private const val WARPS_PRE_PAGE = WARPS_PRE_COLUMN * COLUMNS_PRE_PAGE
 
 class DefaultWarpPickerScreen : Screen, KoinComponent {
-
     private val warpManager by inject<WarpManager>()
     private val conf by inject<EssentialsConfig>()
 

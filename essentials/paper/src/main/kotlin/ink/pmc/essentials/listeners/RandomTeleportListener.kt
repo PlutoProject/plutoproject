@@ -11,7 +11,6 @@ import org.koin.core.component.inject
 
 @Suppress("UNUSED", "UnusedReceiverParameter")
 object RandomTeleportListener : Listener, KoinComponent {
-
     private val manager by inject<RandomTeleportManager>()
 
     @EventHandler
@@ -25,5 +24,4 @@ object RandomTeleportListener : Listener, KoinComponent {
             PerfTest.endTest(player)
         }
     }
-
 }

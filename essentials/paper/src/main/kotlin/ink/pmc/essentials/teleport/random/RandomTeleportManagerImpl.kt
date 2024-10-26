@@ -5,7 +5,6 @@ import com.google.common.collect.ArrayListMultimap
 import com.google.common.collect.ListMultimap
 import com.google.common.collect.Multimaps
 import ink.pmc.essentials.*
-import ink.pmc.essentials.api.Essentials
 import ink.pmc.essentials.api.teleport.ManagerState
 import ink.pmc.essentials.api.teleport.TaskState.*
 import ink.pmc.essentials.api.teleport.TeleportManager
@@ -56,8 +55,8 @@ internal fun Chunk.hasTeleportTicket(): Boolean {
 class RandomTeleportManagerImpl : RandomTeleportManager, KoinComponent {
 
     private val baseConf by inject<EssentialsConfig>()
-    private val conf = baseConf.RandomTeleport()
-    private val teleportConf = baseConf.Teleport()
+    private val config = baseConf.randomTeleport
+    private val teleportConfig = baseConf.teleport
     private val teleport by inject<TeleportManager>()
     private var waitedTicks: Long = -1
     private var inTeleport = ConcurrentHashMap.newKeySet<Player>()
@@ -66,20 +65,20 @@ class RandomTeleportManagerImpl : RandomTeleportManager, KoinComponent {
     override val caches: ListMultimap<World, RandomTeleportCache> =
         Multimaps.synchronizedListMultimap(ArrayListMultimap.create())
     override val chunkPreserveRadius: Int =
-        if (conf.chunkPreserveRadius >= 0) conf.chunkPreserveRadius else teleportConf.chunkPrepareRadius
+        if (config.chunkPreserveRadius >= 0) config.chunkPreserveRadius else teleportConfig.chunkPrepareRadius
     override val defaultOptions: RandomTeleportOptions = RandomTeleportOptions(
-        center = Vec2(conf.centerX, conf.centerZ),
-        spawnPointAsCenter = conf.spawnPointAsCenter,
-        startRadius = conf.startRadius,
-        endRadius = conf.endRadius,
-        maxHeight = conf.maxHeight,
-        minHeight = conf.minHeight,
-        noCover = conf.noCover,
-        maxAttempts = conf.maxAttempts,
-        cost = conf.cost,
-        blacklistedBiomes = conf.blacklistedBiomes.toSet()
+        center = Vec2(config.centerX, config.centerZ),
+        spawnPointAsCenter = config.spawnPointAsCenter,
+        startRadius = config.startRadius,
+        endRadius = config.endRadius,
+        maxHeight = config.maxHeight,
+        minHeight = config.minHeight,
+        noCover = config.noCover,
+        maxAttempts = config.maxAttempts,
+        cost = config.cost,
+        blacklistedBiomes = config.blacklistedBiomes.toSet()
     )
-    override val worldOptions: Map<World, RandomTeleportOptions> = conf.worldOptions.mapKv {
+    override val worldOptions: Map<World, RandomTeleportOptions> = config.worldOptions.mapKv {
         it.key to RandomTeleportOptions(
             center = it.value.get<Config>("center")?.let { c -> Vec2(c.get("x"), c.get("z")) }
                 ?: defaultOptions.center,
@@ -95,7 +94,7 @@ class RandomTeleportManagerImpl : RandomTeleportManager, KoinComponent {
                 ?.map { b -> Biome.valueOf(b.uppercase()) }?.toSet() ?: defaultOptions.blacklistedBiomes
         )
     }
-    override val enabledWorlds: Collection<World> = conf.enabledWorlds
+    override val enabledWorlds: Collection<World> = config.enabledWorlds
     override var tickCount: Long = 0L
     override var lastTickTime: Long = 0L
     override var state: ManagerState = ManagerState.IDLE
@@ -116,7 +115,7 @@ class RandomTeleportManagerImpl : RandomTeleportManager, KoinComponent {
     }
 
     override fun getCacheAmount(world: World): Int {
-        return conf.cacheAmount.get(world.name) ?: conf.cacheDefaultAmount
+        return config.cacheAmount.get(world.name) ?: config.cacheDefaultAmount
     }
 
     override fun getCaches(world: World): Collection<RandomTeleportCache> {
@@ -408,7 +407,7 @@ class RandomTeleportManagerImpl : RandomTeleportManager, KoinComponent {
             return
         }
 
-        if (waitedTicks != -1L && waitedTicks < conf.cacheInterval) {
+        if (waitedTicks != -1L && waitedTicks < config.cacheInterval) {
             waitedTicks++
             return
         }

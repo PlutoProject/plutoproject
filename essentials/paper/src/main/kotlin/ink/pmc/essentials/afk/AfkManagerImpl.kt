@@ -3,7 +3,6 @@ package ink.pmc.essentials.afk
 import ink.pmc.essentials.AFK_END_ANNOUNCE
 import ink.pmc.essentials.AFK_START_ANNOUNCE
 import ink.pmc.essentials.api.afk.AfkManager
-import ink.pmc.essentials.config.EssentialsConfig
 import ink.pmc.essentials.disabled
 import ink.pmc.essentials.essentialsScope
 import ink.pmc.framework.utils.chat.replace

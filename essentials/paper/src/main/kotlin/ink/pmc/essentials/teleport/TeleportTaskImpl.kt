@@ -22,7 +22,6 @@ class TeleportTaskImpl(
     override val prompt: Boolean,
     override val chunkNeedToPrepare: List<ValueVec2>,
 ) : TeleportTask, KoinComponent {
-
     private val manager by inject<TeleportManager>()
     private var scope: CoroutineScope? = null
 
@@ -55,5 +54,4 @@ class TeleportTaskImpl(
         scope?.cancel()
         player.clearTitle()
     }
-
 }

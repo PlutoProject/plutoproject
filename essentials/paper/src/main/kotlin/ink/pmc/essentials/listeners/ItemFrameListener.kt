@@ -26,7 +26,6 @@ internal val Material.isOpenableBook: Boolean
 
 @Suppress("UNUSED", "UnusedReceiverParameter")
 object ItemFrameListener : Listener {
-
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     fun PlayerItemFrameChangeEvent.e() {
         val item = itemFrame.item
@@ -72,5 +71,4 @@ object ItemFrameListener : Listener {
         remover.sendActionBar(IF_PROTECTED_ACTION.replace("<player>", frame.protectorName))
         isCancelled = true
     }
-
 }

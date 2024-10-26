@@ -16,7 +16,6 @@ import org.bukkit.event.player.PlayerTakeLecternBookEvent
 
 @Suppress("UNUSED", "UnusedReceiverParameter")
 object LecternListener : Listener {
-
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     fun PlayerTakeLecternBookEvent.e() {
         if (!lectern.isProtected) return
@@ -52,5 +51,4 @@ object LecternListener : Listener {
         player.sendActionBar(LECT_PROTECTED_ACTION.replace("<player>", state.protectorName))
         isCancelled = true
     }
-
 }

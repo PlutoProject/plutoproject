@@ -13,7 +13,6 @@ import org.koin.core.component.inject
 
 @Suppress("UNUSED", "UnusedReceiverParameter")
 object AfkListener : Listener, KoinComponent {
-
     private val manager by inject<AfkManager>()
 
     private fun Player.unAfk() {
@@ -39,5 +38,4 @@ object AfkListener : Listener, KoinComponent {
         if (isCancelled) return
         player.unAfk()
     }
-
 }

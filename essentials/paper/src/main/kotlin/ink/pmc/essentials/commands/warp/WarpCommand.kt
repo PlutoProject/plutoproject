@@ -2,7 +2,6 @@ package ink.pmc.essentials.commands.warp
 
 import cafe.adriel.voyager.navigator.Navigator
 import ink.pmc.essentials.*
-import ink.pmc.essentials.api.Essentials
 import ink.pmc.essentials.screens.warp.WarpViewerScreen
 import ink.pmc.framework.interactive.GuiManager
 import ink.pmc.framework.utils.command.annotation.Command

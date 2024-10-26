@@ -1,7 +1,6 @@
 package ink.pmc.essentials.commands.warp
 
 import ink.pmc.essentials.*
-import ink.pmc.essentials.api.Essentials
 import ink.pmc.framework.utils.command.annotation.Command
 import ink.pmc.framework.utils.chat.replace
 import ink.pmc.framework.utils.command.checkPlayer
