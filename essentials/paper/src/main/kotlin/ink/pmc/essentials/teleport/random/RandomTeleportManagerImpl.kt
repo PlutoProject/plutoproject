@@ -52,9 +52,9 @@ internal fun Chunk.hasTeleportTicket(): Boolean {
 }
 
 class RandomTeleportManagerImpl : RandomTeleportManager, KoinComponent {
-    private val baseConf by inject<EssentialsConfig>()
-    private val config = baseConf.randomTeleport
-    private val teleportConfig = baseConf.teleport
+    private val baseConfig by inject<EssentialsConfig>()
+    private val config = baseConfig.randomTeleport
+    private val teleportConfig = baseConfig.teleport
     private val teleport by inject<TeleportManager>()
     private var waitedTicks: Long = -1
     private var inTeleport = ConcurrentHashMap.newKeySet<Player>()
