@@ -1,10 +1,11 @@
 package ink.pmc.essentials.commands.teleport
 
 import ink.pmc.essentials.*
-import ink.pmc.framework.utils.command.annotation.Command
+import ink.pmc.essentials.api.teleport.TeleportManager
 import ink.pmc.framework.utils.chat.NON_PLAYER
 import ink.pmc.framework.utils.chat.NO_PERMISSON
 import ink.pmc.framework.utils.chat.replace
+import ink.pmc.framework.utils.command.annotation.Command
 import ink.pmc.framework.utils.dsl.cloud.invoke
 import ink.pmc.framework.utils.dsl.cloud.sender
 import org.bukkit.entity.Player
@@ -18,9 +19,8 @@ fun Cm.tpcancel(aliases: Array<String>) {
         permission("essentials.tpcancel")
         optional("player", PlayerParser.playerParser())
         handler {
-            val manager = Essentials.teleportManager
             val argPlayer = optional<Player>("player").getOrNull()
-            val argRequest = argPlayer?.let { manager.getUnfinishedRequest(it) }
+            val argRequest = argPlayer?.let { TeleportManager.getUnfinishedRequest(it) }
             val sender = sender.sender
 
             if (argPlayer != null) {
@@ -56,7 +56,7 @@ fun Cm.tpcancel(aliases: Array<String>) {
                 return@handler
             }
 
-            val request = manager.getUnfinishedRequest(sender) ?: return@handler run {
+            val request = TeleportManager.getUnfinishedRequest(sender) ?: return@handler run {
                 sender.sendMessage(COMMAND_TPCANCEL_NO_REQUEST)
             }
 

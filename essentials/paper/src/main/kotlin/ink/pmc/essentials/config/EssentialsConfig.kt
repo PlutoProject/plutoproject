@@ -131,5 +131,14 @@ data class DemoWorld(
 )
 
 data class DemoWorldOptions(
+    val spawnpoint: Spawnpoint,
     val teleportHeight: Int
+)
+
+data class Spawnpoint(
+    val x: Double,
+    val y: Double,
+    val z: Double,
+    val yaw: Float = 0.0F,
+    val pitch: Float = 0.0F,
 )

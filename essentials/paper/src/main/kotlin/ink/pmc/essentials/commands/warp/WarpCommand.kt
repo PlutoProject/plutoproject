@@ -2,10 +2,11 @@ package ink.pmc.essentials.commands.warp
 
 import cafe.adriel.voyager.navigator.Navigator
 import ink.pmc.essentials.*
+import ink.pmc.essentials.api.warp.WarpManager
 import ink.pmc.essentials.screens.warp.WarpViewerScreen
 import ink.pmc.framework.interactive.GuiManager
-import ink.pmc.framework.utils.command.annotation.Command
 import ink.pmc.framework.utils.chat.replace
+import ink.pmc.framework.utils.command.annotation.Command
 import ink.pmc.framework.utils.command.checkPlayer
 import ink.pmc.framework.utils.dsl.cloud.invoke
 import ink.pmc.framework.utils.dsl.cloud.sender
@@ -20,7 +21,6 @@ fun Cm.warp(aliases: Array<String>) {
         argument(warps("name").optional())
         handler {
             checkPlayer(sender.sender) {
-                val manager = Essentials.warpManager
                 val input = optional<String>("name").getOrNull()
 
                 if (input == null) {
@@ -35,9 +35,9 @@ fun Cm.warp(aliases: Array<String>) {
                 val argUuid = name.uuidOrNull
 
                 val warp = if (argUuid != null) {
-                    manager.get(argUuid)
+                    WarpManager.get(argUuid)
                 } else {
-                    manager.get(name)
+                    WarpManager.get(name)
                 }
 
                 if (warp == null && argUuid != null) {

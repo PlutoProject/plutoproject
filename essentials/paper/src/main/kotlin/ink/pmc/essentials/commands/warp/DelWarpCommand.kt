@@ -1,8 +1,9 @@
 package ink.pmc.essentials.commands.warp
 
 import ink.pmc.essentials.*
-import ink.pmc.framework.utils.command.annotation.Command
+import ink.pmc.essentials.api.warp.WarpManager
 import ink.pmc.framework.utils.chat.replace
+import ink.pmc.framework.utils.command.annotation.Command
 import ink.pmc.framework.utils.command.checkPlayer
 import ink.pmc.framework.utils.concurrent.submitAsync
 import ink.pmc.framework.utils.dsl.cloud.invoke
@@ -17,15 +18,14 @@ fun Cm.delwarp(aliases: Array<String>) {
         argument(warps("name").required())
         handler {
             checkPlayer(sender.sender) {
-                val manager = Essentials.warpManager
                 val input = get<String>("name")
                 val name = input.substringBefore('-')
                 val argUuid = name.uuidOrNull
 
                 val warp = if (argUuid != null) {
-                    manager.get(argUuid)
+                    WarpManager.get(argUuid)
                 } else {
-                    manager.get(name)
+                    WarpManager.get(name)
                 }
 
                 if (warp == null && argUuid != null) {
@@ -40,7 +40,7 @@ fun Cm.delwarp(aliases: Array<String>) {
                     return@checkPlayer
                 }
 
-                submitAsync { manager.remove(warp.id) }
+                submitAsync { WarpManager.remove(warp.id) }
                 if (warp.alias == null) {
                     sendMessage(COMMAND_DELWARP_SUCCEED.replace("<name>", name))
                     return@checkPlayer

@@ -9,9 +9,9 @@ import ink.pmc.essentials.api.home.HomeManager
 import ink.pmc.essentials.api.teleport.random.RandomTeleportManager
 import ink.pmc.essentials.api.warp.Warp
 import ink.pmc.essentials.api.warp.WarpManager
-import ink.pmc.essentials.listeners.TeleportListener.getKoin
 import ink.pmc.framework.utils.chat.DURATION
 import ink.pmc.framework.utils.visual.*
+import ink.pmc.framework.utils.world.aliasOrName
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.util.Ticks
@@ -787,13 +787,12 @@ private val UI_HOME_ITEM_LORE_LOC = component {
 
 @Suppress("FunctionName")
 fun UI_HOME_ITEM_LORE(home: Home): List<Component> {
-    val conf = getKoin().get<EssentialsConfig>().WorldAliases()
     val loc = home.location
     return mutableListOf<Component>().apply {
         add(component {
             raw(
                 UI_HOME_ITEM_LORE_LOC
-                    .replace("<world>", conf[loc.world])
+                    .replace("<world>", loc.world.aliasOrName)
                     .replace("<x>", "${loc.blockX}")
                     .replace("<y>", "${loc.blockY}")
                     .replace("<z>", "${loc.blockZ}")
@@ -852,13 +851,12 @@ private val UI_WARP_ITEM_LORE_LOC = component {
 
 @Suppress("FunctionName")
 fun UI_WARP_ITEM_LORE(warp: Warp): List<Component> {
-    val conf = getKoin().get<EssentialsConfig>().WorldAliases()
     val loc = warp.location
     return listOf(
         component {
             raw(
                 UI_WARP_ITEM_LORE_LOC
-                    .replace("<world>", conf[loc.world])
+                    .replace("<world>", loc.world.aliasOrName)
                     .replace("<x>", "${loc.blockX}")
                     .replace("<y>", "${loc.blockY}")
                     .replace("<z>", "${loc.blockZ}")
@@ -999,13 +997,12 @@ val UI_HOME_EDITOR_RENAME_EXIT_LORE = listOf(
 
 @Suppress("FunctionName")
 fun UI_HOME_EDITOR_RENAME_SAVE_EDITING(home: Home): List<Component> {
-    val conf = getKoin().get<EssentialsConfig>().WorldAliases()
     val loc = home.location
     return listOf(
         component {
             raw(
                 UI_HOME_ITEM_LORE_LOC
-                    .replace("<world>", conf[loc.world])
+                    .replace("<world>", loc.world.aliasOrName)
                     .replace("<x>", "${loc.blockX}")
                     .replace("<y>", "${loc.blockY}")
                     .replace("<z>", "${loc.blockZ}")
@@ -1028,7 +1025,7 @@ val UI_HOME_EDITOR_RENAME_SAVE_TOO_LONG = listOf(
     Component.empty(),
     component {
         text("名称过长，最多使用 ") with mochaMaroon without italic()
-        text("${Essentials.homeManager.nameLengthLimit} ") with mochaText without italic()
+        text("${HomeManager.nameLengthLimit} ") with mochaText without italic()
         text("个字符") with mochaMaroon without italic()
     }
 )
@@ -1079,11 +1076,10 @@ val FORM_VIEWER_NEXT = component {
 
 @Suppress("FunctionName")
 fun FORM_HOME_ITEM(home: Home) = component {
-    val conf = getKoin().get<EssentialsConfig>().WorldAliases()
     val loc = home.location
     text(
         "${home.name} (<world> <x>, <y>, <z>)"
-            .replace("<world>", conf[loc.world])
+            .replace("<world>", loc.world.aliasOrName)
             .replace("<x>", "${loc.blockX}")
             .replace("<y>", "${loc.blockY}")
             .replace("<z>", "${loc.blockZ}")
@@ -1106,12 +1102,11 @@ const val UI_HOME_CREATOR_INPUT = "输入名称..."
 
 @Suppress("FunctionName")
 fun UI_HOME_CREATOR_OUTPUT_LORE(loc: Location): List<Component> {
-    val conf = getKoin().get<EssentialsConfig>().WorldAliases()
     return listOf(
         component {
             raw(
                 UI_HOME_ITEM_LORE_LOC
-                    .replace("<world>", conf[loc.world])
+                    .replace("<world>", loc.world.aliasOrName)
                     .replace("<x>", "${loc.blockX}")
                     .replace("<y>", "${loc.blockY}")
                     .replace("<z>", "${loc.blockZ}")

@@ -9,16 +9,11 @@ import ink.pmc.framework.utils.concurrent.submitAsync
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.get
 import org.koin.core.component.inject
 
 class BackManagerImpl : BackManager, KoinComponent {
-
-    private val conf by lazy { get<EssentialsConfig>().Back() }
     private val teleport by inject<TeleportManager>()
     private val repo by inject<BackRepository>()
-
-    override val maxLocations: Int = conf.maxLocations
 
     override suspend fun has(player: Player): Boolean {
         return repo.has(player)
@@ -58,5 +53,4 @@ class BackManagerImpl : BackManager, KoinComponent {
     override suspend fun remove(player: Player) {
         repo.delete(player)
     }
-
 }

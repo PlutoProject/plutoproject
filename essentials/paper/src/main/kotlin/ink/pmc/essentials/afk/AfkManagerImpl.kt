@@ -3,6 +3,7 @@ package ink.pmc.essentials.afk
 import ink.pmc.essentials.AFK_END_ANNOUNCE
 import ink.pmc.essentials.AFK_START_ANNOUNCE
 import ink.pmc.essentials.api.afk.AfkManager
+import ink.pmc.essentials.config.EssentialsConfig
 import ink.pmc.essentials.disabled
 import ink.pmc.essentials.essentialsScope
 import ink.pmc.framework.utils.chat.replace
@@ -18,8 +19,7 @@ import kotlin.time.Duration.Companion.seconds
 import kotlin.time.toKotlinDuration
 
 class AfkManagerImpl : AfkManager, KoinComponent {
-
-    private val conf by lazy { get<EssentialsConfig>().Afk() }
+    private val conf by lazy { get<EssentialsConfig>().afk }
     private val manuallyAfkSet = ConcurrentHashMap.newKeySet<Player>()
 
     override val afkSet: MutableSet<Player> = ConcurrentHashMap.newKeySet()
@@ -77,5 +77,4 @@ class AfkManagerImpl : AfkManager, KoinComponent {
     override fun toggle(player: Player, manually: Boolean) {
         set(player, !isAfk(player), manually)
     }
-
 }

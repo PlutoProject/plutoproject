@@ -1,5 +1,6 @@
 package ink.pmc.essentials.commands.warp
 
+import ink.pmc.essentials.api.warp.WarpManager
 import ink.pmc.framework.utils.concurrent.submitAsync
 import io.papermc.paper.command.brigadier.CommandSourceStack
 import kotlinx.coroutines.future.asCompletableFuture
@@ -12,11 +13,10 @@ import java.util.concurrent.CompletableFuture
 internal fun warps(argName: String) =
     CommandComponent.builder<CommandSourceStack, String>()
         .suggestionProvider { ctx, _ ->
-            val manager = Essentials.warpManager
             val sender = ctx.sender().sender
             if (sender is Player) {
                 submitAsync<List<Suggestion>> {
-                    manager.list().map {
+                    WarpManager.list().map {
                         val name = it.name
                         val alias = it.alias
                         if (alias == null) {
@@ -36,11 +36,10 @@ internal fun warps(argName: String) =
 internal fun warpsWithoutAlias(argName: String) =
     CommandComponent.builder<CommandSourceStack, String>()
         .suggestionProvider { ctx, _ ->
-            val manager = Essentials.warpManager
             val sender = ctx.sender().sender
             if (sender is Player) {
                 submitAsync<List<Suggestion>> {
-                    manager.list().map {
+                    WarpManager.list().map {
                         val name = it.name
                         Suggestion.suggestion(name)
                     }

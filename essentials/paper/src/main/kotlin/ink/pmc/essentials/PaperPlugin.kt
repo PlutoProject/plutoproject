@@ -152,6 +152,15 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
             server.pluginManager.registerSuspendingEvents(AfkListener, this)
         }
 
+        if (config.containerProtection.enabled) {
+            if (config.containerProtection.itemframe) {
+                server.pluginManager.registerSuspendingEvents(ItemFrameListener, this)
+            }
+            if (config.containerProtection.lectern) {
+                server.pluginManager.registerSuspendingEvents(LecternListener, this)
+            }
+        }
+
         if (config.action.enabled) {
             server.pluginManager.registerSuspendingEvents(ActionListener, this)
         }
@@ -162,6 +171,10 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
 
         if (config.join.enabled) {
             server.pluginManager.registerSuspendingEvents(JoinListener, this)
+        }
+
+        if (config.demoWorld.enabled) {
+            server.pluginManager.registerSuspendingEvents(DemoWorldListener, this)
         }
     }
 

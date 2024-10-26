@@ -6,9 +6,10 @@ import ink.pmc.essentials.COMMAND_ETP_SUCCEED
 import ink.pmc.essentials.COMMAND_ETP_SUCCEED_OTHER
 import ink.pmc.essentials.Cm
 import ink.pmc.essentials.TELEPORT_SUCCEED_SOUND
-import ink.pmc.framework.utils.command.annotation.Command
+import ink.pmc.essentials.api.teleport.TeleportManager
 import ink.pmc.framework.utils.chat.NON_PLAYER
 import ink.pmc.framework.utils.chat.replace
+import ink.pmc.framework.utils.command.annotation.Command
 import ink.pmc.framework.utils.dsl.cloud.invoke
 import ink.pmc.framework.utils.dsl.cloud.sender
 import ink.pmc.framework.utils.visual.mochaText
@@ -28,15 +29,14 @@ fun Cm.etp(aliases: Array<String>) {
         optional("player", PlayerParser.playerParser())
         optional("bypassSafe", BooleanParser.booleanParser())
         handler {
-            val manager = Essentials.teleportManager
             val location = get<Location>("location")
             val argPlayer = optional<Player>("player").getOrNull()
             val sender = sender.sender
             val bypassSafe = optional<Boolean>("bypassSafe").getOrNull() == true
-            val options = manager.getWorldTeleportOptions(location.world).copy(disableSafeCheck = bypassSafe)
+            val options = TeleportManager.getWorldTeleportOptions(location.world).copy(disableSafeCheck = bypassSafe)
 
             if (argPlayer != null) {
-                manager.teleportSuspend(argPlayer, location, options)
+                TeleportManager.teleportSuspend(argPlayer, location, options)
                 sender.sendMessage(
                     COMMAND_ETP_SUCCEED_OTHER
                         .replace("<player>", argPlayer.name)
@@ -55,7 +55,7 @@ fun Cm.etp(aliases: Array<String>) {
                 return@handler
             }
 
-            manager.teleportSuspend(sender, location, options)
+            TeleportManager.teleportSuspend(sender, location, options)
             sender.sendMessage(
                 COMMAND_ETP_SUCCEED
                     .replace("<location>", component {

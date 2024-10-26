@@ -5,7 +5,6 @@ import ink.pmc.framework.utils.inject.inlinedGet
 import org.bukkit.Location
 import org.bukkit.OfflinePlayer
 import org.bukkit.World
-import org.bukkit.entity.Player
 import java.util.*
 
 @Suppress("UNUSED")

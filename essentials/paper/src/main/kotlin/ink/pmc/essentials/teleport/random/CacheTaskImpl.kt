@@ -44,7 +44,8 @@ class CacheTaskImpl(
             scope = this
             val random = manager.random(world, options)
             val location = random.location ?: return@supervisorScope null
-            val chunks = teleport.getRequiredChunks(location, manager.chunkPreserveRadius)
+            val chunks =
+                teleport.getRequiredChunks(location, manager.getRandomTeleportOptions(world).chunkPreserveRadius)
 
             chunks.forEach {
                 launch {

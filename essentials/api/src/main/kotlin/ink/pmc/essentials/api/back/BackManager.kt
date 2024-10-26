@@ -8,8 +8,6 @@ import org.bukkit.entity.Player
 interface BackManager {
     companion object : BackManager by inlinedGet()
 
-    val maxLocations: Int
-
     suspend fun has(player: Player): Boolean
 
     suspend fun get(player: Player): Location?

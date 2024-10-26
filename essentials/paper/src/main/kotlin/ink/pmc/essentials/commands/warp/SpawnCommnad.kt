@@ -1,8 +1,9 @@
 package ink.pmc.essentials.commands.warp
 
 import ink.pmc.essentials.*
-import ink.pmc.framework.utils.command.annotation.Command
+import ink.pmc.essentials.api.warp.WarpManager
 import ink.pmc.framework.utils.chat.replace
+import ink.pmc.framework.utils.command.annotation.Command
 import ink.pmc.framework.utils.command.checkPlayer
 import ink.pmc.framework.utils.dsl.cloud.invoke
 import ink.pmc.framework.utils.dsl.cloud.sender
@@ -14,8 +15,7 @@ fun Cm.spawn(aliases: Array<String>) {
         permission("essentials.spawn")
         handler {
             checkPlayer(sender.sender) {
-                val manager = Essentials.warpManager
-                val spawn = manager.getPreferredSpawn(this)
+                val spawn = WarpManager.getPreferredSpawn(this)
 
                 if (spawn == null) {
                     sendMessage(COMMAND_SPAWN_FAILED_NOT_SET)
