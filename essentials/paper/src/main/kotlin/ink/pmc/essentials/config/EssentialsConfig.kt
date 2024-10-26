@@ -24,6 +24,8 @@ data class EssentialsConfig(
 
 data class Teleport(
     val enabled: Boolean,
+    val chunkPrepareMethod: ChunkPrepareMethod = ChunkPrepareMethod.ASYNC,
+    val chunkPrepareRadius: Int = 0,
     val default: TeleportOptions,
     val worlds: Map<String, TeleportOptions>,
     val blacklistedWorlds: List<String>
@@ -33,10 +35,8 @@ data class TeleportOptions(
     val maxRequestsStored: Int = 50,
     val request: Request,
     val queueProcessPerTick: Int = 1,
-    val chunkPrepareMethod: ChunkPrepareMethod = ChunkPrepareMethod.ASYNC,
     val avoidVoid: Boolean = true,
     val safeLocationSearchRadius: Int = 20,
-    val chunkPrepareRadius: Int = 0,
     val blacklistedBlocks: List<Material> = listOf(Material.WATER, Material.LAVA)
 )
 
@@ -47,6 +47,8 @@ data class Request(
 
 data class RandomTeleport(
     val enabled: Boolean,
+    val chunkPreserveRadius: Int = -1,
+    val cacheInterval: Int,
     val default: RandomTeleportOptions,
     val worlds: Map<String, RandomTeleportOptions>,
     val enabledWorlds: List<String> = listOf("world")
@@ -55,8 +57,7 @@ data class RandomTeleport(
 data class RandomTeleportOptions(
     val spawnpointAsCenter: Boolean = true,
     val center: Center,
-    val cache: Cache,
-    val chunkPreserveRadius: Int = -1,
+    val cacheAmount: Int,
     val startRadius: Int = 0,
     val endRadius: Int = 10000,
     val maxHeight: Int = -1,
@@ -71,11 +72,6 @@ data class RandomTeleportOptions(
 data class Center(
     val x: Double = 0.0,
     val z: Double = 0.0
-)
-
-data class Cache(
-    val interval: Int = 100,
-    val amount: Int = 10
 )
 
 data class Back(

@@ -27,8 +27,6 @@ interface RandomTeleportManager {
 
     fun getCenterLocation(world: World, options: RandomTeleportOptions? = null): Vec2
 
-    fun getCacheAmount(world: World): Int
-
     fun getCaches(world: World): Collection<RandomTeleportCache>
 
     fun pollCache(world: World): RandomTeleportCache?

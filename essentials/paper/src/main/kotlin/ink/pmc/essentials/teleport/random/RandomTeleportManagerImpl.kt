@@ -1,6 +1,5 @@
 package ink.pmc.essentials.teleport.random
 
-import com.electronwill.nightconfig.core.Config
 import com.google.common.collect.ArrayListMultimap
 import com.google.common.collect.ListMultimap
 import com.google.common.collect.Multimaps
@@ -16,6 +15,7 @@ import ink.pmc.framework.utils.chat.replace
 import ink.pmc.framework.utils.concurrent.async
 import ink.pmc.framework.utils.concurrent.submitAsync
 import ink.pmc.framework.utils.data.mapKv
+import ink.pmc.framework.utils.platform.paper
 import ink.pmc.framework.utils.world.Vec2
 import ink.pmc.framework.utils.world.addTicket
 import ink.pmc.framework.utils.world.removeTicket
@@ -28,7 +28,6 @@ import net.minecraft.server.level.TicketType
 import org.bukkit.Chunk
 import org.bukkit.Location
 import org.bukkit.World
-import org.bukkit.block.Biome
 import org.bukkit.entity.Player
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -53,7 +52,6 @@ internal fun Chunk.hasTeleportTicket(): Boolean {
 }
 
 class RandomTeleportManagerImpl : RandomTeleportManager, KoinComponent {
-
     private val baseConf by inject<EssentialsConfig>()
     private val config = baseConf.randomTeleport
     private val teleportConfig = baseConf.teleport
@@ -67,34 +65,38 @@ class RandomTeleportManagerImpl : RandomTeleportManager, KoinComponent {
     override val chunkPreserveRadius: Int =
         if (config.chunkPreserveRadius >= 0) config.chunkPreserveRadius else teleportConfig.chunkPrepareRadius
     override val defaultOptions: RandomTeleportOptions = RandomTeleportOptions(
-        center = Vec2(config.centerX, config.centerZ),
-        spawnPointAsCenter = config.spawnPointAsCenter,
-        startRadius = config.startRadius,
-        endRadius = config.endRadius,
-        maxHeight = config.maxHeight,
-        minHeight = config.minHeight,
-        noCover = config.noCover,
-        maxAttempts = config.maxAttempts,
-        cost = config.cost,
-        blacklistedBiomes = config.blacklistedBiomes.toSet()
+        center = Vec2(config.default.center.x, config.default.center.z),
+        spawnPointAsCenter = config.default.spawnpointAsCenter,
+        cacheAmount = config.default.cacheAmount,
+        startRadius = config.default.startRadius,
+        endRadius = config.default.endRadius,
+        maxHeight = config.default.maxHeight,
+        minHeight = config.default.minHeight,
+        noCover = config.default.noCover,
+        maxAttempts = config.default.maxAttempts,
+        cost = config.default.cost,
+        blacklistedBiomes = config.default.blacklistedBiomes.toSet()
     )
-    override val worldOptions: Map<World, RandomTeleportOptions> = config.worldOptions.mapKv {
-        it.key to RandomTeleportOptions(
-            center = it.value.get<Config>("center")?.let { c -> Vec2(c.get("x"), c.get("z")) }
-                ?: defaultOptions.center,
-            spawnPointAsCenter = it.value.get("spawnpoint-as-center") ?: defaultOptions.spawnPointAsCenter,
-            startRadius = it.value.get("start-radius") ?: defaultOptions.startRadius,
-            endRadius = it.value.get("end-radius") ?: defaultOptions.endRadius,
-            maxHeight = it.value.get("max-height") ?: defaultOptions.maxHeight,
-            minHeight = it.value.get("min-height") ?: defaultOptions.minHeight,
-            noCover = it.value.get("no-cover") ?: defaultOptions.noCover,
-            maxAttempts = it.value.get("max-attempts") ?: defaultOptions.maxAttempts,
-            cost = it.value.get<Double>("cost") ?: defaultOptions.cost,
-            blacklistedBiomes = it.value.get<List<String>>("blacklisted-biomes")
-                ?.map { b -> Biome.valueOf(b.uppercase()) }?.toSet() ?: defaultOptions.blacklistedBiomes
+    override val worldOptions: Map<World, RandomTeleportOptions> = config.worlds.filter { (key, _) ->
+        paper.worlds.any { it.name == key }
+    }.mapKv { (key, value) ->
+        paper.getWorld(key)!! to RandomTeleportOptions(
+            center = Vec2(value.center.x, value.center.z),
+            spawnPointAsCenter = value.spawnpointAsCenter,
+            cacheAmount = value.cacheAmount,
+            startRadius = value.startRadius,
+            endRadius = value.endRadius,
+            maxHeight = value.maxHeight,
+            minHeight = value.minHeight,
+            noCover = value.noCover,
+            maxAttempts = value.maxAttempts,
+            cost = value.cost,
+            blacklistedBiomes = value.blacklistedBiomes.toSet()
         )
     }
     override val enabledWorlds: Collection<World> = config.enabledWorlds
+        .filter { name -> paper.worlds.any { it.name == name } }
+        .map { paper.getWorld(it)!! }
     override var tickCount: Long = 0L
     override var lastTickTime: Long = 0L
     override var state: ManagerState = ManagerState.IDLE
@@ -112,10 +114,6 @@ class RandomTeleportManagerImpl : RandomTeleportManager, KoinComponent {
         val center = opt.center
         val spawnPointAsCenter = opt.spawnPointAsCenter
         return if (spawnPointAsCenter) spawnPoint else center
-    }
-
-    override fun getCacheAmount(world: World): Int {
-        return config.cacheAmount.get(world.name) ?: config.cacheDefaultAmount
     }
 
     override fun getCaches(world: World): Collection<RandomTeleportCache> {
@@ -350,7 +348,7 @@ class RandomTeleportManagerImpl : RandomTeleportManager, KoinComponent {
     }
 
     override fun isEnabled(world: World): Boolean {
-        return enabledWorlds.contains(world) && Essentials.isRandomTeleportEnabled()
+        return enabledWorlds.contains(world)
     }
 
     private suspend fun tickCacheTask() {
@@ -382,7 +380,7 @@ class RandomTeleportManagerImpl : RandomTeleportManager, KoinComponent {
 
     private fun tryEmitTasks() {
         enabledWorlds.forEach {
-            val amount = getCacheAmount(it)
+            val amount = getRandomTeleportOptions(it).cacheAmount
             val pending = cacheTasks.filter { t -> t.world == it }.size
             val spare = amount - (getCaches(it).size + pending)
 
@@ -424,5 +422,4 @@ class RandomTeleportManagerImpl : RandomTeleportManager, KoinComponent {
         state = ManagerState.IDLE
         waitedTicks = 0
     }
-
 }
