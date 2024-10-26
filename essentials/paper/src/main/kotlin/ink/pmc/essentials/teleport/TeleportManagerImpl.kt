@@ -14,8 +14,7 @@ import ink.pmc.framework.utils.concurrent.compose
 import ink.pmc.framework.utils.concurrent.submitAsync
 import ink.pmc.framework.utils.data.mapKv
 import ink.pmc.framework.utils.entity.teleportSuspend
-import ink.pmc.framework.utils.item.KeyedMaterial
-import ink.pmc.framework.utils.item.bukkit
+import ink.pmc.framework.utils.platform.paper
 import ink.pmc.framework.utils.world.ValueVec2
 import ink.pmc.framework.utils.world.getChunkViaSource
 import kotlinx.coroutines.*
@@ -33,7 +32,6 @@ import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentLinkedQueue
 import kotlin.math.floor
-import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
 class TeleportManagerImpl : TeleportManager, KoinComponent {
@@ -45,27 +43,30 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
     override val teleportRequests: MutableList<TeleportRequest> = mutableListOf()
     override val queue: Queue<TeleportTask> = ConcurrentLinkedQueue()
     override val defaultRequestOptions: RequestOptions = RequestOptions(
-        Duration.parse(config.requestExpireAfter),
-        Duration.parse(config.requestRemoveAfter)
+        config.request.expireAfter,
+        config.request.removeAfter
     )
     override val defaultTeleportOptions: TeleportOptions = TeleportOptions(
         false,
-        config.avoidVoid,
-        config.safeLocationSearchRadius,
-        config.chunkPrepareRadius,
-        config.blacklistedBlocks.toSet(),
+        config.default.avoidVoid,
+        config.default.safeLocationSearchRadius,
+        config.default.chunkPrepareRadius,
+        config.default.blacklistedBlocks.toSet(),
     )
-    override val worldTeleportOptions: Map<World, TeleportOptions> = config.worldOptions.mapKv {
-        it.key to TeleportOptions(
+    override val worldTeleportOptions: Map<World, TeleportOptions> = config.worlds.filter { (key, _) ->
+        paper.worlds.any { it.name == key }
+    }.mapKv { (key, value) ->
+        paper.getWorld(key)!! to TeleportOptions(
             false,
-            it.value.get("avoid-void") ?: defaultTeleportOptions.avoidVoid,
-            it.value.get("safe-location-search-radius") ?: defaultTeleportOptions.safeLocationSearchRadius,
-            it.value.get("chunk-prepare-radius") ?: defaultTeleportOptions.chunkPrepareRadius,
-            it.value.get<List<String>>("blacklisted-blocks")?.map { m -> KeyedMaterial(m).bukkit }?.toSet()
-                ?: defaultTeleportOptions.blacklistedBlocks
+            value.avoidVoid,
+            value.safeLocationSearchRadius,
+            value.chunkPrepareRadius,
+            value.blacklistedBlocks.toSet()
         )
     }
     override val blacklistedWorlds: Collection<World> = config.blacklistedWorlds
+        .filter { name -> paper.worlds.any { it.name == name } }
+        .map { paper.getWorld(it)!! }
     override val locationCheckers: MutableMap<String, LocationChecker> = mutableMapOf()
     override var tickingTask: TeleportTask? = null
     override var tickCount = 0L
@@ -296,7 +297,7 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
             return null
         }
 
-        if (config.blacklistedWorlds.contains(destination.world)) {
+        if (config.blacklistedWorlds.contains(destination.world.name)) {
             return null
         }
 

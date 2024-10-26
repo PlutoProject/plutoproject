@@ -24,19 +24,19 @@ data class EssentialsConfig(
 
 data class Teleport(
     val enabled: Boolean,
+    val maxRequestsStored: Int = 50,
+    val request: Request,
+    val queueProcessPerTick: Int = 1,
     val chunkPrepareMethod: ChunkPrepareMethod = ChunkPrepareMethod.ASYNC,
-    val chunkPrepareRadius: Int = 0,
     val default: TeleportOptions,
     val worlds: Map<String, TeleportOptions>,
     val blacklistedWorlds: List<String>
 )
 
 data class TeleportOptions(
-    val maxRequestsStored: Int = 50,
-    val request: Request,
-    val queueProcessPerTick: Int = 1,
     val avoidVoid: Boolean = true,
     val safeLocationSearchRadius: Int = 20,
+    val chunkPrepareRadius: Int = 0,
     val blacklistedBlocks: List<Material> = listOf(Material.WATER, Material.LAVA)
 )
 
