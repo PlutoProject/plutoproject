@@ -1,10 +1,12 @@
 package ink.pmc.essentials.listeners
 
 import com.destroystokyo.paper.event.player.PlayerAdvancementCriterionGrantEvent
+import ink.pmc.essentials.DEMO_WORLD_BYPASS
 import ink.pmc.essentials.config.DemoWorldOptions
 import ink.pmc.essentials.config.EssentialsConfig
 import org.bukkit.Location
 import org.bukkit.World
+import org.bukkit.attribute.Attribute
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -39,7 +41,12 @@ object DemoWorldListener : Listener, KoinComponent {
     @EventHandler
     fun PlayerJoinEvent.e() {
         player.world.demoWorldOptions?.let {
+            if (player.hasPermission(DEMO_WORLD_BYPASS)) return
             player.world.demoWorldSpawnpoint?.let { location -> player.teleport(location) }
+            player.health = player.getAttribute(Attribute.GENERIC_MAX_HEALTH)!!.value
+            player.foodLevel = 20
+            player.saturation = 5.0F
+            player.exhaustion = 0.0F
         }
     }
 
@@ -63,6 +70,7 @@ object DemoWorldListener : Listener, KoinComponent {
     fun EntityDamageByEntityEvent.e() {
         if (damager !is Player) return
         damager.world.demoWorldOptions?.let {
+            if (entity.hasPermission(DEMO_WORLD_BYPASS)) return
             isCancelled = true
         }
     }
@@ -78,6 +86,7 @@ object DemoWorldListener : Listener, KoinComponent {
     @EventHandler
     fun PlayerDropItemEvent.e() {
         player.world.demoWorldOptions?.let {
+            if (player.hasPermission(DEMO_WORLD_BYPASS)) return
             isCancelled = true
         }
     }
@@ -85,6 +94,7 @@ object DemoWorldListener : Listener, KoinComponent {
     @EventHandler
     fun PlayerInteractEvent.e() {
         player.world.demoWorldOptions?.let {
+            if (player.hasPermission(DEMO_WORLD_BYPASS)) return
             isCancelled = true
         }
     }
