@@ -55,8 +55,8 @@ data class RandomTeleport(
 
 data class RandomTeleportOptions(
     val spawnpointAsCenter: Boolean = true,
-    val center: Center,
-    val cacheAmount: Int,
+    val center: Center = Center(),
+    val cacheAmount: Int = 5,
     val chunkPreserveRadius: Int = -1,
     val startRadius: Int = 0,
     val endRadius: Int = 10000,
