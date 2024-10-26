@@ -45,3 +45,7 @@ include("daily:paper")
 
 include("whitelist")
 include("whitelist:velocity")
+
+include("driftbottle")
+include("driftbottle:api")
+include("driftbottle:paper")
