@@ -15,7 +15,6 @@ interface RandomTeleportManager {
 
     val cacheTasks: Queue<CacheTask>
     val caches: Multimap<World, RandomTeleportCache>
-    val chunkPreserveRadius: Int
     val defaultOptions: RandomTeleportOptions
     val worldOptions: Map<World, RandomTeleportOptions>
     val enabledWorlds: Collection<World>

@@ -47,7 +47,6 @@ data class Request(
 
 data class RandomTeleport(
     val enabled: Boolean,
-    val chunkPreserveRadius: Int = -1,
     val cacheInterval: Int,
     val default: RandomTeleportOptions,
     val worlds: Map<String, RandomTeleportOptions>,
@@ -58,6 +57,7 @@ data class RandomTeleportOptions(
     val spawnpointAsCenter: Boolean = true,
     val center: Center,
     val cacheAmount: Int,
+    val chunkPreserveRadius: Int = -1,
     val startRadius: Int = 0,
     val endRadius: Int = 10000,
     val maxHeight: Int = -1,

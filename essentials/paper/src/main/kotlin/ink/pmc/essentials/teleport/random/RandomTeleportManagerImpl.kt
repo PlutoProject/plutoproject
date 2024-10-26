@@ -62,11 +62,10 @@ class RandomTeleportManagerImpl : RandomTeleportManager, KoinComponent {
     override val cacheTasks: Deque<CacheTask> = LinkedBlockingDeque()
     override val caches: ListMultimap<World, RandomTeleportCache> =
         Multimaps.synchronizedListMultimap(ArrayListMultimap.create())
-    override val chunkPreserveRadius: Int =
-        if (config.chunkPreserveRadius >= 0) config.chunkPreserveRadius else teleportConfig.chunkPrepareRadius
     override val defaultOptions: RandomTeleportOptions = RandomTeleportOptions(
         center = Vec2(config.default.center.x, config.default.center.z),
         spawnPointAsCenter = config.default.spawnpointAsCenter,
+        chunkPreserveRadius = if (config.default.chunkPreserveRadius >= 0) config.default.chunkPreserveRadius else teleportConfig.default.chunkPrepareRadius,
         cacheAmount = config.default.cacheAmount,
         startRadius = config.default.startRadius,
         endRadius = config.default.endRadius,
@@ -83,6 +82,7 @@ class RandomTeleportManagerImpl : RandomTeleportManager, KoinComponent {
         paper.getWorld(key)!! to RandomTeleportOptions(
             center = Vec2(value.center.x, value.center.z),
             spawnPointAsCenter = value.spawnpointAsCenter,
+            chunkPreserveRadius = if (value.chunkPreserveRadius >= 0) value.chunkPreserveRadius else defaultOptions.chunkPreserveRadius,
             cacheAmount = value.cacheAmount,
             startRadius = value.startRadius,
             endRadius = value.endRadius,
@@ -367,7 +367,8 @@ class RandomTeleportManagerImpl : RandomTeleportManager, KoinComponent {
 
     private suspend fun refreshChunkCache() = supervisorScope {
         caches.forEach { _, it ->
-            val preserve = teleport.getRequiredChunks(it.location, chunkPreserveRadius)
+            val preserve =
+                teleport.getRequiredChunks(it.location, getRandomTeleportOptions(it.world).chunkPreserveRadius)
             if (preserve.all { c -> c.isLoaded(it.world) && c.getChunk(it.world).hasTeleportTicket() }) {
                 return@forEach
             }
