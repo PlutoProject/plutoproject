@@ -109,6 +109,9 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
             parse(EditWarpCommand)
             parse(PreferredSpawnCommand)
             parse(SetWarpCommand)
+            parse(SpawnCommand)
+            parse(WarpCommand)
+            parse(WarpsCommand)
         }
 
         registerEvents()
