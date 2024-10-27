@@ -11,7 +11,6 @@ import org.koin.core.component.inject
 
 @Suppress("UNUSED")
 object WhitelistListener : KoinComponent {
-
     private val repo by inject<WhitelistRepository>()
 
     @Subscribe
@@ -32,5 +31,4 @@ object WhitelistListener : KoinComponent {
         model.rawName = player.username
         repo.saveOrUpdate(model)
     }
-
 }

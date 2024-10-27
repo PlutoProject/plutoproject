@@ -5,6 +5,7 @@ import com.github.shynixn.mccoroutine.bukkit.registerSuspendingEvents
 import ink.pmc.framework.interactive.GuiListener
 import ink.pmc.framework.interactive.GuiManager
 import ink.pmc.framework.interactive.GuiManagerImpl
+import ink.pmc.framework.interactive.commands.InteractiveCommand
 import ink.pmc.framework.interactive.inventory.InventoryListener
 import ink.pmc.framework.options.BackendOptionsUpdateNotifier
 import ink.pmc.framework.options.OptionsUpdateNotifier
@@ -17,6 +18,8 @@ import ink.pmc.framework.playerdb.startPlayerDbMonitor
 import ink.pmc.framework.playerdb.stopPlayerDbMonitor
 import ink.pmc.framework.provider.Provider
 import ink.pmc.framework.rpc.RpcClient
+import ink.pmc.framework.utils.command.annotationParser
+import ink.pmc.framework.utils.command.commandManager
 import ink.pmc.framework.utils.currentUnixTimestamp
 import ink.pmc.framework.utils.hook.initPaperHooks
 import ink.pmc.framework.utils.inject.startKoinIfNotPresent
@@ -68,6 +71,9 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
         paper.pluginManager.registerSuspendingEvents(InventoryListener, frameworkPaper)
         paper.pluginManager.registerSuspendingEvents(BukkitOptionsListener, frameworkPaper)
         paper.pluginManager.registerSuspendingEvents(TextDisplayListener, frameworkPaper)
+        commandManager().annotationParser().apply {
+            parse(InteractiveCommand)
+        }
         startPlayerDbMonitor()
         startOptionsMonitor()
         initPaperHooks()

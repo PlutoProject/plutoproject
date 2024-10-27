@@ -11,7 +11,6 @@ import java.util.*
 
 @Suppress("UNUSED")
 class WhitelistRepository(private val collection: MongoCollection<WhitelistModel>) {
-
     private val upsert = ReplaceOptions().upsert(true)
 
     suspend fun findById(id: UUID): WhitelistModel? {
@@ -58,8 +57,11 @@ class WhitelistRepository(private val collection: MongoCollection<WhitelistModel
         collection.deleteOne(eq("name", name.lowercase()))
     }
 
+    suspend fun count(): Long {
+        return collection.countDocuments()
+    }
+
     suspend fun saveOrUpdate(model: WhitelistModel) {
         collection.replaceOne(eq("_id", model.id), model, upsert)
     }
-
 }

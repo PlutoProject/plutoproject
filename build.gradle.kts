@@ -1,3 +1,4 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.plugin.extraProperties
 
 plugins {
@@ -294,6 +295,13 @@ allprojects {
 
     kotlin {
         jvmToolchain(21)
+    }
+
+    tasks.compileKotlin {
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_21)
+            javaParameters = true
+        }
     }
 
     repositories {

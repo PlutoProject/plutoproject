@@ -3,142 +3,81 @@ package ink.pmc.essentials.commands
 import ink.pmc.essentials.*
 import ink.pmc.framework.utils.chat.NON_PLAYER
 import ink.pmc.framework.utils.chat.replace
-import ink.pmc.framework.utils.command.annotation.Command
+import ink.pmc.framework.utils.command.ensurePlayer
 import ink.pmc.framework.utils.concurrent.sync
-import ink.pmc.framework.utils.dsl.cloud.alias
-import ink.pmc.framework.utils.dsl.cloud.invoke
-import ink.pmc.framework.utils.dsl.cloud.sender
-import io.papermc.paper.command.brigadier.CommandSourceStack
 import org.bukkit.GameMode
+import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
-import org.incendo.cloud.bukkit.parser.PlayerParser
-import org.incendo.cloud.context.CommandContext
-import kotlin.jvm.optionals.getOrNull
+import org.incendo.cloud.annotations.Argument
+import org.incendo.cloud.annotations.Command
+import org.incendo.cloud.annotations.Permission
 
-@Command("gm")
 @Suppress("UNUSED")
-fun Cm.gm(aliases: Array<String>) {
-    this("gm", *aliases) {
-        ("survival" alias "s" alias "0") {
-            permission("essentials.gm.survival")
-            optional("player", PlayerParser.playerParser())
-            handler {
-                gmHandler(GameMode.SURVIVAL)
-            }
-        }
+object GmCommand {
+    @Command("gm survival|s|0 [player]")
+    @Permission("essentials.gm.survival")
+    suspend fun CommandSender.survival(@Argument("player") player: Player?) = gm(GameMode.SURVIVAL, player)
 
-        ("creative" alias "c" alias "1") {
-            permission("essentials.gm.creative")
-            optional("player", PlayerParser.playerParser())
-            handler {
-                gmHandler(GameMode.CREATIVE)
-            }
-        }
+    @Command("gms [player]")
+    @Permission("essentials.gm.survival")
+    suspend fun CommandSender.gms(@Argument("player") player: Player?) = gm(GameMode.SURVIVAL, player)
 
-        ("adventure" alias "a" alias "2") {
-            permission("essentials.gm.adventure")
-            optional("player", PlayerParser.playerParser())
-            handler {
-                gmHandler(GameMode.ADVENTURE)
-            }
-        }
+    @Command("gm creative|c|1 [player]")
+    @Permission("essentials.gm.creative")
+    suspend fun CommandSender.creative(@Argument("player") player: Player?) = gm(GameMode.CREATIVE, player)
 
-        ("spectator" alias "sp" alias "3") {
-            permission("essentials.gm.spectator")
-            optional("player", PlayerParser.playerParser())
-            handler {
-                gmHandler(GameMode.SPECTATOR)
-            }
-        }
-    }
+    @Command("gmc [player]")
+    @Permission("essentials.gm.creative")
+    suspend fun CommandSender.gmc(@Argument("player") player: Player?) = gm(GameMode.CREATIVE, player)
+
+    @Command("gm adventure|a|2 [player]")
+    @Permission("essentials.gm.adventure")
+    suspend fun CommandSender.adventure(@Argument("player") player: Player?) = gm(GameMode.ADVENTURE, player)
+
+    @Command("gma [player]")
+    @Permission("essentials.gm.adventure")
+    suspend fun CommandSender.gma(@Argument("player") player: Player?) = gm(GameMode.ADVENTURE, player)
+
+    @Command("gm spectator|sp|3 [player]")
+    @Permission("essentials.gm.spectator")
+    suspend fun CommandSender.spectator(@Argument("player") player: Player?) = gm(GameMode.SPECTATOR, player)
+
+    @Command("gmsp [player]")
+    @Permission("essentials.gm.spectator")
+    suspend fun CommandSender.gmsp(@Argument("player") player: Player?) = gm(GameMode.SPECTATOR, player)
 }
 
-@Command("gms")
-@Suppress("UNUSED")
-fun Cm.gms(aliases: Array<String>) {
-    this("gms", *aliases) {
-        permission("essentials.gm.survival")
-        optional("player", PlayerParser.playerParser())
-        handler {
-            gmHandler(GameMode.SURVIVAL)
-        }
+private suspend fun CommandSender.gm(gameMode: GameMode, player: Player?) = sync {
+    val actualPlayer = player ?: if (this is Player) this else run {
+        sendMessage(NON_PLAYER)
+        return@sync
     }
-}
-
-@Command("gmc")
-@Suppress("UNUSED")
-fun Cm.gmc(aliases: Array<String>) {
-    this("gmc", *aliases) {
-        permission("essentials.gm.creative")
-        optional("player", PlayerParser.playerParser())
-        handler {
-            gmHandler(GameMode.CREATIVE)
-        }
+    val mode = when (gameMode) {
+        GameMode.SURVIVAL -> GM_SURVIVAL
+        GameMode.CREATIVE -> GM_CREATIVE
+        GameMode.ADVENTURE -> GM_ADVENTURE
+        GameMode.SPECTATOR -> GM_SPECTATOR
     }
-}
-
-@Command("gma")
-@Suppress("UNUSED")
-fun Cm.gma(aliases: Array<String>) {
-    this("gma", *aliases) {
-        permission("essentials.gm.adventure")
-        optional("player", PlayerParser.playerParser())
-        handler {
-            gmHandler(GameMode.ADVENTURE)
-        }
+    if (this != actualPlayer && actualPlayer.gameMode == gameMode) {
+        sendMessage(COMMAND_GM_FAILED_OTHER)
+        return@sync
     }
-}
-
-@Command("gmsp")
-@Suppress("UNUSED")
-fun Cm.gmsp(aliases: Array<String>) {
-    this("gmsp", *aliases) {
-        permission("essentials.gm.spectator")
-        optional("player", PlayerParser.playerParser())
-        handler {
-            gmHandler(GameMode.SPECTATOR)
-        }
+    if (this != actualPlayer) {
+        actualPlayer.gameMode = gameMode
+        sendMessage(
+            COMMAND_GM_OTHER_SUCCCEED
+                .replace("<player>", actualPlayer.name)
+                .replace("<gamemode>", mode)
+        )
+        return@sync
     }
-}
-
-private suspend fun CommandContext<CommandSourceStack>.gmHandler(gameMode: GameMode) {
-    sync {
-        val sender = sender.sender
-        val argPlayer = optional<Player>("player").getOrNull()
-        val mode = when (gameMode) {
-            GameMode.SURVIVAL -> GM_SURVIVAL
-            GameMode.CREATIVE -> GM_CREATIVE
-            GameMode.ADVENTURE -> GM_ADVENTURE
-            GameMode.SPECTATOR -> GM_SPECTATOR
-        }
-
-        if (argPlayer != null && argPlayer.gameMode == gameMode) {
-            sender.sendMessage(COMMAND_GM_FAILED_OTHER)
+    ensurePlayer {
+        if (this.gameMode == gameMode) {
+            sendMessage(COMMAND_GM_FAILED)
             return@sync
         }
-
-        if (argPlayer != null) {
-            argPlayer.gameMode = gameMode
-            sender.sendMessage(
-                COMMAND_GM_OTHER_SUCCCEED
-                    .replace("<player>", argPlayer.name)
-                    .replace("<gamemode>", mode)
-            )
-            return@sync
-        }
-
-        if (sender !is Player) {
-            sender.sendMessage(NON_PLAYER)
-            return@sync
-        }
-
-        if (sender.gameMode == gameMode) {
-            sender.sendMessage(COMMAND_GM_FAILED)
-            return@sync
-        }
-
-        sender.gameMode = gameMode
-        sender.sendMessage(
+        this.gameMode = gameMode
+        sendMessage(
             COMMAND_GM_SUCCCEED
                 .replace("<gamemode>", mode)
         )

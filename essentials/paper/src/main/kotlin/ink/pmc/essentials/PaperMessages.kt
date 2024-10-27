@@ -257,7 +257,7 @@ val TELEPORT_REQUEST_RECEIVED_SOUND = sound {
 }
 
 private val TELEPORT_REQUEST_OPERATION = component {
-    text("[× 取消]") with mochaYellow with showText { text("点击以取消") with mochaYellow } with runCommand("/plutoproject_essentials:essentials:tpcancel")
+    text("[× 取消]") with mochaYellow with showText { text("点击以取消") with mochaYellow } with runCommand("/plutoproject_essentials:tpcancel")
 }
 
 val COMMAND_TPA_SUCCEED = component {
@@ -369,8 +369,8 @@ val COMMAND_TPCANCEL_NO_REQUEST_OTHER = component {
 
 @Suppress("FunctionName")
 fun TELEPORT_OPERATION(id: UUID) = component {
-    text("[✔ 接受] ") with mochaGreen with showText { text("点击以接受") with mochaGreen } with runCommand("/plutoproject_essentials:essentials:tpaccept $id")
-    text("[❌ 拒绝] ") with mochaMaroon with showText { text("点击以拒绝") with mochaMaroon } with runCommand("/plutoproject_essentials:essentials:tpdeny $id")
+    text("[✔ 接受] ") with mochaGreen with showText { text("点击以接受") with mochaGreen } with runCommand("/plutoproject_essentials:tpaccept $id")
+    text("[❌ 拒绝] ") with mochaMaroon with showText { text("点击以拒绝") with mochaMaroon } with runCommand("/plutoproject_essentials:tpdeny $id")
 }
 
 val COMMAND_ETP_SUCCEED = component {
@@ -577,10 +577,10 @@ val COMMAND_WARP_NOT_EXISTED = component {
     text("的地标不存在") with mochaMaroon
 }
 
-val COMMAND_SPAWN_NOT_EXISTED = component {
+val COMMAND_PREFERRED_SPAWN_WARP_IS_NOT_SPAWN = component {
     text("名为 ") with mochaMaroon
     text("<name> ") with mochaText
-    text("的出生点不存在") with mochaMaroon
+    text("的地标不是一个出生点") with mochaMaroon
 }
 
 val COMMAND_PREFERRED_SPAWN_SUCCEED = component {
@@ -1134,12 +1134,4 @@ val UI_HOME_VIEWER_CREATE_LORE = listOf(
 
 val COMMAND_SPAWN_FAILED_NOT_SET = component {
     text("服务器未设置出生点位置") with mochaMaroon
-}
-
-val COMMAND_ESS_HUSKHOMES_NOT_FOUND = component {
-    text("HuskHomes 未安装，无法启动迁移") with mochaMaroon
-}
-
-val COMMAND_ESS_HUSKHOMES_MIGRATE_DONE = component {
-    text("迁移完成！") with mochaPink
 }

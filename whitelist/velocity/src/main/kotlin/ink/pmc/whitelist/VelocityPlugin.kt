@@ -3,24 +3,21 @@ package ink.pmc.whitelist
 import com.github.shynixn.mccoroutine.velocity.SuspendingPluginContainer
 import com.github.shynixn.mccoroutine.velocity.registerSuspend
 import com.google.inject.Inject
-import com.velocitypowered.api.command.CommandSource
 import com.velocitypowered.api.event.Subscribe
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent
 import com.velocitypowered.api.plugin.PluginContainer
 import com.velocitypowered.api.plugin.annotation.DataDirectory
 import com.velocitypowered.api.proxy.ProxyServer
 import ink.pmc.framework.provider.Provider
+import ink.pmc.framework.utils.command.annotationParser
+import ink.pmc.framework.utils.command.commandManager
 import ink.pmc.framework.utils.inject.startKoinIfNotPresent
 import ink.pmc.framework.utils.platform.proxy
-import org.incendo.cloud.SenderMapper
-import org.incendo.cloud.execution.ExecutionCoordinator
-import org.incendo.cloud.velocity.VelocityCommandManager
 import org.koin.dsl.module
 import java.nio.file.Path
 import java.util.logging.Logger
 
 lateinit var plugin: PluginContainer
-lateinit var commandManager: VelocityCommandManager<CommandSource>
 
 private const val COLLECTION_NAME = "whitelist"
 private val whitelistCollection =
@@ -30,10 +27,10 @@ private val velocityModule = module {
 }
 
 @Suppress("UNUSED", "UNUSED_PARAMETER", "UnusedReceiverParameter")
-class VelocityPlugin @Inject constructor(suspendingPluginContainer: SuspendingPluginContainer) {
+class VelocityPlugin @Inject constructor(private val spc: SuspendingPluginContainer) {
 
     init {
-        suspendingPluginContainer.initialize(this)
+        spc.initialize(this)
     }
 
     @Inject
@@ -46,12 +43,9 @@ class VelocityPlugin @Inject constructor(suspendingPluginContainer: SuspendingPl
     @Subscribe
     fun ProxyInitializeEvent.e() {
         plugin = proxy.pluginManager.getPlugin("plutoproject_whitelist").get()
-        commandManager = VelocityCommandManager(
-            plugin,
-            proxy,
-            ExecutionCoordinator.asyncCoordinator(),
-            SenderMapper.identity()
-        ).apply { whitelist() }
+        spc.commandManager().annotationParser().apply {
+            parse(WhitelistCommand)
+        }
         proxy.eventManager.registerSuspend(this@VelocityPlugin, WhitelistListener)
     }
 

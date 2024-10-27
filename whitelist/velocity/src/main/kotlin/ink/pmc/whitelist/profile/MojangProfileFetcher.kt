@@ -11,7 +11,6 @@ private const val mojangApi = "https://api.mojang.com/"
 
 @Suppress("UNUSED")
 object MojangProfileFetcher : AbstractProfileFetcher() {
-
     override val id: String = "mojang"
 
     override suspend fun fetch(name: String): ProfileData? = try {
@@ -38,5 +37,4 @@ object MojangProfileFetcher : AbstractProfileFetcher() {
 
         ProfileData(uuid, resultName)
     }
-
 }

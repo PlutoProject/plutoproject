@@ -17,9 +17,7 @@ data class EssentialsConfig(
     val item: Item,
     val recipe: Recipe,
     val join: Join,
-    val demoWorld: DemoWorld,
-    val commands: Map<String, Boolean>,
-    val commandAliases: Map<String, List<String>>
+    val demoWorld: DemoWorld
 )
 
 data class Teleport(

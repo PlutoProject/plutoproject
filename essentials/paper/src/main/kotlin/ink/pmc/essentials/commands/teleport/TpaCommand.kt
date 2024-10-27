@@ -9,41 +9,26 @@ import ink.pmc.essentials.api.teleport.TeleportManager
 import ink.pmc.essentials.config.EssentialsConfig
 import ink.pmc.framework.utils.chat.DURATION
 import ink.pmc.framework.utils.chat.replace
-import ink.pmc.framework.utils.command.annotation.Command
-import ink.pmc.framework.utils.command.checkPlayer
-import ink.pmc.framework.utils.dsl.cloud.invoke
-import ink.pmc.framework.utils.dsl.cloud.sender
+import ink.pmc.framework.utils.command.ensurePlayer
+import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
-import org.incendo.cloud.bukkit.parser.PlayerParser
+import org.incendo.cloud.annotations.Argument
+import org.incendo.cloud.annotations.Command
+import org.incendo.cloud.annotations.Permission
 import org.koin.java.KoinJavaComponent.getKoin
 
-@Command("tpa")
 @Suppress("UNUSED")
-fun Cm.tpa(aliases: Array<String>) {
-    this("tpa", *aliases) {
-        permission("essentials.tpa")
-        required("player", PlayerParser.playerParser())
-        handler {
-            checkPlayer(sender.sender) {
-                val target = get<Player>("player")
-                handleTpa(this, target, GO)
-            }
-        }
+object TpaCommand {
+    @Command("tpa <player>")
+    @Permission("essentials.tpa")
+    fun CommandSender.tpa(@Argument("player") player: Player) = ensurePlayer {
+        handleTpa(this, player, GO)
     }
-}
 
-@Command("tpahere")
-@Suppress("UNUSED")
-fun Cm.tpahere(aliases: Array<String>) {
-    this("tpahere", *aliases) {
-        permission("essentials.tpahere")
-        required("player", PlayerParser.playerParser())
-        handler {
-            checkPlayer(sender.sender) {
-                val target = get<Player>("player")
-                handleTpa(this, target, COME)
-            }
-        }
+    @Command("tpahere <player>")
+    @Permission("essentials.tpahere")
+    fun CommandSender.tpahere(@Argument("player") player: Player) = ensurePlayer {
+        handleTpa(this, player, COME)
     }
 }
 

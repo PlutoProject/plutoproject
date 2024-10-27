@@ -20,8 +20,8 @@ import org.incendo.cloud.annotations.Permission
 object DynamicSchedulingCommand {
     @Command("dynamic_scheduling")
     @Permission("hypervisor.dynamic_scheduling")
-    fun root(sender: CommandSender) {
-        sender.send {
+    fun CommandSender.root() {
+        send {
             text("动态资源调度 ") with mochaText
             if (DynamicScheduling.isRunning) {
                 text("运行中") with mochaGreen
@@ -33,30 +33,30 @@ object DynamicSchedulingCommand {
 
     @Command("dynamic_scheduling start")
     @Permission("hypervisor.dynamic_scheduling")
-    fun start(sender: CommandSender) {
+    fun CommandSender.start() {
         if (DynamicScheduling.isRunning) {
-            sender.send {
+            send {
                 text("动态资源调度已运行") with mochaMaroon
             }
             return
         }
         DynamicScheduling.start()
-        sender.send {
+        send {
             text("已启动动态资源调度后台任务") with mochaGreen
         }
     }
 
     @Command("dynamic_scheduling stop")
     @Permission("hypervisor.dynamic_scheduling")
-    fun stop(sender: CommandSender) {
+    fun CommandSender.stop() {
         if (!DynamicScheduling.isRunning) {
-            sender.send {
+            send {
                 text("动态资源调度未运行") with mochaMaroon
             }
             return
         }
         DynamicScheduling.stop()
-        sender.send {
+        send {
             text("已停止动态资源调度后台任务") with mochaMaroon
             newline()
             text("部分由该功能接管的配置项无法自动恢复，请重启服务器") with mochaSubtext0
@@ -65,14 +65,14 @@ object DynamicSchedulingCommand {
 
     @Command("dynamic_scheduling status [world]")
     @Permission("hypervisor.dynamic_scheduling")
-    fun status(sender: CommandSender, @Argument("world") world: World?) {
-        val actualWorld = world ?: if (sender is Player) sender.world else {
-            sender.send {
+    fun CommandSender.status(@Argument("world") world: World?) {
+        val actualWorld = world ?: if (this is Player) this.world else {
+            send {
                 text("请指定一个世界") with mochaMaroon
             }
             return
         }
-        sender.send {
+        send {
             text("世界 ") with mochaText
             text("${actualWorld.name} ") with mochaFlamingo
             text("当前信息：") with mochaText
@@ -109,23 +109,20 @@ object DynamicSchedulingCommand {
 
     @Command("dynamic_scheduling view_distance [player]")
     @Permission("hypervisor.dynamic_scheduling")
-    fun viewDistance(
-        sender: CommandSender,
-        @Argument("player") player: Player?
-    ) {
-        val actualPlayer = player ?: if (sender is Player) sender else {
-            sender.send {
+    fun CommandSender.viewDistance(@Argument("player") player: Player?) {
+        val actualPlayer = player ?: if (this is Player) this else {
+            send {
                 text("请指定一个玩家") with mochaMaroon
             }
             return
         }
         if (!DynamicScheduling.viewDistanceEnabled) {
-            sender.send {
+            send {
                 text("动态视距未启用") with mochaMaroon
             }
             return
         }
-        sender.send {
+        send {
             text("玩家 ") with mochaText
             text("${actualPlayer.name} ") with mochaFlamingo
             text("当前信息：") with mochaText

@@ -10,7 +10,6 @@ import org.koin.core.component.inject
 
 @Suppress("UNUSED", "UnusedReceiverParameter")
 object GuiListener : Listener, KoinComponent {
-
     private val manager by inject<GuiManager>()
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -22,5 +21,4 @@ object GuiListener : Listener, KoinComponent {
     fun PlayerQuitEvent.e() {
         manager.dispose(player)
     }
-
 }

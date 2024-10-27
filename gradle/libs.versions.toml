@@ -65,7 +65,6 @@ voyager-navigator = { module = "cafe.adriel.voyager:voyager-navigator", version.
 voyager-screenmodel = { module = "cafe.adriel.voyager:voyager-screenmodel", version.ref = "voyager" }
 anvilGui = { module = "net.wesjd:anvilgui", version = "1.10.1-SNAPSHOT" }
 coreprotect = { module = "net.coreprotect:coreprotect", version = "22.4" }
-huskHomes = { module = "net.william278.huskhomes:huskhomes-bukkit", version = "4.7" }
 hoplite-core = { module = "com.sksamuel.hoplite:hoplite-core", version.ref = "hoplite" }
 hoplite-hocon = { module = "com.sksamuel.hoplite:hoplite-hocon", version.ref = "hoplite" }
 commons-math = { module = "org.apache.commons:commons-math3", version = "3.6.1" }

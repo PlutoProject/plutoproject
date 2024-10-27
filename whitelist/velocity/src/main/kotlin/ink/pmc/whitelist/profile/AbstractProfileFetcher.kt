@@ -5,7 +5,6 @@ import java.util.*
 
 @Suppress("UNUSED")
 abstract class AbstractProfileFetcher : ProfileFetcher {
-
     internal val httpClient = OkHttpClient()
 
     override suspend fun validate(name: String, uuid: UUID): Boolean {
@@ -14,5 +13,4 @@ abstract class AbstractProfileFetcher : ProfileFetcher {
     }
 
     override suspend fun validate(name: String, uuid: String): Boolean = validate(name, UUID.fromString(uuid))
-
 }
