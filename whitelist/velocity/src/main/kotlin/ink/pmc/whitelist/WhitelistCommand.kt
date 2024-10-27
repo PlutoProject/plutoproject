@@ -83,9 +83,9 @@ object WhitelistCommand : KoinComponent {
 
     @Command("whitelist lookup <name>")
     @Permission("whitelist.command")
-    suspend fun remove(sender: CommandSource, @Argument("name") name: String) {
+    suspend fun CommandSource.remove(@Argument("name") name: String) {
         val model = repo.findByName(name) ?: run {
-            sender.send {
+            send {
                 text("名为 ") with mochaMaroon
                 text("$name ") with mochaText
                 text("的玩家未获得白名单") with mochaMaroon
@@ -93,7 +93,7 @@ object WhitelistCommand : KoinComponent {
             return
         }
         repo.deleteById(model.id.uuid)
-        sender.send {
+        send {
             text("已经移除玩家 ") with mochaPink
             text("${model.rawName} ") with mochaText
             text("的白名单") with mochaPink
