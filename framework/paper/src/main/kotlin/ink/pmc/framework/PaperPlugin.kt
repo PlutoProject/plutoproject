@@ -58,8 +58,9 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
         startKoinIfNotPresent {
             modules(commonModule, bukkitModule)
         }
-        RpcClient.start()
         preload()
+        Provider // 初始化
+        RpcClient.start()
     }
 
     override suspend fun onEnableAsync() {

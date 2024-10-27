@@ -59,6 +59,7 @@ class VelocityPlugin @Inject constructor(private val spc: SuspendingPluginContai
         startKoinIfNotPresent {
             modules(commonModule, velocityModule)
         }
+        Provider // 初始化
         RpcServer.apply {
             addService(OptionsRpc)
             addService(PlayerDbRpc)
