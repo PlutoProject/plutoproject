@@ -577,10 +577,10 @@ val COMMAND_WARP_NOT_EXISTED = component {
     text("的地标不存在") with mochaMaroon
 }
 
-val COMMAND_SPAWN_NOT_EXISTED = component {
+val COMMAND_PREFERRED_SPAWN_WARP_IS_NOT_SPAWN = component {
     text("名为 ") with mochaMaroon
     text("<name> ") with mochaText
-    text("的出生点不存在") with mochaMaroon
+    text("的地标不是一个出生点") with mochaMaroon
 }
 
 val COMMAND_PREFERRED_SPAWN_SUCCEED = component {

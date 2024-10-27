@@ -5,181 +5,116 @@ import ink.pmc.advkt.send
 import ink.pmc.essentials.api.warp.Warp
 import ink.pmc.essentials.api.warp.WarpManager
 import ink.pmc.essentials.commands.parseWarp
-import ink.pmc.framework.utils.PaperCm
-import ink.pmc.framework.utils.command.annotation.Command
-import ink.pmc.framework.utils.command.ensurePlayerSuspend
-import ink.pmc.framework.utils.dsl.cloud.sender
+import ink.pmc.framework.utils.command.ensurePlayer
 import ink.pmc.framework.utils.visual.mochaMaroon
 import ink.pmc.framework.utils.visual.mochaPink
 import ink.pmc.framework.utils.visual.mochaText
-import io.papermc.paper.command.brigadier.CommandSourceStack
-import org.incendo.cloud.context.CommandContext
-import org.incendo.cloud.kotlin.coroutines.extension.suspendingHandler
-import org.incendo.cloud.parser.standard.StringParser
-import org.koin.java.KoinJavaComponent.getKoin
+import org.bukkit.command.CommandSender
+import org.incendo.cloud.annotations.Argument
+import org.incendo.cloud.annotations.Command
+import org.incendo.cloud.annotations.Permission
 
-@Command("editwarp")
 @Suppress("UNUSED")
-fun PaperCm.editWarp(aliases: Array<String>) {
-    val base = commandBuilder("editwarp", *aliases)
-        .permission("essentials.editwarp")
-        .argument(warpsWithoutAlias("warp").required())
-
-    command(
-        base
-            .literal("alias")
-            .required("content", StringParser.quotedStringParser())
-            .suspendingHandler {
-                val sender = it.sender.sender
-                val warp = parseWarp(it.get("warp"))
-                val content = it.get<String>("content")
-                if (!it.checkWarp(warp)) return@suspendingHandler
-
-                warp!!
-                warp.alias = content
-                warp.update()
-
-                sender.send {
-                    text("已将地标 ") with mochaPink
-                    text("${warp.name} ") with mochaText
-                    text("的别名设置为 ") with mochaPink
-                    text(content) with mochaText
-                }
-            }
-    )
-
-    command(
-        base
-            .literal("set_spawn")
-            .suspendingHandler {
-                val sender = it.sender.sender
-                val manager = getKoin().get<WarpManager>()
-                val warp = parseWarp(it.get("warp"))
-                if (!it.checkWarp(warp)) return@suspendingHandler
-                warp!!
-
-                if (warp.isSpawn) {
-                    sender.send {
-                        text("该地标已是一个出生点") with mochaMaroon
-                    }
-                    return@suspendingHandler
-                }
-
-                manager.setSpawn(warp, true)
-                sender.send {
-                    text("已将地标 ") with mochaPink
-                    text("${warp.name} ") with mochaText
-                    text("设置为一个出生点") with mochaPink
-                }
-            }
-    )
-
-    command(
-        base
-            .literal("unset_spawn")
-            .suspendingHandler {
-                val sender = it.sender.sender
-                val manager = getKoin().get<WarpManager>()
-                val warp = parseWarp(it.get("warp"))
-                if (!it.checkWarp(warp)) return@suspendingHandler
-                warp!!
-
-                if (!warp.isSpawn) {
-                    sender.send {
-                        text("该地标不是一个出生点") with mochaMaroon
-                    }
-                    return@suspendingHandler
-                }
-
-                manager.setSpawn(warp, false)
-                sender.send {
-                    text("已将地标 ") with mochaPink
-                    text("${warp.name} ") with mochaText
-                    text("取消出生点") with mochaPink
-                }
-            }
-    )
-
-    command(
-        base
-            .literal("set_default_spawn")
-            .suspendingHandler {
-                val sender = it.sender.sender
-                val manager = getKoin().get<WarpManager>()
-                val warp = parseWarp(it.get("warp"))
-                if (!it.checkWarp(warp)) return@suspendingHandler
-                warp!!
-
-                if (warp.isDefaultSpawn) {
-                    sender.send {
-                        text("该地标已是默认出生点") with mochaMaroon
-                    }
-                    return@suspendingHandler
-                }
-
-                manager.setDefaultSpawn(warp, true)
-                sender.send {
-                    text("已将地标 ") with mochaPink
-                    text("${warp.name} ") with mochaText
-                    text("设置为默认出生点") with mochaPink
-                }
-            }
-    )
-
-    command(
-        base
-            .literal("unset_default_spawn")
-            .suspendingHandler {
-                val sender = it.sender.sender
-                val manager = getKoin().get<WarpManager>()
-                val warp = parseWarp(it.get("warp"))
-                if (!it.checkWarp(warp)) return@suspendingHandler
-                warp!!
-
-                if (!warp.isDefaultSpawn) {
-                    sender.send {
-                        text("该地标不是默认出生点") with mochaMaroon
-                    }
-                    return@suspendingHandler
-                }
-
-                manager.setDefaultSpawn(warp, false)
-                sender.send {
-                    text("已将地标 ") with mochaPink
-                    text("${warp.name} ") with mochaText
-                    text("取消默认出生点") with mochaPink
-                }
-            }
-    )
-
-    command(
-        base
-            .literal("move")
-            .suspendingHandler {
-                ensurePlayerSuspend(it.sender.sender) {
-                    val warp = parseWarp(it.get("warp"))
-                    if (!it.checkWarp(warp)) return@ensurePlayerSuspend
-
-                    warp!!
-                    warp.location = location
-                    warp.update()
-
-                    send {
-                        text("已将地标 ") with mochaPink
-                        text("${warp.name} ") with mochaText
-                        text("迁移到你所在的位置") with mochaPink
-                    }
-                }
-            }
-    )
-}
-
-private fun CommandContext<CommandSourceStack>.checkWarp(warp: Warp?): Boolean {
-    if (warp == null) {
-        sender.sender.send {
-            text("该地标不存在") with mochaMaroon
+object EditWarpCommand {
+    @Command("editwarp <warp> alias <alias>")
+    @Permission("essentials.editwarp")
+    suspend fun CommandSender.editwarp(
+        @Argument("warp", suggestions = "warps-without-alias") name: String,
+        @Argument("alias") alias: String
+    ) {
+        val warp = parseAndCheck(name) ?: return
+        warp.alias = alias
+        warp.update()
+        send {
+            text("已将地标 ") with mochaPink
+            text("${warp.name} ") with mochaText
+            text("的别名设置为 ") with mochaPink
+            text(alias) with mochaText
         }
-        return false
     }
-    return true
+
+    @Command("editwarp <warp> set_spawn")
+    @Permission("essentials.editwarp")
+    suspend fun CommandSender.spawn(@Argument("warp", suggestions = "warps-without-alias") name: String) {
+        val warp = parseAndCheck(name) ?: return
+        if (warp.isSpawn) {
+            send {
+                text("该地标已是一个出生点") with mochaMaroon
+            }
+            return
+        }
+        WarpManager.setSpawn(warp, true)
+        send {
+            text("已将地标 ") with mochaPink
+            text("${warp.name} ") with mochaText
+            text("设置为一个出生点") with mochaPink
+        }
+    }
+
+    @Command("editwarp <warp> unset_spawn")
+    @Permission("essentials.editwarp")
+    suspend fun CommandSender.unsetSpawn(@Argument("warp", suggestions = "warps-without-alias") name: String) {
+        val warp = parseAndCheck(name) ?: return
+        if (!warp.isSpawn) {
+            send {
+                text("该地标不是一个出生点") with mochaMaroon
+            }
+            return
+        }
+        WarpManager.setSpawn(warp, false)
+        send {
+            text("已将地标 ") with mochaPink
+            text("${warp.name} ") with mochaText
+            text("取消出生点") with mochaPink
+        }
+    }
+
+    @Command("editwarp <warp> set_default_spawn")
+    @Permission("essentials.editwarp")
+    suspend fun CommandSender.setDefaultSpawn(@Argument("warp", suggestions = "warps-without-alias") name: String) {
+        val warp = parseAndCheck(name) ?: return
+        if (warp.isDefaultSpawn) {
+            send {
+                text("该地标已是默认出生点") with mochaMaroon
+            }
+            return
+        }
+        WarpManager.setDefaultSpawn(warp, true)
+        send {
+            text("已将地标 ") with mochaPink
+            text("${warp.name} ") with mochaText
+            text("设置为默认出生点") with mochaPink
+        }
+    }
+
+    @Command("editwarp <warp> unset_default_spawn")
+    @Permission("essentials.editwarp")
+    suspend fun CommandSender.unsetDefaultSpawn(@Argument("warp", suggestions = "warps-without-alias") name: String) {
+        val warp = parseAndCheck(name) ?: return
+        if (!warp.isDefaultSpawn) {
+            send {
+                text("该地标不是默认出生点") with mochaMaroon
+            }
+            return
+        }
+        WarpManager.setDefaultSpawn(warp, false)
+        send {
+            text("已将地标 ") with mochaPink
+            text("${warp.name} ") with mochaText
+            text("取消默认出生点") with mochaPink
+        }
+    }
+
+    @Command("editwarp <warp> move")
+    @Permission("essentials.editwarp")
+    suspend fun CommandSender.move(@Argument("warp", suggestions = "warps-without-alias") name: String) = ensurePlayer {
+        val warp = parseAndCheck(name) ?: return
+        warp.location = location
+        warp.update()
+        send {
+            text("已将地标 ") with mochaPink
+            text("${warp.name} ") with mochaText
+            text("迁移到你所在的位置") with mochaPink
+        }
+    }
 }
