@@ -32,20 +32,7 @@ inline fun ensurePlayer(sender: CommandSender, action: Player.() -> Unit) {
     sender.action()
 }
 
-suspend inline fun ensurePlayerSuspend(sender: CommandSender, action: suspend Player.() -> Unit) {
-    if (sender !is Player) {
-        sender.sendMessage(NON_PLAYER)
-        return
-    }
-    sender.action()
-}
-
 @JvmName("ensurePlayerReceiver")
 inline fun CommandSender.ensurePlayer(action: Player.() -> Unit) {
     ensurePlayer(this, action)
-}
-
-@JvmName("ensurePlayerSuspendReceiver")
-suspend inline fun CommandSender.ensurePlayerSuspend(action: suspend Player.() -> Unit) {
-    ensurePlayerSuspend(this, action)
 }

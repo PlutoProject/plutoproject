@@ -7,18 +7,17 @@ import ink.pmc.daily.screens.DailyCalenderScreen
 import ink.pmc.framework.interactive.GuiManager
 import ink.pmc.framework.utils.chat.UI_SUCCEED_SOUND
 import ink.pmc.framework.utils.command.ensurePlayer
-import ink.pmc.framework.utils.command.ensurePlayerSuspend
 import org.bukkit.command.CommandSender
 import org.incendo.cloud.annotations.Command
 
 @Suppress("UNUSED")
 object CheckInCommand {
     @Command("checkin")
-    suspend fun CommandSender.checkIn() = ensurePlayerSuspend {
+    suspend fun CommandSender.checkIn() = ensurePlayer {
         val user = Daily.getUserOrCreate(uniqueId)
         if (user.isCheckedInToday()) {
             sendMessage(CHECKED_IN)
-            return@ensurePlayerSuspend
+            return@ensurePlayer
         }
         user.checkIn()
         playSound(UI_SUCCEED_SOUND)
