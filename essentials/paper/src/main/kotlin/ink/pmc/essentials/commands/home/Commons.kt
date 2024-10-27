@@ -1,0 +1,26 @@
+package ink.pmc.essentials.commands.home
+
+import ink.pmc.essentials.api.home.HomeManager
+import ink.pmc.framework.utils.concurrent.submitAsync
+import io.papermc.paper.command.brigadier.CommandSourceStack
+import kotlinx.coroutines.future.asCompletableFuture
+import org.bukkit.entity.Player
+import org.incendo.cloud.component.CommandComponent
+import org.incendo.cloud.parser.standard.StringParser
+import org.incendo.cloud.suggestion.Suggestion
+import java.util.concurrent.CompletableFuture
+
+internal fun homes(argName: String) =
+    CommandComponent.builder<CommandSourceStack, String>()
+        .suggestionProvider { ctx, _ ->
+            val sender = ctx.sender().sender
+            if (sender is Player) {
+                submitAsync<List<Suggestion>> {
+                    HomeManager.list(sender).map { Suggestion.suggestion(it.name) }
+                }.asCompletableFuture()
+            } else {
+                CompletableFuture.completedFuture(listOf())
+            }
+        }
+        .parser(StringParser.quotedStringParser())
+        .name(argName)
