@@ -39,3 +39,11 @@ suspend fun ensurePlayerSuspend(sender: CommandSender, action: suspend Player.()
     }
     sender.action()
 }
+
+fun CommandSender.ensurePlayer(action: Player.() -> Unit) {
+    ensurePlayer(this, action)
+}
+
+suspend fun CommandSender.ensurePlayerSuspend(action: suspend Player.() -> Unit) {
+    ensurePlayerSuspend(this, action)
+}
