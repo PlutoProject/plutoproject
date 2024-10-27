@@ -5,7 +5,7 @@ import ink.pmc.essentials.COMMAND_ALIGN_SUCCEED
 import ink.pmc.essentials.COMMAND_ALIGN_VIEW_SUCCEED
 import ink.pmc.essentials.Cm
 import ink.pmc.framework.utils.command.annotation.Command
-import ink.pmc.framework.utils.command.checkPlayer
+import ink.pmc.framework.utils.command.ensurePlayerSuspend
 import ink.pmc.framework.utils.dsl.cloud.invoke
 import ink.pmc.framework.utils.dsl.cloud.sender
 import ink.pmc.framework.utils.entity.teleportSuspend
@@ -18,7 +18,7 @@ fun Cm.align(aliases: Array<String>) {
     this("align", *aliases) {
         permission("essentials.align")
         handler {
-            checkPlayer(sender.sender) {
+            ensurePlayerSuspend(sender.sender) {
                 alignPos()
                 alignView()
                 sendMessage(COMMAND_ALIGN_SUCCEED)
@@ -28,7 +28,7 @@ fun Cm.align(aliases: Array<String>) {
         "pos" {
             permission("essentials.align.pos")
             handler {
-                checkPlayer(sender.sender) {
+                ensurePlayerSuspend(sender.sender) {
                     alignPos()
                     sendMessage(COMMAND_ALIGN_POS_SUCCEED)
                 }
@@ -38,7 +38,7 @@ fun Cm.align(aliases: Array<String>) {
         "view" {
             permission("essentials.align.view")
             handler {
-                checkPlayer(sender.sender) {
+                ensurePlayerSuspend(sender.sender) {
                     alignView()
                     sendMessage(COMMAND_ALIGN_VIEW_SUCCEED)
                 }

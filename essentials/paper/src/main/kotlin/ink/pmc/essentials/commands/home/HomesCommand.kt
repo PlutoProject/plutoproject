@@ -12,7 +12,7 @@ import ink.pmc.framework.utils.chat.NO_PERMISSON
 import ink.pmc.framework.utils.chat.PLAYER_HAS_NO_HOME
 import ink.pmc.framework.utils.chat.replace
 import ink.pmc.framework.utils.command.annotation.Command
-import ink.pmc.framework.utils.command.checkPlayer
+import ink.pmc.framework.utils.command.ensurePlayerSuspend
 import ink.pmc.framework.utils.command.suggestion.PaperPrivilegedSuggestion
 import ink.pmc.framework.utils.dsl.cloud.invoke
 import ink.pmc.framework.utils.dsl.cloud.sender
@@ -32,7 +32,7 @@ fun Cm.homes(aliases: Array<String>) {
             PaperPrivilegedSuggestion.of(OfflinePlayerParser(), HOMES_OTHER)
         )
         handler {
-            checkPlayer(sender.sender) {
+            ensurePlayerSuspend(sender.sender) {
                 val manager = getKoin().get<HomeManager>()
                 val argPlayer = optional<OfflinePlayer>("player").getOrNull()
 
@@ -40,7 +40,7 @@ fun Cm.homes(aliases: Array<String>) {
                     if (!hasPermission(HOMES_OTHER)) {
                         sendMessage(NO_PERMISSON)
                         playSound(TELEPORT_FAILED_SOUND)
-                        return@checkPlayer
+                        return@ensurePlayerSuspend
                     }
 
                     if (!manager.hasHome(argPlayer)) {
@@ -51,7 +51,7 @@ fun Cm.homes(aliases: Array<String>) {
                             )
                         )
                         playSound(TELEPORT_FAILED_SOUND)
-                        return@checkPlayer
+                        return@ensurePlayerSuspend
                     }
 
                     GuiManager.startInventory(this) {
@@ -59,7 +59,7 @@ fun Cm.homes(aliases: Array<String>) {
                     }
 
                     playSound(VIEWER_PAGING_SOUND)
-                    return@checkPlayer
+                    return@ensurePlayerSuspend
                 }
 
                 GuiManager.startInventory(this) {

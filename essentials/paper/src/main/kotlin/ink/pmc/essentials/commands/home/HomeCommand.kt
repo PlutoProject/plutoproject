@@ -8,7 +8,7 @@ import ink.pmc.framework.interactive.GuiManager
 import ink.pmc.framework.utils.chat.NO_PERMISSON
 import ink.pmc.framework.utils.chat.replace
 import ink.pmc.framework.utils.command.annotation.Command
-import ink.pmc.framework.utils.command.checkPlayer
+import ink.pmc.framework.utils.command.ensurePlayerSuspend
 import ink.pmc.framework.utils.dsl.cloud.invoke
 import ink.pmc.framework.utils.dsl.cloud.sender
 import ink.pmc.framework.utils.player.uuidOrNull
@@ -21,7 +21,7 @@ fun Cm.home(aliases: Array<String>) {
         permission("essentials.home")
         argument(homes("name").optional())
         handler {
-            checkPlayer(sender.sender) {
+            ensurePlayerSuspend(sender.sender) {
                 val name = optional<String>("name").getOrNull()
                 val argUuid = name?.uuidOrNull
 
@@ -29,17 +29,17 @@ fun Cm.home(aliases: Array<String>) {
                     val uuidHome = HomeManager.get(argUuid)
                     if (uuidHome?.owner != this && !hasPermission("essentials.home.other")) {
                         sendMessage(NO_PERMISSON)
-                        return@checkPlayer
+                        return@ensurePlayerSuspend
                     }
                     if (!HomeManager.has(argUuid)) {
                         sendMessage(COMMAND_HOME_NOT_EXISTED_UUID)
                         playSound(TELEPORT_FAILED_SOUND)
-                        return@checkPlayer
+                        return@ensurePlayerSuspend
                     }
                     val home = HomeManager.get(argUuid)
                     home?.teleportSuspend(this)
                     sendMessage(COMMAND_HOME_SUCCEED.replace("<name>", home!!.name))
-                    return@checkPlayer
+                    return@ensurePlayerSuspend
                 }
 
                 if (name == null) {
@@ -49,17 +49,17 @@ fun Cm.home(aliases: Array<String>) {
                             Navigator(HomeViewerScreen(this))
                         }
                         playSound(VIEWER_PAGING_SOUND)
-                        return@checkPlayer
+                        return@ensurePlayerSuspend
                     }
                     preferred.teleportSuspend(this)
                     sendMessage(COMMAND_HOME_SUCCEED.replace("<name>", preferred.name))
-                    return@checkPlayer
+                    return@ensurePlayerSuspend
                 }
 
                 if (!HomeManager.has(this, name)) {
                     sendMessage(COMMAND_HOME_NOT_EXISTED.replace("<name>", name))
                     playSound(TELEPORT_FAILED_SOUND)
-                    return@checkPlayer
+                    return@ensurePlayerSuspend
                 }
 
                 val home = HomeManager.get(this, name)

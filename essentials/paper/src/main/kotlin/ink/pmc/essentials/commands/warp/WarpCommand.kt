@@ -7,7 +7,7 @@ import ink.pmc.essentials.screens.warp.WarpViewerScreen
 import ink.pmc.framework.interactive.GuiManager
 import ink.pmc.framework.utils.chat.replace
 import ink.pmc.framework.utils.command.annotation.Command
-import ink.pmc.framework.utils.command.checkPlayer
+import ink.pmc.framework.utils.command.ensurePlayerSuspend
 import ink.pmc.framework.utils.dsl.cloud.invoke
 import ink.pmc.framework.utils.dsl.cloud.sender
 import ink.pmc.framework.utils.player.uuidOrNull
@@ -20,7 +20,7 @@ fun Cm.warp(aliases: Array<String>) {
         permission("essentials.warp")
         argument(warps("name").optional())
         handler {
-            checkPlayer(sender.sender) {
+            ensurePlayerSuspend(sender.sender) {
                 val input = optional<String>("name").getOrNull()
 
                 if (input == null) {
@@ -28,7 +28,7 @@ fun Cm.warp(aliases: Array<String>) {
                         Navigator(WarpViewerScreen())
                     }
                     playSound(VIEWER_PAGING_SOUND)
-                    return@checkPlayer
+                    return@ensurePlayerSuspend
                 }
 
                 val name = input.substringBefore('-')
@@ -43,13 +43,13 @@ fun Cm.warp(aliases: Array<String>) {
                 if (warp == null && argUuid != null) {
                     sendMessage(COMMAND_WARP_FAILED_NOT_EXISTED_UUID)
                     playSound(TELEPORT_FAILED_SOUND)
-                    return@checkPlayer
+                    return@ensurePlayerSuspend
                 }
 
                 if (warp == null) {
                     sendMessage(COMMAND_WARP_NOT_EXISTED.replace("<name>", name))
                     playSound(TELEPORT_FAILED_SOUND)
-                    return@checkPlayer
+                    return@ensurePlayerSuspend
                 }
 
                 warp.teleportSuspend(this)

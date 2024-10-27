@@ -3,7 +3,7 @@ package ink.pmc.essentials.commands
 import ink.pmc.essentials.*
 import ink.pmc.essentials.teleport.random.PerfTest
 import ink.pmc.framework.utils.command.annotation.Command
-import ink.pmc.framework.utils.command.checkPlayer
+import ink.pmc.framework.utils.command.ensurePlayerSuspend
 import ink.pmc.framework.utils.dsl.cloud.invoke
 import ink.pmc.framework.utils.dsl.cloud.sender
 
@@ -21,7 +21,7 @@ fun Cm.essentials(aliases: Array<String>) {
         "rtp_perf_test" {
             permission("essentials.cmd")
             handler {
-                checkPlayer(sender.sender) {
+                ensurePlayerSuspend(sender.sender) {
                     if (!PerfTest.isInTest(this)) {
                         PerfTest.startTest(this)
                         sendMessage(COMMAND_ESS_RTP_PERF_START)

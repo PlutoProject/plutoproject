@@ -4,7 +4,7 @@ import ink.pmc.essentials.*
 import ink.pmc.essentials.api.teleport.TeleportManager
 import ink.pmc.framework.utils.chat.replace
 import ink.pmc.framework.utils.command.annotation.Command
-import ink.pmc.framework.utils.command.checkPlayer
+import ink.pmc.framework.utils.command.ensurePlayerSuspend
 import ink.pmc.framework.utils.command.paperOptionalOnlinePlayersArgument
 import ink.pmc.framework.utils.dsl.cloud.invoke
 import ink.pmc.framework.utils.dsl.cloud.sender
@@ -43,7 +43,7 @@ fun Cm.tpdeny(aliases: Array<String>) {
 }
 
 private suspend fun CommandContext<CommandSourceStack>.handleOperation(type: Operation) {
-    checkPlayer(sender.sender) {
+    ensurePlayerSuspend(sender.sender) {
         val input = optional<String>("request").getOrNull()
 
         val argPlayer = input?.let { Bukkit.getPlayer(it) }
@@ -59,25 +59,25 @@ private suspend fun CommandContext<CommandSourceStack>.handleOperation(type: Ope
             if (argUuid != null && (uuidArgRequest == null || uuidArgRequest.isFinished || destination != player)) {
                 sendMessage(COMMAND_TPACCEPT_FAILED_NO_REQUEST_ID)
                 playSound(TELEPORT_FAILED_SOUND)
-                return@checkPlayer
+                return@ensurePlayerSuspend
             }
 
             if (argPlayer != null && (playerArgRequest == null || playerArgRequest.isFinished || destination != player)) {
                 sendMessage(COMMAND_TPACCEPT_FAILED_NO_REQUEST.replace("<player>", argPlayer.name))
                 playSound(TELEPORT_FAILED_SOUND)
-                return@checkPlayer
+                return@ensurePlayerSuspend
             }
 
             if (argUuid == null && argPlayer == null) {
                 sendMessage(COMMAND_TPACCEPT_FAILED_NO_REQUEST.replace("<player>", input)) // 两种都不就当作玩家名发送错误消息
                 playSound(TELEPORT_FAILED_SOUND)
-                return@checkPlayer
+                return@ensurePlayerSuspend
             }
         }
 
         if (emptyArgRequest == null && playerArgRequest == null && uuidArgRequest == null) {
             sendMessage(COMMAND_TPACCEPT_FAILED_NO_PENDING)
-            return@checkPlayer
+            return@ensurePlayerSuspend
         }
 
         // 只有一个 request 存在，所以只有一个会被处理

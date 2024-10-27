@@ -8,7 +8,7 @@ import ink.pmc.framework.interactive.GuiManager
 import ink.pmc.framework.utils.PaperCm
 import ink.pmc.framework.utils.command.annotation.Command
 import ink.pmc.framework.utils.chat.UI_SUCCEED_SOUND
-import ink.pmc.framework.utils.command.checkPlayer
+import ink.pmc.framework.utils.command.ensurePlayerSuspend
 import ink.pmc.framework.utils.dsl.cloud.invoke
 import ink.pmc.framework.utils.dsl.cloud.sender
 import org.koin.java.KoinJavaComponent.getKoin
@@ -19,13 +19,13 @@ fun PaperCm.checkIn(aliases: Array<String>) {
     this("checkin", *aliases) {
         permission("daily.checkin")
         handler {
-            checkPlayer(sender.sender) {
+            ensurePlayerSuspend(sender.sender) {
                 val daily = getKoin().get<Daily>()
                 val user = daily.getUserOrCreate(uniqueId)
 
                 if (user.isCheckedInToday()) {
                     sendMessage(CHECKED_IN)
-                    return@checkPlayer
+                    return@ensurePlayerSuspend
                 }
 
                 user.checkIn()
@@ -36,7 +36,7 @@ fun PaperCm.checkIn(aliases: Array<String>) {
         "gui" {
             permission("daily.checkin.gui")
             handler {
-                checkPlayer(sender.sender) {
+                ensurePlayerSuspend(sender.sender) {
                     GuiManager.startInventory(this) {
                         Navigator(DailyCalenderScreen())
                     }

@@ -2,23 +2,17 @@ package ink.pmc.menu.commands
 
 import cafe.adriel.voyager.navigator.Navigator
 import ink.pmc.framework.interactive.GuiManager
+import ink.pmc.framework.utils.command.ensurePlayer
 import ink.pmc.menu.screens.MainMenuScreen
-import ink.pmc.framework.utils.PaperCm
-import ink.pmc.framework.utils.command.annotation.Command
-import ink.pmc.framework.utils.command.checkPlayer
-import ink.pmc.framework.utils.dsl.cloud.invoke
-import ink.pmc.framework.utils.dsl.cloud.sender
+import org.bukkit.command.CommandSender
+import org.incendo.cloud.annotations.Command
 
-@Command("menu")
 @Suppress("UNUSED")
-fun PaperCm.menu(aliases: Array<String>) {
-    this("menu", *aliases) {
-        handler {
-            checkPlayer(sender.sender) {
-                GuiManager.startInventory(this) {
-                    Navigator(MainMenuScreen())
-                }
-            }
+object MenuCommand {
+    @Command("menu")
+    fun menu(sender: CommandSender) = ensurePlayer(sender) {
+        GuiManager.startInventory(this) {
+            Navigator(MainMenuScreen())
         }
     }
 }

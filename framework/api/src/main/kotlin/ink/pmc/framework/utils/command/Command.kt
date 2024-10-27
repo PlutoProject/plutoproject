@@ -24,7 +24,15 @@ abstract class Command<C> {
 
 }
 
-suspend fun checkPlayer(sender: CommandSender, action: suspend Player.() -> Unit) {
+fun ensurePlayer(sender: CommandSender, action: Player.() -> Unit) {
+    if (sender !is Player) {
+        sender.sendMessage(NON_PLAYER)
+        return
+    }
+    sender.action()
+}
+
+suspend fun ensurePlayerSuspend(sender: CommandSender, action: suspend Player.() -> Unit) {
     if (sender !is Player) {
         sender.sendMessage(NON_PLAYER)
         return

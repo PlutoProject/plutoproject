@@ -3,7 +3,7 @@ package ink.pmc.essentials.commands
 import ink.pmc.essentials.*
 import ink.pmc.framework.utils.chat.replace
 import ink.pmc.framework.utils.command.annotation.Command
-import ink.pmc.framework.utils.command.checkPlayer
+import ink.pmc.framework.utils.command.ensurePlayerSuspend
 import ink.pmc.framework.utils.concurrent.sync
 import ink.pmc.framework.utils.dsl.cloud.invoke
 import ink.pmc.framework.utils.dsl.cloud.sender
@@ -64,7 +64,7 @@ fun Cm.itemframe(aliases: Array<String>) {
         "invisible" {
             permission("essentials.itemframe.invisible")
             handler {
-                checkPlayer(sender.sender) {
+                ensurePlayerSuspend(sender.sender) {
                     sync { handleOperation(Operation.INVISIBLE) }
                 }
             }
@@ -72,7 +72,7 @@ fun Cm.itemframe(aliases: Array<String>) {
         "protect" {
             permission("essentials.itemframe.protect")
             handler {
-                checkPlayer(sender.sender) {
+                ensurePlayerSuspend(sender.sender) {
                     sync { handleOperation(Operation.PROTECT) }
                 }
             }

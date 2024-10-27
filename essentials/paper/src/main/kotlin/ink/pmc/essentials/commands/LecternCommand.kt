@@ -3,7 +3,7 @@ package ink.pmc.essentials.commands
 import ink.pmc.essentials.*
 import ink.pmc.framework.utils.chat.replace
 import ink.pmc.framework.utils.command.annotation.Command
-import ink.pmc.framework.utils.command.checkPlayer
+import ink.pmc.framework.utils.command.ensurePlayerSuspend
 import ink.pmc.framework.utils.concurrent.sync
 import ink.pmc.framework.utils.dsl.cloud.invoke
 import ink.pmc.framework.utils.dsl.cloud.sender
@@ -51,7 +51,7 @@ fun Cm.lectern(aliases: Array<String>) {
     this("lectern", *aliases) {
         permission("essentials.lectern")
         handler {
-            checkPlayer(sender.sender) {
+            ensurePlayerSuspend(sender.sender) {
                 sync {
                     val range = getAttribute(Attribute.PLAYER_BLOCK_INTERACTION_RANGE)!!.value
                     val block = getTargetBlockExact(range.toInt())?.state

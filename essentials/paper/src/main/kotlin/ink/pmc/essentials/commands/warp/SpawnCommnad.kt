@@ -4,7 +4,7 @@ import ink.pmc.essentials.*
 import ink.pmc.essentials.api.warp.WarpManager
 import ink.pmc.framework.utils.chat.replace
 import ink.pmc.framework.utils.command.annotation.Command
-import ink.pmc.framework.utils.command.checkPlayer
+import ink.pmc.framework.utils.command.ensurePlayerSuspend
 import ink.pmc.framework.utils.dsl.cloud.invoke
 import ink.pmc.framework.utils.dsl.cloud.sender
 
@@ -14,13 +14,13 @@ fun Cm.spawn(aliases: Array<String>) {
     this("spawn", *aliases) {
         permission("essentials.spawn")
         handler {
-            checkPlayer(sender.sender) {
+            ensurePlayerSuspend(sender.sender) {
                 val spawn = WarpManager.getPreferredSpawn(this)
 
                 if (spawn == null) {
                     sendMessage(COMMAND_SPAWN_FAILED_NOT_SET)
                     playSound(TELEPORT_FAILED_SOUND)
-                    return@checkPlayer
+                    return@ensurePlayerSuspend
                 }
 
                 spawn.teleport(this)

@@ -6,7 +6,7 @@ import ink.pmc.essentials.RANDOM_TELEPORT_SPECIFIC
 import ink.pmc.essentials.api.teleport.random.RandomTeleportManager
 import ink.pmc.framework.utils.chat.NO_PERMISSON
 import ink.pmc.framework.utils.command.annotation.Command
-import ink.pmc.framework.utils.command.checkPlayer
+import ink.pmc.framework.utils.command.ensurePlayerSuspend
 import ink.pmc.framework.utils.command.suggestion.PaperPrivilegedSuggestion
 import ink.pmc.framework.utils.dsl.cloud.invoke
 import ink.pmc.framework.utils.dsl.cloud.sender
@@ -25,19 +25,19 @@ fun Cm.rtp(aliases: Array<String>) {
             PaperPrivilegedSuggestion.of(WorldParser(), RANDOM_TELEPORT_SPECIFIC)
         )
         handler {
-            checkPlayer(sender.sender) {
+            ensurePlayerSuspend(sender.sender) {
                 val argWorld = optional<World>("world").getOrNull()
                 val world = argWorld ?: world
                 val perm = !hasPermission(RANDOM_TELEPORT_SPECIFIC) || !hasPermission("essentials.rtp.${world.name}")
 
                 if (argWorld != null && perm) {
                     sendMessage(NO_PERMISSON)
-                    return@checkPlayer
+                    return@ensurePlayerSuspend
                 }
 
                 if (!RandomTeleportManager.isEnabled(world)) {
                     sendMessage(COMMAND_RTP_NOT_ENABLED)
-                    return@checkPlayer
+                    return@ensurePlayerSuspend
                 }
 
                 RandomTeleportManager.launch(this, world)

@@ -10,7 +10,7 @@ import ink.pmc.essentials.config.EssentialsConfig
 import ink.pmc.framework.utils.chat.DURATION
 import ink.pmc.framework.utils.chat.replace
 import ink.pmc.framework.utils.command.annotation.Command
-import ink.pmc.framework.utils.command.checkPlayer
+import ink.pmc.framework.utils.command.ensurePlayerSuspend
 import ink.pmc.framework.utils.dsl.cloud.invoke
 import ink.pmc.framework.utils.dsl.cloud.sender
 import org.bukkit.entity.Player
@@ -24,7 +24,7 @@ fun Cm.tpa(aliases: Array<String>) {
         permission("essentials.tpa")
         required("player", PlayerParser.playerParser())
         handler {
-            checkPlayer(sender.sender) {
+            ensurePlayerSuspend(sender.sender) {
                 val target = get<Player>("player")
                 handleTpa(this, target, GO)
             }
@@ -39,7 +39,7 @@ fun Cm.tpahere(aliases: Array<String>) {
         permission("essentials.tpahere")
         required("player", PlayerParser.playerParser())
         handler {
-            checkPlayer(sender.sender) {
+            ensurePlayerSuspend(sender.sender) {
                 val target = get<Player>("player")
                 handleTpa(this, target, COME)
             }

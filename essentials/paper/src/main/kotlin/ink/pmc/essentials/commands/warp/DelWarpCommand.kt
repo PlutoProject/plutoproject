@@ -4,7 +4,7 @@ import ink.pmc.essentials.*
 import ink.pmc.essentials.api.warp.WarpManager
 import ink.pmc.framework.utils.chat.replace
 import ink.pmc.framework.utils.command.annotation.Command
-import ink.pmc.framework.utils.command.checkPlayer
+import ink.pmc.framework.utils.command.ensurePlayerSuspend
 import ink.pmc.framework.utils.concurrent.submitAsync
 import ink.pmc.framework.utils.dsl.cloud.invoke
 import ink.pmc.framework.utils.dsl.cloud.sender
@@ -17,7 +17,7 @@ fun Cm.delwarp(aliases: Array<String>) {
         permission("essentials.delwarp")
         argument(warps("name").required())
         handler {
-            checkPlayer(sender.sender) {
+            ensurePlayerSuspend(sender.sender) {
                 val input = get<String>("name")
                 val name = input.substringBefore('-')
                 val argUuid = name.uuidOrNull
@@ -31,19 +31,19 @@ fun Cm.delwarp(aliases: Array<String>) {
                 if (warp == null && argUuid != null) {
                     sendMessage(COMMAND_WARP_FAILED_NOT_EXISTED_UUID)
                     playSound(TELEPORT_FAILED_SOUND)
-                    return@checkPlayer
+                    return@ensurePlayerSuspend
                 }
 
                 if (warp == null) {
                     sendMessage(COMMAND_WARP_NOT_EXISTED.replace("<name>", name))
                     playSound(TELEPORT_FAILED_SOUND)
-                    return@checkPlayer
+                    return@ensurePlayerSuspend
                 }
 
                 submitAsync { WarpManager.remove(warp.id) }
                 if (warp.alias == null) {
                     sendMessage(COMMAND_DELWARP_SUCCEED.replace("<name>", name))
-                    return@checkPlayer
+                    return@ensurePlayerSuspend
                 } else {
                     sendMessage(
                         COMMAND_DELWARP_SUCCEED_ALIAS

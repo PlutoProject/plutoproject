@@ -4,7 +4,7 @@ import ink.pmc.essentials.*
 import ink.pmc.framework.utils.chat.NO_PERMISSON
 import ink.pmc.framework.utils.chat.replace
 import ink.pmc.framework.utils.command.annotation.Command
-import ink.pmc.framework.utils.command.checkPlayer
+import ink.pmc.framework.utils.command.ensurePlayerSuspend
 import ink.pmc.framework.utils.concurrent.sync
 import ink.pmc.framework.utils.dsl.cloud.invoke
 import ink.pmc.framework.utils.dsl.cloud.sender
@@ -21,29 +21,29 @@ fun Cm.hat(aliases: Array<String>) {
         permission("essentials.hat")
         optional("player", PlayerParser.playerParser())
         handler {
-            checkPlayer(sender.sender) {
+            ensurePlayerSuspend(sender.sender) {
                 val argPlayer = optional<Player>("player").getOrNull()
 
                 if (handItem.type == Material.AIR) {
                     sendMessage(COMMAND_HAT_FAILED_EMPTY_HAND)
-                    return@checkPlayer
+                    return@ensurePlayerSuspend
                 }
 
                 if (argPlayer != null) {
                     if (!hasPermission("essentials.hat.other")) {
                         sendMessage(NO_PERMISSON)
-                        return@checkPlayer
+                        return@ensurePlayerSuspend
                     }
 
                     if (argPlayer.hatItem != null) {
                         sendMessage(COMMAND_HAT_FAILED_EXISTED_OTHER)
-                        return@checkPlayer
+                        return@ensurePlayerSuspend
                     }
 
                     argPlayer.hat(handItem)
                     clearHand()
                     sendMessage(COMMAND_HAT_SUCCEED_OTHER.replace("<player>", argPlayer.name))
-                    return@checkPlayer
+                    return@ensurePlayerSuspend
                 }
 
                 val keepHatItem = hatItem

@@ -5,7 +5,7 @@ import ink.pmc.essentials.api.home.HomeManager
 import ink.pmc.framework.utils.chat.NO_PERMISSON
 import ink.pmc.framework.utils.chat.replace
 import ink.pmc.framework.utils.command.annotation.Command
-import ink.pmc.framework.utils.command.checkPlayer
+import ink.pmc.framework.utils.command.ensurePlayerSuspend
 import ink.pmc.framework.utils.concurrent.submitAsync
 import ink.pmc.framework.utils.dsl.cloud.invoke
 import ink.pmc.framework.utils.dsl.cloud.sender
@@ -18,7 +18,7 @@ fun Cm.delhome(aliases: Array<String>) {
         permission("essentials.delhome")
         argument(homes("name").required())
         handler {
-            checkPlayer(sender.sender) {
+            ensurePlayerSuspend(sender.sender) {
                 val name = get<String>("name")
                 val argUuid = name.uuidOrNull
 
@@ -26,23 +26,23 @@ fun Cm.delhome(aliases: Array<String>) {
                     val uuidHome = HomeManager.get(argUuid)
                     if (uuidHome?.owner != this && !hasPermission("essentials.delhome.other")) {
                         sendMessage(NO_PERMISSON)
-                        return@checkPlayer
+                        return@ensurePlayerSuspend
                     }
                     if (!HomeManager.has(argUuid)) {
                         sendMessage(COMMAND_HOME_NOT_EXISTED_UUID)
                         playSound(TELEPORT_FAILED_SOUND)
-                        return@checkPlayer
+                        return@ensurePlayerSuspend
                     }
                     val home = HomeManager.get(argUuid)
                     submitAsync { HomeManager.remove(argUuid) }
                     sendMessage(COMMAND_HOME_SUCCEED.replace("<name>", home!!.name))
-                    return@checkPlayer
+                    return@ensurePlayerSuspend
                 }
 
                 if (!HomeManager.has(this, name)) {
                     sendMessage(COMMAND_HOME_NOT_EXISTED.replace("<name>", name))
                     playSound(TELEPORT_FAILED_SOUND)
-                    return@checkPlayer
+                    return@ensurePlayerSuspend
                 }
 
                 submitAsync { HomeManager.remove(this@checkPlayer, name) }

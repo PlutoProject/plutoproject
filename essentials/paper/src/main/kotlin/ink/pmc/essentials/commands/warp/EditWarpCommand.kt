@@ -7,7 +7,7 @@ import ink.pmc.essentials.api.warp.WarpManager
 import ink.pmc.essentials.commands.parseWarp
 import ink.pmc.framework.utils.PaperCm
 import ink.pmc.framework.utils.command.annotation.Command
-import ink.pmc.framework.utils.command.checkPlayer
+import ink.pmc.framework.utils.command.ensurePlayerSuspend
 import ink.pmc.framework.utils.dsl.cloud.sender
 import ink.pmc.framework.utils.visual.mochaMaroon
 import ink.pmc.framework.utils.visual.mochaPink
@@ -156,9 +156,9 @@ fun PaperCm.editWarp(aliases: Array<String>) {
         base
             .literal("move")
             .suspendingHandler {
-                checkPlayer(it.sender.sender) {
+                ensurePlayerSuspend(it.sender.sender) {
                     val warp = parseWarp(it.get("warp"))
-                    if (!it.checkWarp(warp)) return@checkPlayer
+                    if (!it.checkWarp(warp)) return@ensurePlayerSuspend
 
                     warp!!
                     warp.location = location
