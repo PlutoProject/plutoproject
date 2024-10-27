@@ -16,7 +16,6 @@ import ink.pmc.essentials.commands.warp.*
 import ink.pmc.essentials.config.EssentialsConfig
 import ink.pmc.essentials.home.HomeManagerImpl
 import ink.pmc.essentials.hooks.EconomyHook
-import ink.pmc.essentials.hooks.HuskHomesHook
 import ink.pmc.essentials.listeners.*
 import ink.pmc.essentials.recipes.MENU_ITEM_RECIPE
 import ink.pmc.essentials.repositories.BackRepository
@@ -45,7 +44,6 @@ typealias Cm = PaperCommandManager<CommandSourceStack>
 
 var disabled = true
 var economyHook: EconomyHook? = null
-var huskHomesHook: HuskHomesHook? = null
 lateinit var plugin: Plugin
 
 val essentialsScope = CoroutineScope(Dispatchers.Default)
@@ -188,10 +186,6 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
 
         if (server.pluginManager.getPlugin("Vault") != null) {
             economyHook = EconomyHook()
-        }
-
-        if (server.pluginManager.getPlugin("HuskHomes") != null) {
-            huskHomesHook = HuskHomesHook()
         }
     }
 
