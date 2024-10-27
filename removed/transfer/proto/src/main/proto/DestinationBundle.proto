@@ -1,8 +1,0 @@
-syntax = "proto3";
-package ink.pmc.transfer.proto;
-
-import "ProtoDestination.proto";
-
-message DestinationBundle {
-  repeated ProtoDestination destinations = 1;
-}

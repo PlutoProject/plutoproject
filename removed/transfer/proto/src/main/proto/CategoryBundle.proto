@@ -1,8 +1,0 @@
-syntax = "proto3";
-package ink.pmc.transfer.proto;
-
-import "ProtoCategory.proto";
-
-message CategoryBundle {
-  repeated ProtoCategory categories = 1;
-}

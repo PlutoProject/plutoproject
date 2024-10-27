@@ -1,7 +1,0 @@
-syntax = "proto3";
-package ink.pmc.transfer.proto;
-
-message TransferReq {
-  string uuid = 1;
-  string destination = 2;
-}
