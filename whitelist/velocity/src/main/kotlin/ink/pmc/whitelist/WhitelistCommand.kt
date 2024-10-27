@@ -81,7 +81,7 @@ object WhitelistCommand : KoinComponent {
         }
     }
 
-    @Command("whitelist lookup <name>")
+    @Command("whitelist remove <name>")
     @Permission("whitelist.command")
     suspend fun CommandSource.remove(@Argument("name") name: String) {
         val model = repo.findByName(name) ?: run {
