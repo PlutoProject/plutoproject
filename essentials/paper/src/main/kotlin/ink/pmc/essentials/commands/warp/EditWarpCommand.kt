@@ -4,7 +4,6 @@ import ink.pmc.advkt.component.text
 import ink.pmc.advkt.send
 import ink.pmc.essentials.api.warp.Warp
 import ink.pmc.essentials.api.warp.WarpManager
-import ink.pmc.essentials.commands.parseWarp
 import ink.pmc.framework.utils.command.ensurePlayer
 import ink.pmc.framework.utils.visual.mochaMaroon
 import ink.pmc.framework.utils.visual.mochaPink
@@ -19,10 +18,9 @@ object EditWarpCommand {
     @Command("editwarp <warp> alias <alias>")
     @Permission("essentials.editwarp")
     suspend fun CommandSender.editwarp(
-        @Argument("warp", suggestions = "warps-without-alias") name: String,
+        @Argument("warp", parserName = "warp-without-alias") warp: Warp,
         @Argument("alias") alias: String
     ) {
-        val warp = parseAndCheck(name) ?: return
         warp.alias = alias
         warp.update()
         send {
@@ -35,8 +33,7 @@ object EditWarpCommand {
 
     @Command("editwarp <warp> set_spawn")
     @Permission("essentials.editwarp")
-    suspend fun CommandSender.spawn(@Argument("warp", suggestions = "warps-without-alias") name: String) {
-        val warp = parseAndCheck(name) ?: return
+    suspend fun CommandSender.spawn(@Argument("warp", parserName = "warp-without-alias") warp: Warp) {
         if (warp.isSpawn) {
             send {
                 text("该地标已是一个出生点") with mochaMaroon
@@ -53,8 +50,7 @@ object EditWarpCommand {
 
     @Command("editwarp <warp> unset_spawn")
     @Permission("essentials.editwarp")
-    suspend fun CommandSender.unsetSpawn(@Argument("warp", suggestions = "warps-without-alias") name: String) {
-        val warp = parseAndCheck(name) ?: return
+    suspend fun CommandSender.unsetSpawn(@Argument("warp", parserName = "warp-without-alias") warp: Warp) {
         if (!warp.isSpawn) {
             send {
                 text("该地标不是一个出生点") with mochaMaroon
@@ -71,8 +67,7 @@ object EditWarpCommand {
 
     @Command("editwarp <warp> set_default_spawn")
     @Permission("essentials.editwarp")
-    suspend fun CommandSender.setDefaultSpawn(@Argument("warp", suggestions = "warps-without-alias") name: String) {
-        val warp = parseAndCheck(name) ?: return
+    suspend fun CommandSender.setDefaultSpawn(@Argument("warp", parserName = "warp-without-alias") warp: Warp) {
         if (warp.isDefaultSpawn) {
             send {
                 text("该地标已是默认出生点") with mochaMaroon
@@ -89,8 +84,7 @@ object EditWarpCommand {
 
     @Command("editwarp <warp> unset_default_spawn")
     @Permission("essentials.editwarp")
-    suspend fun CommandSender.unsetDefaultSpawn(@Argument("warp", suggestions = "warps-without-alias") name: String) {
-        val warp = parseAndCheck(name) ?: return
+    suspend fun CommandSender.unsetDefaultSpawn(@Argument("warp", parserName = "warp-without-alias") warp: Warp) {
         if (!warp.isDefaultSpawn) {
             send {
                 text("该地标不是默认出生点") with mochaMaroon
@@ -107,8 +101,7 @@ object EditWarpCommand {
 
     @Command("editwarp <warp> move")
     @Permission("essentials.editwarp")
-    suspend fun CommandSender.move(@Argument("warp", suggestions = "warps-without-alias") name: String) = ensurePlayer {
-        val warp = parseAndCheck(name) ?: return
+    suspend fun CommandSender.move(@Argument("warp", parserName = "warp-without-alias") warp: Warp) = ensurePlayer {
         warp.location = location
         warp.update()
         send {

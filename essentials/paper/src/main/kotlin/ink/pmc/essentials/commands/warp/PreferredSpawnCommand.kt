@@ -5,6 +5,7 @@ import ink.pmc.advkt.component.text
 import ink.pmc.essentials.COMMAND_PREFERRED_SPAWN_FAILED_ALREADY
 import ink.pmc.essentials.COMMAND_PREFERRED_SPAWN_SUCCEED
 import ink.pmc.essentials.COMMAND_PREFERRED_SPAWN_WARP_IS_NOT_SPAWN
+import ink.pmc.essentials.api.warp.Warp
 import ink.pmc.essentials.api.warp.WarpManager
 import ink.pmc.framework.utils.chat.replace
 import ink.pmc.framework.utils.command.ensurePlayer
@@ -15,14 +16,36 @@ import org.bukkit.command.CommandSender
 import org.incendo.cloud.annotations.Argument
 import org.incendo.cloud.annotations.Command
 import org.incendo.cloud.annotations.Permission
+import org.incendo.cloud.annotations.exception.ExceptionHandler
+import org.incendo.cloud.annotations.parser.Parser
 import org.incendo.cloud.annotations.suggestion.Suggestions
 import org.incendo.cloud.context.CommandContext
 import org.incendo.cloud.context.CommandInput
 
 @Suppress("UNUSED", "UNUSED_PARAMETER", "UnusedReceiverParameter")
 object PreferredSpawnCommand {
-    @Suggestions("spawn")
-    suspend fun CommandContext<CommandSender>.spawn(input: CommandInput): List<String> {
+    @Command("preferredspawn <spawn>")
+    @Permission("essentials.defaultspawn")
+    suspend fun CommandSender.preferredSpawn(@Argument("spawn", parserName = "spawn") spawn: Warp) = ensurePlayer {
+        val current = WarpManager.getPreferredSpawn(this)
+        if (current?.name == spawn.name) {
+            sendMessage(
+                COMMAND_PREFERRED_SPAWN_FAILED_ALREADY.replace("<name>", if (spawn.alias != null) component {
+                    text("${spawn.alias} ") with mochaText
+                    text("(${spawn.name})") with mochaSubtext0
+                } else Component.text(spawn.name)))
+            return
+        }
+        WarpManager.setPreferredSpawn(this, spawn)
+        sendMessage(
+            COMMAND_PREFERRED_SPAWN_SUCCEED.replace("<name>", if (spawn.alias != null) component {
+                text("${spawn.alias} ") with mochaText
+                text("(${spawn.name})") with mochaSubtext0
+            } else Component.text(spawn.name)))
+    }
+
+    @Suggestions("spawns")
+    suspend fun spawns(context: CommandContext<CommandSender>, input: CommandInput): List<String> {
         return WarpManager.listSpawns().map {
             val name = it.name
             val alias = it.alias
@@ -30,28 +53,17 @@ object PreferredSpawnCommand {
         }
     }
 
-    @Command("preferredspawn <warp>")
-    @Permission("essentials.defaultspawn")
-    suspend fun CommandSender.preferredSpawn(@Argument("warp", suggestions = "spawn") name: String) = ensurePlayer {
-        val warp = parseAndCheck(name) ?: return
-        if (!warp.isSpawn) {
-            sendMessage(COMMAND_PREFERRED_SPAWN_WARP_IS_NOT_SPAWN.replace("<name>", name))
-            return
-        }
-        val current = WarpManager.getPreferredSpawn(this)
-        if (current?.name == warp.name) {
-            sendMessage(
-                COMMAND_PREFERRED_SPAWN_FAILED_ALREADY.replace("<name>", if (warp.alias != null) component {
-                    text("${warp.alias} ") with mochaText
-                    text("(${warp.name})") with mochaSubtext0
-                } else Component.text(warp.name)))
-            return
-        }
-        WarpManager.setPreferredSpawn(this, warp)
-        sendMessage(
-            COMMAND_PREFERRED_SPAWN_SUCCEED.replace("<name>", if (warp.alias != null) component {
-                text("${warp.alias} ") with mochaText
-                text("(${warp.name})") with mochaSubtext0
-            } else Component.text(warp.name)))
+    @Parser(name = "spawn", suggestions = "spawns")
+    suspend fun spawn(context: CommandContext<CommandSender>, input: CommandInput): Warp {
+        val warp = WarpCommons.warp(context, input)
+        if (!warp.isSpawn) throw WarpIsNotSpawnException(warp.name)
+        return warp
+    }
+
+    @ExceptionHandler(WarpIsNotSpawnException::class)
+    fun CommandSender.warpIsNotSpawn(exception: WarpIsNotSpawnException) {
+        sendMessage(COMMAND_PREFERRED_SPAWN_WARP_IS_NOT_SPAWN.replace("<name>", exception.name))
     }
 }
+
+class WarpIsNotSpawnException(val name: String) : Exception()

@@ -7,6 +7,7 @@ import ink.pmc.framework.utils.chat.replace
 import ink.pmc.framework.utils.command.ensurePlayer
 import ink.pmc.framework.utils.concurrent.submitAsync
 import org.bukkit.command.CommandSender
+import org.incendo.cloud.annotation.specifier.Quoted
 import org.incendo.cloud.annotations.Argument
 import org.incendo.cloud.annotations.Command
 import org.incendo.cloud.annotations.Permission
@@ -17,8 +18,8 @@ object SetWarpCommand {
     @Command("setwarp <name> [alias]")
     @Permission("essentials.setwarp")
     suspend fun CommandSender.setWarp(
-        @Argument("name") name: String,
-        @Argument("alias") alias: String?
+        @Argument("name") @Quoted name: String,
+        @Argument("alias") @Quoted alias: String?
     ) = ensurePlayer {
         if (WarpManager.has(name)) {
             sendMessage(COMMAND_SETWARP_FAILED_EXISTED.replace("<name>", name))

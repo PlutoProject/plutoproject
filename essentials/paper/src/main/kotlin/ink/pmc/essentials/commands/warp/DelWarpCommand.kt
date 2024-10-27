@@ -1,10 +1,12 @@
 package ink.pmc.essentials.commands.warp
 
-import ink.pmc.essentials.*
+import ink.pmc.essentials.COMMAND_DELWARP_SUCCEED
+import ink.pmc.essentials.COMMAND_DELWARP_SUCCEED_ALIAS
+import ink.pmc.essentials.TELEPORT_REQUEST_RECEIVED_SOUND
+import ink.pmc.essentials.api.warp.Warp
 import ink.pmc.essentials.api.warp.WarpManager
 import ink.pmc.framework.utils.chat.replace
 import ink.pmc.framework.utils.concurrent.submitAsync
-import ink.pmc.framework.utils.player.uuidOrNull
 import org.bukkit.command.CommandSender
 import org.incendo.cloud.annotations.Argument
 import org.incendo.cloud.annotations.Command
@@ -14,33 +16,17 @@ import org.incendo.cloud.annotations.Permission
 object DelWarpCommand {
     @Command("delwarp <warp>")
     @Permission("essentials.delwarp")
-    suspend fun CommandSender.delwarp(@Argument("warp", suggestions = "warps") warp: String) {
-        val argUuid = warp.uuidOrNull
-        val actualWarp = if (argUuid != null) {
-            WarpManager.get(argUuid)
-        } else {
-            WarpManager.get(warp)
-        }
-        if (actualWarp == null && argUuid != null) {
-            sendMessage(COMMAND_WARP_FAILED_NOT_EXISTED_UUID)
-            playSound(TELEPORT_FAILED_SOUND)
-            return
-        }
-        if (actualWarp == null) {
-            sendMessage(COMMAND_WARP_NOT_EXISTED.replace("<name>", warp))
-            playSound(TELEPORT_FAILED_SOUND)
-            return
-        }
+    fun CommandSender.delwarp(@Argument("warp", parserName = "warp") warp: Warp) {
         submitAsync {
-            WarpManager.remove(actualWarp.id)
+            WarpManager.remove(warp.id)
         }
-        if (actualWarp.alias == null) {
+        if (warp.alias == null) {
             sendMessage(COMMAND_DELWARP_SUCCEED.replace("<name>", warp))
         } else {
             sendMessage(
                 COMMAND_DELWARP_SUCCEED_ALIAS
                     .replace("<name>", warp)
-                    .replace("<alias>", actualWarp.alias!!)
+                    .replace("<alias>", warp.alias!!)
             )
         }
         playSound(TELEPORT_REQUEST_RECEIVED_SOUND)
