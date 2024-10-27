@@ -11,9 +11,7 @@ import ink.pmc.essentials.api.teleport.TeleportManager
 import ink.pmc.essentials.api.teleport.random.RandomTeleportManager
 import ink.pmc.essentials.api.warp.WarpManager
 import ink.pmc.essentials.back.BackManagerImpl
-import ink.pmc.essentials.commands.AlignCommand
-import ink.pmc.essentials.commands.EssentialsCommand
-import ink.pmc.essentials.commands.GmCommand
+import ink.pmc.essentials.commands.*
 import ink.pmc.essentials.config.EssentialsConfig
 import ink.pmc.essentials.home.HomeManagerImpl
 import ink.pmc.essentials.hooks.EconomyHook
@@ -102,6 +100,9 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
             parse(EssentialsCommand)
             parse(AlignCommand)
             parse(GmCommand)
+            parse(HatCommand)
+            parse(ItemFrameCommand)
+            parse(LecternCommand)
         }
 
         registerEvents()

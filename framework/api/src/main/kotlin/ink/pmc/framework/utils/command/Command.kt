@@ -36,3 +36,7 @@ inline fun ensurePlayer(sender: CommandSender, action: Player.() -> Unit) {
 inline fun CommandSender.ensurePlayer(action: Player.() -> Unit) {
     ensurePlayer(this, action)
 }
+
+fun selectPlayer(self: CommandSender, other: Player?): Player? {
+    return other ?: if (self is Player) self else null
+}
