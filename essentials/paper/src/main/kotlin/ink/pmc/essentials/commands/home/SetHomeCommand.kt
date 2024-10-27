@@ -47,7 +47,7 @@ fun Cm.sethome(aliases: Array<String>) {
                     return@ensurePlayerSuspend
                 }
 
-                submitAsync { HomeManager.create(this@checkPlayer, name, location) }
+                submitAsync { HomeManager.create(this@ensurePlayerSuspend, name, location) }
                 sendMessage(COMMAND_SETHOME_SUCCEED.replace("<name>", name))
                 playSound(TELEPORT_REQUEST_RECEIVED_SOUND)
             }

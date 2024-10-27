@@ -55,7 +55,7 @@ fun Cm.lectern(aliases: Array<String>) {
                 sync {
                     val range = getAttribute(Attribute.PLAYER_BLOCK_INTERACTION_RANGE)!!.value
                     val block = getTargetBlockExact(range.toInt())?.state
-                    val player = this@checkPlayer
+                    val player = this@ensurePlayerSuspend
 
                     if (block == null || block !is Lectern) {
                         sendMessage(COMMAND_LECT_FAILED_NO_LECTERN)

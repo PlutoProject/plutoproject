@@ -45,7 +45,7 @@ fun Cm.delhome(aliases: Array<String>) {
                     return@ensurePlayerSuspend
                 }
 
-                submitAsync { HomeManager.remove(this@checkPlayer, name) }
+                submitAsync { HomeManager.remove(this@ensurePlayerSuspend, name) }
                 sendMessage(COMMAND_DELHOME_SUCCEED.replace("<name>", name))
                 playSound(TELEPORT_REQUEST_RECEIVED_SOUND)
             }
