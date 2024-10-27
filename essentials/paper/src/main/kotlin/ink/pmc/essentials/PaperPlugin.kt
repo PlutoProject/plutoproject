@@ -134,6 +134,7 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
             parse(TpaCommand)
             parse(TpcancelCommand)
             parse(HomeCommons)
+            parse(DelHomeCommand)
             parse(EditHomeCommand)
             parse(HomeCommand)
             parse(HomesCommand)

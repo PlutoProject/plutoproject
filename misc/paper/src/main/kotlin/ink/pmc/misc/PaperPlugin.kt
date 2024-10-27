@@ -43,8 +43,8 @@ class PaperPlugin : JavaPlugin() {
         disabled = false
 
         commandManager().annotationParser().apply {
-            if (MiscConfig.commandSuicide) parse(SuicideCommand)
-            if (MiscConfig.commandSit) parse(SitCommand)
+            parse(SuicideCommand)
+            if (MiscConfig.sit) parse(SitCommand)
         }
 
         val config = File(dataFolder, "config.conf")
@@ -95,8 +95,6 @@ class PaperPlugin : JavaPlugin() {
         MiscConfig.creeperAntiExplode = fileConfig.get("creeper-anti-explode.enabled")
         MiscConfig.creeperAntiExplodeFirework = fileConfig.get("creeper-anti-explode.firework")
         MiscConfig.chat = fileConfig.get("chat.enabled")
-        MiscConfig.commandSuicide = fileConfig.get("commands.suicide")
-        MiscConfig.commandSit = fileConfig.get("commands.sit")
     }
 
     private fun File.loadConfig(): FileConfig {

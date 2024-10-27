@@ -21,7 +21,7 @@ object DelWarpCommand {
             WarpManager.remove(warp.id)
         }
         if (warp.alias == null) {
-            sendMessage(COMMAND_DELWARP_SUCCEED.replace("<name>", warp))
+            sendMessage(COMMAND_DELWARP_SUCCEED.replace("<name>", warp.name))
         } else {
             sendMessage(
                 COMMAND_DELWARP_SUCCEED_ALIAS

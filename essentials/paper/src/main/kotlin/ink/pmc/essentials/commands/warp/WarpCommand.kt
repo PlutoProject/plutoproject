@@ -28,7 +28,7 @@ object WarpCommand {
         }
         warp.teleportSuspend(this)
         if (warp.alias == null) {
-            sendMessage(COMMAND_WARP_SUCCEED.replace("<name>", name))
+            sendMessage(COMMAND_WARP_SUCCEED.replace("<name>", warp.name))
         } else {
             sendMessage(
                 COMMAND_WARP_SUCCEED_ALIAS
