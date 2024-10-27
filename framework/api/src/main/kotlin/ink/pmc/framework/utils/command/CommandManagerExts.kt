@@ -3,6 +3,8 @@ package ink.pmc.framework.utils.command
 import ink.pmc.framework.utils.command.annotation.Command
 import io.github.classgraph.ClassGraph
 import org.incendo.cloud.CommandManager
+import org.incendo.cloud.annotations.AnnotationParser
+import org.incendo.cloud.kotlin.coroutines.annotations.installCoroutineSupport
 import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.jvm.kotlinFunction
 
@@ -59,4 +61,8 @@ fun <C> CommandManager<C>.registerCommands(
 
 fun <C> CommandManager<C>.command(commands: Iterable<org.incendo.cloud.Command.Builder<C>>): CommandManager<C> {
     return commands.fold(this) { acc, command -> acc.command(command) }
+}
+
+inline fun <reified C> CommandManager<C>.annotationParser(): AnnotationParser<C> {
+    return AnnotationParser(this, C::class.java).installCoroutineSupport()
 }
