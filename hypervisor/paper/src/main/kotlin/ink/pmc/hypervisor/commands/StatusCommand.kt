@@ -22,7 +22,7 @@ import org.incendo.cloud.annotations.Permission
 object StatusCommand {
     @Command("status|tps|mspt")
     @Permission("hypervisor.status")
-    suspend fun status(sender: CommandSender) {
+    suspend fun CommandSender.status() {
         val entities = sync<List<Entity>> {
             paper.worlds.fold(mutableListOf()) { entities, world ->
                 entities.apply { addAll(world.entities) }
@@ -30,7 +30,7 @@ object StatusCommand {
         }
         val entityCount = entities.size
         val tickingEntityCount = entities.filter { it.isTicking }.size
-        sender.send {
+        send {
             text("» ") with mochaSubtext0
             text("\uD83D\uDD0D 服务器状态") with mochaFlamingo
             newline()

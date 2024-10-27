@@ -24,16 +24,16 @@ object WhitelistCommand : KoinComponent {
 
     @Command("whitelist add <name>")
     @Permission("whitelist.command")
-    suspend fun add(sender: CommandSource, @Argument("name") name: String) {
+    suspend fun CommandSource.add(@Argument("name") name: String) {
         repo.findByNameAndFetcher(name, MojangProfileFetcher)?.let { model ->
-            sender.send {
+            send {
                 text("玩家 ") with mochaMaroon
                 text("${model.rawName} ") with mochaText
                 text("已经拥有白名单") with mochaMaroon
             }
             return
         }
-        sender.send {
+        send {
             text("正在获取数据，请稍等...") with mochaText
         }
         val data = try {
@@ -41,13 +41,13 @@ object WhitelistCommand : KoinComponent {
                 MojangProfileFetcher.fetch(name)
             }
         } catch (e: TimeoutCancellationException) {
-            sender.send {
+            send {
                 text("数据获取超时，请重试") with mochaMaroon
             }
             return
         }
         val profileData = data ?: run {
-            sender.send {
+            send {
                 text("未获取到玩家 ") with mochaMaroon
                 text("$name ") with mochaText
                 text("的数据，请检查玩家名是否正确") with mochaMaroon
@@ -56,7 +56,7 @@ object WhitelistCommand : KoinComponent {
         }
         val model = createWhitelistModel(profileData.uuid, profileData.name)
         repo.saveOrUpdate(model)
-        sender.send {
+        send {
             text("已为玩家 ") with mochaPink
             text("${profileData.name} ") with mochaText
             text("添加白名单") with mochaPink
@@ -65,16 +65,16 @@ object WhitelistCommand : KoinComponent {
 
     @Command("whitelist lookup <name>")
     @Permission("whitelist.command")
-    suspend fun lookup(sender: CommandSource, @Argument("name") name: String) {
+    suspend fun CommandSource.lookup(@Argument("name") name: String) {
         val model = repo.findByName(name) ?: run {
-            sender.send {
+            send {
                 text("未查询到名为 ") with mochaMaroon
                 text("$name ") with mochaText
                 text("的玩家") with mochaMaroon
             }
             return
         }
-        sender.send {
+        send {
             text("已查询到名为 ") with mochaPink
             text("${model.rawName} ") with mochaText
             text("的玩家") with mochaPink
@@ -102,9 +102,9 @@ object WhitelistCommand : KoinComponent {
 
     @Command("whitelist statistic")
     @Permission("whitelist.command")
-    suspend fun statistic(sender: CommandSource) {
+    suspend fun CommandSource.statistic() {
         val count = repo.count()
-        sender.send {
+        send {
             text("当前有 ") with mochaText
             text("$count ") with mochaLavender
             text("位玩家获得了白名单") with mochaText

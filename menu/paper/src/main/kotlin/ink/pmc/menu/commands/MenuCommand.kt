@@ -10,7 +10,7 @@ import org.incendo.cloud.annotations.Command
 @Suppress("UNUSED")
 object MenuCommand {
     @Command("menu")
-    fun menu(sender: CommandSender) = ensurePlayer(sender) {
+    fun CommandSender.menu() = ensurePlayer {
         GuiManager.startInventory(this) {
             Navigator(MainMenuScreen())
         }
