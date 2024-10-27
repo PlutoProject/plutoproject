@@ -11,6 +11,7 @@ import ink.pmc.essentials.api.teleport.TeleportManager
 import ink.pmc.essentials.api.teleport.random.RandomTeleportManager
 import ink.pmc.essentials.api.warp.WarpManager
 import ink.pmc.essentials.back.BackManagerImpl
+import ink.pmc.essentials.commands.AlignCommand
 import ink.pmc.essentials.commands.home.editHomeCommand
 import ink.pmc.essentials.commands.warp.defaultSpawnCommand
 import ink.pmc.essentials.config.EssentialsConfig
@@ -25,9 +26,7 @@ import ink.pmc.essentials.repositories.WarpRepository
 import ink.pmc.essentials.teleport.TeleportManagerImpl
 import ink.pmc.essentials.teleport.random.RandomTeleportManagerImpl
 import ink.pmc.essentials.warp.WarpManagerImpl
-import ink.pmc.framework.utils.command.CommandRegistrationResult
-import ink.pmc.framework.utils.command.command
-import ink.pmc.framework.utils.command.registerCommands
+import ink.pmc.framework.utils.command.*
 import ink.pmc.framework.utils.config.preconfiguredConfigLoaderBuilder
 import ink.pmc.framework.utils.inject.startKoinIfNotPresent
 import ink.pmc.framework.utils.storage.saveResourceIfNotExisted
@@ -49,7 +48,6 @@ var disabled = true
 var economyHook: EconomyHook? = null
 var huskHomesHook: HuskHomesHook? = null
 lateinit var plugin: Plugin
-lateinit var commandManager: Cm
 
 private const val COMMAND_PACKAGE = "ink.pmc.essentials.commands"
 val essentialsScope = CoroutineScope(Dispatchers.Default)
@@ -99,6 +97,10 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
 
         startKoinIfNotPresent {
             modules(bukkitModule)
+        }
+
+        commandManager().annotationParser().apply {
+            parse(AlignCommand)
         }
 
         commandManager = PaperCommandManager.builder()
