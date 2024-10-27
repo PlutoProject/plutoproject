@@ -1,6 +1,7 @@
 package ink.pmc.framework.utils.command
 
 import ink.pmc.framework.utils.chat.NON_PLAYER
+import org.bukkit.OfflinePlayer
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.incendo.cloud.Command
@@ -37,6 +38,6 @@ inline fun CommandSender.ensurePlayer(action: Player.() -> Unit) {
     ensurePlayer(this, action)
 }
 
-fun selectPlayer(self: CommandSender, other: Player?): Player? {
-    return other ?: if (self is Player) self else null
+inline fun <reified T : OfflinePlayer> selectPlayer(self: CommandSender, other: T?): T? {
+    return other ?: if (self is T) self else null
 }

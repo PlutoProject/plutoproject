@@ -3,90 +3,73 @@ package ink.pmc.essentials.commands.home
 import ink.pmc.essentials.*
 import ink.pmc.essentials.api.home.Home
 import ink.pmc.essentials.api.home.HomeManager
-import ink.pmc.framework.utils.PaperCtx
-import ink.pmc.framework.utils.chat.NON_PLAYER
 import ink.pmc.framework.utils.chat.isValidIdentifier
 import ink.pmc.framework.utils.chat.replace
+import ink.pmc.framework.utils.command.ensurePlayer
 import ink.pmc.framework.utils.concurrent.submitAsync
-import ink.pmc.framework.utils.dsl.cloud.sender
 import org.bukkit.command.CommandSender
-import org.bukkit.entity.Player
-import org.incendo.cloud.kotlin.coroutines.extension.suspendingHandler
-import org.incendo.cloud.parser.standard.StringParser
+import org.incendo.cloud.annotation.specifier.Greedy
+import org.incendo.cloud.annotations.Argument
+import org.incendo.cloud.annotations.Command
+import org.incendo.cloud.annotations.Permission
 
-private val base = commandManager.commandBuilder("edithome")
-    .permission("essentials.edithome")
-    .argument(homes("home"))
-
-private suspend fun PaperCtx.preprocess(): Pair<CommandSender, Home>? {
-    val sender = this.sender.sender
-    if (sender !is Player) {
-        sender.sendMessage(NON_PLAYER)
-        return null
-    }
-    val input = get<String>("home")
-    val home = HomeManager.get(sender, input) ?: run {
-        sender.sendMessage(COMMAND_HOME_NOT_EXISTED.replace("<name>", input))
-        return null
-    }
-    return sender to home
-}
-
-private val preferred = base.literal("prefer")
-    .suspendingHandler {
-        val (sender, home) = it.preprocess() ?: return@suspendingHandler
+@Suppress("UNUSED")
+object EditHomeCommand {
+    @Command("edithome <home> prefer")
+    @Permission("essentials.edithome")
+    fun CommandSender.prefer(@Argument("home", parserName = "home") home: Home) = ensurePlayer {
         if (home.isPreferred) {
-            sender.sendMessage(COMMAND_EDITHOME_ALREADY_PREFERRED.replace("<name>", home.name))
-            return@suspendingHandler
+            sendMessage(COMMAND_EDITHOME_ALREADY_PREFERRED.replace("<name>", home.name))
+            return
         }
         submitAsync {
             home.setPreferred(true)
         }
-        sender.sendMessage(COMMAND_EDITHOME_PREFER_SUCCEED.replace("<name>", home.name))
+        sendMessage(COMMAND_EDITHOME_PREFER_SUCCEED.replace("<name>", home.name))
     }
 
-private val star = base.literal("star")
-    .suspendingHandler {
-        val (sender, home) = it.preprocess() ?: return@suspendingHandler
+    @Command("edithome <home> star")
+    @Permission("essentials.edithome")
+    fun CommandSender.star(@Argument("home", parserName = "home") home: Home) = ensurePlayer {
         if (home.isStarred) {
-            sender.sendMessage(COMMAND_EDITHOME_ALREADY_STARRED.replace("<name>", home.name))
-            return@suspendingHandler
+            sendMessage(COMMAND_EDITHOME_ALREADY_STARRED.replace("<name>", home.name))
+            return
         }
         submitAsync {
             home.isStarred = true
             home.update()
         }
-        sender.sendMessage(COMMAND_EDITHOME_STAR_SUCCEED.replace("<name>", home.name))
+        sendMessage(COMMAND_EDITHOME_STAR_SUCCEED.replace("<name>", home.name))
     }
 
-private val rename = base.literal("rename")
-    .required("new_name", StringParser.greedyStringParser())
-    .suspendingHandler {
-        val (sender, home) = it.preprocess() ?: return@suspendingHandler
-        val newName = it.get<String>("new_name")
-        if (!newName.isValidIdentifier) {
-            sender.sendMessage(COMMAND_SETHOME_FAILED_NOT_VALID)
-            return@suspendingHandler
+    @Command("edithome <home> rename <name>")
+    @Permission("essentials.edithome")
+    fun CommandSender.rename(
+        @Argument("home", parserName = "home") home: Home,
+        @Argument("name") @Greedy name: String
+    ) = ensurePlayer {
+        if (!name.isValidIdentifier) {
+            sendMessage(COMMAND_SETHOME_FAILED_NOT_VALID)
+            return
         }
-        if (newName.length > HomeManager.nameLengthLimit) {
-            sender.sendMessage(COMMAND_SETHOME_FAILED_LENGTN_LIMIT)
-            return@suspendingHandler
+        if (name.length > HomeManager.nameLengthLimit) {
+            sendMessage(COMMAND_SETHOME_FAILED_LENGTN_LIMIT)
+            return
         }
         submitAsync {
-            home.name = newName
+            home.name = name
             home.update()
         }
-        sender.sendMessage(COMMAND_EDITHOME_RENAME_SUCCEED.replace("<new_name>", newName))
+        sendMessage(COMMAND_EDITHOME_RENAME_SUCCEED.replace("<new_name>", name))
     }
 
-private val move = base.literal("move")
-    .suspendingHandler {
-        val (sender, home) = it.preprocess() ?: return@suspendingHandler
+    @Command("edithome <home> move")
+    @Permission("essentials.edithome")
+    fun CommandSender.move(@Argument("home", parserName = "home") home: Home) = ensurePlayer {
         submitAsync {
-            home.location = (sender as Player).location
+            home.location = location
             home.update()
         }
-        sender.sendMessage(COMMAND_EDITHOME_MOVE_SUCCEED.replace("<name>", home.name))
+        sendMessage(COMMAND_EDITHOME_MOVE_SUCCEED.replace("<name>", home.name))
     }
-
-val editHomeCommand = listOf(preferred, star, rename, move)
+}

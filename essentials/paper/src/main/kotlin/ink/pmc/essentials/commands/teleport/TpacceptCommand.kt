@@ -1,107 +1,53 @@
 package ink.pmc.essentials.commands.teleport
 
-import ink.pmc.essentials.*
-import ink.pmc.essentials.api.teleport.TeleportManager
+import ink.pmc.essentials.COMMAND_TPACCEPT_SUCCEED
+import ink.pmc.essentials.COMMAND_TPDENY_SUCCEED
+import ink.pmc.essentials.TELEPORT_REQUEST_DENIED_SOUND
+import ink.pmc.essentials.TELEPORT_SUCCEED_SOUND
+import ink.pmc.essentials.api.teleport.TeleportRequest
 import ink.pmc.framework.utils.chat.replace
-import ink.pmc.framework.utils.command.annotation.Command
-import ink.pmc.framework.utils.command.ensurePlayerSuspend
-import ink.pmc.framework.utils.command.paperOptionalOnlinePlayersArgument
-import ink.pmc.framework.utils.dsl.cloud.invoke
-import ink.pmc.framework.utils.dsl.cloud.sender
-import ink.pmc.framework.utils.player.uuidOrNull
-import io.papermc.paper.command.brigadier.CommandSourceStack
-import org.bukkit.Bukkit
-import org.incendo.cloud.context.CommandContext
-import kotlin.jvm.optionals.getOrNull
+import ink.pmc.framework.utils.command.ensurePlayer
+import org.bukkit.command.CommandSender
+import org.incendo.cloud.annotations.Argument
+import org.incendo.cloud.annotations.Command
+import org.incendo.cloud.annotations.Permission
 
 private enum class Operation {
     ACCEPT, DENY
 }
 
-@Command("tpaccept")
 @Suppress("UNUSED")
-fun Cm.tpaccept(aliases: Array<String>) {
-    this("tpaccept", *aliases) {
-        permission("essentials.tpaccept")
-        argument(paperOptionalOnlinePlayersArgument("request"))
-        handler {
-            handleOperation(Operation.ACCEPT)
-        }
+object TpacceptCommand {
+    @Command("tpaccept|tpyes <request>")
+    @Permission("essentials.tpaccept")
+    fun CommandSender.tpaccept(
+        @Argument("request", parserName = "tp-request") request: TeleportRequest
+    ) = ensurePlayer {
+        handleOperation(request, Operation.ACCEPT)
+    }
+
+    @Command("tpdeny|tpno|tpdecline <request>")
+    @Permission("essentials.tpdeny")
+    fun CommandSender.tpdeny(
+        @Argument("request", parserName = "tp-request") request: TeleportRequest
+    ) = ensurePlayer {
+        handleOperation(request, Operation.DENY)
     }
 }
 
-@Command("tpdeny")
-@Suppress("UNUSED")
-fun Cm.tpdeny(aliases: Array<String>) {
-    this("tpdeny", *aliases) {
-        permission("essentials.tpdeny")
-        argument(paperOptionalOnlinePlayersArgument("request"))
-        handler {
-            handleOperation(Operation.DENY)
+private fun CommandSender.handleOperation(request: TeleportRequest, type: Operation) {
+    val choice = when (type) {
+        Operation.ACCEPT -> {
+            request.accept()
+            playSound(TELEPORT_SUCCEED_SOUND)
+            COMMAND_TPACCEPT_SUCCEED
+        }
+
+        Operation.DENY -> {
+            request.deny()
+            playSound(TELEPORT_REQUEST_DENIED_SOUND)
+            COMMAND_TPDENY_SUCCEED
         }
     }
-}
-
-private suspend fun CommandContext<CommandSourceStack>.handleOperation(type: Operation) {
-    ensurePlayerSuspend(sender.sender) {
-        val input = optional<String>("request").getOrNull()
-
-        val argPlayer = input?.let { Bukkit.getPlayer(it) }
-        val argUuid = input?.uuidOrNull
-
-        val emptyArgRequest = TeleportManager.getPendingRequest(this) // 没有参数的情况
-        val playerArgRequest = argPlayer?.let { TeleportManager.getUnfinishedRequest(it) } // 参数是玩家名情况
-        val uuidArgRequest = argUuid?.let { TeleportManager.getRequest(it) } // 参数是请求 ID 的情况
-
-        if (input != null) {
-            val destination = uuidArgRequest?.destination ?: playerArgRequest?.destination
-
-            if (argUuid != null && (uuidArgRequest == null || uuidArgRequest.isFinished || destination != player)) {
-                sendMessage(COMMAND_TPACCEPT_FAILED_NO_REQUEST_ID)
-                playSound(TELEPORT_FAILED_SOUND)
-                return@ensurePlayerSuspend
-            }
-
-            if (argPlayer != null && (playerArgRequest == null || playerArgRequest.isFinished || destination != player)) {
-                sendMessage(COMMAND_TPACCEPT_FAILED_NO_REQUEST.replace("<player>", argPlayer.name))
-                playSound(TELEPORT_FAILED_SOUND)
-                return@ensurePlayerSuspend
-            }
-
-            if (argUuid == null && argPlayer == null) {
-                sendMessage(COMMAND_TPACCEPT_FAILED_NO_REQUEST.replace("<player>", input)) // 两种都不就当作玩家名发送错误消息
-                playSound(TELEPORT_FAILED_SOUND)
-                return@ensurePlayerSuspend
-            }
-        }
-
-        if (emptyArgRequest == null && playerArgRequest == null && uuidArgRequest == null) {
-            sendMessage(COMMAND_TPACCEPT_FAILED_NO_PENDING)
-            return@ensurePlayerSuspend
-        }
-
-        // 只有一个 request 存在，所以只有一个会被处理
-        val choice = when (type) {
-            Operation.ACCEPT -> {
-                emptyArgRequest?.accept()
-                playerArgRequest?.accept()
-                uuidArgRequest?.accept()
-                playSound(TELEPORT_SUCCEED_SOUND)
-                COMMAND_TPACCEPT_SUCCEED
-            }
-
-            Operation.DENY -> {
-                emptyArgRequest?.deny()
-                playerArgRequest?.deny()
-                uuidArgRequest?.deny()
-                playSound(TELEPORT_REQUEST_DENIED_SOUND)
-                COMMAND_TPDENY_SUCCEED
-            }
-        }
-
-        val name = emptyArgRequest?.source?.name
-            ?: playerArgRequest?.source?.name
-            ?: uuidArgRequest?.source?.name
-        sendMessage(choice.replace("<player>", name))
-    }
+    sendMessage(choice.replace("<player>", request.source.name))
 }
