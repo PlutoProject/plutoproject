@@ -12,8 +12,8 @@ import ink.pmc.essentials.api.teleport.random.RandomTeleportManager
 import ink.pmc.essentials.api.warp.WarpManager
 import ink.pmc.essentials.back.BackManagerImpl
 import ink.pmc.essentials.commands.AlignCommand
-import ink.pmc.essentials.commands.home.editHomeCommand
-import ink.pmc.essentials.commands.warp.defaultSpawnCommand
+import ink.pmc.essentials.commands.EssentialsCommand
+import ink.pmc.essentials.commands.GmCommand
 import ink.pmc.essentials.config.EssentialsConfig
 import ink.pmc.essentials.home.HomeManagerImpl
 import ink.pmc.essentials.hooks.EconomyHook
@@ -26,7 +26,8 @@ import ink.pmc.essentials.repositories.WarpRepository
 import ink.pmc.essentials.teleport.TeleportManagerImpl
 import ink.pmc.essentials.teleport.random.RandomTeleportManagerImpl
 import ink.pmc.essentials.warp.WarpManagerImpl
-import ink.pmc.framework.utils.command.*
+import ink.pmc.framework.utils.command.annotationParser
+import ink.pmc.framework.utils.command.commandManager
 import ink.pmc.framework.utils.config.preconfiguredConfigLoaderBuilder
 import ink.pmc.framework.utils.inject.startKoinIfNotPresent
 import ink.pmc.framework.utils.storage.saveResourceIfNotExisted
@@ -35,7 +36,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import org.bukkit.plugin.Plugin
-import org.incendo.cloud.execution.ExecutionCoordinator
 import org.incendo.cloud.paper.PaperCommandManager
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
@@ -49,7 +49,6 @@ var economyHook: EconomyHook? = null
 var huskHomesHook: HuskHomesHook? = null
 lateinit var plugin: Plugin
 
-private const val COMMAND_PACKAGE = "ink.pmc.essentials.commands"
 val essentialsScope = CoroutineScope(Dispatchers.Default)
 
 @Suppress("UNUSED")
@@ -100,23 +99,9 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
         }
 
         commandManager().annotationParser().apply {
+            parse(EssentialsCommand)
             parse(AlignCommand)
-        }
-
-        commandManager = PaperCommandManager.builder()
-            .executionCoordinator(ExecutionCoordinator.asyncCoordinator())
-            .buildOnEnable(this)
-
-        commandManager.registerCommands(COMMAND_PACKAGE) {
-            CommandRegistrationResult(
-                enabled = config.commands[it] ?: true,
-                aliases = config.commandAliases[it]?.toTypedArray() ?: arrayOf()
-            )
-        }
-
-        commandManager.apply {
-            command(defaultSpawnCommand)
-            command(editHomeCommand)
+            parse(GmCommand)
         }
 
         registerEvents()
