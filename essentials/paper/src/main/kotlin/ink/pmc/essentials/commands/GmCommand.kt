@@ -3,13 +3,13 @@ package ink.pmc.essentials.commands
 import ink.pmc.essentials.*
 import ink.pmc.framework.utils.chat.NON_PLAYER
 import ink.pmc.framework.utils.chat.replace
-import ink.pmc.framework.utils.command.annotation.Command
 import ink.pmc.framework.utils.command.ensurePlayer
 import ink.pmc.framework.utils.concurrent.sync
 import org.bukkit.GameMode
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.incendo.cloud.annotations.Argument
+import org.incendo.cloud.annotations.Command
 import org.incendo.cloud.annotations.Permission
 
 @Suppress("UNUSED")
