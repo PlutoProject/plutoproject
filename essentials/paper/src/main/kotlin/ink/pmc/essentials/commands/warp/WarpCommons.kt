@@ -23,7 +23,7 @@ suspend fun CommandSender.parseAndCheck(name: String): Warp? {
 object WarpCommons {
     @Suppress("UnusedReceiverParameter", "UNUSED_PARAMETER")
     @Suggestions("warps")
-    internal suspend fun CommandContext<CommandSender>.warps(input: CommandInput): List<String> {
+    internal suspend fun warps(context: CommandContext<CommandSender>, input: CommandInput): List<String> {
         return WarpManager.list().map {
             val name = it.name
             val alias = it.alias
@@ -33,12 +33,12 @@ object WarpCommons {
 
     @Suppress("UnusedReceiverParameter", "UNUSED_PARAMETER")
     @Suggestions("warps-without-alias")
-    internal suspend fun CommandContext<CommandSender>.warpsWithoutAlias(input: CommandInput): List<String> {
+    internal suspend fun warpsWithoutAlias(context: CommandContext<CommandSender>, input: CommandInput): List<String> {
         return WarpManager.list().map { it.name }
     }
 
     @Parser(name = "warp", suggestions = "warps")
-    suspend fun CommandContext<CommandSender>.warpsParser(input: CommandInput): Warp {
+    suspend fun warpsParser(context: CommandContext<CommandSender>, input: CommandInput): Warp {
         val name = parseWarpName(input.readString())
         return WarpManager.get(name) ?: throw WarpNotExistException(name)
     }

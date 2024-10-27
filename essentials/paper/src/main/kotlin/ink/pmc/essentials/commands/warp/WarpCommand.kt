@@ -32,7 +32,7 @@ object WarpCommand {
         } else {
             sendMessage(
                 COMMAND_WARP_SUCCEED_ALIAS
-                    .replace("<name>", name)
+                    .replace("<name>", warp.name)
                     .replace("<alias>", warp.alias!!)
             )
         }

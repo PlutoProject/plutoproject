@@ -17,8 +17,8 @@ object SetWarpCommand {
     @Command("setwarp <name> [alias]")
     @Permission("essentials.setwarp")
     suspend fun CommandSender.setWarp(
-        @Argument("name", parserName = "greedy-string") name: String,
-        @Argument("alias", parserName = "greedy-string") alias: String?
+        @Argument("name") name: String,
+        @Argument("alias") alias: String?
     ) = ensurePlayer {
         if (WarpManager.has(name)) {
             sendMessage(COMMAND_SETWARP_FAILED_EXISTED.replace("<name>", name))
