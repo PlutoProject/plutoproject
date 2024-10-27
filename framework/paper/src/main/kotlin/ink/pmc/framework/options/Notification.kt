@@ -32,7 +32,7 @@ fun startOptionsMonitor() {
         while (true) {
             try {
                 stub.monitorOptionsUpdate(empty).also {
-                    frameworkLogger.info("Options monitor stream connected")
+                    frameworkLogger.info("Try to connect options monitor stream")
                 }.collect {
                     val serverId = it.serverId.uuid
                     val player = it.player.uuid

@@ -32,7 +32,7 @@ fun startPlayerDbMonitor() {
         while (true) {
             try {
                 stub.monitorNotify(empty).also {
-                    frameworkLogger.info("Player database monitor stream connected")
+                    frameworkLogger.info("Try to connect player-database monitor stream")
                 }.collect {
                     if (it.serverId.uuid == identity) return@collect
                     val id = it.uuid.uuid
