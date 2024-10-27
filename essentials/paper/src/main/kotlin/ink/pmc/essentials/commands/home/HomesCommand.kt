@@ -22,7 +22,7 @@ object HomesCommand {
     @Command("homes [player]")
     @Permission("essentials.homes")
     suspend fun CommandSender.homes(
-        @Argument("player", parserName = "homes-offlineplayer") player: OfflinePlayer?
+        @Argument("player", suggestions = "homes-offlineplayer") player: OfflinePlayer?
     ) = ensurePlayer {
         val actualPlayer = selectPlayer(this, player)!!
         if (this != actualPlayer) {

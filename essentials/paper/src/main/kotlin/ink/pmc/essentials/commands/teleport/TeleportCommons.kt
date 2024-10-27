@@ -11,14 +11,20 @@ import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.incendo.cloud.annotations.exception.ExceptionHandler
 import org.incendo.cloud.annotations.parser.Parser
+import org.incendo.cloud.annotations.suggestion.Suggestions
 import org.incendo.cloud.context.CommandContext
 import org.incendo.cloud.context.CommandInput
 import org.incendo.cloud.parser.standard.StringParser
 import kotlin.jvm.optionals.getOrNull
 
-@Suppress("UNUSED")
+@Suppress("UNUSED", "UNUSED_PARAMETER")
 object TeleportCommons {
-    @Parser(name = "tp-request", suggestions = "player")
+    @Suggestions("tp-request-players")
+    fun tpRequests(context: CommandContext<CommandSender>, input: CommandInput): List<String> {
+        return paper.onlinePlayers.map { it.name }
+    }
+
+    @Parser(name = "tp-request", suggestions = "tp-request-players")
     fun tpRequest(context: CommandContext<CommandSender>, input: CommandInput): TeleportRequest {
         val player = context.sender() as Player
         val stringParser = StringParser.quotedStringParser<CommandSender>().parser()
