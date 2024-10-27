@@ -1,7 +1,6 @@
 package ink.pmc.framework.utils.command.suggestion
 
 import com.velocitypowered.api.command.CommandSource
-import ink.pmc.framework.utils.dsl.cloud.sender
 import org.incendo.cloud.context.CommandContext
 import org.incendo.cloud.suggestion.SuggestionProvider
 
@@ -20,7 +19,7 @@ class VelocityPrivilegedSuggestion<T : CommandSource>(
     }
 
     override fun hasPermission(context: CommandContext<T>, perm: String): Boolean {
-        return context.sender.hasPermission(perm)
+        return context.sender().hasPermission(perm)
     }
 
 }

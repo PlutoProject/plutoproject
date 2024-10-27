@@ -10,7 +10,6 @@ abstract class PrivilegedSuggestion<C>(
     private val wrap: SuggestionProvider<C>,
     private val permission: String
 ) : SuggestionProvider<C> {
-
     override fun suggestionsFuture(
         context: CommandContext<C>,
         input: CommandInput
@@ -22,5 +21,4 @@ abstract class PrivilegedSuggestion<C>(
     }
 
     abstract fun hasPermission(context: CommandContext<C>, permission: String): Boolean
-
 }
