@@ -1,5 +1,6 @@
 package ink.pmc.essentials.commands.teleport
 
+import ink.pmc.essentials.COMMAND_TPACCEPT_FAILED_NO_PENDING
 import ink.pmc.essentials.COMMAND_TPACCEPT_FAILED_NO_REQUEST
 import ink.pmc.essentials.COMMAND_TPACCEPT_FAILED_NO_REQUEST_ID
 import ink.pmc.essentials.api.teleport.TeleportManager
@@ -28,11 +29,10 @@ object TeleportCommons {
     fun tpRequest(context: CommandContext<CommandSender>, input: CommandInput): TeleportRequest {
         val player = context.sender() as Player
         val stringParser = StringParser.quotedStringParser<CommandSender>().parser()
-        val string = stringParser.parse(context, input).parsedValue().getOrNull()
-        val uuid = string?.uuidOrNull
-        val source = string?.let { paper.getPlayer(it) }
+        val string = stringParser.parse(context, input).parsedValue().getOrNull() ?: error("Unable to parse request")
+        val uuid = string.uuidOrNull
+        val source = paper.getPlayer(string)
         val request = when {
-            input.isEmpty(true) -> TeleportManager.getPendingRequest(player) ?: throw NoRequestException()
             uuid != null -> TeleportManager.getRequest(uuid) ?: throw TeleportRequestNotFound()
             source != null -> TeleportManager.getUnfinishedRequest(source)
                 ?: throw NoRequestFromPlayerException(source.name)
@@ -45,7 +45,7 @@ object TeleportCommons {
 
     @ExceptionHandler(NoRequestException::class)
     fun CommandSender.noRequest() {
-        sendMessage(COMMAND_TPACCEPT_FAILED_NO_REQUEST)
+        sendMessage(COMMAND_TPACCEPT_FAILED_NO_PENDING)
     }
 
     @ExceptionHandler(TeleportRequestNotFound::class)

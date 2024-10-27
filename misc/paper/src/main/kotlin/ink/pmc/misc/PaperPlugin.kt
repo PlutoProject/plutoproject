@@ -42,11 +42,6 @@ class PaperPlugin : JavaPlugin() {
         plugin = this
         disabled = false
 
-        commandManager().annotationParser().apply {
-            parse(SuicideCommand)
-            if (MiscConfig.sit) parse(SitCommand)
-        }
-
         val config = File(dataFolder, "config.conf")
 
         if (!config.exists()) {
@@ -58,6 +53,11 @@ class PaperPlugin : JavaPlugin() {
 
         startKoinIfNotPresent {
             modules(bukkitModule)
+        }
+
+        commandManager().annotationParser().apply {
+            parse(SuicideCommand)
+            if (MiscConfig.sit) parse(SitCommand)
         }
 
         if (MiscConfig.sit) {
