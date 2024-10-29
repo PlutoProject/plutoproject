@@ -17,7 +17,6 @@ import org.bukkit.persistence.PersistentDataType
 import org.koin.core.component.KoinComponent
 import java.util.*
 
-
 private val bottleKey = NamespacedKey(plugin, "is_bottle")
 private val bottleIdKey = NamespacedKey(plugin, "bottle_id")
 
@@ -29,10 +28,10 @@ internal val ItemStack.bottleId: UUID?
 
 internal suspend fun ItemStack.getBottle(): Bottle? {
     check(isBottle) { "Not a bottle item" }
-    return BottleManager.get(checkNotNull(bottleId) { "Bottle ID not present" })
+    return if (this is BottleItem) this.bottle else BottleManager.get(checkNotNull(bottleId) { "Bottle ID not present" })
 }
 
-class BottleItem(bottle: Bottle) : ItemStack(Material.GLASS_BOTTLE, 1), KoinComponent {
+class BottleItem(val bottle: Bottle) : ItemStack(Material.GLASS_BOTTLE, 1), KoinComponent {
     init {
         editMeta {
             it.setEnchantmentGlintOverride(true)
