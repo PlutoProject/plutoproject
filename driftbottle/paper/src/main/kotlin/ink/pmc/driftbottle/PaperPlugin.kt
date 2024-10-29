@@ -3,6 +3,7 @@ package ink.pmc.driftbottle
 import com.github.shynixn.mccoroutine.bukkit.SuspendingJavaPlugin
 import ink.pmc.driftbottle.api.BottleFactory
 import ink.pmc.driftbottle.api.BottleManager
+import ink.pmc.driftbottle.items.messageItemRecipe
 import ink.pmc.driftbottle.repositories.BottleRepository
 import ink.pmc.framework.provider.Provider
 import ink.pmc.framework.utils.inject.startKoinIfNotPresent
@@ -27,6 +28,7 @@ class PaperPlugin : SuspendingJavaPlugin() {
         startKoinIfNotPresent {
             modules(bukkitModule)
         }
+        server.addRecipe(messageItemRecipe)
     }
 
     override suspend fun onDisableAsync() {
