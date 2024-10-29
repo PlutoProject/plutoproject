@@ -20,7 +20,7 @@ class ProviderImpl : Provider, KoinComponent {
     private fun connectMongo(): Pair<MongoClient, MongoDatabase> {
         val mongo = config.mongo
         val client =
-            MongoClient.create("mongodb://${mongo.username}:${mongo.password}@${mongo.host}:${mongo.port}/${mongo.database}?uuidRepresentation=standard&socketTimeoutMS=60000")
+            MongoClient.create("mongodb://${mongo.username}:${mongo.password}@${mongo.host}:${mongo.port}/${mongo.database}?uuidRepresentation=standard&connectTimeoutMS=0&timeoutMS=0")
         val db = client.getDatabase(mongo.database)
         return client to db
     }
