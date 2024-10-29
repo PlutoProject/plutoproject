@@ -4,6 +4,7 @@ import ink.pmc.advkt.component.component
 import ink.pmc.advkt.component.italic
 import ink.pmc.advkt.component.text
 import ink.pmc.driftbottle.plugin
+import ink.pmc.framework.utils.visual.mochaLavender
 import ink.pmc.framework.utils.visual.mochaSubtext0
 import ink.pmc.framework.utils.visual.mochaText
 import org.bukkit.Material
@@ -28,7 +29,7 @@ private fun ItemStack.updateLore() {
         it.lore(
             buildList {
                 if (messageContent.isNotEmpty()) add(component {
-                    text("已编辑") with mochaSubtext0 without italic()
+                    text("已编辑") with mochaLavender without italic()
                 })
                 addAll(messageLore)
             }
@@ -69,6 +70,7 @@ class MessageItem : ItemStack(Material.PAPER, 1) {
             it.displayName(component {
                 text("漂流信纸") with mochaText without italic()
             })
+            it.setEnchantmentGlintOverride(true)
             it.persistentDataContainer.apply {
                 set(messageKey, PersistentDataType.BOOLEAN, true)
                 set(messageContentKey, stringList, listOf())
