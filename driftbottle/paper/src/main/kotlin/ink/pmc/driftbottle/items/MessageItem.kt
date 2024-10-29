@@ -18,6 +18,24 @@ private val messageKey = NamespacedKey(plugin, "is_message")
 private val messageContentKey = NamespacedKey(plugin, "message_content")
 private val stringList = PersistentDataType.LIST.listTypeFrom(ListPersistentDataType.STRING)
 
+private val messageLore = listOf(component {
+    text("经过特殊处理的纸张，可承载时间与风沙。") with mochaSubtext0 without italic()
+})
+
+private fun ItemStack.updateLore() {
+    check(isMessage) { "Not a message item" }
+    editMeta {
+        it.lore(
+            buildList {
+                if (messageContent.isNotEmpty()) add(component {
+                    text("已编辑") with mochaSubtext0 without italic()
+                })
+                addAll(messageLore)
+            }
+        )
+    }
+}
+
 internal val messageItemRecipe = ShapedRecipe(NamespacedKey(plugin, "message"), MessageItem())
     .apply {
         shape("FFF", "FBF", "FFF")
@@ -42,6 +60,7 @@ internal var ItemStack.messageContent: List<String>
                 value
             )
         }
+        updateLore()
     }
 
 class MessageItem : ItemStack(Material.PAPER, 1) {
@@ -50,15 +69,11 @@ class MessageItem : ItemStack(Material.PAPER, 1) {
             it.displayName(component {
                 text("漂流信纸") with mochaText without italic()
             })
-            it.lore(
-                listOf(component {
-                    text("经过特殊处理的纸张，可承载时间与风沙。") with mochaSubtext0 without italic()
-                })
-            )
             it.persistentDataContainer.apply {
                 set(messageKey, PersistentDataType.BOOLEAN, true)
                 set(messageContentKey, stringList, listOf())
             }
         }
+        updateLore()
     }
 }
