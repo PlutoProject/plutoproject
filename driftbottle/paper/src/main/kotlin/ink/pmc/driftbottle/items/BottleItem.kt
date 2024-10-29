@@ -29,7 +29,7 @@ internal val ItemStack.bottleId: UUID?
 
 internal suspend fun ItemStack.getBottle(): Bottle? {
     check(isBottle) { "Not a bottle item" }
-    return BottleManager.getBottle(checkNotNull(bottleId) { "Bottle ID not present" })
+    return BottleManager.get(checkNotNull(bottleId) { "Bottle ID not present" })
 }
 
 class BottleItem(bottle: Bottle) : ItemStack(Material.GLASS_BOTTLE, 1), KoinComponent {

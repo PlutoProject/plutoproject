@@ -4,7 +4,7 @@ import java.time.Instant
 import java.util.*
 
 interface BottleOperation {
-    val operator: UUID
     val time: Instant
+    val operator: UUID
     val type: BottleOperationType
 }
