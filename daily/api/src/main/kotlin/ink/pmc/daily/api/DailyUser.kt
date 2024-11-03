@@ -1,15 +1,15 @@
 package ink.pmc.daily.api
 
 import org.bukkit.OfflinePlayer
+import java.time.Instant
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.util.*
 
 interface DailyUser {
 
     val id: UUID
     val player: OfflinePlayer
-    val lastCheckIn: LocalDateTime?
+    val lastCheckIn: Instant?
     val lastCheckInDate: LocalDate?
     val accumulatedDays: Int
 

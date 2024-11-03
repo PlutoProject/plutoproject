@@ -10,14 +10,14 @@ import ink.pmc.advkt.component.text
 import ink.pmc.daily.*
 import ink.pmc.daily.api.Daily
 import ink.pmc.daily.api.DailyHistory
-import ink.pmc.framework.interactive.inventory.*
 import ink.pmc.framework.interactive.LocalPlayer
+import ink.pmc.framework.interactive.inventory.*
 import ink.pmc.framework.interactive.inventory.canvas.Chest
+import ink.pmc.framework.interactive.inventory.click.clickable
 import ink.pmc.framework.interactive.inventory.jetpack.Arrangement
 import ink.pmc.framework.interactive.inventory.layout.Box
 import ink.pmc.framework.interactive.inventory.layout.Column
 import ink.pmc.framework.interactive.inventory.layout.Row
-import ink.pmc.framework.interactive.inventory.click.clickable
 import ink.pmc.framework.utils.chat.UI_PAGING_SOUND
 import ink.pmc.framework.utils.chat.UI_SUCCEED_SOUND
 import ink.pmc.framework.utils.chat.replace
@@ -33,6 +33,7 @@ import org.bukkit.event.inventory.ClickType
 import org.bukkit.inventory.meta.SkullMeta
 import org.koin.compose.koinInject
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.YearMonth
 import java.time.ZonedDateTime
 
@@ -126,8 +127,8 @@ class DailyCalenderScreen : Screen {
         val loadedHistory = localLoadedHistory.current
 
         val days = yearMonth.lengthOfMonth()
-        val start = yearMonth.atStartOfMonth().atStartOfDay().toInstant(currentZoneId.toOffset())
-        val end = yearMonth.atEndOfMonth().atEndOfDay().toInstant(currentZoneId.toOffset())
+        val start = yearMonth.atStartOfMonth().atStartOfDay().toInstant(player.zoneId.toOffset())
+        val end = yearMonth.atEndOfMonth().atEndOfDay().toInstant(player.zoneId.toOffset())
 
         LaunchedEffect(yearMonth) {
             if (loadedHistory.containsKey(yearMonth)) return@LaunchedEffect // 如果有缓存（即上面已经读入数据）就不查数据库
@@ -176,16 +177,19 @@ class DailyCalenderScreen : Screen {
                 editMeta {
                     it.itemName(
                         DAY
-                            .replace("<year>", date.year)
-                            .replace("<month>", date.month.value)
-                            .replace("<day>", date.dayOfMonth)
+                            .replace("<time>", date.formatDate())
                     )
                     it.lore(
                         when {
                             state == 0 && date == now -> DAY_LORE
                             state == 0 && date.isBefore(now) -> DAY_LORE_PAST
-                            state == 1 -> history?.let { h ->
-                                DAY_LORE_CHECKED_IN.replace("<time>", Component.text(h.createdAt.format()))
+                            state == 1 -> history?.let { history ->
+                                DAY_LORE_CHECKED_IN.replace(
+                                    "<time>",
+                                    Component.text(
+                                        LocalDateTime.ofInstant(history.createdAt, player.zoneId).formatTime()
+                                    )
+                                )
                             }?.toList() ?: emptyList()
 
                             date.isAfter(now) -> DAY_LORE_FUTURE
@@ -284,12 +288,13 @@ class DailyCalenderScreen : Screen {
         val loadedHistory = localLoadedHistory.current
         val accumulatedDays by localAccumulatedDays.current
 
-        val now by remember { mutableStateOf(LocalDate.now()) }
+        val now by remember { mutableStateOf(LocalDate.now(player.zoneId)) }
         val monthStart by remember { derivedStateOf { now.withDayOfMonth(1).atStartOfDay() } }
         val monthEnd by remember { derivedStateOf { now.withDayOfMonth(now.lengthOfMonth()).atEndOfDay() } }
         val monthDays by remember {
             derivedStateOf {
-                loadedHistory.values.flatten().filter { it.createdAt in monthStart..monthEnd }.size
+                loadedHistory.values.flatten()
+                    .filter { LocalDateTime.ofInstant(it.createdAt, player.zoneId) in monthStart..monthEnd }.size
             }
         }
 

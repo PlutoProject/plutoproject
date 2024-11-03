@@ -64,7 +64,7 @@ val NAVIGATE_LORE_PREV_REACHED = listOf(
 )
 
 val DAY = component {
-    text("<year>/<month>/<day>") with mochaText without italic()
+    text("<time>") with mochaText without italic()
 }
 
 private val DAY_UNCHECKED_IN = component {
