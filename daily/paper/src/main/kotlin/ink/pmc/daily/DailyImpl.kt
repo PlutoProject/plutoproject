@@ -151,7 +151,7 @@ class DailyImpl : Daily, KoinComponent {
         return getHistoryByTime(user, start, end).firstOrNull()
     }
 
-    override suspend fun getLastCheckIn(user: UUID): LocalDateTime? {
+    override suspend fun getLastCheckIn(user: UUID): Instant? {
         return getUser(user)?.lastCheckIn
     }
 
