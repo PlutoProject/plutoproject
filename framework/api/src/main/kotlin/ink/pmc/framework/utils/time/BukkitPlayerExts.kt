@@ -3,10 +3,11 @@ package ink.pmc.framework.utils.time
 import ink.pmc.framework.provider.Provider
 import org.bukkit.entity.Player
 import java.util.*
+import kotlin.jvm.optionals.getOrNull
 
 @Suppress("UNUSED")
 inline val Player.timezone: TimeZone
     get() = address?.let { address ->
-        Provider.geoIpDatabase.city(address.address)?.location?.timeZone
+        Provider.geoIpDatabase.tryCity(address.address).getOrNull()?.location?.timeZone
             ?.let { TimeZone.getTimeZone(it) }
     } ?: currentTimeZone
