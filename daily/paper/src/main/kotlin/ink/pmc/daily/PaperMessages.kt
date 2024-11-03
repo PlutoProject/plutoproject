@@ -21,7 +21,7 @@ val COIN_CLAIM = component {
 }
 
 val UI_TITLE = component {
-    text("礼记日历 | <year>/<month>/<day>")
+    text("礼记日历 | <time>")
 }
 
 val NAVIGATE = component {

@@ -52,12 +52,11 @@ class DailyCalenderScreen : Screen {
 
     @Composable
     override fun Content() {
-        val date by remember { mutableStateOf(ZonedDateTime.now()) }
+        val player = LocalPlayer.current
+        val date by remember { mutableStateOf(ZonedDateTime.now(player.zoneId)) }
         Chest(
             title = UI_TITLE
-                .replace("<year>", date.year)
-                .replace("<month>", date.month.value)
-                .replace("<day>", date.dayOfMonth),
+                .replace("<time>", date.formatDate()),
             modifier = Modifier.height(6)
         ) {
             Box(modifier = Modifier.fillMaxSize()) {
@@ -161,7 +160,7 @@ class DailyCalenderScreen : Screen {
         * */
         // 可能残留状态，让它在 date 变化时重新初始化
         var state by remember(date, history) { mutableStateOf(if (history != null) 1 else 0) }
-        val now by remember { mutableStateOf(LocalDate.now()) }
+        val now by remember { mutableStateOf(LocalDate.now(player.zoneId)) }
 
         val head = when {
             state == 0 && date == now -> yellowExclamationHead
