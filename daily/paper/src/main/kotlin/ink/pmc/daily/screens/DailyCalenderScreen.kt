@@ -23,6 +23,7 @@ import ink.pmc.framework.utils.chat.UI_SUCCEED_SOUND
 import ink.pmc.framework.utils.chat.replace
 import ink.pmc.framework.utils.dsl.itemStack
 import ink.pmc.framework.utils.time.*
+import ink.pmc.framework.utils.trimmed
 import ink.pmc.framework.utils.visual.mochaFlamingo
 import ink.pmc.framework.utils.visual.mochaSubtext0
 import ink.pmc.framework.utils.visual.mochaText
@@ -183,12 +184,14 @@ class DailyCalenderScreen : Screen {
                             state == 0 && date == now -> DAY_LORE
                             state == 0 && date.isBefore(now) -> DAY_LORE_PAST
                             state == 1 -> history?.let { history ->
-                                DAY_LORE_CHECKED_IN.replace(
+                                val lore =
+                                    if (history.rewarded > 0) DAY_LORE_CHECKED_IN_REWARDED else DAY_LORE_CHECKED_IN
+                                lore.replace(
                                     "<time>",
                                     Component.text(
                                         LocalDateTime.ofInstant(history.createdAt, player.zoneId).formatTime()
                                     )
-                                )
+                                ).replace("<reward>", history.rewarded.trimmed())
                             }?.toList() ?: emptyList()
 
                             date.isAfter(now) -> DAY_LORE_FUTURE

@@ -90,9 +90,20 @@ val DAY_LORE = listOf(
     DAY_CHECK_IN_OPREATION
 )
 
+private val DAY_LORE_TIME = component {
+    text("<time>") with mochaSubtext0 without italic()
+}
+
 val DAY_LORE_CHECKED_IN = listOf(
+    DAY_LORE_TIME,
+    DAY_CHECKED_IN
+)
+
+val DAY_LORE_CHECKED_IN_REWARDED = listOf(
+    DAY_LORE_TIME,
     component {
-        text("<time>") with mochaSubtext0 without italic()
+        text("到访奖励 ") with mochaSubtext0 without italic()
+        text("<reward>\uD83C\uDF1F") with mochaText without italic()
     },
     DAY_CHECKED_IN
 )

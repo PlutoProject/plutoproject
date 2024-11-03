@@ -38,7 +38,7 @@ class DailyUserImpl(model: DailyUserModel) : DailyUser, KoinComponent {
         require(!isCheckedInToday()) { "User $id already checked-in today" }
         val history = DailyHistoryModel(
             owner = id.toString(),
-            createdAt = currentUnixTimestamp
+            createdAt = currentUnixTimestamp,
         )
 
         checkCheckInDate()
