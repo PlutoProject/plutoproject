@@ -18,5 +18,6 @@ class DailyHistoryImpl(model: DailyHistoryModel) : DailyHistory {
     override val ownerPlayer: OfflinePlayer by lazy { Bukkit.getOfflinePlayer(owner) }
     override val createdAt: LocalDateTime = LocalDateTime.ofInstant(model.createdAt.instant, currentZoneId)
     override val createdDate: LocalDate = createdAt.toLocalDate()
+    override val rewarded: Double = model.rewarded
 
 }

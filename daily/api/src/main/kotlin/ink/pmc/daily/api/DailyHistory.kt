@@ -12,5 +12,6 @@ interface DailyHistory {
     val ownerPlayer: OfflinePlayer
     val createdAt: LocalDateTime
     val createdDate: LocalDate
+    val rewarded: Double
 
 }
