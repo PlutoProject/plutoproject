@@ -73,7 +73,7 @@ class DailyCalenderScreen : Screen {
     private fun InnerContents() {
         val daily = koinInject<Daily>()
         val player = LocalPlayer.current
-        val yearMonth = remember { mutableStateOf(YearMonth.now()) }
+        val yearMonth = remember { mutableStateOf(YearMonth.now(player.zoneId)) }
         val loadedHistory = remember { mutableStateMapOf<YearMonth, MutableList<DailyHistory>>() }
         val checkInDays by remember(loadedHistory) { derivedStateOf { loadedHistory.size } }
         val accumulatedDays = remember { mutableStateOf(0) } // 子组件需要修改这个 state
@@ -233,10 +233,11 @@ class DailyCalenderScreen : Screen {
     @Composable
     @Suppress("FunctionName")
     private fun Navigate() {
+        val player = LocalPlayer.current
         var yearMonth by localYearMonth.current
 
         val prev = yearMonth.minusMonths(1)
-        val now by remember { mutableStateOf(YearMonth.now()) }
+        val now by remember { mutableStateOf(YearMonth.now(player.zoneId)) }
         val next = yearMonth.plusMonths(1)
 
         fun isReachedLimit(): Boolean {
