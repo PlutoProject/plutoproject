@@ -45,3 +45,7 @@ include("daily:paper")
 
 include("whitelist")
 include("whitelist:velocity")
+
+include("runtime")
+include("runtime:paper")
+include("runtime:velocity")

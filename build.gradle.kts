@@ -150,9 +150,10 @@ fun Project.configurePaperPlugin() {
             main = "${parent?.group}.PaperPlugin"
             name = "plutoproject_${parent?.name}"
             apiVersion = bukkitApiVersion
-            if (name.get().contains("framework")) {
-                return@bukkitPluginYaml
-            } else {
+            if (!name.get().contains("runtime")) {
+                depend.add("plutoproject_runtime")
+            } else return@bukkitPluginYaml
+            if (!name.get().contains("framework")) {
                 depend.add("plutoproject_framework")
             }
         }
@@ -166,9 +167,10 @@ fun Project.configureVelocityPlugin() {
             main = "${parent?.group}.VelocityPlugin"
             id = "plutoproject_${parent?.name}"
             name = "plutoproject_${parent?.name}"
-            if (name.get().contains("framework")) {
-                return@velocityPluginJson
-            } else {
+            if (!name.get().contains("runtime")) {
+                dependency("plutoproject_runtime")
+            } else return@velocityPluginJson
+            if (!name.get().contains("framework")) {
                 dependency("plutoproject_framework")
             }
         }
@@ -325,7 +327,7 @@ allprojects {
         dep: Provider<*>,
         dependencyConfiguration: Action<ExternalModuleDependency> = Action { }
     ) {
-        if (project.name.contains("framework")) {
+        if (project.name.contains("runtime")) {
             implementation(dep, dependencyConfiguration)
             return
         }
@@ -374,9 +376,11 @@ allprojects {
         options.encoding = "UTF-8"
     }
 
-    tasks.jar {
-        manifest {
-            attributes["paperweight-mappings-namespace"] = "mojang+yarn"
+    if (name != "runtime") {
+        tasks.jar {
+            manifest {
+                attributes["paperweight-mappings-namespace"] = "mojang+yarn"
+            }
         }
     }
 
