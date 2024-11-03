@@ -1,5 +1,6 @@
 package ink.pmc.framework.provider
 
+import com.maxmind.geoip2.DatabaseReader
 import com.mongodb.kotlin.client.coroutine.MongoClient
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
 import ink.pmc.framework.utils.inject.inlinedGet
@@ -11,5 +12,6 @@ interface Provider : Closeable {
 
     val mongoClient: MongoClient
     val defaultMongoDatabase: MongoDatabase
+    val geoIpDatabase: DatabaseReader
 
 }

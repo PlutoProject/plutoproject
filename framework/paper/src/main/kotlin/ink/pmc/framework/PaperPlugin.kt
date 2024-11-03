@@ -23,7 +23,6 @@ import ink.pmc.framework.utils.command.commandManager
 import ink.pmc.framework.utils.currentUnixTimestamp
 import ink.pmc.framework.utils.hook.initPaperHooks
 import ink.pmc.framework.utils.inject.startKoinIfNotPresent
-import ink.pmc.framework.utils.jvm.findClass
 import ink.pmc.framework.utils.jvm.loadClassesInPackages
 import ink.pmc.framework.utils.platform.paper
 import ink.pmc.framework.utils.platform.paperThread
@@ -57,6 +56,7 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
 
     override fun onLoad() {
         frameworkLogger = logger
+        frameworkDataFolder = dataFolder.apply { if (!exists()) mkdirs() }
         paperThread = Thread.currentThread()
         this.server.messenger.registerOutgoingPluginChannel(this, "BungeeCord")
         startKoinIfNotPresent {

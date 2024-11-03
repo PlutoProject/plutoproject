@@ -51,6 +51,7 @@ class VelocityPlugin @Inject constructor(private val spc: SuspendingPluginContai
     fun framework(server: ProxyServer, logger: Logger, @DataDirectory dataDirectoryPath: Path) {
         proxy = server
         frameworkLogger = logger
+        frameworkDataFolder = dataDirectoryPath.toFile().apply { if (!exists()) mkdirs() }
         proxyThread = Thread.currentThread()
         frameworkVelocity = spc.pluginContainer
         dataFolder = dataDirectoryPath.toFile().also {

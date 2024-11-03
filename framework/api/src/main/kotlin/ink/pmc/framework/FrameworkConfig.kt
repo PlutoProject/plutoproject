@@ -7,15 +7,20 @@ data class FrameworkConfig(
 )
 
 data class ProviderConfig(
-    val mongo: MongoDbConfig
+    val mongo: MongoDb,
+    val geoIp: GeoIp
 )
 
-data class MongoDbConfig(
+data class MongoDb(
     val host: String,
     val port: Int,
     val database: String,
     val username: String,
     val password: String
+)
+
+data class GeoIp(
+    val database: String
 )
 
 data class RpcConfig(

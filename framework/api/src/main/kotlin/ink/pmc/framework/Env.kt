@@ -1,9 +1,11 @@
 package ink.pmc.framework
 
 import ink.pmc.framework.utils.jvm.findClass
+import java.io.File
 import java.util.logging.Logger
 
 lateinit var frameworkLogger: Logger
+lateinit var frameworkDataFolder: File
 
 inline val frameworkClassLoader
     get() = findClass("ink.pmc.framework.PaperPlugin")?.classLoader
