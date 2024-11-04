@@ -114,7 +114,9 @@ data class Item(
 
 data class Recipe(
     val enabled: Boolean,
-    val menuItem: Boolean
+    val autoUnlock: Boolean,
+    val menuItem: Boolean,
+    val vanillaExtend: Boolean
 )
 
 data class Join(

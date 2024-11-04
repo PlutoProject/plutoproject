@@ -28,6 +28,7 @@ import ink.pmc.essentials.home.HomeManagerImpl
 import ink.pmc.essentials.hooks.EconomyHook
 import ink.pmc.essentials.listeners.*
 import ink.pmc.essentials.recipes.MENU_ITEM_RECIPE
+import ink.pmc.essentials.recipes.registerVanillaExtend
 import ink.pmc.essentials.repositories.BackRepository
 import ink.pmc.essentials.repositories.HomeRepository
 import ink.pmc.essentials.repositories.WarpRepository
@@ -207,6 +208,10 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
             server.pluginManager.registerSuspendingEvents(ItemListener, this)
         }
 
+        if (config.recipe.enabled) {
+            server.pluginManager.registerSuspendingEvents(RecipeListener, this)
+        }
+
         if (config.join.enabled) {
             server.pluginManager.registerSuspendingEvents(JoinListener, this)
         }
@@ -220,6 +225,9 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
         if (!config.recipe.enabled) return
         if (config.recipe.menuItem) {
             server.addRecipe(MENU_ITEM_RECIPE)
+        }
+        if (config.recipe.vanillaExtend) {
+            server.registerVanillaExtend()
         }
     }
 
