@@ -234,7 +234,6 @@ fun Project.useVelocityEnv() {
         return
     }
     dependencies {
-        compileOnly(root.libs.velocity.api)
         compileOnly(root.libs.velocity)
         kapt(root.libs.velocity.api)
     }
