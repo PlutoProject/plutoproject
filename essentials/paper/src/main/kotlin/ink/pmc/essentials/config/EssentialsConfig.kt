@@ -46,6 +46,7 @@ data class Request(
 data class RandomTeleport(
     val enabled: Boolean,
     val cacheInterval: Int,
+    val cooldown: Duration = Duration.parse("60s"),
     val default: RandomTeleportOptions,
     val worlds: Map<String, RandomTeleportOptions>,
     val enabledWorlds: List<String> = listOf("world")
@@ -62,7 +63,6 @@ data class RandomTeleportOptions(
     val minHeight: Int = -1,
     val noCover: Boolean = true,
     val maxAttempts: Int = 5,
-    val cooldown: Duration = Duration.parse("10s"),
     val cost: Double = 0.0,
     val blacklistedBiomes: List<Biome> = listOf(),
 )

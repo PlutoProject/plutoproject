@@ -8,6 +8,7 @@ import org.bukkit.Location
 import org.bukkit.World
 import org.bukkit.entity.Player
 import java.util.*
+import kotlin.time.Duration
 
 @Suppress("UNUSED")
 interface RandomTeleportManager {
@@ -15,6 +16,7 @@ interface RandomTeleportManager {
 
     val cacheTasks: Queue<CacheTask>
     val caches: Multimap<World, RandomTeleportCache>
+    val cooldown: Duration
     val defaultOptions: RandomTeleportOptions
     val worldOptions: Map<World, RandomTeleportOptions>
     val enabledWorlds: Collection<World>
@@ -39,6 +41,10 @@ interface RandomTeleportManager {
     fun submitCacheFirst(world: World, options: RandomTeleportOptions? = null): CacheTask
 
     fun hasCacheTask(id: UUID): Boolean
+
+    fun isInCooldown(player: Player): Boolean
+
+    fun getCooldown(player: Player): Cooldown?
 
     fun launch(player: Player, world: World, options: RandomTeleportOptions? = null, prompt: Boolean = true)
 

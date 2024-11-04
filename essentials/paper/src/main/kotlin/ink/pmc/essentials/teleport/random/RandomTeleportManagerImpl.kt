@@ -34,6 +34,7 @@ import org.koin.core.component.inject
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.LinkedBlockingDeque
+import kotlin.time.Duration
 import kotlin.time.toKotlinDuration
 
 internal fun Chunk.addTeleportTicket() {
@@ -58,10 +59,12 @@ class RandomTeleportManagerImpl : RandomTeleportManager, KoinComponent {
     private val teleport by inject<TeleportManager>()
     private var waitedTicks: Long = -1
     private var inTeleport = ConcurrentHashMap.newKeySet<Player>()
+    private var cooldownMap = ConcurrentHashMap<Player, Cooldown>()
 
     override val cacheTasks: Deque<CacheTask> = LinkedBlockingDeque()
     override val caches: ListMultimap<World, RandomTeleportCache> =
         Multimaps.synchronizedListMultimap(ArrayListMultimap.create())
+    override val cooldown: Duration = config.cooldown
     override val defaultOptions: RandomTeleportOptions = RandomTeleportOptions(
         center = Vec2(config.default.center.x, config.default.center.z),
         spawnPointAsCenter = config.default.spawnpointAsCenter,
@@ -211,6 +214,14 @@ class RandomTeleportManagerImpl : RandomTeleportManager, KoinComponent {
         return cacheTasks.any { it.id == id }
     }
 
+    override fun isInCooldown(player: Player): Boolean {
+        return getCooldown(player) != null
+    }
+
+    override fun getCooldown(player: Player): Cooldown? {
+        return cooldownMap[player]
+    }
+
     override fun launch(
         player: Player,
         world: World,
@@ -268,6 +279,7 @@ class RandomTeleportManagerImpl : RandomTeleportManager, KoinComponent {
         prompt: Boolean
     ) {
         async {
+            check(!isInCooldown(player)) { "Player ${player.name} is still in cooldown" }
             if (inTeleport.contains(player)) {
                 if (prompt) {
                     player.sendMessage(RANDOM_TELEPORT_FAILED_IN_PROGRESS)
@@ -343,6 +355,11 @@ class RandomTeleportManagerImpl : RandomTeleportManager, KoinComponent {
             teleport.teleportSuspend(player, location, prompt = prompt)
             val time = timer.end()
             notifyPlayerOfTeleport(player, location, attempts, time, costed, cost, symbol, prompt)
+            if (!player.hasPermission(COOLDOWN_BYPASS)) {
+                cooldownMap[player] = CooldownImpl(cooldown) {
+                    cooldownMap.remove(player)
+                }
+            }
             inTeleport.remove(player)
         }
     }
