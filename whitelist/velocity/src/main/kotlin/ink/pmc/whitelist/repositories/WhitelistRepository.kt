@@ -1,10 +1,11 @@
-package ink.pmc.whitelist
+package ink.pmc.whitelist.repositories
 
 import com.mongodb.client.model.Filters.and
 import com.mongodb.client.model.Filters.eq
 import com.mongodb.client.model.ReplaceOptions
 import com.mongodb.kotlin.client.coroutine.MongoCollection
 import com.velocitypowered.api.proxy.Player
+import ink.pmc.whitelist.models.WhitelistModel
 import ink.pmc.whitelist.profile.ProfileFetcher
 import kotlinx.coroutines.flow.firstOrNull
 import java.util.*

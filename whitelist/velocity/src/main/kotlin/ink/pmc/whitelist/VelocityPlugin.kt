@@ -13,17 +13,23 @@ import ink.pmc.framework.utils.command.annotationParser
 import ink.pmc.framework.utils.command.commandManager
 import ink.pmc.framework.utils.inject.startKoinIfNotPresent
 import ink.pmc.framework.utils.platform.proxy
+import ink.pmc.whitelist.models.MemberModel
+import ink.pmc.whitelist.models.WhitelistModel
+import ink.pmc.whitelist.repositories.MemberRepository
+import ink.pmc.whitelist.repositories.WhitelistRepository
 import org.koin.dsl.module
 import java.nio.file.Path
 import java.util.logging.Logger
 
 lateinit var plugin: PluginContainer
 
-private const val COLLECTION_NAME = "whitelist"
 private val whitelistCollection =
-    Provider.defaultMongoDatabase.getCollection<WhitelistModel>(COLLECTION_NAME)
+    Provider.defaultMongoDatabase.getCollection<WhitelistModel>("whitelist_data")
+private val memberCollection =
+    Provider.defaultMongoDatabase.getCollection<MemberModel>("member_members")
 private val velocityModule = module {
     single<WhitelistRepository> { WhitelistRepository(whitelistCollection) }
+    single<MemberRepository> { MemberRepository(memberCollection) }
 }
 
 @Suppress("UNUSED", "UNUSED_PARAMETER", "UnusedReceiverParameter")

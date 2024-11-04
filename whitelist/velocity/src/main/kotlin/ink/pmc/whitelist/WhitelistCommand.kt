@@ -3,18 +3,24 @@ package ink.pmc.whitelist
 import com.velocitypowered.api.command.CommandSource
 import ink.pmc.advkt.component.text
 import ink.pmc.advkt.send
+import ink.pmc.framework.utils.currentUnixTimestamp
 import ink.pmc.framework.utils.player.uuid
 import ink.pmc.framework.utils.visual.mochaLavender
 import ink.pmc.framework.utils.visual.mochaMaroon
 import ink.pmc.framework.utils.visual.mochaPink
 import ink.pmc.framework.utils.visual.mochaText
+import ink.pmc.whitelist.models.WhitelistModel
+import ink.pmc.whitelist.models.createWhitelistModel
 import ink.pmc.whitelist.profile.MojangProfileFetcher
+import ink.pmc.whitelist.repositories.MemberRepository
+import ink.pmc.whitelist.repositories.WhitelistRepository
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.withTimeout
 import org.incendo.cloud.annotations.Argument
 import org.incendo.cloud.annotations.Command
 import org.incendo.cloud.annotations.Permission
 import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
 import org.koin.core.component.inject
 import kotlin.time.Duration.Companion.seconds
 
@@ -108,6 +114,27 @@ object WhitelistCommand : KoinComponent {
             text("当前有 ") with mochaText
             text("$count ") with mochaLavender
             text("位玩家获得了白名单") with mochaText
+        }
+    }
+
+    @Command("whitelist import")
+    @Permission("whitelist.command")
+    suspend fun CommandSource.import() {
+        send {
+            text("正在从 Member 系统导入数据...") with mochaText
+        }
+        val members = get<MemberRepository>().list()
+        members.map {
+            WhitelistModel(it.id, it.rawName.let { name ->
+                if (name.startsWith(".")) name.substring(1) else name
+            }, currentUnixTimestamp)
+        }.forEach {
+            repo.saveOrUpdate(it)
+        }
+        send {
+            text("导入完成，共导入 ") with mochaPink
+            text("${members.size} ") with mochaText
+            text("个条目") with mochaPink
         }
     }
 }
