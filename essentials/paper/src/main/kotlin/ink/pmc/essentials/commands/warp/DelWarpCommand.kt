@@ -25,7 +25,7 @@ object DelWarpCommand {
         } else {
             sendMessage(
                 COMMAND_DELWARP_SUCCEED_ALIAS
-                    .replace("<name>", warp)
+                    .replace("<name>", warp.name)
                     .replace("<alias>", warp.alias!!)
             )
         }
