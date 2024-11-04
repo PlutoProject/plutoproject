@@ -2,6 +2,7 @@ package ink.pmc.essentials
 
 import com.github.shynixn.mccoroutine.bukkit.SuspendingJavaPlugin
 import com.github.shynixn.mccoroutine.bukkit.registerSuspendingEvents
+import com.mojang.brigadier.arguments.StringArgumentType
 import com.sksamuel.hoplite.PropertySource
 import ink.pmc.essentials.afk.AfkManagerImpl
 import ink.pmc.essentials.api.afk.AfkManager
@@ -22,6 +23,7 @@ import ink.pmc.essentials.commands.teleport.TpcancelCommand
 import ink.pmc.essentials.commands.teleport.random.RtpCommand
 import ink.pmc.essentials.commands.warp.*
 import ink.pmc.essentials.config.EssentialsConfig
+import ink.pmc.essentials.config.Warp
 import ink.pmc.essentials.home.HomeManagerImpl
 import ink.pmc.essentials.hooks.EconomyHook
 import ink.pmc.essentials.listeners.*
@@ -34,13 +36,16 @@ import ink.pmc.essentials.teleport.random.RandomTeleportManagerImpl
 import ink.pmc.essentials.warp.WarpManagerImpl
 import ink.pmc.framework.utils.command.annotationParser
 import ink.pmc.framework.utils.command.commandManager
+import ink.pmc.framework.utils.command.getKotlinMethodArgumentParser
 import ink.pmc.framework.utils.command.suggestion.PaperPrivilegedSuggestion
 import ink.pmc.framework.utils.config.preconfiguredConfigLoaderBuilder
 import ink.pmc.framework.utils.inject.startKoinIfNotPresent
 import ink.pmc.framework.utils.storage.saveResourceIfNotExisted
+import io.leangen.geantyref.TypeToken
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
+import org.bukkit.command.CommandSender
 import org.bukkit.plugin.Plugin
 import org.incendo.cloud.bukkit.parser.OfflinePlayerParser
 import org.incendo.cloud.bukkit.parser.WorldParser
@@ -113,34 +118,41 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
                     PaperPrivilegedSuggestion.of(OfflinePlayerParser(), HOMES_OTHER)
                 )
             }
+            brigadierManager().apply {
+                registerMapping(TypeToken.get(getKotlinMethodArgumentParser<CommandSender, Warp>())) {
+                    it.cloudSuggestions().to { StringArgumentType.greedyString() }
+                }
+            }
         }.annotationParser().apply {
-            parse(EssentialsCommand)
-            parse(AlignCommand)
-            parse(GmCommand)
-            parse(HatCommand)
-            parse(ItemFrameCommand)
-            parse(LecternCommand)
-            parse(WarpCommons)
-            parse(DelWarpCommand)
-            parse(EditWarpCommand)
-            parse(PreferredSpawnCommand)
-            parse(SetWarpCommand)
-            parse(SpawnCommand)
-            parse(WarpCommand)
-            parse(WarpsCommand)
-            parse(TeleportCommons)
-            parse(RtpCommand)
-            parse(TpacceptCommand)
-            parse(TpaCommand)
-            parse(TpcancelCommand)
-            parse(HomeCommons)
-            parse(DelHomeCommand)
-            parse(EditHomeCommand)
-            parse(HomeCommand)
-            parse(HomesCommand)
-            parse(SetHomeCommand)
-            parse(BackCommand)
-            parse(AfkCommand)
+            parse(
+                EssentialsCommand,
+                AlignCommand,
+                GmCommand,
+                HatCommand,
+                ItemFrameCommand,
+                LecternCommand,
+                WarpCommons,
+                DelWarpCommand,
+                EditWarpCommand,
+                PreferredSpawnCommand,
+                SetWarpCommand,
+                SpawnCommand,
+                WarpCommand,
+                WarpsCommand,
+                TeleportCommons,
+                RtpCommand,
+                TpacceptCommand,
+                TpaCommand,
+                TpcancelCommand,
+                HomeCommons,
+                DelHomeCommand,
+                EditHomeCommand,
+                HomeCommand,
+                HomesCommand,
+                SetHomeCommand,
+                BackCommand,
+                AfkCommand
+            )
         }
 
         registerEvents()

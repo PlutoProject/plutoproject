@@ -9,5 +9,5 @@ fun Plugin.commandManager(): LegacyPaperCommandManager<CommandSender> {
     return LegacyPaperCommandManager.createNative(
         this,
         ExecutionCoordinator.asyncCoordinator()
-    )
+    ).apply { registerBrigadier() }
 }
