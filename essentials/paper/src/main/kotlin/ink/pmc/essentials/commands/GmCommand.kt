@@ -48,7 +48,7 @@ object GmCommand {
 }
 
 private suspend fun CommandSender.gm(gameMode: GameMode, player: Player?) = sync {
-    val actualPlayer = player ?: if (this is Player) this else run {
+    val actualPlayer = player ?: if (this@gm is Player) this else run {
         sendMessage(NON_PLAYER)
         return@sync
     }
