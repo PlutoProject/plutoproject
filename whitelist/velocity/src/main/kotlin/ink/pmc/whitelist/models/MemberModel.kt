@@ -9,7 +9,8 @@ data class MemberModel(
     val id: String,
     val rawName: String,
     val whitelistStatus: WhitelistState,
-    val authType: AuthType
+    val authType: AuthType,
+    val isHidden: Boolean
 )
 
 enum class WhitelistState {

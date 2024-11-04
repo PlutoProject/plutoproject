@@ -9,7 +9,9 @@ import ink.pmc.framework.utils.visual.mochaLavender
 import ink.pmc.framework.utils.visual.mochaMaroon
 import ink.pmc.framework.utils.visual.mochaPink
 import ink.pmc.framework.utils.visual.mochaText
+import ink.pmc.whitelist.models.AuthType
 import ink.pmc.whitelist.models.WhitelistModel
+import ink.pmc.whitelist.models.WhitelistState
 import ink.pmc.whitelist.models.createWhitelistModel
 import ink.pmc.whitelist.profile.MojangProfileFetcher
 import ink.pmc.whitelist.repositories.MemberRepository
@@ -124,7 +126,9 @@ object WhitelistCommand : KoinComponent {
             text("正在从 Member 系统导入数据...") with mochaText
         }
         val members = get<MemberRepository>().list()
-        members.map {
+        members.filter {
+            it.authType == AuthType.OFFICIAL && it.whitelistStatus == WhitelistState.WHITELISTED && !it.isHidden
+        }.map {
             WhitelistModel(it.id, it.rawName.let { name ->
                 if (name.startsWith(".")) name.substring(1) else name
             }, currentUnixTimestamp)
