@@ -4,6 +4,7 @@ import ink.pmc.essentials.*
 import ink.pmc.framework.utils.chat.NON_PLAYER
 import ink.pmc.framework.utils.chat.replace
 import ink.pmc.framework.utils.command.ensurePlayer
+import ink.pmc.framework.utils.command.selectPlayer
 import ink.pmc.framework.utils.concurrent.sync
 import org.bukkit.GameMode
 import org.bukkit.command.CommandSender
@@ -48,7 +49,7 @@ object GmCommand {
 }
 
 private suspend fun CommandSender.gm(gameMode: GameMode, player: Player?) = sync {
-    val actualPlayer = player ?: if (this@gm is Player) this else run {
+    val actualPlayer = selectPlayer(this@gm, player) ?: run {
         sendMessage(NON_PLAYER)
         return@sync
     }
