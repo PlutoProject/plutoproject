@@ -3,7 +3,6 @@ package ink.pmc.whitelist
 import com.velocitypowered.api.command.CommandSource
 import ink.pmc.advkt.component.text
 import ink.pmc.advkt.send
-import ink.pmc.framework.utils.currentUnixTimestamp
 import ink.pmc.framework.utils.player.uuid
 import ink.pmc.framework.utils.visual.mochaLavender
 import ink.pmc.framework.utils.visual.mochaMaroon
@@ -33,7 +32,7 @@ object WhitelistCommand : KoinComponent {
     @Command("whitelist add <name>")
     @Permission("whitelist.command")
     suspend fun CommandSource.add(@Argument("name") name: String) {
-        repo.findByNameAndFetcher(name, MojangProfileFetcher)?.let { model ->
+        repo.findByName(name)?.let { model ->
             send {
                 text("玩家 ") with mochaMaroon
                 text("${model.rawName} ") with mochaText
@@ -127,12 +126,15 @@ object WhitelistCommand : KoinComponent {
         }
         val members = get<MemberRepository>().list()
         members.filter {
-            it.authType == AuthType.OFFICIAL && it.whitelistStatus == WhitelistState.WHITELISTED && !it.isHidden
+            it.authType == AuthType.OFFICIAL
+                    && it.whitelistStatus == WhitelistState.WHITELISTED
+                    && it.isHidden?.not() ?: true
         }.map {
             WhitelistModel(it.id, it.rawName.let { name ->
                 if (name.startsWith(".")) name.substring(1) else name
-            }, currentUnixTimestamp)
+            }, it.createdAt)
         }.forEach {
+            if (repo.findById(it.id.uuid) != null) return
             repo.saveOrUpdate(it)
         }
         send {

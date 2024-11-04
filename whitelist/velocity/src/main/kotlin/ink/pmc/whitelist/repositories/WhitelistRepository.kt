@@ -1,12 +1,10 @@
 package ink.pmc.whitelist.repositories
 
-import com.mongodb.client.model.Filters.and
 import com.mongodb.client.model.Filters.eq
 import com.mongodb.client.model.ReplaceOptions
 import com.mongodb.kotlin.client.coroutine.MongoCollection
 import com.velocitypowered.api.proxy.Player
 import ink.pmc.whitelist.models.WhitelistModel
-import ink.pmc.whitelist.profile.ProfileFetcher
 import kotlinx.coroutines.flow.firstOrNull
 import java.util.*
 
@@ -22,16 +20,8 @@ class WhitelistRepository(private val collection: MongoCollection<WhitelistModel
         return collection.find(eq("name", name.lowercase())).firstOrNull()
     }
 
-    suspend fun findByNameAndFetcher(name: String, fetcher: ProfileFetcher): WhitelistModel? {
-        return collection.find(and(eq("name", name.lowercase()), eq("fetcher", fetcher.id))).firstOrNull()
-    }
-
     suspend fun findByPlayer(player: Player): WhitelistModel? {
         return findById(player.uniqueId)
-    }
-
-    suspend fun findByProfileFetcher(fetcher: ProfileFetcher): WhitelistModel? {
-        return collection.find(eq("fetcher", fetcher.id)).firstOrNull()
     }
 
     suspend fun hasById(id: UUID): Boolean {
