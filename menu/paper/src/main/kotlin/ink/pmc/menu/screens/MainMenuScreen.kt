@@ -26,6 +26,7 @@ import ink.pmc.framework.interactive.inventory.layout.Row
 import ink.pmc.framework.playerdb.PlayerDb
 import ink.pmc.framework.utils.chat.UI_SUCCEED_SOUND
 import ink.pmc.framework.utils.chat.replace
+import ink.pmc.framework.utils.time.formatDuration
 import ink.pmc.framework.utils.visual.mochaSubtext0
 import ink.pmc.framework.utils.visual.mochaText
 import ink.pmc.framework.utils.world.aliasOrName
@@ -36,15 +37,18 @@ import ink.pmc.menu.components.Wiki
 import ink.pmc.menu.economy
 import ink.pmc.menu.inspecting
 import ink.pmc.menu.messages.*
+import ink.pmc.menu.screens.MainMenuScreen.RandomTeleportState.*
 import ink.pmc.menu.screens.models.MainMenuModel
 import ink.pmc.menu.screens.models.MainMenuModel.PreferredHomeState
 import ink.pmc.menu.screens.models.MainMenuModel.PreferredSpawnState
 import ink.pmc.menu.screens.models.MainMenuModel.Tab.ASSIST
 import ink.pmc.menu.screens.models.MainMenuModel.Tab.HOME
+import kotlinx.coroutines.delay
 import net.kyori.adventure.text.Component
 import org.bukkit.Material
 import org.bukkit.event.inventory.ClickType
 import org.koin.core.component.KoinComponent
+import kotlin.time.Duration.Companion.ZERO
 
 private const val PANE_COLUMNS = 4
 private const val PANE_COLUMN_WIDTH = 7
@@ -305,9 +309,9 @@ class MainMenuScreen : Screen, KoinComponent {
         )
     }
 
-    // 可用，货币不足，该世界不可用
+    // 可用，货币不足，该世界不可用，冷却中
     private enum class RandomTeleportState {
-        AVAILABLE, COIN_NOT_ENOUGH, NOT_AVAILABLE
+        AVAILABLE, COIN_NOT_ENOUGH, NOT_AVAILABLE, IN_COOLDOWN
     }
 
     /*
@@ -316,27 +320,40 @@ class MainMenuScreen : Screen, KoinComponent {
     @Composable
     @Suppress("FunctionName")
     private fun RandomTeleport() {
+        val model = localScreenModel.current
         val player = LocalPlayer.current
         val world = player.world
         val balance = economy.getBalance(player)
         val requirement = RandomTeleportManager.getRandomTeleportOptions(world).cost
 
+        LaunchedEffect(Unit) {
+            while (true) {
+                delay(500)
+                model.refreshCooldownState()
+            }
+        }
+
         val state = when {
-            !player.hasPermission(RANDOM_TELEPORT_COST_BYPASS) && balance < requirement -> RandomTeleportState.COIN_NOT_ENOUGH
-            !RandomTeleportManager.isEnabled(world) -> RandomTeleportState.NOT_AVAILABLE
-            else -> RandomTeleportState.AVAILABLE
+            model.rtpCooldownRemaining > ZERO -> IN_COOLDOWN
+            !player.hasPermission(RANDOM_TELEPORT_COST_BYPASS) && balance < requirement -> COIN_NOT_ENOUGH
+            !RandomTeleportManager.isEnabled(world) -> NOT_AVAILABLE
+            else -> AVAILABLE
         }
 
         Item(
             material = Material.AMETHYST_SHARD,
             name = MAIN_MENU_ITEM_HOME_RTP,
             lore = when (state) {
-                RandomTeleportState.AVAILABLE -> MAIN_MENU_ITEM_HOME_RTP_LORE
-                RandomTeleportState.NOT_AVAILABLE -> MAIN_MENU_ITEM_HOME_RTP_NOT_ENABLED_LORE
-                RandomTeleportState.COIN_NOT_ENOUGH -> MAIN_MENU_ITEM_HOME_RTP_COIN_NOT_ENOUGH_LORE
+                AVAILABLE -> MAIN_MENU_ITEM_HOME_RTP_LORE
+                NOT_AVAILABLE -> MAIN_MENU_ITEM_HOME_RTP_NOT_ENABLED_LORE
+                COIN_NOT_ENOUGH -> MAIN_MENU_ITEM_HOME_RTP_COIN_NOT_ENOUGH_LORE
+                IN_COOLDOWN -> MAIN_MENU_ITEM_LORE_HOME_RTP_IN_COOLDOWN_LORE.replace(
+                    "<time>",
+                    model.rtpCooldownRemaining.formatDuration()
+                ).toList()
             },
             modifier = Modifier.clickable {
-                if (state != RandomTeleportState.AVAILABLE) return@clickable
+                if (state != AVAILABLE) return@clickable
                 if (clickType != ClickType.LEFT) return@clickable
                 player.closeInventory()
                 RandomTeleportManager.launch(player, player.world)

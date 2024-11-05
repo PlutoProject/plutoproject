@@ -17,21 +17,23 @@ class CooldownImpl(override val duration: Duration, private val finishCallback: 
 
     init {
         launch {
-            delay(duration)
-            finish()
-        }
-        launch {
-            while (!isFinished) {
+            while (true) {
                 delay(1.seconds)
                 if (isFinished) break
                 remainingSeconds = duration.inWholeSeconds - (++passedSeconds)
             }
         }
+        launch {
+            delay(duration)
+            finish()
+        }
     }
 
     override fun finish() {
         isFinished = true
-        cancel()
+        runCatching {
+            cancel()
+        }
         finishCallback()
     }
 }

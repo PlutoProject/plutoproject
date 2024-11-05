@@ -433,6 +433,14 @@ val COMMAND_RTP_NOT_ENABLED = component {
     text("该世界未启用随机传送") with mochaMaroon
 }
 
+val COMMAND_RTP_COOLDOWN = component {
+    text("传送冷却中...") with mochaSubtext0
+    newline()
+    text("请 ") with mochaSubtext0
+    text("<time> ") with mochaText
+    text("后再试") with mochaSubtext0
+}
+
 val COMMAND_ESS_RTP
     get() = component {
         val manager = RandomTeleportManager

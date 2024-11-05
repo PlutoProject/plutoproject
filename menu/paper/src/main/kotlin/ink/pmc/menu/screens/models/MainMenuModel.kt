@@ -7,11 +7,15 @@ import cafe.adriel.voyager.core.model.ScreenModel
 import ink.pmc.daily.api.Daily
 import ink.pmc.essentials.api.home.Home
 import ink.pmc.essentials.api.home.HomeManager
+import ink.pmc.essentials.api.teleport.random.RandomTeleportManager
 import ink.pmc.essentials.api.warp.Warp
 import ink.pmc.essentials.api.warp.WarpManager
-import ink.pmc.menu.inspecting
 import ink.pmc.framework.utils.concurrent.submitAsync
+import ink.pmc.menu.inspecting
 import org.bukkit.entity.Player
+import kotlin.time.Duration
+import kotlin.time.DurationUnit
+import kotlin.time.toDuration
 
 class MainMenuModel(private val player: Player) : ScreenModel {
     enum class Tab {
@@ -55,9 +59,18 @@ class MainMenuModel(private val player: Player) : ScreenModel {
         }
     }
 
+    private fun rtpCooldownRemaining(): Duration {
+        return (RandomTeleportManager.getCooldown(player)?.remainingSeconds ?: 0).toDuration(DurationUnit.SECONDS)
+    }
+
+    fun refreshCooldownState() {
+        rtpCooldownRemaining = rtpCooldownRemaining()
+    }
+
     var tab by mutableStateOf(Tab.HOME)
     var preferredHomeState by mutableStateOf<PreferredHomeState>(PreferredHomeState.Loading)
     var preferredSpawnState by mutableStateOf<PreferredSpawnState>(PreferredSpawnState.Loading)
     var lookupModeEnabled by mutableStateOf(player.inspecting)
     var isCheckedInToday by mutableStateOf(false)
+    var rtpCooldownRemaining by mutableStateOf(rtpCooldownRemaining())
 }

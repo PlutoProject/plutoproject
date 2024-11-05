@@ -193,6 +193,17 @@ val MAIN_MENU_ITEM_HOME_RTP_COIN_NOT_ENOUGH_LORE = listOf(
     },
 )
 
+val MAIN_MENU_ITEM_LORE_HOME_RTP_IN_COOLDOWN_LORE = listOf(
+    Component.empty(),
+    component {
+        text("传送冷却中...") with mochaSubtext0 without italic()
+    },
+    component {
+        text("还剩 ") with mochaSubtext0 without italic()
+        text("<time>") with mochaText without italic()
+    }
+)
+
 val MAIN_MENU_ITEM_HOME_RTP_NOT_ENABLED_LORE = listOf(
     Component.empty(),
     component { text("该世界未启用随机传送") with mochaSubtext0 without italic() },

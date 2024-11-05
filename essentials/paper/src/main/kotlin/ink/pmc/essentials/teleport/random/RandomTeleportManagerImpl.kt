@@ -317,26 +317,19 @@ class RandomTeleportManagerImpl : RandomTeleportManager, KoinComponent {
             val timer = TeleportTimer()
             inTeleport.add(player)
 
-            if (cache != null) {
-                val location = cache.location
-                // 必须异步触发
-                val event = RandomTeleportEvent(player, player.location, location).apply { callEvent() }
-                if (event.isCancelled) return@async
-                teleport.teleportSuspend(player, location, prompt = prompt)
-                val time = timer.end()
-                notifyPlayerOfTeleport(player, location, cache.attempts, time, costed, cost, symbol, prompt)
-                inTeleport.remove(player)
-                return@async
+            val attempts: Int
+            val location = if (cache != null) {
+                attempts = cache.attempts
+                cache.location
+            } else {
+                if (prompt) {
+                    player.showTitle(RANDOM_TELEPORT_SEARCHING_TITLE)
+                    player.playSound(RANDOM_TELEPORT_SEARCHING_SOUND)
+                }
+                val random = random(world, opt)
+                attempts = random.attempts
+                random.location
             }
-
-            if (prompt) {
-                player.showTitle(RANDOM_TELEPORT_SEARCHING_TITLE)
-                player.playSound(RANDOM_TELEPORT_SEARCHING_SOUND)
-            }
-
-            val random = random(world, opt)
-            val attempts = random.attempts
-            val location = random.location
 
             if (location == null) {
                 if (prompt) {

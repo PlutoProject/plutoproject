@@ -1,14 +1,19 @@
 package ink.pmc.essentials.commands.teleport.random
 
+import ink.pmc.essentials.COMMAND_RTP_COOLDOWN
 import ink.pmc.essentials.COMMAND_RTP_NOT_ENABLED
 import ink.pmc.essentials.RANDOM_TELEPORT_SPECIFIC
 import ink.pmc.essentials.api.teleport.random.RandomTeleportManager
 import ink.pmc.framework.utils.chat.NO_PERMISSON
+import ink.pmc.framework.utils.chat.replace
 import ink.pmc.framework.utils.command.ensurePlayer
+import ink.pmc.framework.utils.time.formatDuration
 import org.bukkit.World
 import org.bukkit.command.CommandSender
 import org.incendo.cloud.annotations.Command
 import org.incendo.cloud.annotations.Permission
+import kotlin.time.DurationUnit
+import kotlin.time.toDuration
 
 @Suppress("UNUSED")
 object RtpCommand {
@@ -22,6 +27,16 @@ object RtpCommand {
         }
         if (!RandomTeleportManager.isEnabled(actualWorld)) {
             sendMessage(COMMAND_RTP_NOT_ENABLED)
+            return
+        }
+        RandomTeleportManager.getCooldown(this)?.also {
+            sendMessage(
+                COMMAND_RTP_COOLDOWN
+                    .replace(
+                        "<time>",
+                        it.remainingSeconds.toDuration(DurationUnit.SECONDS).formatDuration()
+                    )
+            )
             return
         }
         RandomTeleportManager.launch(this, actualWorld)
