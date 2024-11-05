@@ -13,6 +13,7 @@ import ink.pmc.framework.utils.player.uuidOrNull
 import ink.pmc.framework.utils.storage.model
 import org.bson.types.ObjectId
 import org.bukkit.Location
+import org.bukkit.Material
 import org.bukkit.OfflinePlayer
 import org.bukkit.World
 import org.koin.core.component.KoinComponent
@@ -156,14 +157,19 @@ class WarpManagerImpl : WarpManager, KoinComponent {
         return repo.hasByName(name)
     }
 
-    override suspend fun create(name: String, location: Location, alias: String?): Warp {
+    override suspend fun create(
+        name: String,
+        location: Location,
+        alias: String?,
+        icon: Material?
+    ): Warp {
         require(!has(name)) { "Warp named $name already existed" }
         val dto = WarpDto(
             ObjectId(),
             UUID.randomUUID(),
             name,
             alias,
-            null,
+            icon,
             WarpType.WARP,
             System.currentTimeMillis(),
             location.model,
