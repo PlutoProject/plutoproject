@@ -2,6 +2,8 @@ package ink.pmc.essentials.repositories
 
 import com.github.benmanes.caffeine.cache.Caffeine
 import com.mongodb.client.model.Filters.eq
+import ink.pmc.essentials.api.warp.WarpCategory
+import ink.pmc.essentials.api.warp.WarpType
 import ink.pmc.essentials.config.EssentialsConfig
 import ink.pmc.essentials.dtos.WarpDto
 import ink.pmc.framework.provider.Provider
@@ -19,6 +21,10 @@ class WarpRepository : KoinComponent {
         .build<UUID, WarpDto>()
     private val db =
         Provider.defaultMongoDatabase.getCollection<WarpDto>("essentials_${conf.serverName}_warps")
+
+    suspend fun find(): Collection<WarpDto> {
+        return db.find().toCollection(mutableListOf())
+    }
 
     suspend fun findById(id: UUID): WarpDto? {
         val cached = cache.getIfPresent(id) ?: run {
@@ -38,10 +44,12 @@ class WarpRepository : KoinComponent {
         return cached
     }
 
-    suspend fun list(): Collection<WarpDto> {
-        return mutableListOf<WarpDto>().apply {
-            db.find().toCollection(this)
-        }
+    suspend fun findSpawns(): Collection<WarpDto> {
+        return db.find(eq("type", WarpType.SPAWN)).toCollection(mutableListOf())
+    }
+
+    suspend fun findByCategory(category: WarpCategory): Collection<WarpDto> {
+        return db.find(eq("category", category)).toCollection(mutableListOf())
     }
 
     suspend fun hasById(id: UUID): Boolean {

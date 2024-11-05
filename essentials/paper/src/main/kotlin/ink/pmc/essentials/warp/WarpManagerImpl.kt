@@ -108,17 +108,21 @@ class WarpManagerImpl : WarpManager, KoinComponent {
     }
 
     override suspend fun list(): Collection<Warp> {
-        val dto = repo.list()
-        val homes = dto.mapNotNull { get(it.id) }
-        return homes
+        return repo.find().map {
+            WarpImpl(it).also { warp -> cache.put(warp.id, warp) }
+        }
     }
 
     override suspend fun listSpawns(): List<Warp> {
-        return list().filter { it.isSpawn }
+        return repo.findSpawns().map {
+            WarpImpl(it).also { warp -> cache.put(warp.id, warp) }
+        }
     }
 
     override suspend fun listByCategory(category: WarpCategory): Collection<Warp> {
-        return list().filter { it.category == category }
+        return repo.findByCategory(category).map {
+            WarpImpl(it).also { warp -> cache.put(warp.id, warp) }
+        }
     }
 
     override suspend fun has(id: UUID): Boolean {
