@@ -19,9 +19,9 @@ fun Menu(
     leftBorder: Boolean = true,
     rightBorder: Boolean = true,
     topBorderAttachment: ComposableFunction = { if (LocalNavigator.current != null) Back() },
-    bottomBorderAttachment: ComposableFunction,
-    leftBorderAttachment: ComposableFunction,
-    rightBorderAttachment: ComposableFunction,
+    bottomBorderAttachment: ComposableFunction = {},
+    leftBorderAttachment: ComposableFunction = {},
+    rightBorderAttachment: ComposableFunction = {},
     contents: ComposableFunction
 ) {
     require(rows in 2..6) { "Row count must be in range: [2, 6]" }
