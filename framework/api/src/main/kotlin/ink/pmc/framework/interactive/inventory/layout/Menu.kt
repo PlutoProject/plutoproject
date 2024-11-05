@@ -1,6 +1,7 @@
 package ink.pmc.framework.interactive.inventory.layout
 
 import androidx.compose.runtime.Composable
+import cafe.adriel.voyager.navigator.LocalNavigator
 import ink.pmc.framework.interactive.ComposableFunction
 import ink.pmc.framework.interactive.inventory.*
 import ink.pmc.framework.interactive.inventory.components.canvases.Chest
@@ -17,7 +18,7 @@ fun Menu(
     bottomBorder: Boolean = true,
     leftBorder: Boolean = true,
     rightBorder: Boolean = true,
-    topBorderAttachment: ComposableFunction,
+    topBorderAttachment: ComposableFunction = { if (LocalNavigator.current != null) Back() },
     bottomBorderAttachment: ComposableFunction,
     leftBorderAttachment: ComposableFunction,
     rightBorderAttachment: ComposableFunction,
