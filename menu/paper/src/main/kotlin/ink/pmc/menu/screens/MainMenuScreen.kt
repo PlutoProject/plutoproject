@@ -439,6 +439,9 @@ class MainMenuScreen : Screen, KoinComponent {
         )
     }
 
+    /*
+    * 视距拓展
+    * */
     @Composable
     @Suppress("FunctionName")
     private fun ViewBoost() {
@@ -496,5 +499,11 @@ class MainMenuScreen : Screen, KoinComponent {
                 }
             }
         )
+    }
+
+    @Composable
+    @Suppress("FunctionName")
+    private fun Recipes() {
+
     }
 }
