@@ -9,7 +9,7 @@ import ink.pmc.framework.frameworkLogger
 import ink.pmc.framework.interactive.ComposableFunction
 import ink.pmc.framework.interactive.LocalPlayer
 import ink.pmc.framework.interactive.inventory.*
-import ink.pmc.framework.interactive.inventory.components.canvases.Chest
+import ink.pmc.framework.interactive.inventory.canvas.Chest
 import ink.pmc.framework.interactive.inventory.jetpack.Arrangement
 import ink.pmc.framework.utils.visual.mochaMaroon
 import ink.pmc.framework.utils.visual.mochaSubtext0

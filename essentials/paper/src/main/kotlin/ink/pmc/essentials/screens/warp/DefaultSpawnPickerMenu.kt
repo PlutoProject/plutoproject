@@ -12,12 +12,11 @@ import ink.pmc.advkt.component.italic
 import ink.pmc.advkt.component.text
 import ink.pmc.essentials.api.warp.Warp
 import ink.pmc.essentials.api.warp.WarpManager
-import ink.pmc.essentials.config.EssentialsConfig
 import ink.pmc.framework.interactive.ComposableFunction
 import ink.pmc.framework.interactive.LocalPlayer
 import ink.pmc.framework.interactive.inventory.*
 import ink.pmc.framework.interactive.inventory.click.clickable
-import ink.pmc.framework.interactive.inventory.components.canvases.Chest
+import ink.pmc.framework.interactive.inventory.canvas.Chest
 import ink.pmc.framework.interactive.inventory.jetpack.Arrangement
 import ink.pmc.framework.interactive.inventory.layout.Box
 import ink.pmc.framework.interactive.inventory.layout.Column

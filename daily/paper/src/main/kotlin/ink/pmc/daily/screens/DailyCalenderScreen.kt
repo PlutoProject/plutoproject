@@ -12,7 +12,7 @@ import ink.pmc.daily.api.Daily
 import ink.pmc.daily.api.DailyHistory
 import ink.pmc.framework.interactive.inventory.*
 import ink.pmc.framework.interactive.LocalPlayer
-import ink.pmc.framework.interactive.inventory.components.canvases.Chest
+import ink.pmc.framework.interactive.inventory.canvas.Chest
 import ink.pmc.framework.interactive.inventory.jetpack.Arrangement
 import ink.pmc.framework.interactive.inventory.layout.Box
 import ink.pmc.framework.interactive.inventory.layout.Column
