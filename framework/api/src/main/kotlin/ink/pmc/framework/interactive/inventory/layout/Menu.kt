@@ -34,7 +34,7 @@ fun Menu(
 ) {
     require(rows in 2..6) { "Row count must be in range: [2, 6]" }
     if (LocalNavigator.current == null && navigatorWarn) {
-        frameworkLogger.log(Level.WARNING, "A menu layout is opened without Navigator context", IllegalStateException())
+        frameworkLogger.log(Level.WARNING, "A menu layout was opened without Navigator context", IllegalStateException())
         LocalPlayer.current.send {
             text("你打开了一个没有 Navigator 上下文的菜单布局") with mochaMaroon
             newline()
