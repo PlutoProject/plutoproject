@@ -7,6 +7,8 @@ import ink.pmc.essentials.COMMAND_PREFERRED_SPAWN_SUCCEED
 import ink.pmc.essentials.COMMAND_PREFERRED_SPAWN_WARP_IS_NOT_SPAWN
 import ink.pmc.essentials.api.warp.Warp
 import ink.pmc.essentials.api.warp.WarpManager
+import ink.pmc.essentials.screens.warp.DefaultSpawnPickerMenu
+import ink.pmc.framework.interactive.GuiManager
 import ink.pmc.framework.utils.chat.replace
 import ink.pmc.framework.utils.command.ensurePlayer
 import ink.pmc.framework.utils.concurrent.submitAsync
@@ -30,9 +32,15 @@ import kotlin.jvm.optionals.getOrNull
 
 @Suppress("UNUSED", "UNUSED_PARAMETER", "UnusedReceiverParameter")
 object PreferredSpawnCommand {
-    @Command("preferredspawn <spawn>")
+    @Command("preferredspawn [spawn]")
     @Permission("essentials.defaultspawn")
-    suspend fun CommandSender.preferredSpawn(@Argument("spawn", parserName = "spawn") spawn: Warp) = ensurePlayer {
+    suspend fun CommandSender.preferredSpawn(@Argument("spawn", parserName = "spawn") spawn: Warp?) = ensurePlayer {
+        if (spawn == null) {
+            GuiManager.startInventory(this) {
+                DefaultSpawnPickerMenu()
+            }
+            return@ensurePlayer
+        }
         val current = WarpManager.getPreferredSpawn(this)
         if (current?.name == spawn.name) {
             sendMessage(
