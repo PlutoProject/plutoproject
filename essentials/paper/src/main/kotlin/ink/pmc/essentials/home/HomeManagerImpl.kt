@@ -7,7 +7,7 @@ import ink.pmc.essentials.api.home.Home
 import ink.pmc.essentials.api.home.HomeManager
 import ink.pmc.essentials.config.EssentialsConfig
 import ink.pmc.essentials.disabled
-import ink.pmc.essentials.dtos.HomeDto
+import ink.pmc.essentials.models.HomeModel
 import ink.pmc.essentials.essentialsScope
 import ink.pmc.essentials.repositories.HomeRepository
 import ink.pmc.framework.utils.chat.isValidIdentifier
@@ -80,8 +80,8 @@ class HomeManagerImpl : HomeManager, KoinComponent {
 
     override suspend fun get(id: UUID): Home? {
         val loaded = getLoaded(id) ?: run {
-            val dto = repo.findById(id) ?: return null
-            val home = HomeImpl(dto)
+            val model = repo.findById(id) ?: return null
+            val home = HomeImpl(model)
             loadedHomes.put(home.owner, home)
             home
         }
@@ -90,8 +90,8 @@ class HomeManagerImpl : HomeManager, KoinComponent {
 
     override suspend fun get(player: OfflinePlayer, name: String): Home? {
         val loaded = getLoaded(player, name) ?: run {
-            val dto = repo.findByName(player, name) ?: return null
-            val home = HomeImpl(dto)
+            val model = repo.findByName(player, name) ?: return null
+            val home = HomeImpl(model)
             loadedHomes.put(home.owner, home)
             home
         }
@@ -111,8 +111,8 @@ class HomeManagerImpl : HomeManager, KoinComponent {
     }
 
     override suspend fun list(player: OfflinePlayer): Collection<Home> {
-        val dto = repo.findByPlayer(player)
-        val homes = dto.mapNotNull { get(it.id) }
+        val model = repo.findByPlayer(player)
+        val homes = model.mapNotNull { get(it.id) }
         return homes
     }
 
@@ -133,7 +133,7 @@ class HomeManagerImpl : HomeManager, KoinComponent {
     override suspend fun create(owner: OfflinePlayer, name: String, location: Location): Home {
         require(!has(owner, name)) { "Home of player ${owner.name} named $name already existed" }
         require(name.isValidIdentifier && name.length <= nameLengthLimit) { "Name $name doesn't match the requirement" }
-        val dto = HomeDto(
+        val model = HomeModel(
             ObjectId(),
             UUID.randomUUID(),
             name,
@@ -141,9 +141,9 @@ class HomeManagerImpl : HomeManager, KoinComponent {
             location.model,
             owner.uniqueId,
         )
-        val home = HomeImpl(dto)
+        val home = HomeImpl(model)
         loadedHomes.put(owner, home)
-        repo.save(dto)
+        repo.save(model)
         return home
     }
 

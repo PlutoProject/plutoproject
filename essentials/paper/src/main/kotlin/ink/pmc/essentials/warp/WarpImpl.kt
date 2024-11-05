@@ -2,7 +2,7 @@ package ink.pmc.essentials.warp
 
 import ink.pmc.essentials.api.teleport.TeleportManager
 import ink.pmc.essentials.api.warp.*
-import ink.pmc.essentials.dtos.WarpDto
+import ink.pmc.essentials.models.WarpModel
 import ink.pmc.essentials.home.loadFailed
 import ink.pmc.essentials.repositories.WarpRepository
 import ink.pmc.framework.utils.concurrent.async
@@ -17,24 +17,21 @@ import org.koin.core.component.inject
 import java.time.Instant
 import java.util.*
 
-class WarpImpl(private val dto: WarpDto) : Warp, KoinComponent {
-    private val manager by inject<WarpManager>()
+class WarpImpl(private val model: WarpModel) : Warp, KoinComponent {
     private val repo by inject<WarpRepository>()
     private val teleport by inject<TeleportManager>()
 
-    override val id: UUID = dto.id
-    override val name: String = dto.name
-    override var alias: String? = dto.alias
-    override var icon: Material? = dto.icon
-    override var category: WarpCategory? = dto.category
-    override var type: WarpType = dto.type @Internal set
-    override val createdAt: Instant = Instant.ofEpochMilli(dto.createdAt)
+    override val id: UUID = model.id
+    override val name: String = model.name
+    override var alias: String? = model.alias
+    override var icon: Material? = model.icon
+    override var category: WarpCategory? = model.category
+    override var type: WarpType = model.type @Internal set
+    override val createdAt: Instant = Instant.ofEpochMilli(model.createdAt)
     override var location: Location =
-        requireNotNull(dto.location.location) {
-            loadFailed(id, "Failed to get location ${dto.location}")
+        requireNotNull(model.location.location) {
+            loadFailed(id, "Failed to get location ${model.location}")
         }
-    override val isLoaded: Boolean
-        get() = manager.isLoaded(id)
     override val isSpawn: Boolean
         get() = type == WarpType.SPAWN || type == WarpType.SPAWN_DEFAULT
     override val isDefaultSpawn: Boolean
@@ -56,7 +53,7 @@ class WarpImpl(private val dto: WarpDto) : Warp, KoinComponent {
         }
     }
 
-    private fun toDto(): WarpDto = dto.copy(
+    private fun toModel(): WarpModel = model.copy(
         id = id,
         name = name,
         alias = alias,
@@ -68,6 +65,6 @@ class WarpImpl(private val dto: WarpDto) : Warp, KoinComponent {
     )
 
     override suspend fun update() {
-        repo.update(toDto())
+        repo.update(toModel())
     }
 }

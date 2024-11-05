@@ -3,7 +3,7 @@ package ink.pmc.essentials.repositories
 import com.mongodb.client.model.Filters.eq
 import com.mongodb.client.model.ReplaceOptions
 import ink.pmc.essentials.config.EssentialsConfig
-import ink.pmc.essentials.dtos.BackDto
+import ink.pmc.essentials.models.BackModel
 import ink.pmc.framework.provider.Provider
 import ink.pmc.framework.utils.storage.model
 import kotlinx.coroutines.flow.firstOrNull
@@ -17,13 +17,13 @@ class BackRepository : KoinComponent {
     private val config by inject<EssentialsConfig>()
     private val options = ReplaceOptions().upsert(true)
     private val db =
-        Provider.defaultMongoDatabase.getCollection<BackDto>("essentials_${config.serverName}_backs")
+        Provider.defaultMongoDatabase.getCollection<BackModel>("essentials_${config.serverName}_backs")
 
     suspend fun find(player: Player): Location? {
-        return findDto(player)?.location?.location
+        return findModel(player)?.location?.location
     }
 
-    suspend fun findDto(player: Player): BackDto? {
+    private suspend fun findModel(player: Player): BackModel? {
         return db.find(eq("owner", player.uniqueId.toString())).firstOrNull()
     }
 
@@ -32,8 +32,8 @@ class BackRepository : KoinComponent {
     }
 
     suspend fun save(player: Player, location: Location) {
-        val existed = findDto(player)
-        val dto = existed ?: BackDto(
+        val existed = findModel(player)
+        val model = existed ?: BackModel(
             objectId = ObjectId(),
             owner = player.uniqueId,
             recordedAt = System.currentTimeMillis(),
@@ -41,11 +41,11 @@ class BackRepository : KoinComponent {
         )
 
         if (existed != null) {
-            dto.recordedAt = System.currentTimeMillis()
-            dto.location = location.model
+            model.recordedAt = System.currentTimeMillis()
+            model.location = location.model
         }
 
-        db.replaceOne(eq("owner", player.uniqueId.toString()), dto, options)
+        db.replaceOne(eq("owner", player.uniqueId.toString()), model, options)
     }
 
     suspend fun delete(player: Player) {

@@ -18,7 +18,6 @@ interface Warp {
     var type: WarpType @Internal set
     val createdAt: Instant
     var location: Location
-    val isLoaded: Boolean
     val isSpawn: Boolean
     val isDefaultSpawn: Boolean
 

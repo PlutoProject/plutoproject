@@ -6,7 +6,7 @@ import ink.pmc.essentials.api.warp.WarpCategory
 import ink.pmc.essentials.api.warp.WarpManager
 import ink.pmc.essentials.api.warp.WarpType
 import ink.pmc.essentials.config.EssentialsConfig
-import ink.pmc.essentials.dtos.WarpDto
+import ink.pmc.essentials.models.WarpModel
 import ink.pmc.essentials.repositories.WarpRepository
 import ink.pmc.framework.playerdb.PlayerDb
 import ink.pmc.framework.utils.platform.paper
@@ -143,7 +143,7 @@ class WarpManagerImpl : WarpManager, KoinComponent {
         category: WarpCategory?
     ): Warp {
         require(!has(name)) { "Warp named $name already existed" }
-        val dto = WarpDto(
+        val model = WarpModel(
             ObjectId(),
             UUID.randomUUID(),
             name,
@@ -154,9 +154,9 @@ class WarpManagerImpl : WarpManager, KoinComponent {
             System.currentTimeMillis(),
             location.model,
         )
-        val warp = WarpImpl(dto)
-        cache.put(dto.id, warp)
-        repo.save(dto)
+        val warp = WarpImpl(model)
+        cache.put(model.id, warp)
+        repo.save(model)
         return warp
     }
 

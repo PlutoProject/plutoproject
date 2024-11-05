@@ -5,7 +5,7 @@ import com.mongodb.client.model.Filters.eq
 import ink.pmc.essentials.api.warp.WarpCategory
 import ink.pmc.essentials.api.warp.WarpType
 import ink.pmc.essentials.config.EssentialsConfig
-import ink.pmc.essentials.dtos.WarpDto
+import ink.pmc.essentials.models.WarpModel
 import ink.pmc.framework.provider.Provider
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.toCollection
@@ -18,15 +18,15 @@ class WarpRepository : KoinComponent {
     private val conf by inject<EssentialsConfig>()
     private val cache = Caffeine.newBuilder()
         .expireAfterWrite(Duration.ofMinutes(10))
-        .build<UUID, WarpDto>()
+        .build<UUID, WarpModel>()
     private val db =
-        Provider.defaultMongoDatabase.getCollection<WarpDto>("essentials_${conf.serverName}_warps")
+        Provider.defaultMongoDatabase.getCollection<WarpModel>("essentials_${conf.serverName}_warps")
 
-    suspend fun find(): Collection<WarpDto> {
+    suspend fun find(): Collection<WarpModel> {
         return db.find().toCollection(mutableListOf())
     }
 
-    suspend fun findById(id: UUID): WarpDto? {
+    suspend fun findById(id: UUID): WarpModel? {
         val cached = cache.getIfPresent(id) ?: run {
             val lookup = db.find(eq("id", id.toString())).firstOrNull() ?: return null
             cache.put(id, lookup)
@@ -35,7 +35,7 @@ class WarpRepository : KoinComponent {
         return cached
     }
 
-    suspend fun findByName(name: String): WarpDto? {
+    suspend fun findByName(name: String): WarpModel? {
         val cached = cache.asMap().values.firstOrNull { it.name == name } ?: run {
             val lookup = db.find(eq("name", name)).firstOrNull() ?: return null
             cache.put(lookup.id, lookup)
@@ -44,11 +44,11 @@ class WarpRepository : KoinComponent {
         return cached
     }
 
-    suspend fun findSpawns(): Collection<WarpDto> {
+    suspend fun findSpawns(): Collection<WarpModel> {
         return db.find(eq("type", WarpType.SPAWN)).toCollection(mutableListOf())
     }
 
-    suspend fun findByCategory(category: WarpCategory): Collection<WarpDto> {
+    suspend fun findByCategory(category: WarpCategory): Collection<WarpModel> {
         return db.find(eq("category", category)).toCollection(mutableListOf())
     }
 
@@ -70,14 +70,14 @@ class WarpRepository : KoinComponent {
         db.deleteOne(eq("name", name))
     }
 
-    suspend fun save(dto: WarpDto) {
-        require(!hasById(dto.id)) { "WarpDto with id ${dto.id} already existed" }
-        db.insertOne(dto)
-        cache.put(dto.id, dto)
+    suspend fun save(model: WarpModel) {
+        require(!hasById(model.id)) { "WarpModel with id ${model.id} already existed" }
+        db.insertOne(model)
+        cache.put(model.id, model)
     }
 
-    suspend fun update(dto: WarpDto) {
-        require(hasById(dto.id)) { "WarpDto with id ${dto.id} not exist" }
-        db.replaceOne(eq("id", dto.id.toString()), dto)
+    suspend fun update(model: WarpModel) {
+        require(hasById(model.id)) { "WarpModel with id ${model.id} not exist" }
+        db.replaceOne(eq("id", model.id.toString()), model)
     }
 }
