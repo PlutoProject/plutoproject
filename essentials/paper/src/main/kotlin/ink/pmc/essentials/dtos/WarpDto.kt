@@ -1,5 +1,6 @@
 package ink.pmc.essentials.dtos
 
+import ink.pmc.essentials.api.warp.WarpCategory
 import ink.pmc.essentials.api.warp.WarpType
 import ink.pmc.framework.utils.data.UUIDSerializer
 import ink.pmc.framework.utils.storage.LocationDto
@@ -17,6 +18,7 @@ data class WarpDto(
     val name: String,
     val alias: String?,
     val icon: Material?,
+    val category: WarpCategory?,
     val type: WarpType,
     val createdAt: Long,
     val location: LocationDto,

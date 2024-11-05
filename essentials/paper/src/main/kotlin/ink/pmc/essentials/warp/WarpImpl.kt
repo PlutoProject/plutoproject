@@ -1,10 +1,7 @@
 package ink.pmc.essentials.warp
 
 import ink.pmc.essentials.api.teleport.TeleportManager
-import ink.pmc.essentials.api.warp.Warp
-import ink.pmc.essentials.api.warp.WarpManager
-import ink.pmc.essentials.api.warp.WarpTeleportEvent
-import ink.pmc.essentials.api.warp.WarpType
+import ink.pmc.essentials.api.warp.*
 import ink.pmc.essentials.dtos.WarpDto
 import ink.pmc.essentials.home.loadFailed
 import ink.pmc.essentials.repositories.WarpRepository
@@ -29,11 +26,12 @@ class WarpImpl(private val dto: WarpDto) : Warp, KoinComponent {
     override val name: String = dto.name
     override var alias: String? = dto.alias
     override var icon: Material? = dto.icon
+    override var category: WarpCategory? = dto.category
     override var type: WarpType = dto.type @Internal set
     override val createdAt: Instant = Instant.ofEpochMilli(dto.createdAt)
     override var location: Location =
         requireNotNull(dto.location.location) {
-            loadFailed(id, "cannot to obtain location ${dto.location}")
+            loadFailed(id, "Failed to get location ${dto.location}")
         }
     override val isLoaded: Boolean
         get() = manager.isLoaded(id)
@@ -63,6 +61,7 @@ class WarpImpl(private val dto: WarpDto) : Warp, KoinComponent {
         name = name,
         alias = alias,
         icon = icon,
+        category = category,
         type = type,
         createdAt = createdAt.toEpochMilli(),
         location = location.model,

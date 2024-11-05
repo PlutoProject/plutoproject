@@ -14,6 +14,7 @@ interface Warp {
     val name: String
     var alias: String?
     var icon: Material?
+    var category: WarpCategory?
     var type: WarpType @Internal set
     val createdAt: Instant
     var location: Location

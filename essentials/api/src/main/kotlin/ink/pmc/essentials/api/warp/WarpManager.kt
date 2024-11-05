@@ -13,17 +13,6 @@ interface WarpManager {
 
     val blacklistedWorlds: Collection<World>
     val nameLengthLimit: Int
-    val loadedWarps: Map<UUID, Warp>
-
-    fun isLoaded(id: UUID): Boolean
-
-    fun isLoaded(name: String): Boolean
-
-    fun unload(id: UUID)
-
-    fun unload(name: String)
-
-    fun unloadAll()
 
     suspend fun get(id: UUID): Warp?
 
@@ -47,6 +36,8 @@ interface WarpManager {
 
     suspend fun listSpawns(): Collection<Warp>
 
+    suspend fun listByCategory(category: WarpCategory): Collection<Warp>
+
     suspend fun has(id: UUID): Boolean
 
     suspend fun has(name: String): Boolean
@@ -55,7 +46,8 @@ interface WarpManager {
         name: String,
         location: Location,
         alias: String? = null,
-        icon: Material? = null
+        icon: Material? = null,
+        category: WarpCategory? = null
     ): Warp
 
     suspend fun remove(id: UUID)

@@ -69,6 +69,7 @@ hoplite-core = { module = "com.sksamuel.hoplite:hoplite-core", version.ref = "ho
 hoplite-hocon = { module = "com.sksamuel.hoplite:hoplite-hocon", version.ref = "hoplite" }
 commons-math = { module = "org.apache.commons:commons-math3", version = "3.6.1" }
 geoip2 = { module = "com.maxmind.geoip2:geoip2", version = "4.2.1" }
+aedile = { module = "com.sksamuel.aedile:aedile-core", version = "1.3.1" }
 
 [bundles]
 kotlin = ["kotlin-stdlib", "kotlin-reflect", "kotlinx-coroutine-core", "kotlinx-serialization"]
