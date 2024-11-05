@@ -1,5 +1,7 @@
 package ink.pmc.framework.interactive
 
+import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.navigator.Navigator
 import ink.pmc.framework.frameworkPaper
 import ink.pmc.framework.interactive.inventory.InventoryScope
 import org.bukkit.entity.Player
@@ -35,6 +37,12 @@ class GuiManagerImpl : GuiManager {
         disposeExistedScope(player)
         return InventoryScope(player, contents).also {
             inventoryScopes[player] = it
+        }
+    }
+
+    override fun startScreen(player: Player, screen: Screen) {
+        startInventory(player) {
+            Navigator(screen)
         }
     }
 

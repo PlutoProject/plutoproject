@@ -9,7 +9,8 @@ import org.bukkit.Material
 @Composable
 @Suppress("FunctionName")
 fun Back() {
-    val navigator = LocalNavigator.current ?: error("Navigator not found in context")
+    val navigator = LocalNavigator.current
+    if (navigator == null || !navigator.canPop) return
     Item(
         material = Material.YELLOW_STAINED_GLASS_PANE,
         name = UI_BACK,

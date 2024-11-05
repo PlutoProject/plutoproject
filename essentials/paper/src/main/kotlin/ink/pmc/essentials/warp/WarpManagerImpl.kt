@@ -29,9 +29,12 @@ private const val PREFERRED_SPAWN_KEY = "essentials.warp.preferred_spawn"
 class WarpManagerImpl : WarpManager, KoinComponent {
     private val config by lazy { get<EssentialsConfig>().warp }
     private val repo by inject<WarpRepository>()
-    private val cache = cacheBuilder<UUID, Warp> {
+    private val cache = cacheBuilder<UUID, Warp?> { // null 值不会被存储到缓存
         refreshAfterWrite = Duration.parse("5m")
-    }.build()
+    }.build {
+        // 报错会被捕获
+        repo.findById(it)?.let { model -> WarpImpl(model) }
+    }
 
     override val blacklistedWorlds: Collection<World> = config.blacklistedWorlds
         .filter { name -> paper.worlds.any { it.name == name } }
@@ -39,21 +42,21 @@ class WarpManagerImpl : WarpManager, KoinComponent {
     override val nameLengthLimit: Int = config.nameLengthLimit
 
     private suspend fun isCached(name: String): Boolean {
-        return cache.asMap().values.any { it.name == name }
+        return cache.asMap().values.any { it?.name == name }
     }
 
     private suspend fun invalidate(name: String) {
-        (cache.asMap() as ConcurrentMap).entries.removeIf { it.value.name == name }
+        (cache.asMap() as ConcurrentMap).entries.removeIf { it.value?.name == name }
     }
 
     override suspend fun get(id: UUID): Warp? {
-        return cache.getOrNull(id) ?: repo.findById(id)?.let {
+        return cache.get(id) ?: repo.findById(id)?.let {
             WarpImpl(it).also { warp -> cache.put(id, warp) }
         }
     }
 
     override suspend fun get(name: String): Warp? {
-        return cache.asMap().values.firstOrNull { it.name == name }
+        return cache.asMap().values.firstOrNull { it?.name == name }
             ?: repo.findByName(name)?.let {
                 WarpImpl(it).also { warp -> cache.put(warp.id, warp) }
             }
