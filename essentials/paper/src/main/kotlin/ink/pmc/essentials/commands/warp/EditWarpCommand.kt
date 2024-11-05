@@ -19,7 +19,7 @@ import org.incendo.cloud.annotations.Permission
 object EditWarpCommand {
     @Command("editwarp <warp> alias <alias>")
     @Permission("essentials.editwarp")
-    suspend fun CommandSender.editwarp(
+    suspend fun CommandSender.alias(
         @Argument("warp", parserName = "warp-without-alias") warp: Warp,
         @Argument("alias") @Quoted alias: String
     ) {
@@ -30,6 +30,18 @@ object EditWarpCommand {
             text("${warp.name} ") with mochaText
             text("的别名设置为 ") with mochaPink
             text(alias) with mochaText
+        }
+    }
+
+    @Command("editwarp <warp> unset_alias")
+    @Permission("essentials.editwarp")
+    suspend fun CommandSender.unsetAlias(@Argument("warp", parserName = "warp-without-alias") warp: Warp) {
+        warp.alias = null
+        warp.update()
+        send {
+            text("已移除地标 ") with mochaPink
+            text("${warp.name} ") with mochaText
+            text("的别名") with mochaPink
         }
     }
 
@@ -129,7 +141,7 @@ object EditWarpCommand {
         }
     }
 
-    @Command("editwarp <warp> reset_icon")
+    @Command("editwarp <warp> unset_icon")
     @Permission("essentials.editwarp")
     suspend fun CommandSender.resetIcon(@Argument("warp", parserName = "warp-without-alias") warp: Warp) {
         warp.icon = null
