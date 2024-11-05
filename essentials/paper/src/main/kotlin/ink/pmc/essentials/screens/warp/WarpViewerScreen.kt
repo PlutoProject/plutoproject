@@ -219,7 +219,7 @@ class WarpViewerScreen : Screen {
         val player = LocalPlayer.current
         val title = if (warp.alias == null) UI_WARP_ITEM_NAME else UI_WARP_ITEM_NAME_ALIAS
         Item(
-            material = Material.PAPER,
+            material = warp.icon ?: Material.PAPER,
             name = title.replace("<name>", warp.name).replace("<alias>", warp.alias),
             lore = UI_WARP_ITEM_LORE(warp),
             modifier = Modifier.clickable {

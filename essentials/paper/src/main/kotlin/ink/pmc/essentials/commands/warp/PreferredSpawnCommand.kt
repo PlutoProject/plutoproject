@@ -11,6 +11,7 @@ import ink.pmc.framework.utils.chat.replace
 import ink.pmc.framework.utils.command.ensurePlayer
 import ink.pmc.framework.utils.visual.mochaSubtext0
 import ink.pmc.framework.utils.visual.mochaText
+import kotlinx.coroutines.future.await
 import net.kyori.adventure.text.Component
 import org.bukkit.command.CommandSender
 import org.incendo.cloud.annotations.Argument
@@ -21,6 +22,7 @@ import org.incendo.cloud.annotations.parser.Parser
 import org.incendo.cloud.annotations.suggestion.Suggestions
 import org.incendo.cloud.context.CommandContext
 import org.incendo.cloud.context.CommandInput
+import kotlin.jvm.optionals.getOrNull
 
 @Suppress("UNUSED", "UNUSED_PARAMETER", "UnusedReceiverParameter")
 object PreferredSpawnCommand {
@@ -55,7 +57,10 @@ object PreferredSpawnCommand {
 
     @Parser(name = "spawn", suggestions = "spawns")
     suspend fun spawn(context: CommandContext<CommandSender>, input: CommandInput): Warp {
-        val warp = WarpCommons.warp(context, input)
+        val warp = WarpParser(false).parseFuture(context, input).await()
+            .also {
+                it.failure().getOrNull()?.also { e -> throw e }
+            }.parsedValue().getOrNull() ?: error("Error while parsing spawn")
         if (!warp.isSpawn) throw WarpIsNotSpawnException(warp.name)
         return warp
     }

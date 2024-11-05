@@ -8,6 +8,7 @@ import ink.pmc.framework.utils.command.ensurePlayer
 import ink.pmc.framework.utils.visual.mochaMaroon
 import ink.pmc.framework.utils.visual.mochaPink
 import ink.pmc.framework.utils.visual.mochaText
+import org.bukkit.Material
 import org.bukkit.command.CommandSender
 import org.incendo.cloud.annotations.Argument
 import org.incendo.cloud.annotations.Command
@@ -108,6 +109,34 @@ object EditWarpCommand {
             text("已将地标 ") with mochaPink
             text("${warp.name} ") with mochaText
             text("迁移到你所在的位置") with mochaPink
+        }
+    }
+
+    @Command("editwarp <warp> icon <material>")
+    @Permission("essentials.editwarp")
+    suspend fun CommandSender.icon(
+        @Argument("warp", parserName = "warp-without-alias") warp: Warp,
+        material: Material
+    ) {
+        warp.icon = material
+        warp.update()
+        send {
+            text("已将地标 ") with mochaPink
+            text("${warp.name} ") with mochaText
+            text("的图标修改为 ") with mochaPink
+            text("$material") with mochaText
+        }
+    }
+
+    @Command("editwarp <warp> reset_icon")
+    @Permission("essentials.editwarp")
+    suspend fun CommandSender.resetIcon(@Argument("warp", parserName = "warp-without-alias") warp: Warp) {
+        warp.icon = null
+        warp.update()
+        send {
+            text("已移除地标 ") with mochaPink
+            text("${warp.name} ") with mochaText
+            text("的图标") with mochaPink
         }
     }
 }

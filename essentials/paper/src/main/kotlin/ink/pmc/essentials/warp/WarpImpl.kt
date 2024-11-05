@@ -12,6 +12,7 @@ import ink.pmc.framework.utils.concurrent.async
 import ink.pmc.framework.utils.concurrent.submitAsync
 import ink.pmc.framework.utils.storage.model
 import org.bukkit.Location
+import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.jetbrains.annotations.ApiStatus.Internal
 import org.koin.core.component.KoinComponent
@@ -27,6 +28,7 @@ class WarpImpl(private val dto: WarpDto) : Warp, KoinComponent {
     override val id: UUID = dto.id
     override val name: String = dto.name
     override var alias: String? = dto.alias
+    override var icon: Material? = dto.icon
     override var type: WarpType = dto.type @Internal set
     override val createdAt: Instant = Instant.ofEpochMilli(dto.createdAt)
     override var location: Location =
@@ -60,6 +62,7 @@ class WarpImpl(private val dto: WarpDto) : Warp, KoinComponent {
         id = id,
         name = name,
         alias = alias,
+        icon = icon,
         type = type,
         createdAt = createdAt.toEpochMilli(),
         location = location.model,

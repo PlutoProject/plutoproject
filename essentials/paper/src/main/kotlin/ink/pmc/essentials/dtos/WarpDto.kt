@@ -7,6 +7,7 @@ import kotlinx.serialization.Contextual
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.bson.types.ObjectId
+import org.bukkit.Material
 import java.util.*
 
 @Serializable
@@ -15,6 +16,7 @@ data class WarpDto(
     val id: @Serializable(UUIDSerializer::class) UUID,
     val name: String,
     val alias: String?,
+    val icon: Material?,
     val type: WarpType,
     val createdAt: Long,
     val location: LocationDto,

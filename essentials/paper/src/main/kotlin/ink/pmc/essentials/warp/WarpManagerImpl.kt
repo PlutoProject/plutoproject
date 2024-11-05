@@ -163,6 +163,7 @@ class WarpManagerImpl : WarpManager, KoinComponent {
             UUID.randomUUID(),
             name,
             alias,
+            null,
             WarpType.WARP,
             System.currentTimeMillis(),
             location.model,
