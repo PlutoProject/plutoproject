@@ -10,7 +10,7 @@ import ink.pmc.framework.interactive.ComposableFunction
 import ink.pmc.framework.interactive.LocalPlayer
 import ink.pmc.framework.interactive.inventory.*
 import ink.pmc.framework.interactive.inventory.components.canvases.Chest
-import ink.pmc.framework.interactive.inventory.jetpack.Alignment
+import ink.pmc.framework.interactive.inventory.jetpack.Arrangement
 import ink.pmc.framework.utils.visual.mochaMaroon
 import ink.pmc.framework.utils.visual.mochaSubtext0
 import net.kyori.adventure.text.Component
@@ -42,7 +42,7 @@ fun Menu(
         }
     }
     Chest(title = title, modifier = Modifier.size(width = 9, height = rows)) {
-        Row(modifier = Modifier.fillMaxSize(), verticalAlignment = Alignment.Top) {
+        Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Top) {
             // Top
             if (topBorder) Box(modifier = Modifier.fillMaxWidth().height(1)) {
                 HorizontalBorder()
@@ -53,19 +53,19 @@ fun Menu(
             val height = if (topBorder && bottomBorder) rows - 2
             else if (!topBorder && !bottomBorder) rows - 1
             else rows
-            if (rows >= 3) Column(
+            if (height >= 1) Row(
                 modifier = Modifier.fillMaxWidth().height(height)
             ) {
                 // Left
-                if (leftBorder) Box(modifier = Modifier.height(height).width(1)) {
+                if (leftBorder) Box(modifier = Modifier.fillMaxHeight().width(1)) {
                     VerticalBorder(height)
                     Column(modifier = Modifier.fillMaxSize()) {
                         leftBorderAttachment()
                     }
                 }
                 // Contents
-                HorizontalGrid(
-                    modifier = Modifier.height(height).width(
+                VerticalGrid(
+                    modifier = Modifier.fillMaxHeight().width(
                         if (leftBorder && rightBorder) 7
                         else if (!leftBorder && !rightBorder) 9
                         else 8
@@ -74,7 +74,7 @@ fun Menu(
                     contents()
                 }
                 // Right
-                if (rightBorder) Box(modifier = Modifier.height(height).width(1)) {
+                if (rightBorder) Box(modifier = Modifier.fillMaxHeight().width(1)) {
                     VerticalBorder(height)
                     Column(modifier = Modifier.fillMaxSize()) {
                         rightBorderAttachment()
