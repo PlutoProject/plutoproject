@@ -10,6 +10,7 @@ import ink.pmc.framework.utils.visual.mochaPink
 import ink.pmc.framework.utils.visual.mochaText
 import org.bukkit.Material
 import org.bukkit.command.CommandSender
+import org.incendo.cloud.annotation.specifier.Quoted
 import org.incendo.cloud.annotations.Argument
 import org.incendo.cloud.annotations.Command
 import org.incendo.cloud.annotations.Permission
@@ -20,7 +21,7 @@ object EditWarpCommand {
     @Permission("essentials.editwarp")
     suspend fun CommandSender.editwarp(
         @Argument("warp", parserName = "warp-without-alias") warp: Warp,
-        @Argument("alias") alias: String
+        @Argument("alias") @Quoted alias: String
     ) {
         warp.alias = alias
         warp.update()
