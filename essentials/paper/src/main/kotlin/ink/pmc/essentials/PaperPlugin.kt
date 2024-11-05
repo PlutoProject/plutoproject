@@ -133,12 +133,19 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
                     "warp-without-alias",
                     ParserDescriptor.of(WarpParser(true), Warp::class.java)
                 )
+                registerNamedParser(
+                    "spawn",
+                    ParserDescriptor.of(SpawnParser(), Warp::class.java)
+                )
             }
             brigadierManager().apply {
                 registerMapping(TypeToken.get(WarpParser::class.java)) {
                     it.cloudSuggestions().to { parser ->
                         if (!parser.withoutAlias) StringArgumentType.greedyString() else StringArgumentType.string()
                     }
+                }
+                registerMapping(TypeToken.get(SpawnParser::class.java)) {
+                    it.cloudSuggestions().to { StringArgumentType.greedyString() }
                 }
             }
         }.annotationParser().apply {

@@ -39,7 +39,7 @@ class WarpParser(val withoutAlias: Boolean) : FutureArgumentParser<CommandSender
             ?: error("Unable to parse warp name")
         val name = parseWarpName(string)
         WarpManager.get(name)?.let { ArgumentParseResult.success(it) }
-            ?: ArgumentParseResult.failure(WarpNotExistedException(name))
+            ?: throw WarpNotExistedException(name)
     }.asCompletableFuture()
 
     override fun suggestionsFuture(
