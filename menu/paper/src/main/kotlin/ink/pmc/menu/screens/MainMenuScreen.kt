@@ -133,6 +133,7 @@ class MainMenuScreen : Screen, KoinComponent {
             material = icon,
             name = name,
             lore = lore,
+            enchantmentGlint = model.tab == tab,
             modifier = Modifier.clickable {
                 if (clickType != ClickType.LEFT) return@clickable
                 if (model.tab == tab) return@clickable
