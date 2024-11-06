@@ -26,6 +26,7 @@ import ink.pmc.framework.utils.time.zoneId
 import ink.pmc.framework.utils.visual.*
 import ink.pmc.framework.utils.world.aliasOrName
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.Material
 import org.bukkit.event.inventory.ClickType
 import java.time.ZonedDateTime
@@ -149,7 +150,11 @@ class WarpMenu : Screen {
                     text("$world $x, $y, $z")
                 })
                 add(Component.empty())
-                warp.description?.let { addAll(it.splitLines()) }
+                warp.description?.let {
+                    addAll(it.splitLines().map { line ->
+                        line.decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE)
+                    })
+                }
                 add(Component.empty())
                 add(component {
                     text("左键 ") with mochaLavender without italic()
