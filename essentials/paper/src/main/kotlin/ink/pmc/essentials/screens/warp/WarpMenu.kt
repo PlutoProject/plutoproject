@@ -133,6 +133,7 @@ class WarpMenu : Screen {
     @Suppress("FunctionName")
     @Composable
     fun Warp(warp: Warp) {
+        val model = model.current
         val player = LocalPlayer.current
         var founderName by remember {
             mutableStateOf<String?>(null)
@@ -226,6 +227,9 @@ class WarpMenu : Screen {
                     ClickType.RIGHT -> {
                         if (WarpManager.getCollection(player).contains(warp)) {
                             WarpManager.removeFromCollection(player, warp)
+                            if (model.filter == WarpMenuModel.Filter.COLLECTED) {
+                                model.contents.remove(warp)
+                            }
                         } else {
                             WarpManager.addToCollection(player, warp)
                         }
