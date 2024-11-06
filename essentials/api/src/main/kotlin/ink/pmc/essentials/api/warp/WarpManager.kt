@@ -38,6 +38,10 @@ interface WarpManager {
 
     suspend fun listByCategory(category: WarpCategory): Collection<Warp>
 
+    suspend fun getPageCount(pageSize: Int, category: WarpCategory? = null): Int
+
+    suspend fun listByPage(pageSize: Int, page: Int, category: WarpCategory? = null): Collection<Warp>
+
     suspend fun has(id: UUID): Boolean
 
     suspend fun has(name: String): Boolean

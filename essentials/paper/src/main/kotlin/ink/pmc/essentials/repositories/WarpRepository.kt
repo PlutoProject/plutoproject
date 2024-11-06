@@ -13,6 +13,7 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.time.Duration
 import java.util.*
+import kotlin.math.ceil
 
 class WarpRepository : KoinComponent {
     private val conf by inject<EssentialsConfig>()
@@ -50,6 +51,20 @@ class WarpRepository : KoinComponent {
 
     suspend fun findByCategory(category: WarpCategory): Collection<WarpModel> {
         return db.find(eq("category", category)).toCollection(mutableListOf())
+    }
+
+    suspend fun getPageCount(pageSize: Int, category: WarpCategory? = null): Int {
+        val total = db.let {
+            if (category == null) it.countDocuments() else it.countDocuments(eq("category", category))
+        }
+        return ceil(total.toDouble() / pageSize).toInt()
+    }
+
+    suspend fun findByPage(pageSize: Int, page: Int, category: WarpCategory? = null): Collection<WarpModel> {
+        val skip = (page - 1) * pageSize
+        return db.let {
+            if (category != null) it.find(eq("category", category)) else it.find()
+        }.skip(skip).limit(pageSize).toCollection(mutableListOf())
     }
 
     suspend fun hasById(id: UUID): Boolean {

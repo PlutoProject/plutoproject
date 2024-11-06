@@ -128,6 +128,16 @@ class WarpManagerImpl : WarpManager, KoinComponent {
         }
     }
 
+    override suspend fun getPageCount(pageSize: Int, category: WarpCategory?): Int {
+        return repo.getPageCount(pageSize, category)
+    }
+
+    override suspend fun listByPage(pageSize: Int, page: Int, category: WarpCategory?): Collection<Warp> {
+        return repo.findByPage(pageSize, page, category).map {
+            WarpImpl(it).also { warp -> cache.put(warp.id, warp) }
+        }
+    }
+
     override suspend fun has(id: UUID): Boolean {
         if (cache.contains(id)) return true
         return repo.hasById(id)
