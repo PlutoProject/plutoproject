@@ -135,13 +135,17 @@ class WarpManagerImpl : WarpManager, KoinComponent {
     override suspend fun addToCollection(player: OfflinePlayer, warp: Warp) {
         val list = getCollection(player).toMutableList()
         list.add(warp)
-        PlayerDb.getOrCreate(player.uniqueId)[COLLECTION_KEY] = list.map { it.id.toString() }
+        val db = PlayerDb.getOrCreate(player.uniqueId)
+        db[COLLECTION_KEY] = list.map { it.id.toString() }
+        db.update()
     }
 
     override suspend fun removeFromCollection(player: OfflinePlayer, warp: Warp) {
         val list = getCollection(player).toMutableList()
         list.remove(warp)
-        PlayerDb.getOrCreate(player.uniqueId)[COLLECTION_KEY] = list.map { it.id.toString() }
+        val db = PlayerDb.getOrCreate(player.uniqueId)
+        db[COLLECTION_KEY] = list.map { it.id.toString() }
+        db.update()
     }
 
     override suspend fun list(): Collection<Warp> {

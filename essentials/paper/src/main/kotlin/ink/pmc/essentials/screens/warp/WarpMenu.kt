@@ -139,7 +139,7 @@ class WarpMenu : Screen {
             mutableStateOf<String?>(null)
         }
         var isInCollection by rememberSaveable { mutableStateOf(false) }
-        LaunchedEffect(Unit) {
+        LaunchedEffect(warp) {
             isInCollection = WarpManager.getCollection(player).contains(warp)
         }
         if (warp.founder != null) {
