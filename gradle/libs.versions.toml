@@ -40,6 +40,7 @@ cloud-coroutines = { module = "org.incendo:cloud-kotlin-coroutines", version.ref
 cloud-extensions = { module = "org.incendo:cloud-kotlin-extensions", version.ref = "cloud" }
 cloud-annotations = { module = "org.incendo:cloud-annotations", version.ref = "cloud" }
 cloud-annotations-coroutines = { module = "org.incendo:cloud-kotlin-coroutines-annotations", version.ref = "cloud" }
+cloud-minecraft-extras = { module = "org.incendo:cloud-minecraft-extras", version.ref = "cloud-minecraft" }
 mccoroutine-bukkit-api = { module = "com.github.shynixn.mccoroutine:mccoroutine-bukkit-api", version.ref = "mccoroutine" }
 mccoroutine-bukkit-core = { module = "com.github.shynixn.mccoroutine:mccoroutine-bukkit-core", version.ref = "mccoroutine" }
 mccoroutine-velocity-api = { module = "com.github.shynixn.mccoroutine:mccoroutine-velocity-api", version.ref = "mccoroutine" }
@@ -74,7 +75,7 @@ aedile = { module = "com.sksamuel.aedile:aedile-core", version = "1.3.1" }
 [bundles]
 kotlin = ["kotlin-stdlib", "kotlin-reflect", "kotlinx-coroutine-core", "kotlinx-serialization"]
 nightconfig = ["nightconfig-core", "nightconfig-toml", "nightconfig-hocon"]
-cloud = ["cloud-paper", "cloud-velocity", "cloud-coroutines", "cloud-extensions", "cloud-annotations", "cloud-annotations-coroutines"]
+cloud = ["cloud-paper", "cloud-velocity", "cloud-coroutines", "cloud-extensions", "cloud-annotations", "cloud-annotations-coroutines", "cloud-minecraft-extras"]
 mccoroutine = ["mccoroutine-bukkit-api", "mccoroutine-bukkit-core", "mccoroutine-velocity-api", "mccoroutine-velocity-core"]
 bytebuddy = ["bytebuddy", "bytebuddy-agent"]
 protobuf = ["protobuf-kotlin"]

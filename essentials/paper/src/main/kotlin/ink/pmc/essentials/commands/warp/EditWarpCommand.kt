@@ -187,7 +187,7 @@ object EditWarpCommand {
     @Permission("essentials.editwarp")
     suspend fun CommandSender.description(
         @Argument("warp", parserName = "warp-without-alias") warp: Warp,
-        description: Component,
+        @Argument("description", parserName = "editwarp-component") description: Component,
     ) {
         warp.description = description
         warp.update()

@@ -45,10 +45,13 @@ import io.leangen.geantyref.TypeToken
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
+import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.plugin.Plugin
 import org.incendo.cloud.bukkit.parser.OfflinePlayerParser
 import org.incendo.cloud.bukkit.parser.WorldParser
+import org.incendo.cloud.minecraft.extras.parser.ComponentParser
 import org.incendo.cloud.parser.ParserDescriptor
+import org.incendo.cloud.parser.standard.StringParser
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import org.koin.core.component.inject
@@ -136,6 +139,10 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
                 registerNamedParser(
                     "spawn",
                     ParserDescriptor.of(SpawnParser(), Warp::class.java)
+                )
+                registerNamedParser(
+                    "editwarp-component",
+                    ComponentParser.componentParser(MiniMessage.miniMessage(), StringParser.StringMode.QUOTED)
                 )
             }
             brigadierManager().apply {
