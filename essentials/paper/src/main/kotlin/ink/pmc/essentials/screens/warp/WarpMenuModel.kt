@@ -64,6 +64,7 @@ class WarpMenuModel(private val player: Player) : ScreenModel {
             ARCHITECTURE -> TOWN
             TOWN -> ALL
         }
+        pageCount = 0
     }
 
     fun previousFilter() {
@@ -74,5 +75,6 @@ class WarpMenuModel(private val player: Player) : ScreenModel {
             ARCHITECTURE -> MACHINE
             TOWN -> ARCHITECTURE
         }
+        pageCount = 0
     }
 }

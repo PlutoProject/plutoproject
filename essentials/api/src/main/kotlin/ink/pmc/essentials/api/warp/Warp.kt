@@ -1,7 +1,9 @@
 package ink.pmc.essentials.api.warp
 
+import kotlinx.coroutines.Deferred
 import org.bukkit.Location
 import org.bukkit.Material
+import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
 import org.jetbrains.annotations.ApiStatus.Internal
 import java.time.Instant
@@ -13,6 +15,8 @@ interface Warp {
     val id: UUID
     val name: String
     var alias: String?
+    val founderId: UUID?
+    val founder: Deferred<OfflinePlayer>?
     var icon: Material?
     var category: WarpCategory?
     var type: WarpType @Internal set

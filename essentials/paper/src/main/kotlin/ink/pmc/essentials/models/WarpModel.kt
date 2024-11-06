@@ -17,6 +17,7 @@ data class WarpModel(
     val id: @Serializable(UUIDSerializer::class) UUID,
     val name: String,
     val alias: String?,
+    val founder: String?,
     val icon: Material?,
     val category: WarpCategory?,
     val type: WarpType,

@@ -10,9 +10,13 @@ import ink.pmc.essentials.models.WarpModel
 import ink.pmc.essentials.repositories.WarpRepository
 import ink.pmc.framework.utils.concurrent.async
 import ink.pmc.framework.utils.concurrent.submitAsync
+import ink.pmc.framework.utils.player.uuid
 import ink.pmc.framework.utils.storage.model
+import kotlinx.coroutines.Deferred
+import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Material
+import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
 import org.jetbrains.annotations.ApiStatus.Internal
 import org.koin.core.component.KoinComponent
@@ -27,6 +31,9 @@ class WarpImpl(private val model: WarpModel) : Warp, KoinComponent {
     override val id: UUID = model.id
     override val name: String = model.name
     override var alias: String? = model.alias
+    override var founderId = model.founder?.uuid
+    override val founder: Deferred<OfflinePlayer>?
+        get() = founderId?.let { submitAsync<OfflinePlayer> { Bukkit.getOfflinePlayer(it) } }
     override var icon: Material? = model.icon
     override var category: WarpCategory? = model.category
     override var type: WarpType = model.type @Internal set
@@ -57,9 +64,8 @@ class WarpImpl(private val model: WarpModel) : Warp, KoinComponent {
     }
 
     private fun toModel(): WarpModel = model.copy(
-        id = id,
-        name = name,
         alias = alias,
+        founder = founderId?.toString(),
         icon = icon,
         category = category,
         type = type,
