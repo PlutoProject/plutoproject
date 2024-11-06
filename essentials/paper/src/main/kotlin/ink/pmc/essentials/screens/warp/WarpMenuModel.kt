@@ -14,7 +14,7 @@ import org.bukkit.entity.Player
 private const val PAGE_SIZE = 36
 
 class WarpMenuModel(private val player: Player) : ScreenModel {
-    var filter by mutableStateOf(ALL)
+    private var filter by mutableStateOf(ALL)
     var isLoading by mutableStateOf(true)
     var pageCount by mutableStateOf(-1)
     var page by mutableStateOf(0)
@@ -33,7 +33,7 @@ class WarpMenuModel(private val player: Player) : ScreenModel {
     }
 
     suspend fun loadPage() {
-        require(page in 0 until pageCount) { "Page must be in range: [0, $pageCount)" }
+        require(page in 0 until pageCount || pageCount == -1) { "Page must be in range: [0, $pageCount)" }
         isLoading = true
         pageCount = -1
         contents.clear()
@@ -64,7 +64,7 @@ class WarpMenuModel(private val player: Player) : ScreenModel {
             ARCHITECTURE -> TOWN
             TOWN -> ALL
         }
-        pageCount = 0
+        page = 0
     }
 
     fun previousFilter() {
@@ -75,6 +75,6 @@ class WarpMenuModel(private val player: Player) : ScreenModel {
             ARCHITECTURE -> MACHINE
             TOWN -> ARCHITECTURE
         }
-        pageCount = 0
+        page = 0
     }
 }

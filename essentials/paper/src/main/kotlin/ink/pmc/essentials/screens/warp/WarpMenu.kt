@@ -1,25 +1,24 @@
 package ink.pmc.essentials.screens.warp
 
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.core.screen.ScreenKey
 import ink.pmc.advkt.component.component
 import ink.pmc.advkt.component.italic
-import ink.pmc.advkt.component.raw
 import ink.pmc.advkt.component.text
 import ink.pmc.essentials.api.warp.Warp
 import ink.pmc.essentials.api.warp.WarpCategory.*
 import ink.pmc.essentials.api.warp.WarpManager
 import ink.pmc.framework.interactive.LocalPlayer
-import ink.pmc.framework.interactive.inventory.Item
-import ink.pmc.framework.interactive.inventory.Modifier
+import ink.pmc.framework.interactive.inventory.*
 import ink.pmc.framework.interactive.inventory.click.clickable
 import ink.pmc.framework.interactive.inventory.components.Selector
 import ink.pmc.framework.interactive.inventory.components.SeparatePageTuner
 import ink.pmc.framework.interactive.inventory.components.SeparatePageTunerMode
-import ink.pmc.framework.interactive.inventory.fillMaxSize
 import ink.pmc.framework.interactive.inventory.jetpack.Arrangement
+import ink.pmc.framework.interactive.inventory.layout.Column
 import ink.pmc.framework.interactive.inventory.layout.Menu
 import ink.pmc.framework.interactive.inventory.layout.Row
 import ink.pmc.framework.utils.chat.splitLines
@@ -79,6 +78,32 @@ class WarpMenu : Screen {
                     }
                 }
             ) {
+                if (model.isLoading) {
+                    Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center) {
+                        Row(modifier = Modifier.fillMaxWidth().height(1), horizontalArrangement = Arrangement.Center) {
+                            Item(
+                                material = Material.CHEST_MINECART,
+                                name = component {
+                                    text("正在加载...") with mochaSubtext0 without italic()
+                                }
+                            )
+                        }
+                    }
+                    return@Menu
+                }
+                if (model.contents.isEmpty()) {
+                    Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center) {
+                        Row(modifier = Modifier.fillMaxWidth().height(1), horizontalArrangement = Arrangement.Center) {
+                            Item(
+                                material = Material.MINECART,
+                                name = component {
+                                    text("这里没有内容 :(") with mochaSubtext0 without italic()
+                                }
+                            )
+                        }
+                    }
+                    return@Menu
+                }
                 val contents = this.model.current.contents
                 contents.forEach {
                     Warp(it)
@@ -92,11 +117,9 @@ class WarpMenu : Screen {
     fun Warp(warp: Warp) {
         val player = LocalPlayer.current
         var founderName by remember {
-            mutableStateOf(component {
-                text("正在加载") with mochaSubtext0 without italic()
-            })
+            mutableStateOf<String?>(null)
         }
-        var isInCollection by remember { mutableStateOf(false) }
+        var isInCollection by rememberSaveable { mutableStateOf(false) }
         LaunchedEffect(Unit) {
             isInCollection = WarpManager.getCollection(player).contains(warp)
         }
@@ -104,13 +127,7 @@ class WarpMenu : Screen {
             LaunchedEffect(Unit) {
                 founderName = warp.founder?.let {
                     val founder = it.await()
-                    founder.name?.let { name ->
-                        component {
-                            text(name) with mochaFlamingo without italic()
-                        }
-                    }
-                } ?: component {
-                    text("未知名称") with mochaSubtext0 without italic()
+                    founder.name
                 }
             }
         }
@@ -128,7 +145,7 @@ class WarpMenu : Screen {
             lore = buildList {
                 if (isInCollection) {
                     add(component {
-                        text("✨ 已收藏") with mochaYellow
+                        text("✨ 已收藏") with mochaYellow without italic()
                     })
                 }
                 when (warp.category) {
@@ -147,10 +164,9 @@ class WarpMenu : Screen {
                     null -> {}
                 }
                 add(component {
-                    if (warp.founder != null) {
+                    if (founderName != null) {
                         text("由 ") with mochaSubtext0 without italic()
-                        raw(founderName)
-                        text(" ")
+                        text("$founderName ") with mochaText without italic()
                     }
                     val time = ZonedDateTime.ofInstant(warp.createdAt, player.zoneId).formatDate()
                     text("设立于 ") with mochaSubtext0 without italic()
@@ -161,10 +177,10 @@ class WarpMenu : Screen {
                     val x = warp.location.blockX
                     val y = warp.location.blockY
                     val z = warp.location.blockZ
-                    text("$world $x, $y, $z")
+                    text("$world $x, $y, $z") with mochaSubtext0 without italic()
                 })
-                add(Component.empty())
                 warp.description?.let {
+                    add(Component.empty())
                     addAll(it.splitLines().map { line ->
                         line.decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE)
                     })
@@ -175,7 +191,7 @@ class WarpMenu : Screen {
                     text("前往此处") with mochaText without italic()
                 })
                 add(component {
-                    text("Shift + 左键 ") with mochaLavender without italic()
+                    text("右键 ") with mochaLavender without italic()
                     text("收藏") with mochaText without italic()
                 })
             },
@@ -186,7 +202,7 @@ class WarpMenu : Screen {
                         warp.teleport(player)
                     }
 
-                    ClickType.SHIFT_LEFT -> {
+                    ClickType.RIGHT -> {
                         if (WarpManager.getCollection(player).contains(warp)) {
                             WarpManager.removeFromCollection(player, warp)
                         } else {

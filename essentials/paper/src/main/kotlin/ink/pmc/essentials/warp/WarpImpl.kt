@@ -73,6 +73,7 @@ class WarpImpl(private val model: WarpModel) : Warp, KoinComponent {
             val event = WarpTeleportEvent(player, player.location, this@WarpImpl).apply { callEvent() }
             if (event.isCancelled) return@async
             if (prompt) {
+                val founderName = founder?.await()?.name
                 player.showTitle {
                     times {
                         fadeIn(Ticks.duration(5))
@@ -83,6 +84,10 @@ class WarpImpl(private val model: WarpModel) : Warp, KoinComponent {
                         text(alias ?: name) with mochaYellow
                     }
                     subTitle {
+                        if (founderName != null) {
+                            text("由 ") with mochaSubtext0
+                            text("$founderName ") with mochaText
+                        }
                         val time = ZonedDateTime.ofInstant(createdAt, player.zoneId)
                         text("设立于 ") with mochaSubtext0
                         text(time.formatDate()) with mochaText
