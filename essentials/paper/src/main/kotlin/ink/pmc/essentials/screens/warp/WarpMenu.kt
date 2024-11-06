@@ -41,10 +41,6 @@ class WarpMenu : Screen {
     override fun Content() {
         val player = LocalPlayer.current
         val model = rememberScreenModel { WarpMenuModel(player) }
-        val scope = rememberCoroutineScope()
-
-        println("filter: ${model.filter}")
-
         CompositionLocalProvider(
             this.model provides model
         ) {
