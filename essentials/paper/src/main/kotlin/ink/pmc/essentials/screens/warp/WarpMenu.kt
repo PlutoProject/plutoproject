@@ -16,6 +16,8 @@ import ink.pmc.framework.interactive.inventory.Item
 import ink.pmc.framework.interactive.inventory.Modifier
 import ink.pmc.framework.interactive.inventory.click.clickable
 import ink.pmc.framework.interactive.inventory.components.Selector
+import ink.pmc.framework.interactive.inventory.components.SeparatePageTuner
+import ink.pmc.framework.interactive.inventory.components.SeparatePageTunerMode
 import ink.pmc.framework.interactive.inventory.fillMaxSize
 import ink.pmc.framework.interactive.inventory.jetpack.Arrangement
 import ink.pmc.framework.interactive.inventory.layout.Menu
@@ -54,6 +56,12 @@ class WarpMenu : Screen {
                 rightBorder = false,
                 bottomBorderAttachment = {
                     Row(modifier = Modifier.fillMaxSize(), horizontalArrangement = Arrangement.Center) {
+                        SeparatePageTuner(
+                            mode = SeparatePageTunerMode.PREVIOUS,
+                            current = model.page + 1,
+                            total = model.pageCount,
+                            turn = { if (model.page > 0) model.page-- }
+                        )
                         Selector(
                             title = component {
                                 text("筛选") with mochaYellow without italic()
@@ -61,6 +69,12 @@ class WarpMenu : Screen {
                             options = listOf("全部", "已收藏", "仅看机械类", "仅看建筑类", "仅看城镇类"),
                             goNext = model::nextFilter,
                             goPrevious = model::previousFilter
+                        )
+                        SeparatePageTuner(
+                            mode = SeparatePageTunerMode.NEXT,
+                            current = model.page + 1,
+                            total = model.pageCount,
+                            turn = { if (model.page < model.pageCount - 1) model.page++ }
                         )
                     }
                 }
@@ -89,8 +103,8 @@ class WarpMenu : Screen {
         if (warp.founder != null) {
             LaunchedEffect(Unit) {
                 founderName = warp.founder?.let {
-                    val player = it.await()
-                    player.name?.let { name ->
+                    val founder = it.await()
+                    founder.name?.let { name ->
                         component {
                             text(name) with mochaFlamingo without italic()
                         }

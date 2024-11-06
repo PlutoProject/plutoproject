@@ -1,5 +1,8 @@
 package ink.pmc.essentials.warp
 
+import ink.pmc.advkt.component.text
+import ink.pmc.advkt.showTitle
+import ink.pmc.advkt.title.*
 import ink.pmc.essentials.api.teleport.TeleportManager
 import ink.pmc.essentials.api.warp.Warp
 import ink.pmc.essentials.api.warp.WarpCategory
@@ -13,8 +16,14 @@ import ink.pmc.framework.utils.concurrent.async
 import ink.pmc.framework.utils.concurrent.submitAsync
 import ink.pmc.framework.utils.player.uuid
 import ink.pmc.framework.utils.storage.model
+import ink.pmc.framework.utils.time.formatDate
+import ink.pmc.framework.utils.time.zoneId
+import ink.pmc.framework.utils.visual.mochaSubtext0
+import ink.pmc.framework.utils.visual.mochaText
+import ink.pmc.framework.utils.visual.mochaYellow
 import kotlinx.coroutines.Deferred
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.util.Ticks
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Material
@@ -24,6 +33,7 @@ import org.jetbrains.annotations.ApiStatus.Internal
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.time.Instant
+import java.time.ZonedDateTime
 import java.util.*
 
 class WarpImpl(private val model: WarpModel) : Warp, KoinComponent {
@@ -62,7 +72,24 @@ class WarpImpl(private val model: WarpModel) : Warp, KoinComponent {
             // 必须异步触发
             val event = WarpTeleportEvent(player, player.location, this@WarpImpl).apply { callEvent() }
             if (event.isCancelled) return@async
-            teleport.teleportSuspend(player, location, options, prompt)
+            if (prompt) {
+                player.showTitle {
+                    times {
+                        fadeIn(Ticks.duration(5))
+                        stay(Ticks.duration(35))
+                        fadeOut(Ticks.duration(20))
+                    }
+                    mainTitle {
+                        text(alias ?: name) with mochaYellow
+                    }
+                    subTitle {
+                        val time = ZonedDateTime.ofInstant(createdAt, player.zoneId)
+                        text("设立于 ") with mochaSubtext0
+                        text(time.formatDate()) with mochaText
+                    }
+                }
+            }
+            teleport.teleportSuspend(player, location, options, false)
         }
     }
 
