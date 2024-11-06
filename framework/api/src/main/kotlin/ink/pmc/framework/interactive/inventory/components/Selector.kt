@@ -11,8 +11,8 @@ import ink.pmc.framework.interactive.inventory.click.clickable
 import ink.pmc.framework.utils.chat.UI_SELECTOR_SOUND
 import ink.pmc.framework.utils.visual.mochaLavender
 import ink.pmc.framework.utils.visual.mochaSubtext0
-import ink.pmc.framework.utils.visual.mochaTeal
 import ink.pmc.framework.utils.visual.mochaText
+import ink.pmc.framework.utils.visual.mochaYellow
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextColor
 import org.bukkit.Material
@@ -26,7 +26,7 @@ fun Selector(
     description: List<Component> = listOf(),
     options: List<String>,
     default: Int = 0,
-    highlightColor: TextColor = mochaTeal,
+    highlightColor: TextColor = mochaYellow,
     goNext: suspend () -> Unit,
     goPrevious: suspend () -> Unit
 ) {

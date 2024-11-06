@@ -127,7 +127,7 @@ class WarpManagerImpl : WarpManager, KoinComponent {
     }
 
     override suspend fun getCollectionByPage(player: OfflinePlayer, pageSize: Int, page: Int): Collection<Warp> {
-        val list = getCollection(player).toList()
+        val list = getCollection(player).sortedByDescending { it.createdAt }
         val skip = page * pageSize
         return list.safeSubList(skip, skip + pageSize)
     }

@@ -2,6 +2,7 @@ package ink.pmc.essentials.repositories
 
 import com.github.benmanes.caffeine.cache.Caffeine
 import com.mongodb.client.model.Filters.eq
+import com.mongodb.client.model.Indexes.descending
 import ink.pmc.essentials.api.warp.WarpCategory
 import ink.pmc.essentials.api.warp.WarpType
 import ink.pmc.essentials.config.EssentialsConfig
@@ -24,7 +25,7 @@ class WarpRepository : KoinComponent {
         Provider.defaultMongoDatabase.getCollection<WarpModel>("essentials_${conf.serverName}_warps")
 
     suspend fun find(): Collection<WarpModel> {
-        return db.find().toCollection(mutableListOf())
+        return db.find().sort(descending("createdAt")).toCollection(mutableListOf())
     }
 
     suspend fun findById(id: UUID): WarpModel? {
@@ -46,11 +47,11 @@ class WarpRepository : KoinComponent {
     }
 
     suspend fun findSpawns(): Collection<WarpModel> {
-        return db.find(eq("type", WarpType.SPAWN)).toCollection(mutableListOf())
+        return db.find(eq("type", WarpType.SPAWN)).sort(descending("createdAt")).toCollection(mutableListOf())
     }
 
     suspend fun findByCategory(category: WarpCategory): Collection<WarpModel> {
-        return db.find(eq("category", category)).toCollection(mutableListOf())
+        return db.find(eq("category", category)).sort(descending("createdAt")).toCollection(mutableListOf())
     }
 
     suspend fun getPageCount(pageSize: Int, category: WarpCategory? = null): Int {
@@ -64,7 +65,7 @@ class WarpRepository : KoinComponent {
         val skip = page * pageSize
         return db.let {
             if (category != null) it.find(eq("category", category)) else it.find()
-        }.skip(skip).limit(pageSize).toCollection(mutableListOf())
+        }.sort(descending("createdAt")).skip(skip).limit(pageSize).toCollection(mutableListOf())
     }
 
     suspend fun hasById(id: UUID): Boolean {

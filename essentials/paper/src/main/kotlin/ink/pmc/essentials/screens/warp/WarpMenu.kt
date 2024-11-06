@@ -21,6 +21,7 @@ import ink.pmc.framework.interactive.inventory.jetpack.Arrangement
 import ink.pmc.framework.interactive.inventory.layout.Column
 import ink.pmc.framework.interactive.inventory.layout.Menu
 import ink.pmc.framework.interactive.inventory.layout.Row
+import ink.pmc.framework.utils.chat.UI_SUCCEED_SOUND
 import ink.pmc.framework.utils.chat.splitLines
 import ink.pmc.framework.utils.concurrent.sync
 import ink.pmc.framework.utils.time.formatDate
@@ -61,7 +62,7 @@ class WarpMenu : Screen {
                         }
                         Selector(
                             title = component {
-                                text("筛选") with mochaYellow without italic()
+                                text("筛选") with mochaText without italic()
                             },
                             options = listOf("全部", "已收藏", "仅看机械类", "仅看建筑类", "仅看城镇类"),
                             goNext = model::nextFilter,
@@ -150,10 +151,10 @@ class WarpMenu : Screen {
             material = warp.icon ?: Material.PAPER,
             name = component {
                 if (warp.alias != null) {
-                    text("${warp.alias} ") with mochaYellow without italic()
+                    text("${warp.alias} ") with mochaPink without italic()
                     text("(${warp.name})") with mochaSubtext0 without italic()
                 } else {
-                    text(warp.name) with mochaYellow without italic()
+                    text(warp.name) with mochaPink without italic()
                 }
             },
             enchantmentGlint = isInCollection,
@@ -230,6 +231,7 @@ class WarpMenu : Screen {
                             WarpManager.addToCollection(player, warp)
                         }
                         isInCollection = !isInCollection
+                        player.playSound(UI_SUCCEED_SOUND)
                     }
 
                     else -> {}
