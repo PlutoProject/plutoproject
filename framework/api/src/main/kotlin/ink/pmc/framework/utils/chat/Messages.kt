@@ -80,3 +80,7 @@ val UI_SUCCEED_SOUND = sound {
 val UI_PAGING_SOUND = sound {
     key(Key.key("item.book.page_turn"))
 }
+
+val UI_SELECTOR_SOUND = sound {
+    key(Key.key("block.note_block.hat"))
+}

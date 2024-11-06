@@ -11,10 +11,10 @@ import ink.pmc.essentials.api.warp.WarpManager
 import ink.pmc.essentials.screens.warp.WarpMenuModel.Filter.*
 import org.bukkit.entity.Player
 
-private const val PAGE_SIZE = 36
+internal const val PAGE_SIZE = 28
 
 class WarpMenuModel(private val player: Player) : ScreenModel {
-    private var filter by mutableStateOf(ALL)
+    var filter by mutableStateOf(ALL)
     var isLoading by mutableStateOf(true)
     var pageCount by mutableStateOf(-1)
     var page by mutableStateOf(0)
@@ -33,7 +33,7 @@ class WarpMenuModel(private val player: Player) : ScreenModel {
     }
 
     suspend fun loadPage() {
-        require(page in 0 until pageCount || pageCount == -1) { "Page must be in range: [0, $pageCount)" }
+        println("loadPage begin")
         isLoading = true
         pageCount = -1
         contents.clear()
@@ -53,7 +53,10 @@ class WarpMenuModel(private val player: Player) : ScreenModel {
                 contents.addAll(WarpManager.listByPage(PAGE_SIZE, page, filter.category))
             }
         }
+        val range = 0 until pageCount
+        check(page in range || range.isEmpty()) { "Page $page must be in range: [0, $pageCount)" }
         isLoading = false
+        println("loadPage done")
     }
 
     fun nextFilter() {
@@ -65,6 +68,7 @@ class WarpMenuModel(private val player: Player) : ScreenModel {
             TOWN -> ALL
         }
         page = 0
+        println("nextFilter: $page, $filter")
     }
 
     fun previousFilter() {
@@ -76,5 +80,6 @@ class WarpMenuModel(private val player: Player) : ScreenModel {
             TOWN -> ARCHITECTURE
         }
         page = 0
+        println("previousFilter: $page, $filter")
     }
 }

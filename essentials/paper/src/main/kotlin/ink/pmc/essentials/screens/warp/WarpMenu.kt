@@ -41,8 +41,12 @@ class WarpMenu : Screen {
         val player = LocalPlayer.current
         val model = rememberScreenModel { WarpMenuModel(player) }
 
-        LaunchedEffect(model.page) {
+        println("filter: ${model.filter}")
+
+        LaunchedEffect(model.page, model.filter) {
+            println("LaunchedEffect begin")
             model.loadPage()
+            println("LaunchedEffect end")
         }
 
         CompositionLocalProvider(
@@ -51,16 +55,18 @@ class WarpMenu : Screen {
             Menu(
                 title = Component.text("地标"),
                 rows = 6,
-                leftBorder = false,
-                rightBorder = false,
                 bottomBorderAttachment = {
+                    println("bottomBorderAttachment Begin")
+                    if (model.isLoading) return@Menu
                     Row(modifier = Modifier.fillMaxSize(), horizontalArrangement = Arrangement.Center) {
-                        SeparatePageTuner(
-                            mode = SeparatePageTunerMode.PREVIOUS,
-                            current = model.page + 1,
-                            total = model.pageCount,
-                            turn = { if (model.page > 0) model.page-- }
-                        )
+                        if (model.pageCount > 1) {
+                            SeparatePageTuner(
+                                mode = SeparatePageTunerMode.PREVIOUS,
+                                current = model.page + 1,
+                                total = model.pageCount,
+                                turn = { if (model.page > 0) model.page-- }
+                            )
+                        }
                         Selector(
                             title = component {
                                 text("筛选") with mochaYellow without italic()
@@ -69,18 +75,23 @@ class WarpMenu : Screen {
                             goNext = model::nextFilter,
                             goPrevious = model::previousFilter
                         )
-                        SeparatePageTuner(
-                            mode = SeparatePageTunerMode.NEXT,
-                            current = model.page + 1,
-                            total = model.pageCount,
-                            turn = { if (model.page < model.pageCount - 1) model.page++ }
-                        )
+                        if (model.pageCount > 1) {
+                            SeparatePageTuner(
+                                mode = SeparatePageTunerMode.NEXT,
+                                current = model.page + 1,
+                                total = model.pageCount,
+                                turn = { if (model.page < model.pageCount - 1) model.page++ }
+                            )
+                        }
                     }
+                    println("bottomBorderAttachment End")
                 }
             ) {
+                println("Begin menu contents")
                 if (model.isLoading) {
+                    println("Begin isLoading")
                     Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center) {
-                        Row(modifier = Modifier.fillMaxWidth().height(1), horizontalArrangement = Arrangement.Center) {
+                        Row(modifier = Modifier.fillMaxWidth().height(2), horizontalArrangement = Arrangement.Center) {
                             Item(
                                 material = Material.CHEST_MINECART,
                                 name = component {
@@ -89,11 +100,13 @@ class WarpMenu : Screen {
                             )
                         }
                     }
+                    println("End is loading")
                     return@Menu
                 }
                 if (model.contents.isEmpty()) {
+                    println("Begin isEmpty")
                     Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center) {
-                        Row(modifier = Modifier.fillMaxWidth().height(1), horizontalArrangement = Arrangement.Center) {
+                        Row(modifier = Modifier.fillMaxWidth().height(2), horizontalArrangement = Arrangement.Center) {
                             Item(
                                 material = Material.MINECART,
                                 name = component {
@@ -102,12 +115,16 @@ class WarpMenu : Screen {
                             )
                         }
                     }
+                    println("End isEmpty")
                     return@Menu
                 }
-                val contents = this.model.current.contents
-                contents.forEach {
-                    Warp(it)
+                VerticalGrid(modifier = Modifier.fillMaxSize()) {
+                    model.contents.forEach {
+                        println("contents forEach: $it")
+                        Warp(it)
+                    }
                 }
+                println("End menu contents")
             }
         }
     }
@@ -182,6 +199,7 @@ class WarpMenu : Screen {
                 warp.description?.let {
                     add(Component.empty())
                     addAll(it.splitLines().map { line ->
+                        println("Line: $line")
                         line.decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE)
                     })
                 }

@@ -4,9 +4,11 @@ import androidx.compose.runtime.*
 import ink.pmc.advkt.component.component
 import ink.pmc.advkt.component.italic
 import ink.pmc.advkt.component.text
+import ink.pmc.framework.interactive.LocalPlayer
 import ink.pmc.framework.interactive.inventory.Item
 import ink.pmc.framework.interactive.inventory.Modifier
 import ink.pmc.framework.interactive.inventory.click.clickable
+import ink.pmc.framework.utils.chat.UI_SELECTOR_SOUND
 import ink.pmc.framework.utils.visual.mochaBlue
 import ink.pmc.framework.utils.visual.mochaLavender
 import ink.pmc.framework.utils.visual.mochaSubtext0
@@ -29,6 +31,7 @@ fun Selector(
     goPrevious: suspend () -> Unit
 ) {
     require(options.isNotEmpty()) { "Options cannot be empty" }
+    val player = LocalPlayer.current
     var current by remember { mutableStateOf(default) }
     Item(
         name = title,
@@ -54,11 +57,13 @@ fun Selector(
             when (clickType) {
                 ClickType.LEFT -> {
                     current = if (current == options.lastIndex) 0 else current + 1
+                    player.playSound(UI_SELECTOR_SOUND)
                     goNext()
                 }
 
                 ClickType.RIGHT -> {
                     current = if (current == 0) options.lastIndex else current - 1
+                    player.playSound(UI_SELECTOR_SOUND)
                     goPrevious()
                 }
 

@@ -10,6 +10,7 @@ import ink.pmc.essentials.models.WarpModel
 import ink.pmc.essentials.repositories.WarpRepository
 import ink.pmc.framework.playerdb.PlayerDb
 import ink.pmc.framework.utils.chat.gsonComponentSerializer
+import ink.pmc.framework.utils.data.safeSubList
 import ink.pmc.framework.utils.platform.paper
 import ink.pmc.framework.utils.player.uuid
 import ink.pmc.framework.utils.player.uuidOrNull
@@ -128,7 +129,7 @@ class WarpManagerImpl : WarpManager, KoinComponent {
     override suspend fun getCollectionByPage(player: OfflinePlayer, pageSize: Int, page: Int): Collection<Warp> {
         val list = getCollection(player).toList()
         val skip = page * pageSize
-        return list.subList(skip, skip + pageSize)
+        return list.safeSubList(skip, skip + pageSize)
     }
 
     override suspend fun addToCollection(player: OfflinePlayer, warp: Warp) {

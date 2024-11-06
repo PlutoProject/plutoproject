@@ -4,11 +4,13 @@ import androidx.compose.runtime.Composable
 import ink.pmc.advkt.component.component
 import ink.pmc.advkt.component.italic
 import ink.pmc.advkt.component.text
+import ink.pmc.framework.interactive.LocalPlayer
 import ink.pmc.framework.interactive.inventory.Item
 import ink.pmc.framework.interactive.inventory.Modifier
 import ink.pmc.framework.interactive.inventory.click.clickable
 import ink.pmc.framework.interactive.inventory.components.SeparatePageTunerMode.NEXT
 import ink.pmc.framework.interactive.inventory.components.SeparatePageTunerMode.PREVIOUS
+import ink.pmc.framework.utils.chat.UI_PAGING_SOUND
 import ink.pmc.framework.utils.visual.mochaLavender
 import ink.pmc.framework.utils.visual.mochaText
 import net.kyori.adventure.text.Component
@@ -29,6 +31,7 @@ fun SeparatePageTuner(
     total: Int,
     turn: suspend () -> Unit
 ) {
+    val player = LocalPlayer.current
     Item(
         material = icon,
         name = component {
@@ -53,6 +56,7 @@ fun SeparatePageTuner(
         },
         modifier = Modifier.clickable {
             if (clickType != ClickType.LEFT) return@clickable
+            player.playSound(UI_PAGING_SOUND)
             turn()
         }
     )
