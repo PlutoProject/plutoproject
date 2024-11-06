@@ -181,7 +181,6 @@ class WarpMenu : Screen {
                 }
                 add(component {
                     if (founderName != null) {
-                        text("由 ") with mochaSubtext0 without italic()
                         text("$founderName ") with mochaText without italic()
                     }
                     val time = ZonedDateTime.ofInstant(warp.createdAt, player.zoneId).formatDate()
