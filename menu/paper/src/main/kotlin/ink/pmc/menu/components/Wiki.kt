@@ -23,11 +23,11 @@ fun Wiki() {
         lore = MAIN_MENU_ITEM_WIKI_LORE,
         modifier = Modifier.clickable {
             if (clickType != ClickType.LEFT) return@clickable
+            player.sendMessage(MAIN_MENU_WIKI)
+            player.playSound(MESSAGE_SOUND)
             sync {
                 player.closeInventory()
             }
-            player.sendMessage(MAIN_MENU_WIKI)
-            player.playSound(MESSAGE_SOUND)
         }
     )
 }

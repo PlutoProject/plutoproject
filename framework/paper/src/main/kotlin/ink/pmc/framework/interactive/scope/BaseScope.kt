@@ -5,7 +5,6 @@ import androidx.compose.runtime.Composition
 import androidx.compose.runtime.Recomposer
 import androidx.compose.runtime.snapshots.ObserverHandle
 import androidx.compose.runtime.snapshots.Snapshot
-import com.github.shynixn.mccoroutine.bukkit.ticks
 import ink.pmc.framework.interactive.ComposableFunction
 import ink.pmc.framework.interactive.GuiManager
 import ink.pmc.framework.interactive.GuiScope
@@ -49,7 +48,7 @@ abstract class BaseScope<T>(
         coroutineScope.launch {
             while (!isDisposed) {
                 frameClock.sendFrame(System.nanoTime())
-                delay(1.ticks)
+                delay(5)
             }
         }
     }
@@ -57,11 +56,11 @@ abstract class BaseScope<T>(
     override fun dispose() {
         if (isDisposed) return
         isDisposed = true
-        coroutineScope.cancel()
         composition.dispose()
         frameClock.cancel()
         recomposer.cancel()
         observerHandle.dispose()
+        coroutineScope.cancel()
         manager.removeScope(this)
     }
 

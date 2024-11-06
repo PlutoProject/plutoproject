@@ -217,10 +217,10 @@ class WarpMenu : Screen {
             modifier = Modifier.clickable {
                 when (clickType) {
                     ClickType.LEFT -> {
+                        warp.teleport(player)
                         sync {
                             player.closeInventory()
                         }
-                        warp.teleport(player)
                     }
 
                     ClickType.RIGHT -> {

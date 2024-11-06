@@ -357,10 +357,10 @@ class MainMenuScreen : Screen, KoinComponent {
             modifier = Modifier.clickable {
                 if (state != AVAILABLE) return@clickable
                 if (clickType != ClickType.LEFT) return@clickable
+                RandomTeleportManager.launch(player, player.world)
                 sync {
                     player.closeInventory()
                 }
-                RandomTeleportManager.launch(player, player.world)
             }
         )
     }
@@ -390,10 +390,10 @@ class MainMenuScreen : Screen, KoinComponent {
 
                         ClickType.RIGHT -> {
                             player.performCommand(CO_NEAR_COMMAND)
+                            player.playSound(UI_SUCCEED_SOUND)
                             sync {
                                 player.closeInventory()
                             }
-                            player.playSound(UI_SUCCEED_SOUND)
                         }
 
                         else -> {}
