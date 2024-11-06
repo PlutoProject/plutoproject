@@ -1,9 +1,12 @@
 package ink.pmc.essentials.warp
 
 import ink.pmc.essentials.api.teleport.TeleportManager
-import ink.pmc.essentials.api.warp.*
-import ink.pmc.essentials.models.WarpModel
+import ink.pmc.essentials.api.warp.Warp
+import ink.pmc.essentials.api.warp.WarpCategory
+import ink.pmc.essentials.api.warp.WarpTeleportEvent
+import ink.pmc.essentials.api.warp.WarpType
 import ink.pmc.essentials.home.loadFailed
+import ink.pmc.essentials.models.WarpModel
 import ink.pmc.essentials.repositories.WarpRepository
 import ink.pmc.framework.utils.concurrent.async
 import ink.pmc.framework.utils.concurrent.submitAsync
@@ -66,5 +69,14 @@ class WarpImpl(private val model: WarpModel) : Warp, KoinComponent {
 
     override suspend fun update() {
         repo.update(toModel())
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (other !is Warp) return false
+        return id == other.id
+    }
+
+    override fun hashCode(): Int {
+        return id.hashCode()
     }
 }

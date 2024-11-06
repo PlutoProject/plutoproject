@@ -61,7 +61,7 @@ class WarpRepository : KoinComponent {
     }
 
     suspend fun findByPage(pageSize: Int, page: Int, category: WarpCategory? = null): Collection<WarpModel> {
-        val skip = (page - 1) * pageSize
+        val skip = page * pageSize
         return db.let {
             if (category != null) it.find(eq("category", category)) else it.find()
         }.skip(skip).limit(pageSize).toCollection(mutableListOf())

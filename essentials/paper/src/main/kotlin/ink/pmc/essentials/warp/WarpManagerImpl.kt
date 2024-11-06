@@ -10,6 +10,7 @@ import ink.pmc.essentials.models.WarpModel
 import ink.pmc.essentials.repositories.WarpRepository
 import ink.pmc.framework.playerdb.PlayerDb
 import ink.pmc.framework.utils.platform.paper
+import ink.pmc.framework.utils.player.uuid
 import ink.pmc.framework.utils.player.uuidOrNull
 import ink.pmc.framework.utils.storage.model
 import org.bson.types.ObjectId
@@ -22,9 +23,11 @@ import org.koin.core.component.get
 import org.koin.core.component.inject
 import java.util.*
 import java.util.concurrent.ConcurrentMap
+import kotlin.math.ceil
 import kotlin.time.Duration
 
 private const val PREFERRED_SPAWN_KEY = "essentials.warp.preferred_spawn"
+private const val COLLECTION_KEY = "essentials.warp.collection"
 
 class WarpManagerImpl : WarpManager, KoinComponent {
     private val config by lazy { get<EssentialsConfig>().warp }
@@ -108,6 +111,34 @@ class WarpManagerImpl : WarpManager, KoinComponent {
         val database = PlayerDb.getOrCreate(player.uniqueId)
         database[PREFERRED_SPAWN_KEY] = spawn.id.toString()
         database.update()
+    }
+
+    override suspend fun getCollection(player: OfflinePlayer): Collection<Warp> {
+        return PlayerDb.getOrCreate(player.uniqueId).getList<String>(COLLECTION_KEY)
+            ?.mapNotNull { get(it.uuid) }
+            ?: listOf()
+    }
+
+    override suspend fun getCollectionPageCount(player: OfflinePlayer, pageSize: Int): Int {
+        return ceil(getCollection(player).size.toDouble() / pageSize).toInt()
+    }
+
+    override suspend fun getCollectionByPage(player: OfflinePlayer, pageSize: Int, page: Int): Collection<Warp> {
+        val list = getCollection(player).toList()
+        val skip = page * pageSize
+        return list.subList(skip, skip + pageSize)
+    }
+
+    override suspend fun addToCollection(player: OfflinePlayer, warp: Warp) {
+        val list = getCollection(player).toMutableList()
+        list.add(warp)
+        PlayerDb.getOrCreate(player.uniqueId)[COLLECTION_KEY] = list.map { it.id.toString() }
+    }
+
+    override suspend fun removeFromCollection(player: OfflinePlayer, warp: Warp) {
+        val list = getCollection(player).toMutableList()
+        list.remove(warp)
+        PlayerDb.getOrCreate(player.uniqueId)[COLLECTION_KEY] = list.map { it.id.toString() }
     }
 
     override suspend fun list(): Collection<Warp> {

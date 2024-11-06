@@ -5,34 +5,55 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import cafe.adriel.voyager.core.model.ScreenModel
-import ink.pmc.essentials.config.Warp
+import ink.pmc.essentials.api.warp.Warp
+import ink.pmc.essentials.api.warp.WarpCategory
+import ink.pmc.essentials.api.warp.WarpManager
 import ink.pmc.essentials.screens.warp.WarpMenuModel.Filter.*
+import org.bukkit.entity.Player
 
 private const val PAGE_SIZE = 36
 
-class WarpMenuModel : ScreenModel {
+class WarpMenuModel(private val player: Player) : ScreenModel {
     var filter by mutableStateOf(ALL)
     var isLoading by mutableStateOf(true)
     var pageCount by mutableStateOf(-1)
-    var currentPage by mutableStateOf(-1)
-    var content = mutableStateListOf<Warp>()
+    var page by mutableStateOf(0)
+    var contents = mutableStateListOf<Warp>()
 
     enum class Filter {
-        ALL, COLLECTED, MACHINE, ARCHITECTURE, TOWN
+        ALL, COLLECTED, MACHINE, ARCHITECTURE, TOWN;
+
+        val category: WarpCategory
+            get() = when (this) {
+                MACHINE -> WarpCategory.MACHINE
+                ARCHITECTURE -> WarpCategory.ARCHITECTURE
+                TOWN -> WarpCategory.TOWN
+                else -> error("Unexpected")
+            }
     }
 
-    suspend fun loadPage(page: Int) {
+    suspend fun loadPage() {
+        require(page in 0 until pageCount) { "Page must be in range: [0, $pageCount)" }
         isLoading = true
         pageCount = -1
-        currentPage = -1
-        content.clear()
+        contents.clear()
         when (filter) {
-            ALL -> TODO()
-            COLLECTED -> TODO()
-            MACHINE -> TODO()
-            ARCHITECTURE -> TODO()
-            TOWN -> TODO()
+            ALL -> {
+                pageCount = WarpManager.getPageCount(PAGE_SIZE)
+                contents.addAll(WarpManager.listByPage(PAGE_SIZE, page))
+            }
+
+            COLLECTED -> {
+                pageCount = WarpManager.getCollectionPageCount(player, PAGE_SIZE)
+                contents.addAll(WarpManager.getCollectionByPage(player, PAGE_SIZE, page))
+            }
+
+            else -> {
+                pageCount = WarpManager.getPageCount(PAGE_SIZE, filter.category)
+                contents.addAll(WarpManager.listByPage(PAGE_SIZE, page, filter.category))
+            }
         }
+        isLoading = false
     }
 
     fun nextFilter() {

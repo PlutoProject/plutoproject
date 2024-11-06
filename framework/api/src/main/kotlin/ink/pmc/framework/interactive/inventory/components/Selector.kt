@@ -7,7 +7,10 @@ import ink.pmc.advkt.component.text
 import ink.pmc.framework.interactive.inventory.Item
 import ink.pmc.framework.interactive.inventory.Modifier
 import ink.pmc.framework.interactive.inventory.click.clickable
-import ink.pmc.framework.utils.visual.*
+import ink.pmc.framework.utils.visual.mochaBlue
+import ink.pmc.framework.utils.visual.mochaLavender
+import ink.pmc.framework.utils.visual.mochaSubtext0
+import ink.pmc.framework.utils.visual.mochaText
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextColor
 import org.bukkit.Material
@@ -22,8 +25,8 @@ fun Selector(
     options: List<String>,
     default: Int = 0,
     highlightColor: TextColor = mochaBlue,
-    goNext: () -> Unit,
-    goPrevious: () -> Unit
+    goNext: suspend () -> Unit,
+    goPrevious: suspend () -> Unit
 ) {
     require(options.isNotEmpty()) { "Options cannot be empty" }
     var current by remember { mutableStateOf(default) }

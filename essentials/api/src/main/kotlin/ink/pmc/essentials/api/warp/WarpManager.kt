@@ -32,6 +32,16 @@ interface WarpManager {
 
     suspend fun setPreferredSpawn(player: OfflinePlayer, spawn: Warp)
 
+    suspend fun getCollection(player: OfflinePlayer): Collection<Warp>
+
+    suspend fun getCollectionPageCount(player: OfflinePlayer, pageSize: Int): Int
+
+    suspend fun getCollectionByPage(player: OfflinePlayer, pageSize: Int, page: Int): Collection<Warp>
+
+    suspend fun addToCollection(player: OfflinePlayer, warp: Warp)
+
+    suspend fun removeFromCollection(player: OfflinePlayer, warp: Warp)
+
     suspend fun list(): Collection<Warp>
 
     suspend fun listSpawns(): Collection<Warp>
