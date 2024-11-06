@@ -9,7 +9,10 @@ import ink.pmc.framework.interactive.inventory.Item
 import ink.pmc.framework.interactive.inventory.Modifier
 import ink.pmc.framework.interactive.inventory.click.clickable
 import ink.pmc.framework.utils.chat.UI_SELECTOR_SOUND
-import ink.pmc.framework.utils.visual.*
+import ink.pmc.framework.utils.visual.mochaLavender
+import ink.pmc.framework.utils.visual.mochaSubtext0
+import ink.pmc.framework.utils.visual.mochaTeal
+import ink.pmc.framework.utils.visual.mochaText
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextColor
 import org.bukkit.Material
@@ -53,15 +56,15 @@ fun Selector(
         modifier = Modifier.clickable {
             when (clickType) {
                 ClickType.LEFT -> {
+                    goNext()
                     current = if (current == options.lastIndex) 0 else current + 1
                     player.playSound(UI_SELECTOR_SOUND)
-                    goNext()
                 }
 
                 ClickType.RIGHT -> {
+                    goPrevious()
                     current = if (current == 0) options.lastIndex else current - 1
                     player.playSound(UI_SELECTOR_SOUND)
-                    goPrevious()
                 }
 
                 else -> {}

@@ -23,6 +23,7 @@ import ink.pmc.framework.interactive.inventory.layout.Column
 import ink.pmc.framework.interactive.inventory.layout.Row
 import ink.pmc.framework.utils.chat.UI_BACK
 import ink.pmc.framework.utils.chat.replace
+import ink.pmc.framework.utils.concurrent.sync
 import org.bukkit.Material
 import org.bukkit.OfflinePlayer
 import org.bukkit.event.inventory.ClickType
@@ -250,7 +251,9 @@ class HomeViewerScreen(private val viewing: OfflinePlayer) : Screen {
                 when (clickType) {
                     ClickType.LEFT -> {
                         home.teleport(player)
-                        player.closeInventory()
+                        sync {
+                            player.closeInventory()
+                        }
                     }
 
                     ClickType.RIGHT -> {

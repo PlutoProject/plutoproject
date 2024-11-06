@@ -5,10 +5,11 @@ import ink.pmc.framework.interactive.LocalPlayer
 import ink.pmc.framework.interactive.inventory.Item
 import ink.pmc.framework.interactive.inventory.Modifier
 import ink.pmc.framework.interactive.inventory.click.clickable
+import ink.pmc.framework.utils.chat.MESSAGE_SOUND
+import ink.pmc.framework.utils.concurrent.sync
 import ink.pmc.menu.messages.MAIN_MENU_ITEM_WIKI
 import ink.pmc.menu.messages.MAIN_MENU_ITEM_WIKI_LORE
 import ink.pmc.menu.messages.MAIN_MENU_WIKI
-import ink.pmc.framework.utils.chat.MESSAGE_SOUND
 import org.bukkit.Material
 import org.bukkit.event.inventory.ClickType
 
@@ -22,7 +23,9 @@ fun Wiki() {
         lore = MAIN_MENU_ITEM_WIKI_LORE,
         modifier = Modifier.clickable {
             if (clickType != ClickType.LEFT) return@clickable
-            player.closeInventory()
+            sync {
+                player.closeInventory()
+            }
             player.sendMessage(MAIN_MENU_WIKI)
             player.playSound(MESSAGE_SOUND)
         }

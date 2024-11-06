@@ -26,6 +26,7 @@ import ink.pmc.framework.interactive.inventory.layout.Row
 import ink.pmc.framework.playerdb.PlayerDb
 import ink.pmc.framework.utils.chat.UI_SUCCEED_SOUND
 import ink.pmc.framework.utils.chat.replace
+import ink.pmc.framework.utils.concurrent.sync
 import ink.pmc.framework.utils.time.formatDuration
 import ink.pmc.framework.utils.visual.mochaSubtext0
 import ink.pmc.framework.utils.visual.mochaText
@@ -356,7 +357,9 @@ class MainMenuScreen : Screen, KoinComponent {
             modifier = Modifier.clickable {
                 if (state != AVAILABLE) return@clickable
                 if (clickType != ClickType.LEFT) return@clickable
-                player.closeInventory()
+                sync {
+                    player.closeInventory()
+                }
                 RandomTeleportManager.launch(player, player.world)
             }
         )
@@ -387,7 +390,9 @@ class MainMenuScreen : Screen, KoinComponent {
 
                         ClickType.RIGHT -> {
                             player.performCommand(CO_NEAR_COMMAND)
-                            player.closeInventory()
+                            sync {
+                                player.closeInventory()
+                            }
                             player.playSound(UI_SUCCEED_SOUND)
                         }
 

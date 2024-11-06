@@ -17,6 +17,7 @@ import ink.pmc.framework.interactive.inventory.jetpack.Arrangement
 import ink.pmc.framework.interactive.inventory.layout.Box
 import ink.pmc.framework.interactive.inventory.layout.Column
 import ink.pmc.framework.interactive.inventory.layout.Row
+import ink.pmc.framework.utils.concurrent.sync
 import ink.pmc.framework.utils.time.ticks
 import ink.pmc.framework.utils.visual.*
 import kotlinx.coroutines.delay
@@ -83,7 +84,9 @@ class ExampleScreen1 : Screen {
                     material = Material.RED_STAINED_GLASS_PANE,
                     name = component { text("关闭菜单") with mochaMaroon without italic() },
                     modifier = Modifier.clickable {
-                        player.closeInventory()
+                        sync {
+                            player.closeInventory()
+                        }
                     }
                 )
                 Item(

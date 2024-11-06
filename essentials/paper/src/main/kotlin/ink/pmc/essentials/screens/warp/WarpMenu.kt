@@ -22,6 +22,7 @@ import ink.pmc.framework.interactive.inventory.layout.Column
 import ink.pmc.framework.interactive.inventory.layout.Menu
 import ink.pmc.framework.interactive.inventory.layout.Row
 import ink.pmc.framework.utils.chat.splitLines
+import ink.pmc.framework.utils.concurrent.sync
 import ink.pmc.framework.utils.time.formatDate
 import ink.pmc.framework.utils.time.zoneId
 import ink.pmc.framework.utils.visual.*
@@ -40,14 +41,9 @@ class WarpMenu : Screen {
     override fun Content() {
         val player = LocalPlayer.current
         val model = rememberScreenModel { WarpMenuModel(player) }
+        val scope = rememberCoroutineScope()
 
         println("filter: ${model.filter}")
-
-        LaunchedEffect(model.page, model.filter) {
-            println("LaunchedEffect begin")
-            model.loadPage()
-            println("LaunchedEffect end")
-        }
 
         CompositionLocalProvider(
             this.model provides model
@@ -88,6 +84,11 @@ class WarpMenu : Screen {
                 }
             ) {
                 println("Begin menu contents")
+                LaunchedEffect(model.page, model.filter) {
+                    println("LaunchedEffect begin: ${model.filter}")
+                    model.loadPage()
+                    println("LaunchedEffect end")
+                }
                 if (model.isLoading) {
                     println("Begin isLoading")
                     Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center) {
@@ -216,7 +217,9 @@ class WarpMenu : Screen {
             modifier = Modifier.clickable {
                 when (clickType) {
                     ClickType.LEFT -> {
-                        player.closeInventory()
+                        sync {
+                            player.closeInventory()
+                        }
                         warp.teleport(player)
                     }
 

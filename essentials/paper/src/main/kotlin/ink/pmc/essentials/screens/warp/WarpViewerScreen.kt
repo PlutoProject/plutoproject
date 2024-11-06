@@ -23,6 +23,7 @@ import ink.pmc.framework.interactive.inventory.layout.Column
 import ink.pmc.framework.interactive.inventory.layout.Row
 import ink.pmc.framework.utils.chat.UI_BACK
 import ink.pmc.framework.utils.chat.replace
+import ink.pmc.framework.utils.concurrent.sync
 import org.bukkit.Material
 import org.bukkit.event.inventory.ClickType
 import org.jetbrains.annotations.ApiStatus
@@ -233,7 +234,9 @@ class WarpViewerScreen : Screen {
                 when (clickType) {
                     ClickType.LEFT -> {
                         warp.teleport(player)
-                        player.closeInventory()
+                        sync {
+                            player.closeInventory()
+                        }
                     }
 
                     else -> {}

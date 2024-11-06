@@ -22,15 +22,15 @@ abstract class BaseScope<T>(
 ) : GuiScope<T>, KoinComponent {
 
     var hasFrameWaiters: Boolean = false
-    private val coroutineScope = CoroutineScope(Dispatchers.Default)
     private val manager by inject<GuiManager>()
     private var hasSnapshotNotifications: Boolean = false
     private val frameClock: BroadcastFrameClock = BroadcastFrameClock { hasFrameWaiters = true }
     private val coroutineContext: CoroutineContext = Dispatchers.Default + frameClock
+    final override val coroutineScope = CoroutineScope(coroutineContext)
     private val observerHandle: ObserverHandle = Snapshot.registerGlobalWriteObserver {
         if (!hasSnapshotNotifications) {
             hasSnapshotNotifications = true
-            coroutineScope.launch(coroutineContext) {
+            coroutineScope.launch {
                 hasSnapshotNotifications = false
                 Snapshot.sendApplyNotifications()
             }
@@ -42,11 +42,11 @@ abstract class BaseScope<T>(
     abstract val composition: Composition
 
     init {
-        coroutineScope.launch(coroutineContext) {
+        coroutineScope.launch {
             recomposer.runRecomposeAndApplyChanges()
         }
 
-        coroutineScope.launch(coroutineContext) {
+        coroutineScope.launch {
             while (!isDisposed) {
                 frameClock.sendFrame(System.nanoTime())
                 delay(1.ticks)
