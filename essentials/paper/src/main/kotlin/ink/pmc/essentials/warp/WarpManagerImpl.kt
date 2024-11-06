@@ -9,10 +9,12 @@ import ink.pmc.essentials.config.EssentialsConfig
 import ink.pmc.essentials.models.WarpModel
 import ink.pmc.essentials.repositories.WarpRepository
 import ink.pmc.framework.playerdb.PlayerDb
+import ink.pmc.framework.utils.chat.gsonComponentSerializer
 import ink.pmc.framework.utils.platform.paper
 import ink.pmc.framework.utils.player.uuid
 import ink.pmc.framework.utils.player.uuidOrNull
 import ink.pmc.framework.utils.storage.model
+import net.kyori.adventure.text.Component
 import org.bson.types.ObjectId
 import org.bukkit.Location
 import org.bukkit.Material
@@ -183,8 +185,10 @@ class WarpManagerImpl : WarpManager, KoinComponent {
         name: String,
         location: Location,
         alias: String?,
+        founder: OfflinePlayer?,
         icon: Material?,
-        category: WarpCategory?
+        category: WarpCategory?,
+        description: Component?,
     ): Warp {
         require(!has(name)) { "Warp named $name already existed" }
         val model = WarpModel(
@@ -192,8 +196,10 @@ class WarpManagerImpl : WarpManager, KoinComponent {
             UUID.randomUUID(),
             name,
             alias,
+            founder?.uniqueId?.toString(),
             icon,
             category,
+            description?.let { gsonComponentSerializer.serialize(it) },
             WarpType.WARP,
             System.currentTimeMillis(),
             location.model,

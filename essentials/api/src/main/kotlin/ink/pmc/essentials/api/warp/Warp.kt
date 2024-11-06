@@ -1,6 +1,7 @@
 package ink.pmc.essentials.api.warp
 
 import kotlinx.coroutines.Deferred
+import net.kyori.adventure.text.Component
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.OfflinePlayer
@@ -19,6 +20,7 @@ interface Warp {
     val founder: Deferred<OfflinePlayer>?
     var icon: Material?
     var category: WarpCategory?
+    var description: Component?
     var type: WarpType @Internal set
     val createdAt: Instant
     var location: Location

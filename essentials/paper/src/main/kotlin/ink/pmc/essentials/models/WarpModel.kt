@@ -20,6 +20,7 @@ data class WarpModel(
     val founder: String?,
     val icon: Material?,
     val category: WarpCategory?,
+    val description: String?,
     val type: WarpType,
     val createdAt: Long,
     val location: LocationModel,

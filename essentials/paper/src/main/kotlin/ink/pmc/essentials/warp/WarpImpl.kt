@@ -8,11 +8,13 @@ import ink.pmc.essentials.api.warp.WarpType
 import ink.pmc.essentials.home.loadFailed
 import ink.pmc.essentials.models.WarpModel
 import ink.pmc.essentials.repositories.WarpRepository
+import ink.pmc.framework.utils.chat.gsonComponentSerializer
 import ink.pmc.framework.utils.concurrent.async
 import ink.pmc.framework.utils.concurrent.submitAsync
 import ink.pmc.framework.utils.player.uuid
 import ink.pmc.framework.utils.storage.model
 import kotlinx.coroutines.Deferred
+import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Material
@@ -36,6 +38,7 @@ class WarpImpl(private val model: WarpModel) : Warp, KoinComponent {
         get() = founderId?.let { submitAsync<OfflinePlayer> { Bukkit.getOfflinePlayer(it) } }
     override var icon: Material? = model.icon
     override var category: WarpCategory? = model.category
+    override var description: Component? = model.description?.let { gsonComponentSerializer.deserialize(it) }
     override var type: WarpType = model.type @Internal set
     override val createdAt: Instant = Instant.ofEpochMilli(model.createdAt)
     override var location: Location =
@@ -68,6 +71,7 @@ class WarpImpl(private val model: WarpModel) : Warp, KoinComponent {
         founder = founderId?.toString(),
         icon = icon,
         category = category,
+        description = description?.let { gsonComponentSerializer.serialize(it) },
         type = type,
         createdAt = createdAt.toEpochMilli(),
         location = location.model,

@@ -6,22 +6,28 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.core.screen.ScreenKey
 import ink.pmc.advkt.component.component
 import ink.pmc.advkt.component.italic
+import ink.pmc.advkt.component.raw
 import ink.pmc.advkt.component.text
 import ink.pmc.essentials.api.warp.Warp
+import ink.pmc.essentials.api.warp.WarpCategory.*
+import ink.pmc.essentials.api.warp.WarpManager
 import ink.pmc.framework.interactive.LocalPlayer
 import ink.pmc.framework.interactive.inventory.Item
 import ink.pmc.framework.interactive.inventory.Modifier
+import ink.pmc.framework.interactive.inventory.click.clickable
 import ink.pmc.framework.interactive.inventory.components.Selector
 import ink.pmc.framework.interactive.inventory.fillMaxSize
 import ink.pmc.framework.interactive.inventory.jetpack.Arrangement
 import ink.pmc.framework.interactive.inventory.layout.Menu
 import ink.pmc.framework.interactive.inventory.layout.Row
+import ink.pmc.framework.utils.chat.splitLines
+import ink.pmc.framework.utils.time.formatDate
 import ink.pmc.framework.utils.time.zoneId
-import ink.pmc.framework.utils.visual.mochaFlamingo
-import ink.pmc.framework.utils.visual.mochaSubtext0
-import ink.pmc.framework.utils.visual.mochaYellow
+import ink.pmc.framework.utils.visual.*
+import ink.pmc.framework.utils.world.aliasOrName
 import net.kyori.adventure.text.Component
 import org.bukkit.Material
+import org.bukkit.event.inventory.ClickType
 import java.time.ZonedDateTime
 
 class WarpMenu : Screen {
@@ -69,10 +75,15 @@ class WarpMenu : Screen {
     @Suppress("FunctionName")
     @Composable
     fun Warp(warp: Warp) {
+        val player = LocalPlayer.current
         var founderName by remember {
             mutableStateOf(component {
                 text("正在加载") with mochaSubtext0 without italic()
             })
+        }
+        var isInCollection by remember { mutableStateOf(false) }
+        LaunchedEffect(Unit) {
+            isInCollection = WarpManager.getCollection(player).contains(warp)
         }
         if (warp.founder != null) {
             LaunchedEffect(Unit) {
@@ -98,12 +109,76 @@ class WarpMenu : Screen {
                     text(warp.name) with mochaYellow without italic()
                 }
             },
-            lore = listOf(
-                component {
-                    val time = ZonedDateTime.ofInstant(warp.createdAt, LocalPlayer.current.zoneId)
-                    text("设立于 ") with mochaSubtext0 without italic()
+            enchantmentGlint = isInCollection,
+            lore = buildList {
+                if (isInCollection) {
+                    add(component {
+                        text("✨ 已收藏") with mochaYellow
+                    })
                 }
-            )
+                when (warp.category) {
+                    MACHINE -> component {
+                        text("\uD83D\uDD27 机械类") with mochaTeal without italic()
+                    }
+
+                    ARCHITECTURE -> component {
+                        text("\uD83D\uDDFC 建筑类") with mochaFlamingo without italic()
+                    }
+
+                    TOWN -> component {
+                        text("\uD83D\uDE84 城镇类") with mochaMauve without italic()
+                    }
+
+                    null -> {}
+                }
+                add(component {
+                    if (warp.founder != null) {
+                        text("由 ") with mochaSubtext0 without italic()
+                        raw(founderName)
+                        text(" ")
+                    }
+                    val time = ZonedDateTime.ofInstant(warp.createdAt, LocalPlayer.current.zoneId).formatDate()
+                    text("设立于 ") with mochaSubtext0 without italic()
+                    text(time) with mochaText without italic()
+                })
+                add(component {
+                    val world = warp.location.world.aliasOrName
+                    val x = warp.location.blockX
+                    val y = warp.location.blockY
+                    val z = warp.location.blockZ
+                    text("$world $x, $y, $z")
+                })
+                add(Component.empty())
+                warp.description?.let { addAll(it.splitLines()) }
+                add(Component.empty())
+                add(component {
+                    text("左键 ") with mochaLavender without italic()
+                    text("前往此处") with mochaText without italic()
+                })
+                add(component {
+                    text("Shift + 左键 ") with mochaLavender without italic()
+                    text("收藏") with mochaText without italic()
+                })
+            },
+            modifier = Modifier.clickable {
+                when (clickType) {
+                    ClickType.LEFT -> {
+                        player.closeInventory()
+                        warp.teleport(player)
+                    }
+
+                    ClickType.SHIFT_LEFT -> {
+                        if (WarpManager.getCollection(player).contains(warp)) {
+                            WarpManager.removeFromCollection(player, warp)
+                        } else {
+                            WarpManager.addToCollection(player, warp)
+                        }
+                        isInCollection = !isInCollection
+                    }
+
+                    else -> {}
+                }
+            }
         )
     }
 }

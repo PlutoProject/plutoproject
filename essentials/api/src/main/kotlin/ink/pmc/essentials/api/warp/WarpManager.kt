@@ -1,6 +1,7 @@
 package ink.pmc.essentials.api.warp
 
 import ink.pmc.framework.utils.inject.inlinedGet
+import net.kyori.adventure.text.Component
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.OfflinePlayer
@@ -60,8 +61,10 @@ interface WarpManager {
         name: String,
         location: Location,
         alias: String? = null,
+        founder: OfflinePlayer? = null,
         icon: Material? = null,
-        category: WarpCategory? = null
+        category: WarpCategory? = null,
+        description: Component? = null,
     ): Warp
 
     suspend fun remove(id: UUID)
