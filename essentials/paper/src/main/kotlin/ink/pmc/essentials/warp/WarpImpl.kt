@@ -89,7 +89,7 @@ class WarpImpl(private val model: WarpModel) : Warp, KoinComponent {
                             text("$founderName ") with mochaText
                         }
                         val time = ZonedDateTime.ofInstant(createdAt, player.zoneId)
-                        text("设立于 ") with mochaSubtext0
+                        text("设于 ") with mochaSubtext0
                         text(time.formatDate()) with mochaText
                     }
                 }

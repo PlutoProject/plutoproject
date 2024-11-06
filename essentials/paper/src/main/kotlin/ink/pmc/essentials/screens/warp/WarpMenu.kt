@@ -188,7 +188,7 @@ class WarpMenu : Screen {
                         text("$founderName ") with mochaText without italic()
                     }
                     val time = ZonedDateTime.ofInstant(warp.createdAt, player.zoneId).formatDate()
-                    text("设立于 ") with mochaSubtext0 without italic()
+                    text("设于 ") with mochaSubtext0 without italic()
                     text(time) with mochaText without italic()
                 })
                 add(component {
