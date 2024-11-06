@@ -16,7 +16,7 @@ interface Warp {
     val id: UUID
     val name: String
     var alias: String?
-    val founderId: UUID?
+    var founderId: UUID?
     val founder: Deferred<OfflinePlayer>?
     var icon: Material?
     var category: WarpCategory?
