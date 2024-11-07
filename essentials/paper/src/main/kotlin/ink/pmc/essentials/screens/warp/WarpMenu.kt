@@ -210,7 +210,11 @@ class WarpMenu : Screen {
                 })
                 add(component {
                     text("右键 ") with mochaLavender without italic()
-                    text("收藏") with mochaText without italic()
+                    if (!isInCollection) {
+                        text("收藏") with mochaText without italic()
+                    } else {
+                        text("取消收藏") with mochaText without italic()
+                    }
                 })
             },
             modifier = Modifier.clickable {
