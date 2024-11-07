@@ -34,7 +34,6 @@ class WarpMenuModel(private val player: Player) : ScreenModel {
     }
 
     suspend fun loadPage() {
-        println("loadPage begin")
         isLoading = true
         pageCount = -1
         contents.clear()
@@ -61,7 +60,6 @@ class WarpMenuModel(private val player: Player) : ScreenModel {
         val range = 0 until pageCount
         check(page in range || range.isEmpty()) { "Page $page must be in range: [0, $pageCount)" }
         isLoading = false
-        println("loadPage done")
     }
 
     fun nextFilter() {
@@ -73,7 +71,6 @@ class WarpMenuModel(private val player: Player) : ScreenModel {
             TOWN -> ALL
         }
         page = 0
-        println("nextFilter: $page, $filter")
     }
 
     fun previousFilter() {
@@ -85,6 +82,5 @@ class WarpMenuModel(private val player: Player) : ScreenModel {
             TOWN -> ARCHITECTURE
         }
         page = 0
-        println("previousFilter: $page, $filter")
     }
 }

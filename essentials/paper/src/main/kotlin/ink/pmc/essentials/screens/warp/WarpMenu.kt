@@ -49,7 +49,6 @@ class WarpMenu : Screen {
                 title = Component.text("地标"),
                 rows = 6,
                 bottomBorderAttachment = {
-                    println("bottomBorderAttachment Begin")
                     if (model.isLoading) return@Menu
                     Row(modifier = Modifier.fillMaxSize(), horizontalArrangement = Arrangement.Center) {
                         if (model.pageCount > 1) {
@@ -77,17 +76,12 @@ class WarpMenu : Screen {
                             )
                         }
                     }
-                    println("bottomBorderAttachment End")
                 }
             ) {
-                println("Begin menu contents")
                 LaunchedEffect(model.page, model.filter) {
-                    println("LaunchedEffect begin: ${model.filter}")
                     model.loadPage()
-                    println("LaunchedEffect end")
                 }
                 if (model.isLoading) {
-                    println("Begin isLoading")
                     Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center) {
                         Row(modifier = Modifier.fillMaxWidth().height(2), horizontalArrangement = Arrangement.Center) {
                             Item(
@@ -98,11 +92,9 @@ class WarpMenu : Screen {
                             )
                         }
                     }
-                    println("End is loading")
                     return@Menu
                 }
                 if (model.contents.isEmpty()) {
-                    println("Begin isEmpty")
                     Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center) {
                         Row(modifier = Modifier.fillMaxWidth().height(2), horizontalArrangement = Arrangement.Center) {
                             Item(
@@ -113,16 +105,13 @@ class WarpMenu : Screen {
                             )
                         }
                     }
-                    println("End isEmpty")
                     return@Menu
                 }
                 VerticalGrid(modifier = Modifier.fillMaxSize()) {
                     model.contents.forEach {
-                        println("contents forEach: $it")
                         Warp(it)
                     }
                 }
-                println("End menu contents")
             }
         }
     }
@@ -193,7 +182,6 @@ class WarpMenu : Screen {
                 warp.description?.let {
                     add(Component.empty())
                     addAll(it.splitLines().map { line ->
-                        println("Line: $line")
                         line.colorIfAbsent(mochaSubtext0)
                             .decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE)
                     })
