@@ -168,7 +168,7 @@ class WarpMenu : Screen {
                     })
 
                     TOWN -> add(component {
-                        text("\uD83D\uDE84 城镇类") with mochaMauve without italic()
+                        text("\uD83D\uDE84 城镇类") with mochaPeach without italic()
                     })
 
                     null -> {}
