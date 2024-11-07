@@ -3,6 +3,7 @@ package ink.pmc.essentials.commands.warp
 import ink.pmc.advkt.component.text
 import ink.pmc.advkt.send
 import ink.pmc.essentials.api.warp.Warp
+import ink.pmc.essentials.api.warp.WarpCategory
 import ink.pmc.essentials.api.warp.WarpManager
 import ink.pmc.framework.utils.command.ensurePlayer
 import ink.pmc.framework.utils.visual.mochaMaroon
@@ -16,6 +17,13 @@ import org.incendo.cloud.annotation.specifier.Quoted
 import org.incendo.cloud.annotations.Argument
 import org.incendo.cloud.annotations.Command
 import org.incendo.cloud.annotations.Permission
+import org.incendo.cloud.annotations.exception.ExceptionHandler
+import org.incendo.cloud.annotations.parser.Parser
+import org.incendo.cloud.annotations.suggestion.Suggestions
+import org.incendo.cloud.context.CommandContext
+import org.incendo.cloud.context.CommandInput
+import org.incendo.cloud.parser.standard.StringParser
+import kotlin.jvm.optionals.getOrNull
 
 @Suppress("UNUSED")
 object EditWarpCommand {
@@ -209,4 +217,57 @@ object EditWarpCommand {
             text("的简介") with mochaPink
         }
     }
+
+    @Suppress("UNUSED_PARAMETER")
+    @Suggestions("warp_category")
+    fun warpCategorySuggestion(context: CommandContext<CommandSender>, input: CommandInput): List<String> {
+        return listOf("machine", "architecture", "town")
+    }
+
+    @Parser(name = "warp_category", suggestions = "warp_category")
+    fun warpCategoryParser(context: CommandContext<CommandSender>, input: CommandInput): WarpCategory {
+        val stringParser = StringParser.stringParser<CommandSender>().parser()
+        val str = stringParser.parse(context, input).parsedValue().getOrNull()
+        return str?.let { runCatching { WarpCategory.valueOf(it.uppercase()) }.getOrNull() }
+            ?: throw WarpCategoryNotFoundException()
+    }
+
+    @ExceptionHandler(WarpCategoryNotFoundException::class)
+    fun CommandSender.warpCategoryNotFound() {
+        send {
+            text("地标分类只能是 ") with mochaMaroon
+            text("machine, architecture, town ") with mochaText
+            text("之一") with mochaMaroon
+        }
+    }
+
+    @Command("editwarp <warp> category <category>")
+    @Permission("essentials.editwarp")
+    suspend fun CommandSender.category(
+        @Argument("warp", parserName = "warp-without-alias") warp: Warp,
+        @Argument("category", parserName = "warp_category") category: WarpCategory
+    ) {
+        warp.category = category
+        warp.update()
+        send {
+            text("已将地标 ") with mochaPink
+            text("${warp.name} ") with mochaText
+            text("的分类修改为 ") with mochaPink
+            text(category.toString()) with mochaText
+        }
+    }
+
+    @Command("editwarp <warp> unset_category")
+    @Permission("essentials.editwarp")
+    suspend fun CommandSender.unsetCategory(@Argument("warp", parserName = "warp-without-alias") warp: Warp) {
+        warp.category = null
+        warp.update()
+        send {
+            text("已移除地标 ") with mochaPink
+            text("${warp.name} ") with mochaText
+            text("的分类") with mochaPink
+        }
+    }
 }
+
+class WarpCategoryNotFoundException : Exception()
