@@ -18,6 +18,7 @@ import ink.pmc.framework.utils.storage.model
 import ink.pmc.framework.utils.time.formatDate
 import ink.pmc.framework.utils.time.zoneId
 import ink.pmc.framework.utils.visual.mochaSubtext0
+import ink.pmc.framework.utils.visual.mochaText
 import ink.pmc.framework.utils.visual.mochaYellow
 import kotlinx.coroutines.Deferred
 import net.kyori.adventure.text.Component
@@ -85,10 +86,10 @@ class WarpImpl(private val model: WarpModel) : Warp, KoinComponent {
                     }
                     subTitle {
                         if (founderName != null) {
-                            text("$founderName ") with mochaSubtext0
+                            text("$founderName ") with mochaText
                         }
                         val time = ZonedDateTime.ofInstant(createdAt, player.zoneId)
-                        text("设于 ${time.formatDate()}") with mochaSubtext0
+                        text("设于 ${time.formatDate()}") with mochaText
                     }
                 }
             }
