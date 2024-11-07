@@ -56,7 +56,12 @@ class WarpMenu : Screen {
                                 mode = SeparatePageTunerMode.PREVIOUS,
                                 current = model.page + 1,
                                 total = model.pageCount,
-                                turn = { if (model.page > 0) model.page-- }
+                                turn = {
+                                    if (model.page > 0) {
+                                        model.page--
+                                        true
+                                    } else false
+                                }
                             )
                         }
                         Selector(
@@ -72,7 +77,12 @@ class WarpMenu : Screen {
                                 mode = SeparatePageTunerMode.NEXT,
                                 current = model.page + 1,
                                 total = model.pageCount,
-                                turn = { if (model.page < model.pageCount - 1) model.page++ }
+                                turn = {
+                                    if (model.page < model.pageCount - 1) {
+                                        model.page++
+                                        true
+                                    } else false
+                                }
                             )
                         }
                     }

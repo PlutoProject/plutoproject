@@ -29,7 +29,7 @@ fun SeparatePageTuner(
     mode: SeparatePageTunerMode,
     current: Int,
     total: Int,
-    turn: suspend () -> Unit
+    turn: suspend () -> Boolean
 ) {
     val player = LocalPlayer.current
     Item(
@@ -56,8 +56,7 @@ fun SeparatePageTuner(
         },
         modifier = Modifier.clickable {
             if (clickType != ClickType.LEFT) return@clickable
-            player.playSound(UI_PAGING_SOUND)
-            turn()
+            if (turn()) player.playSound(UI_PAGING_SOUND)
         }
     )
 }
