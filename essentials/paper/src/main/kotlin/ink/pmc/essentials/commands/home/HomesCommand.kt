@@ -2,7 +2,6 @@ package ink.pmc.essentials.commands.home
 
 import cafe.adriel.voyager.navigator.Navigator
 import ink.pmc.essentials.HOMES_OTHER
-import ink.pmc.essentials.TELEPORT_FAILED_SOUND
 import ink.pmc.essentials.api.home.HomeManager
 import ink.pmc.essentials.screens.home.HomeViewerScreen
 import ink.pmc.framework.interactive.GuiManager
@@ -28,7 +27,6 @@ object HomesCommand {
         if (this != actualPlayer) {
             if (!hasPermission(HOMES_OTHER)) {
                 sendMessage(NO_PERMISSON)
-                playSound(TELEPORT_FAILED_SOUND)
                 return
             }
             if (!HomeManager.hasHome(actualPlayer)) {
@@ -38,7 +36,6 @@ object HomesCommand {
                         actualPlayer.name ?: actualPlayer.uniqueId
                     )
                 )
-                playSound(TELEPORT_FAILED_SOUND)
                 return
             }
         }

@@ -51,13 +51,11 @@ private fun handleTpa(source: Player, destination: Player, direction: TeleportDi
             COMMAND_TPA_FAILED_NOT_ALLOWED_GO
                 .replace("<player>", source.name)
         )
-        source.playSound(TELEPORT_FAILED_SOUND)
         return
     }
 
     if (direction == COME && TeleportManager.isBlacklisted(source.world) && !source.hasPermission(BYPASS_WORLD_BLACKLIST)) {
         source.sendMessage(COMMAND_TPA_FAILED_NOT_ALLOWED_COME)
-        source.playSound(TELEPORT_FAILED_SOUND)
         return
     }
 

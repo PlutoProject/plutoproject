@@ -7,8 +7,8 @@ import ink.pmc.essentials.api.home.Home
 import ink.pmc.essentials.api.home.HomeManager
 import ink.pmc.essentials.config.EssentialsConfig
 import ink.pmc.essentials.disabled
-import ink.pmc.essentials.models.HomeModel
 import ink.pmc.essentials.essentialsScope
+import ink.pmc.essentials.models.HomeModel
 import ink.pmc.essentials.repositories.HomeRepository
 import ink.pmc.framework.utils.chat.isValidIdentifier
 import ink.pmc.framework.utils.platform.paper

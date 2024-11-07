@@ -2,7 +2,6 @@ package ink.pmc.essentials.commands.warp
 
 import ink.pmc.essentials.COMMAND_DELWARP_SUCCEED
 import ink.pmc.essentials.COMMAND_DELWARP_SUCCEED_ALIAS
-import ink.pmc.essentials.TELEPORT_REQUEST_RECEIVED_SOUND
 import ink.pmc.essentials.api.warp.Warp
 import ink.pmc.essentials.api.warp.WarpManager
 import ink.pmc.framework.utils.chat.replace
@@ -29,6 +28,5 @@ object DelWarpCommand {
                     .replace("<alias>", warp.alias!!)
             )
         }
-        playSound(TELEPORT_REQUEST_RECEIVED_SOUND)
     }
 }

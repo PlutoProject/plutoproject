@@ -23,17 +23,14 @@ object SetWarpCommand {
     ) = ensurePlayer {
         if (WarpManager.has(name)) {
             sendMessage(COMMAND_SETWARP_FAILED_EXISTED.replace("<name>", name))
-            playSound(TELEPORT_FAILED_SOUND)
             return
         }
         if (!name.isValidIdentifier) {
             sendMessage(COMMAND_SETWARP_FAILED_NOT_VALID)
-            playSound(TELEPORT_FAILED_SOUND)
             return
         }
         if (name.length > WarpManager.nameLengthLimit) {
             sendMessage(COMMAND_SETWARP_FAILED_LENGTN_LIMIT)
-            playSound(TELEPORT_FAILED_SOUND)
             return
         }
         submitAsync {
@@ -48,6 +45,5 @@ object SetWarpCommand {
                     .replace("<alias>", alias)
             )
         }
-        playSound(TELEPORT_REQUEST_RECEIVED_SOUND)
     }
 }

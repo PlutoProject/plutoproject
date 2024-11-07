@@ -15,9 +15,9 @@ import ink.pmc.essentials.screens.home.HomeEditorScreen.StarState.STARRED
 import ink.pmc.essentials.screens.home.HomeEditorScreen.State.*
 import ink.pmc.framework.interactive.LocalPlayer
 import ink.pmc.framework.interactive.inventory.*
-import ink.pmc.framework.interactive.inventory.click.clickable
 import ink.pmc.framework.interactive.inventory.canvas.Anvil
 import ink.pmc.framework.interactive.inventory.canvas.Chest
+import ink.pmc.framework.interactive.inventory.click.clickable
 import ink.pmc.framework.interactive.inventory.layout.Box
 import ink.pmc.framework.interactive.inventory.layout.Column
 import ink.pmc.framework.interactive.inventory.layout.Row

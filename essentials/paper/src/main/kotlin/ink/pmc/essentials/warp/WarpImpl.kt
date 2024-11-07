@@ -3,6 +3,7 @@ package ink.pmc.essentials.warp
 import ink.pmc.advkt.component.text
 import ink.pmc.advkt.showTitle
 import ink.pmc.advkt.title.*
+import ink.pmc.essentials.TELEPORT_SUCCEED_SOUND
 import ink.pmc.essentials.api.teleport.TeleportManager
 import ink.pmc.essentials.api.warp.Warp
 import ink.pmc.essentials.api.warp.WarpCategory
@@ -17,7 +18,6 @@ import ink.pmc.framework.utils.player.uuid
 import ink.pmc.framework.utils.storage.model
 import ink.pmc.framework.utils.time.formatDate
 import ink.pmc.framework.utils.time.zoneId
-import ink.pmc.framework.utils.visual.mochaSubtext0
 import ink.pmc.framework.utils.visual.mochaText
 import ink.pmc.framework.utils.visual.mochaYellow
 import kotlinx.coroutines.Deferred
@@ -92,6 +92,7 @@ class WarpImpl(private val model: WarpModel) : Warp, KoinComponent {
                         text("设于 ${time.formatDate()}") with mochaText
                     }
                 }
+                player.playSound(TELEPORT_SUCCEED_SOUND)
             }
             teleport.teleportSuspend(player, location, options, false)
         }

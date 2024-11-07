@@ -140,7 +140,7 @@ val TELEPORT_SUCCEED_TITLE_SAFE
     }
 
 val TELEPORT_SUCCEED_SOUND = sound {
-    key(Key.key("entity.ender_dragon.flap"))
+    key(Key.key("entity.enderman.teleport"))
 }
 
 val TELEPORT_FAILED_TITLE = title {

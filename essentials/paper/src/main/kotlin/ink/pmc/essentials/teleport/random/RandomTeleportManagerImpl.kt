@@ -306,7 +306,6 @@ class RandomTeleportManagerImpl : RandomTeleportManager, KoinComponent {
                             .replace("<symbol>", symbol)
                             .replace("<balance>", balance.currencyFormat())
                     )
-                    player.playSound(TELEPORT_FAILED_SOUND)
                     return@async
                 }
                 economy.withdrawPlayer(player, cost)

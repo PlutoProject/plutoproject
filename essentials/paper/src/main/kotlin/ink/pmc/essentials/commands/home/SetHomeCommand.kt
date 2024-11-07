@@ -20,28 +20,23 @@ object SetHomeCommand {
         val actualName = name ?: "home"
         if (list.size >= HomeManager.maxHomes && !hasPermission(BYPASS_HOME_LIMIT)) {
             sendMessage(COMMAND_SETHOME_FAILED_REACH_LIMIT)
-            playSound(TELEPORT_FAILED_SOUND)
             return
         }
         if (HomeManager.has(this, actualName)) {
             sendMessage(COMMAND_SETHOME_FAILED_EXISTED.replace("<name>", actualName))
-            playSound(TELEPORT_FAILED_SOUND)
             return
         }
         if (!actualName.isValidIdentifier) {
             sendMessage(COMMAND_SETHOME_FAILED_NOT_VALID)
-            playSound(TELEPORT_FAILED_SOUND)
             return
         }
         if (actualName.length > HomeManager.nameLengthLimit) {
             sendMessage(COMMAND_SETHOME_FAILED_LENGTN_LIMIT)
-            playSound(TELEPORT_FAILED_SOUND)
             return
         }
         submitAsync {
             HomeManager.create(this@ensurePlayer, actualName, location)
         }
         sendMessage(COMMAND_SETHOME_SUCCEED.replace("<name>", actualName))
-        playSound(TELEPORT_REQUEST_RECEIVED_SOUND)
     }
 }
