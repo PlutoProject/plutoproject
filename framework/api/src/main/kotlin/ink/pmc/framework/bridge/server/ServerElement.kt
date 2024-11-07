@@ -1,11 +1,11 @@
 package ink.pmc.framework.bridge.server
 
-interface ServerElement {
+interface ServerElement : Grouped {
     val server: BridgeServer
-    val serverType: ServerElementType
-    val isLocal: Boolean get() = serverType == ServerElementType.LOCAL
-    val isRemoteProxy: Boolean get() = serverType == ServerElementType.REMOTE_PROXY
-    val isRemoteBackend: Boolean get() = serverType == ServerElementType.REMOTE_BACKEND
+    val serverType: ServerType
+    val isLocal: Boolean get() = serverType == ServerType.LOCAL
+    val isRemoteProxy: Boolean get() = serverType == ServerType.REMOTE_PROXY
+    val isRemoteBackend: Boolean get() = serverType == ServerType.REMOTE_BACKEND
 
-    fun convertServer(type: ServerElementType): ServerElement?
+    fun convertServer(type: ServerType): ServerElement?
 }

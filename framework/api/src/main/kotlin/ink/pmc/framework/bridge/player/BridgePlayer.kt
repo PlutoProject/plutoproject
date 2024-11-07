@@ -6,22 +6,20 @@ import ink.pmc.advkt.title.TitleKt
 import ink.pmc.framework.bridge.server.ServerElement
 import ink.pmc.framework.bridge.world.BridgeLocation
 import ink.pmc.framework.bridge.world.BridgeWorld
-import ink.pmc.framework.bridge.world.Localizable
 import net.kyori.adventure.sound.Sound
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.title.Title
 import java.util.*
 
-interface BridgePlayer : Localizable, ServerElement {
+interface BridgePlayer : ServerElement {
     val uniqueId: UUID
     val name: String
+    val location: BridgeLocation
     val isOnline: Boolean
 
     fun teleport(location: BridgeLocation)
 
     fun teleport(world: BridgeWorld)
-
-    fun teleport(localizable: Localizable)
 
     fun sendMessage(message: String)
 

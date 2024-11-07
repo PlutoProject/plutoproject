@@ -1,5 +1,5 @@
 package ink.pmc.framework.bridge.server
 
-enum class ServerElementType {
+enum class ServerType {
     LOCAL, REMOTE_PROXY, REMOTE_BACKEND
 }
