@@ -292,7 +292,7 @@ fun MAIN_MENU_ITEM_COINS_LORE(player: Player): List<Component> {
             text("$balance$DEFAULT_ECONOMY_SYMBOL") with mochaText without italic()
         },
         component {
-            text("可以在「礼记」中到访来获取货币") with mochaSubtext0 with italic()
+            text("可以在「礼记」中到访来获取货币") with mochaSubtext0 without italic()
         }
     )
 }
