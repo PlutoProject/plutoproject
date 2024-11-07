@@ -15,7 +15,7 @@ message Sound {
   float pitch = 3;
 }
 
-message PlayerSendMessage {
+message SendPlayerContentMessage {
   oneof content {
     string message = 1;
     Title title = 2;

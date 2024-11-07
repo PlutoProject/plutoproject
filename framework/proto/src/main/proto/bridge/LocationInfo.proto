@@ -1,8 +1,6 @@
 syntax = "proto3";
 package ink.pmc.framework.bridge.proto;
 
-import "bridge/WorldInfo.proto";
-
 message LocationInfo {
   string server = 1;
   string world = 2;

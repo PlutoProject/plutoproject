@@ -3,10 +3,10 @@ package ink.pmc.framework.bridge.proto;
 
 import "bridge/PlayerInfo.proto";
 
-message PlayerInfoLookup {
+message PlayerInfoLookupMessage {
   string unique_id = 1;
 }
 
-message PlayerInfoLookupAck {
+message PlayerInfoLookupAckMessage {
   PlayerInfo player = 1;
 }

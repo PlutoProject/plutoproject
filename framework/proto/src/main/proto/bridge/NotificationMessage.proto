@@ -2,17 +2,12 @@ syntax = "proto3";
 package ink.pmc.framework.bridge.proto;
 
 import "bridge/ServerInfo.proto";
-import "bridge/PlayerInfoLookup.proto";
+import "bridge/PlayerInfoLookupMessage.proto";
 
-message PlayerSwitchServer {
-  string player = 1;
-  string server = 2;
-}
-
-message Notification {
+message NotificationMessage {
   oneof content {
     ServerInfo server_registration = 1;
     ServerInfo server_info_update = 2;
-    PlayerInfoLookup player_info_lookup = 3;
+    PlayerInfoLookupMessage player_info_lookup = 3;
   }
 }

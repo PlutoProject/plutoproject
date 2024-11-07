@@ -2,18 +2,18 @@ syntax = "proto3";
 package ink.pmc.framework.bridge.proto;
 
 import "google/protobuf/empty.proto";
-import "bridge/Notification.proto";
-import "bridge/ServerRegistration.proto";
+import "bridge/NotificationMessage.proto";
+import "bridge/ServerRegistrationAckMessage.proto";
 import "bridge/ServerInfo.proto";
-import "bridge/PlayerInfoLookup.proto";
+import "bridge/PlayerInfoLookupMessage.proto";
 import "bridge/PlayerInfo.proto";
-import "bridge/PlayerSendMessage.proto";
+import "bridge/SendPlayerContentMessage.proto";
 
 service BridgeRpc {
-  rpc NotificationStream(google.protobuf.Empty) returns (stream Notification);
-  rpc RegisterServer(ServerInfo) returns (ServerRegistrationAck);
+  rpc NotificationStream(google.protobuf.Empty) returns (stream NotificationMessage);
+  rpc RegisterServer(ServerInfo) returns (ServerRegistrationAckMessage);
   rpc Heartbeat(ServerInfo) returns (google.protobuf.Empty);
-  rpc PlayerInfoLookup(PlayerInfoLookup) returns (PlayerInfo);
-  rpc PlayerInfoLookupAck(PlayerInfoLookupAck) returns (google.protobuf.Empty);
-  rpc PlayerSendMessage(PlayerSendMessage) returns (google.protobuf.Empty);
+  rpc PlayerInfoLookup(PlayerInfoLookupMessage) returns (PlayerInfo);
+  rpc PlayerInfoLookupAck(PlayerInfoLookupAckMessage) returns (google.protobuf.Empty);
+  rpc PlayerSendMessage(SendPlayerContentMessage) returns (google.protobuf.Empty);
 }
