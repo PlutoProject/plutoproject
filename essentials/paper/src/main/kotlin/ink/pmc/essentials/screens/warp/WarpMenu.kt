@@ -135,9 +135,12 @@ class WarpMenu : Screen {
         var founderName by remember {
             mutableStateOf<String?>(null)
         }
-        var isInCollection by rememberSaveable { mutableStateOf(false) }
-        LaunchedEffect(warp) {
-            isInCollection = WarpManager.getCollection(player).contains(warp)
+        var isInCollection by rememberSaveable { mutableStateOf(model.filter == WarpMenuModel.Filter.COLLECTED) }
+        // 需要的话再获取，减少 IO 耗时
+        if (model.filter == WarpMenuModel.Filter.COLLECTED) {
+            LaunchedEffect(Unit) {
+                isInCollection = WarpManager.getCollection(player).contains(warp)
+            }
         }
         if (warp.founder != null) {
             LaunchedEffect(Unit) {
@@ -165,17 +168,17 @@ class WarpMenu : Screen {
                     })
                 }
                 when (warp.category) {
-                    MACHINE -> component {
+                    MACHINE -> add(component {
                         text("\uD83D\uDD27 机械类") with mochaTeal without italic()
-                    }
+                    })
 
-                    ARCHITECTURE -> component {
+                    ARCHITECTURE -> add(component {
                         text("\uD83D\uDDFC 建筑类") with mochaFlamingo without italic()
-                    }
+                    })
 
-                    TOWN -> component {
+                    TOWN -> add(component {
                         text("\uD83D\uDE84 城镇类") with mochaMauve without italic()
-                    }
+                    })
 
                     null -> {}
                 }
