@@ -12,6 +12,7 @@ interface Bridge : PlayerLookup, ServerLookup {
 
     val self: BridgeServer
     val master: BridgeServer
+        get() = servers.first { it.id == "_master" }
     val groups: Collection<BridgeGroup>
     override val players: Collection<BridgePlayer>
         get() = servers.flatMap { it.players }

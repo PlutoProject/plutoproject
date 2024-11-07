@@ -1,0 +1,11 @@
+syntax = "proto3";
+package ink.pmc.framework.bridge.proto;
+
+import "google/protobuf/empty.proto";
+import "bridge/Notification.proto";
+import "bridge/ServerRegistration.proto";
+
+service BridgeRpc {
+  rpc NotificationStream(google.protobuf.Empty) returns (stream Notification);
+  rpc RegisterServer(ServerRegistration) returns (ServerRegistrationAck);
+}

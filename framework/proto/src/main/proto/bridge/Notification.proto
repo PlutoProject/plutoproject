@@ -1,0 +1,10 @@
+syntax = "proto3";
+package ink.pmc.framework.bridge.proto;
+
+import "bridge/ServerRegistration.proto";
+
+message Notification {
+  oneof content {
+    ServerRegistration server_registration = 1;
+  }
+}

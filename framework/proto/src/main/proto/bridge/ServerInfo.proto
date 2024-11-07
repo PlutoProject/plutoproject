@@ -1,0 +1,11 @@
+syntax = "proto3";
+package ink.pmc.framework.bridge.proto;
+
+import "bridge/PlayerInfo.proto";
+import "bridge/WorldInfo.proto";
+
+message ServerInfo {
+  string id = 1;
+  repeated PlayerInfo players = 2;
+  repeated WorldInfo worlds = 3;
+}

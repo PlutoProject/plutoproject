@@ -1,0 +1,14 @@
+syntax = "proto3";
+package ink.pmc.framework.bridge.proto;
+
+import "bridge/WorldInfo.proto";
+
+message LocationInfo {
+  string server = 1;
+  WorldInfo world = 2;
+  double x = 3;
+  double y = 4;
+  double z = 5;
+  float yaw = 6;
+  float pitch = 7;
+}
