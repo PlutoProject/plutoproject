@@ -76,9 +76,3 @@ fun Collection<Component>.replace(pattern: String, content: Component?): Collect
 }
 
 val gsonComponentSerializer = GsonComponentSerializer.gson()
-
-inline val Component.json: String
-    get() = gsonComponentSerializer.serialize(this)
-
-inline val String.component: Component
-    get() = gsonComponentSerializer.deserialize(this)
