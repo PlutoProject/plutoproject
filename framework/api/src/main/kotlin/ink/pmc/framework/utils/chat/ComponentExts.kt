@@ -42,12 +42,18 @@ fun Component.replaceColor(targetColor: TextColor, newColor: TextColor): Compone
 }
 
 fun Component.splitLines(): Collection<Component> {
+    var curr = Component.empty()
     return buildList {
-        val children = children()
-        val newline = Component.newline()
-        children.forEachIndexed { index, component ->
-            val last = children.getOrNull(index - 1)
-            add(if (component == newline && last != null) last else component)
+        children().forEach { child ->
+            if (child == Component.newline()) {
+                if (curr != Component.empty()) add(curr)
+                curr = Component.empty()
+                return@forEach
+            }
+            curr = curr.append(child)
+        }
+        if (curr != Component.empty()) {
+            add(curr)
         }
     }
 }

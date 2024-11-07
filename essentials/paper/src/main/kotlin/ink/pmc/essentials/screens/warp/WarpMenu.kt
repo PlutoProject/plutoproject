@@ -151,10 +151,10 @@ class WarpMenu : Screen {
             material = warp.icon ?: Material.PAPER,
             name = component {
                 if (warp.alias != null) {
-                    text("${warp.alias} ") with mochaPink without italic()
+                    text("${warp.alias} ") with mochaText without italic()
                     text("(${warp.name})") with mochaSubtext0 without italic()
                 } else {
-                    text(warp.name) with mochaPink without italic()
+                    text(warp.name) with mochaText without italic()
                 }
             },
             enchantmentGlint = isInCollection,
@@ -179,13 +179,14 @@ class WarpMenu : Screen {
 
                     null -> {}
                 }
+                if (founderName != null) {
+                    add(component {
+                        text("由 $founderName") with mochaSubtext0 without italic()
+                    })
+                }
                 add(component {
-                    if (founderName != null) {
-                        text("$founderName ") with mochaText without italic()
-                    }
                     val time = ZonedDateTime.ofInstant(warp.createdAt, player.zoneId).formatDate()
-                    text("设于 ") with mochaSubtext0 without italic()
-                    text(time) with mochaText without italic()
+                    text("设于 $time") with mochaSubtext0 without italic()
                 })
                 add(component {
                     val world = warp.location.world.aliasOrName
@@ -198,7 +199,8 @@ class WarpMenu : Screen {
                     add(Component.empty())
                     addAll(it.splitLines().map { line ->
                         println("Line: $line")
-                        line.decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE)
+                        line.colorIfAbsent(mochaSubtext0)
+                            .decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE)
                     })
                 }
                 add(Component.empty())

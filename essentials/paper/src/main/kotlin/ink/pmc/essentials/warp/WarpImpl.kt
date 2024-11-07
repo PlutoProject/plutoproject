@@ -11,7 +11,6 @@ import ink.pmc.essentials.api.warp.WarpType
 import ink.pmc.essentials.home.loadFailed
 import ink.pmc.essentials.models.WarpModel
 import ink.pmc.essentials.repositories.WarpRepository
-import ink.pmc.framework.utils.chat.gsonComponentSerializer
 import ink.pmc.framework.utils.concurrent.async
 import ink.pmc.framework.utils.concurrent.submitAsync
 import ink.pmc.framework.utils.player.uuid
@@ -19,10 +18,10 @@ import ink.pmc.framework.utils.storage.model
 import ink.pmc.framework.utils.time.formatDate
 import ink.pmc.framework.utils.time.zoneId
 import ink.pmc.framework.utils.visual.mochaSubtext0
-import ink.pmc.framework.utils.visual.mochaText
 import ink.pmc.framework.utils.visual.mochaYellow
 import kotlinx.coroutines.Deferred
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.minimessage.MiniMessage
 import net.kyori.adventure.util.Ticks
 import org.bukkit.Bukkit
 import org.bukkit.Location
@@ -48,7 +47,8 @@ class WarpImpl(private val model: WarpModel) : Warp, KoinComponent {
         get() = founderId?.let { submitAsync<OfflinePlayer> { Bukkit.getOfflinePlayer(it) } }
     override var icon: Material? = model.icon
     override var category: WarpCategory? = model.category
-    override var description: Component? = model.description?.let { gsonComponentSerializer.deserialize(it) }
+    override var description: Component? =
+        model.description?.let { MiniMessage.miniMessage().deserialize(model.description) }
     override var type: WarpType = model.type @Internal set
     override val createdAt: Instant = Instant.ofEpochMilli(model.createdAt)
     override var location: Location =
@@ -85,12 +85,10 @@ class WarpImpl(private val model: WarpModel) : Warp, KoinComponent {
                     }
                     subTitle {
                         if (founderName != null) {
-                            text("由 ") with mochaSubtext0
-                            text("$founderName ") with mochaText
+                            text("$founderName ") with mochaSubtext0
                         }
                         val time = ZonedDateTime.ofInstant(createdAt, player.zoneId)
-                        text("设于 ") with mochaSubtext0
-                        text(time.formatDate()) with mochaText
+                        text("设于 ${time.formatDate()}") with mochaSubtext0
                     }
                 }
             }
@@ -103,7 +101,7 @@ class WarpImpl(private val model: WarpModel) : Warp, KoinComponent {
         founder = founderId?.toString(),
         icon = icon,
         category = category,
-        description = description?.let { gsonComponentSerializer.serialize(it) },
+        description = description?.let { MiniMessage.miniMessage().serialize(it) },
         type = type,
         createdAt = createdAt.toEpochMilli(),
         location = location.model,
