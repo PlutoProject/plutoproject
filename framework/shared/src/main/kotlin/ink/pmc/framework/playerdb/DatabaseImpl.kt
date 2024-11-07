@@ -245,9 +245,9 @@ class DatabaseImpl(model: DatabaseModel) : Database, KoinComponent {
         return get(key) as Boolean? ?: false
     }
 
-    override fun <T> getList(key: String): List<*>? {
+    override fun <T> getList(key: String): List<T>? {
         return try {
-            get(key) as List<T>
+            get(key) as List<T>?
         } catch (e: Exception) {
             frameworkLogger.log(
                 Level.SEVERE,
@@ -258,9 +258,9 @@ class DatabaseImpl(model: DatabaseModel) : Database, KoinComponent {
         }
     }
 
-    override fun <T> getMap(key: String): Map<String, *>? {
+    override fun <T> getMap(key: String): Map<String, T>? {
         return try {
-            get(key) as Map<String, T>
+            get(key) as Map<String, T>?
         } catch (e: Exception) {
             frameworkLogger.log(
                 Level.SEVERE,

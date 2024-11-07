@@ -4,7 +4,7 @@ import ink.pmc.essentials.api.home.Home
 import ink.pmc.essentials.api.home.HomeManager
 import ink.pmc.essentials.api.home.HomeTeleportEvent
 import ink.pmc.essentials.api.teleport.TeleportManager
-import ink.pmc.essentials.dtos.HomeDto
+import ink.pmc.essentials.models.HomeModel
 import ink.pmc.essentials.repositories.HomeRepository
 import ink.pmc.framework.utils.concurrent.async
 import ink.pmc.framework.utils.concurrent.submitAsync
@@ -18,24 +18,24 @@ import org.koin.core.component.inject
 import java.time.Instant
 import java.util.*
 
-class HomeImpl(private val dto: HomeDto) : Home, KoinComponent {
+class HomeImpl(private val model: HomeModel) : Home, KoinComponent {
     private val manager by inject<HomeManager>()
     private val repo by inject<HomeRepository>()
     private val teleport by inject<TeleportManager>()
 
-    override val id: UUID = dto.id
-    override var name: String = dto.name
-    override val createdAt: Instant = Instant.ofEpochMilli(dto.createdAt)
+    override val id: UUID = model.id
+    override var name: String = model.name
+    override val createdAt: Instant = Instant.ofEpochMilli(model.createdAt)
     override var location: Location =
-        requireNotNull(dto.location.location) {
-            loadFailed(id, "failed to obtain location ${dto.location}")
+        requireNotNull(model.location.location) {
+            loadFailed(id, "Failed to load location ${model.location}")
         }
     override val owner: OfflinePlayer =
-        requireNotNull(Bukkit.getOfflinePlayer(dto.owner)) {
-            loadFailed(id, "failed obtain OfflinePlayer ${dto.owner}")
+        requireNotNull(Bukkit.getOfflinePlayer(model.owner)) {
+            loadFailed(id, "Failed to load OfflinePlayer ${model.owner}")
         }
-    override var isStarred: Boolean = dto.isStarred
-    override var isPreferred: Boolean = dto.isPreferred
+    override var isStarred: Boolean = model.isStarred
+    override var isPreferred: Boolean = model.isPreferred
     override val isLoaded: Boolean
         get() = manager.isLoaded(id)
 
@@ -73,7 +73,7 @@ class HomeImpl(private val dto: HomeDto) : Home, KoinComponent {
         }
     }
 
-    private fun toDto() = dto.copy(
+    private fun toModel() = model.copy(
         id = id,
         name = name,
         createdAt = createdAt.toEpochMilli(),
@@ -89,11 +89,11 @@ class HomeImpl(private val dto: HomeDto) : Home, KoinComponent {
     }
 
     override suspend fun update() {
-        repo.update(toDto())
+        repo.update(toModel())
     }
 
     override fun hashCode(): Int {
-        var result = dto.hashCode()
+        var result = model.hashCode()
         result = 31 * result + id.hashCode()
         result = 31 * result + name.hashCode()
         result = 31 * result + createdAt.hashCode()

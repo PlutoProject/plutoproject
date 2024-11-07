@@ -4,7 +4,7 @@ import com.github.benmanes.caffeine.cache.Caffeine
 import com.mongodb.client.model.Filters.and
 import com.mongodb.client.model.Filters.eq
 import ink.pmc.essentials.config.EssentialsConfig
-import ink.pmc.essentials.dtos.HomeDto
+import ink.pmc.essentials.models.HomeModel
 import ink.pmc.framework.provider.Provider
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.toCollection
@@ -18,11 +18,11 @@ class HomeRepository : KoinComponent {
     private val conf by inject<EssentialsConfig>()
     private val cache = Caffeine.newBuilder()
         .expireAfterWrite(Duration.ofMinutes(10))
-        .build<UUID, HomeDto>()
+        .build<UUID, HomeModel>()
     private val db =
-        Provider.defaultMongoDatabase.getCollection<HomeDto>("essentials_${conf.serverName}_homes")
+        Provider.defaultMongoDatabase.getCollection<HomeModel>("essentials_${conf.serverName}_homes")
 
-    suspend fun findById(id: UUID): HomeDto? {
+    suspend fun findById(id: UUID): HomeModel? {
         val cached = cache.getIfPresent(id) ?: run {
             val lookup = db.find(eq("id", id.toString())).firstOrNull() ?: return null
             cache.put(id, lookup)
@@ -31,7 +31,7 @@ class HomeRepository : KoinComponent {
         return cached
     }
 
-    suspend fun findByName(player: OfflinePlayer, name: String): HomeDto? {
+    suspend fun findByName(player: OfflinePlayer, name: String): HomeModel? {
         val cached = cache.asMap().values.firstOrNull { it.owner == player.uniqueId && it.name == name } ?: run {
             val lookup = db.find(
                 and(eq("owner", player.uniqueId.toString()), eq("name", name))
@@ -42,8 +42,8 @@ class HomeRepository : KoinComponent {
         return cached
     }
 
-    suspend fun findByPlayer(player: OfflinePlayer): Collection<HomeDto> {
-        return mutableListOf<HomeDto>().apply {
+    suspend fun findByPlayer(player: OfflinePlayer): Collection<HomeModel> {
+        return mutableListOf<HomeModel>().apply {
             db.find(eq("owner", player.uniqueId.toString())).toCollection(this)
         }
     }
@@ -71,14 +71,14 @@ class HomeRepository : KoinComponent {
         )
     }
 
-    suspend fun save(dto: HomeDto) {
-        require(!hasById(dto.id)) { "HomeDto with id ${dto.id} already existed" }
-        db.insertOne(dto)
-        cache.put(dto.id, dto)
+    suspend fun save(model: HomeModel) {
+        require(!hasById(model.id)) { "HomeModel with id ${model.id} already existed" }
+        db.insertOne(model)
+        cache.put(model.id, model)
     }
 
-    suspend fun update(dto: HomeDto) {
-        require(hasById(dto.id)) { "HomeDto with id ${dto.id} not exist" }
-        db.replaceOne(eq("id", dto.id.toString()), dto)
+    suspend fun update(model: HomeModel) {
+        require(hasById(model.id)) { "HomeModel with id ${model.id} not exist" }
+        db.replaceOne(eq("id", model.id.toString()), model)
     }
 }

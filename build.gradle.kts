@@ -359,6 +359,7 @@ allprojects {
         dep(rootProject.libs.bundles.hoplite)
         dep(rootProject.libs.commons.math)
         dep(rootProject.libs.geoip2)
+        dep(rootProject.libs.aedile)
         kapt(rootProject.libs.cloud.annotations)
     }
 

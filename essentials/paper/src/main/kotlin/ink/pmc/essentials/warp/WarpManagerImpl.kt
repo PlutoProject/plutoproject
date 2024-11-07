@@ -1,91 +1,71 @@
 package ink.pmc.essentials.warp
 
+import com.sksamuel.aedile.core.cacheBuilder
 import ink.pmc.essentials.api.warp.Warp
+import ink.pmc.essentials.api.warp.WarpCategory
 import ink.pmc.essentials.api.warp.WarpManager
 import ink.pmc.essentials.api.warp.WarpType
 import ink.pmc.essentials.config.EssentialsConfig
-import ink.pmc.essentials.dtos.WarpDto
+import ink.pmc.essentials.models.WarpModel
 import ink.pmc.essentials.repositories.WarpRepository
 import ink.pmc.framework.playerdb.PlayerDb
-import ink.pmc.framework.utils.concurrent.submitAsync
+import ink.pmc.framework.utils.chat.gsonComponentSerializer
+import ink.pmc.framework.utils.data.safeSubList
 import ink.pmc.framework.utils.platform.paper
+import ink.pmc.framework.utils.player.uuid
 import ink.pmc.framework.utils.player.uuidOrNull
 import ink.pmc.framework.utils.storage.model
+import net.kyori.adventure.text.Component
 import org.bson.types.ObjectId
 import org.bukkit.Location
+import org.bukkit.Material
 import org.bukkit.OfflinePlayer
 import org.bukkit.World
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import org.koin.core.component.inject
 import java.util.*
-import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.ConcurrentMap
+import kotlin.math.ceil
+import kotlin.time.Duration
 
 private const val PREFERRED_SPAWN_KEY = "essentials.warp.preferred_spawn"
+private const val COLLECTION_KEY = "essentials.warp.collection"
 
 class WarpManagerImpl : WarpManager, KoinComponent {
     private val config by lazy { get<EssentialsConfig>().warp }
     private val repo by inject<WarpRepository>()
+    private val cache = cacheBuilder<UUID, Warp?> { // null 值不会被存储到缓存
+        refreshAfterWrite = Duration.parse("5m")
+    }.build {
+        // 报错会被捕获
+        repo.findById(it)?.let { model -> WarpImpl(model) }
+    }
 
     override val blacklistedWorlds: Collection<World> = config.blacklistedWorlds
         .filter { name -> paper.worlds.any { it.name == name } }
         .map { paper.getWorld(it)!! }
     override val nameLengthLimit: Int = config.nameLengthLimit
-    override val loadedWarps: MutableMap<UUID, Warp> = ConcurrentHashMap()
 
-    init {
-        // 加载所有 Warp
-        submitAsync {
-            list()
-        }
+    private suspend fun isCached(name: String): Boolean {
+        return cache.asMap().values.any { it?.name == name }
     }
 
-    override fun isLoaded(id: UUID): Boolean {
-        return getLoaded(id) != null
-    }
-
-    override fun isLoaded(name: String): Boolean {
-        return getLoaded(name) != null
-    }
-
-    override fun unload(id: UUID) {
-        loadedWarps.remove(id)
-    }
-
-    override fun unload(name: String) {
-        loadedWarps.entries.removeIf { it.value.name == name }
-    }
-
-    override fun unloadAll() {
-        loadedWarps.clear()
-    }
-
-    private fun getLoaded(id: UUID): Warp? {
-        return loadedWarps[id]
-    }
-
-    private fun getLoaded(name: String): Warp? {
-        return loadedWarps.values.firstOrNull { it.name == name }
+    private suspend fun invalidate(name: String) {
+        (cache.asMap() as ConcurrentMap).entries.removeIf { it.value?.name == name }
     }
 
     override suspend fun get(id: UUID): Warp? {
-        val loaded = getLoaded(id) ?: run {
-            val dto = repo.findById(id) ?: return null
-            val warp = WarpImpl(dto)
-            loadedWarps[id] = warp
-            warp
+        return cache.get(id) ?: repo.findById(id)?.let {
+            WarpImpl(it).also { warp -> cache.put(id, warp) }
         }
-        return loaded
     }
 
     override suspend fun get(name: String): Warp? {
-        val loaded = getLoaded(name) ?: run {
-            val dto = repo.findByName(name) ?: return null
-            val warp = WarpImpl(dto)
-            loadedWarps[dto.id] = warp
-            warp
-        }
-        return loaded
+        return cache.asMap().values.firstOrNull { it?.name == name }
+            ?: repo.findByName(name)?.let {
+                WarpImpl(it).also { warp -> cache.put(warp.id, warp) }
+            }
     }
 
     override suspend fun getSpawn(id: UUID): Warp? {
@@ -136,50 +116,112 @@ class WarpManagerImpl : WarpManager, KoinComponent {
         database.update()
     }
 
+    override suspend fun getCollection(player: OfflinePlayer): Collection<Warp> {
+        return PlayerDb.getOrCreate(player.uniqueId).getList<String>(COLLECTION_KEY)
+            ?.mapNotNull { get(it.uuid) }
+            ?: listOf()
+    }
+
+    override suspend fun getCollectionPageCount(player: OfflinePlayer, pageSize: Int): Int {
+        return ceil(getCollection(player).size.toDouble() / pageSize).toInt()
+    }
+
+    override suspend fun getCollectionByPage(player: OfflinePlayer, pageSize: Int, page: Int): Collection<Warp> {
+        val list = getCollection(player).sortedByDescending { it.createdAt }
+        val skip = page * pageSize
+        return list.safeSubList(skip, skip + pageSize)
+    }
+
+    override suspend fun addToCollection(player: OfflinePlayer, warp: Warp) {
+        val list = getCollection(player).toMutableList()
+        list.add(warp)
+        val db = PlayerDb.getOrCreate(player.uniqueId)
+        db[COLLECTION_KEY] = list.map { it.id.toString() }
+        db.update()
+    }
+
+    override suspend fun removeFromCollection(player: OfflinePlayer, warp: Warp) {
+        val list = getCollection(player).toMutableList()
+        list.remove(warp)
+        val db = PlayerDb.getOrCreate(player.uniqueId)
+        db[COLLECTION_KEY] = list.map { it.id.toString() }
+        db.update()
+    }
+
     override suspend fun list(): Collection<Warp> {
-        val dto = repo.list()
-        val homes = dto.mapNotNull { get(it.id) }
-        return homes
+        return repo.find().map {
+            WarpImpl(it).also { warp -> cache.put(warp.id, warp) }
+        }
     }
 
     override suspend fun listSpawns(): List<Warp> {
-        return list().filter { it.isSpawn }
+        return repo.findSpawns().map {
+            WarpImpl(it).also { warp -> cache.put(warp.id, warp) }
+        }
+    }
+
+    override suspend fun listByCategory(category: WarpCategory): Collection<Warp> {
+        return repo.findByCategory(category).map {
+            WarpImpl(it).also { warp -> cache.put(warp.id, warp) }
+        }
+    }
+
+    override suspend fun getPageCount(pageSize: Int, category: WarpCategory?): Int {
+        return repo.getPageCount(pageSize, category)
+    }
+
+    override suspend fun listByPage(pageSize: Int, page: Int, category: WarpCategory?): Collection<Warp> {
+        return repo.findByPage(pageSize, page, category).map {
+            WarpImpl(it).also { warp -> cache.put(warp.id, warp) }
+        }
     }
 
     override suspend fun has(id: UUID): Boolean {
-        if (isLoaded(id)) return true
+        if (cache.contains(id)) return true
         return repo.hasById(id)
     }
 
     override suspend fun has(name: String): Boolean {
-        if (isLoaded(name)) return true
+        if (isCached(name)) return true
         return repo.hasByName(name)
     }
 
-    override suspend fun create(name: String, location: Location, alias: String?): Warp {
+    override suspend fun create(
+        name: String,
+        location: Location,
+        alias: String?,
+        founder: OfflinePlayer?,
+        icon: Material?,
+        category: WarpCategory?,
+        description: Component?,
+    ): Warp {
         require(!has(name)) { "Warp named $name already existed" }
-        val dto = WarpDto(
+        val model = WarpModel(
             ObjectId(),
             UUID.randomUUID(),
             name,
             alias,
+            founder?.uniqueId?.toString(),
+            icon,
+            category,
+            description?.let { gsonComponentSerializer.serialize(it) },
             WarpType.WARP,
             System.currentTimeMillis(),
             location.model,
         )
-        val warp = WarpImpl(dto)
-        loadedWarps[dto.id] = warp
-        repo.save(dto)
+        val warp = WarpImpl(model)
+        cache.put(model.id, warp)
+        repo.save(model)
         return warp
     }
 
     override suspend fun remove(id: UUID) {
-        if (isLoaded(id)) unload(id)
+        cache.invalidate(id)
         repo.deleteById(id)
     }
 
     override suspend fun remove(name: String) {
-        if (isLoaded(name)) unload(name)
+        invalidate(name)
         repo.deleteByName(name)
     }
 

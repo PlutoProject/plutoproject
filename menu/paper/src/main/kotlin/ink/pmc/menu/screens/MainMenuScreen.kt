@@ -14,11 +14,11 @@ import ink.pmc.essentials.RANDOM_TELEPORT_COST_BYPASS
 import ink.pmc.essentials.api.teleport.TeleportManager
 import ink.pmc.essentials.api.teleport.random.RandomTeleportManager
 import ink.pmc.essentials.screens.home.HomeViewerScreen
-import ink.pmc.essentials.screens.warp.DefaultWarpPickerScreen
+import ink.pmc.essentials.screens.warp.DefaultSpawnPickerMenu
 import ink.pmc.framework.interactive.LocalPlayer
 import ink.pmc.framework.interactive.inventory.*
 import ink.pmc.framework.interactive.inventory.click.clickable
-import ink.pmc.framework.interactive.inventory.components.canvases.Chest
+import ink.pmc.framework.interactive.inventory.canvas.Chest
 import ink.pmc.framework.interactive.inventory.jetpack.Arrangement
 import ink.pmc.framework.interactive.inventory.layout.Box
 import ink.pmc.framework.interactive.inventory.layout.Column
@@ -26,6 +26,7 @@ import ink.pmc.framework.interactive.inventory.layout.Row
 import ink.pmc.framework.playerdb.PlayerDb
 import ink.pmc.framework.utils.chat.UI_SUCCEED_SOUND
 import ink.pmc.framework.utils.chat.replace
+import ink.pmc.framework.utils.concurrent.sync
 import ink.pmc.framework.utils.time.formatDuration
 import ink.pmc.framework.utils.visual.mochaSubtext0
 import ink.pmc.framework.utils.visual.mochaText
@@ -280,7 +281,7 @@ class MainMenuScreen : Screen, KoinComponent {
                         spawn.teleport(player)
                     }
 
-                    ClickType.RIGHT -> navigator.push(DefaultWarpPickerScreen())
+                    ClickType.RIGHT -> navigator.push(DefaultSpawnPickerMenu())
                     else -> {}
                 }
             }
@@ -356,8 +357,10 @@ class MainMenuScreen : Screen, KoinComponent {
             modifier = Modifier.clickable {
                 if (state != AVAILABLE) return@clickable
                 if (clickType != ClickType.LEFT) return@clickable
-                player.closeInventory()
                 RandomTeleportManager.launch(player, player.world)
+                sync {
+                    player.closeInventory()
+                }
             }
         )
     }
@@ -387,8 +390,10 @@ class MainMenuScreen : Screen, KoinComponent {
 
                         ClickType.RIGHT -> {
                             player.performCommand(CO_NEAR_COMMAND)
-                            player.closeInventory()
                             player.playSound(UI_SUCCEED_SOUND)
+                            sync {
+                                player.closeInventory()
+                            }
                         }
 
                         else -> {}

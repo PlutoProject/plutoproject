@@ -3,6 +3,7 @@ package ink.pmc.framework.interactive
 import androidx.compose.runtime.Applier
 import androidx.compose.runtime.ProvidableCompositionLocal
 import androidx.compose.runtime.staticCompositionLocalOf
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.bukkit.entity.Player
 
@@ -20,6 +21,7 @@ interface GuiScope<T> {
     val isDisposed: Boolean
     val isPendingRefresh: MutableStateFlow<Boolean>
     val owner: Player
+    val coroutineScope: CoroutineScope
     val rootNode: T
     val nodeApplier: Applier<T>
 

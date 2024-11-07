@@ -15,18 +15,26 @@ import ink.pmc.essentials.api.warp.WarpManager
 import ink.pmc.essentials.screens.warp.WarpViewerScreen.State.*
 import ink.pmc.framework.interactive.LocalPlayer
 import ink.pmc.framework.interactive.inventory.*
+import ink.pmc.framework.interactive.inventory.canvas.Chest
 import ink.pmc.framework.interactive.inventory.click.clickable
-import ink.pmc.framework.interactive.inventory.components.canvases.Chest
 import ink.pmc.framework.interactive.inventory.jetpack.Arrangement
 import ink.pmc.framework.interactive.inventory.layout.Box
 import ink.pmc.framework.interactive.inventory.layout.Column
 import ink.pmc.framework.interactive.inventory.layout.Row
 import ink.pmc.framework.utils.chat.UI_BACK
 import ink.pmc.framework.utils.chat.replace
+import ink.pmc.framework.utils.concurrent.sync
 import org.bukkit.Material
 import org.bukkit.event.inventory.ClickType
+import org.jetbrains.annotations.ApiStatus
 import org.koin.compose.koinInject
 
+@Deprecated(
+    replaceWith = ReplaceWith("WarpMenu()"),
+    message = "Warp menu has been rewritten.",
+    level = DeprecationLevel.WARNING
+)
+@ApiStatus.ScheduledForRemoval
 class WarpViewerScreen : Screen {
     private val localState: ProvidableCompositionLocal<State> = staticCompositionLocalOf { error("") }
     private val localCurrIndex: ProvidableCompositionLocal<MutableState<Int>> = staticCompositionLocalOf { error("") }
@@ -219,14 +227,16 @@ class WarpViewerScreen : Screen {
         val player = LocalPlayer.current
         val title = if (warp.alias == null) UI_WARP_ITEM_NAME else UI_WARP_ITEM_NAME_ALIAS
         Item(
-            material = Material.PAPER,
+            material = warp.icon ?: Material.PAPER,
             name = title.replace("<name>", warp.name).replace("<alias>", warp.alias),
             lore = UI_WARP_ITEM_LORE(warp),
             modifier = Modifier.clickable {
                 when (clickType) {
                     ClickType.LEFT -> {
                         warp.teleport(player)
-                        player.closeInventory()
+                        sync {
+                            player.closeInventory()
+                        }
                     }
 
                     else -> {}

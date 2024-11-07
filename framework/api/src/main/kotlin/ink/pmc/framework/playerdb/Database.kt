@@ -39,9 +39,9 @@ interface Database {
 
     fun getBoolean(key: String): Boolean
 
-    fun <T> getList(key: String): List<*>?
+    fun <T> getList(key: String): List<T>?
 
-    fun <T> getMap(key: String): Map<String, *>?
+    fun <T> getMap(key: String): Map<String, T>?
 
     fun contains(key: String): Boolean
 

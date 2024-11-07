@@ -4,12 +4,12 @@ import kotlinx.serialization.Serializable
 import org.bukkit.Bukkit
 import org.bukkit.Location
 
-val Location.model: LocationDto
-    get() = LocationDto(world.name, x, y, z, yaw, pitch)
+val Location.model: LocationModel
+    get() = LocationModel(world.name, x, y, z, yaw, pitch)
 
 @Serializable
 @Suppress("UNUSED")
-data class LocationDto(
+data class LocationModel(
     val world: String,
     val x: Double,
     val y: Double,

@@ -16,13 +16,14 @@ import ink.pmc.essentials.screens.home.HomeViewerScreen.State.*
 import ink.pmc.framework.interactive.LocalPlayer
 import ink.pmc.framework.interactive.inventory.*
 import ink.pmc.framework.interactive.inventory.click.clickable
-import ink.pmc.framework.interactive.inventory.components.canvases.Chest
+import ink.pmc.framework.interactive.inventory.canvas.Chest
 import ink.pmc.framework.interactive.inventory.jetpack.Arrangement
 import ink.pmc.framework.interactive.inventory.layout.Box
 import ink.pmc.framework.interactive.inventory.layout.Column
 import ink.pmc.framework.interactive.inventory.layout.Row
 import ink.pmc.framework.utils.chat.UI_BACK
 import ink.pmc.framework.utils.chat.replace
+import ink.pmc.framework.utils.concurrent.sync
 import org.bukkit.Material
 import org.bukkit.OfflinePlayer
 import org.bukkit.event.inventory.ClickType
@@ -250,7 +251,9 @@ class HomeViewerScreen(private val viewing: OfflinePlayer) : Screen {
                 when (clickType) {
                     ClickType.LEFT -> {
                         home.teleport(player)
-                        player.closeInventory()
+                        sync {
+                            player.closeInventory()
+                        }
                     }
 
                     ClickType.RIGHT -> {

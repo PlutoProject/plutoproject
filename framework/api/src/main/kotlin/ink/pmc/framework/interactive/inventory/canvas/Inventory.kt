@@ -1,4 +1,4 @@
-package ink.pmc.framework.interactive.inventory.components.canvases
+package ink.pmc.framework.interactive.inventory.canvas
 
 import androidx.compose.runtime.*
 import ink.pmc.framework.interactive.GuiInventoryScope

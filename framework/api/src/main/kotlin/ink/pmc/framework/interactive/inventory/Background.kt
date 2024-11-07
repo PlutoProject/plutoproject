@@ -2,7 +2,7 @@ package ink.pmc.framework.interactive.inventory
 
 import androidx.compose.runtime.Composable
 import ink.pmc.framework.interactive.ComposableFunction
-import ink.pmc.framework.interactive.inventory.components.canvases.LocalInventory
+import ink.pmc.framework.interactive.inventory.canvas.LocalInventory
 
 @Composable
 @Suppress("FunctionName")
