@@ -1,5 +1,6 @@
 package ink.pmc.framework.bridge
 
+import ink.pmc.framework.bridge.player.BridgePlayer
 import ink.pmc.framework.bridge.player.PlayerLookup
 import ink.pmc.framework.bridge.server.BridgeGroup
 import ink.pmc.framework.bridge.server.BridgeServer
@@ -12,6 +13,8 @@ interface Bridge : PlayerLookup, ServerLookup {
     val self: BridgeServer
     val master: BridgeServer
     val groups: Collection<BridgeGroup>
+    override val players: Collection<BridgePlayer>
+        get() = servers.flatMap { it.players }
 
     fun getGroup(id: String): BridgeGroup?
 
