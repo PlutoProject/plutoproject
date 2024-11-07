@@ -151,10 +151,10 @@ class WarpMenu : Screen {
             material = warp.icon ?: Material.PAPER,
             name = component {
                 if (warp.alias != null) {
-                    text("${warp.alias} ") with mochaText without italic()
+                    text("${warp.alias} ") with mochaYellow without italic()
                     text("(${warp.name})") with mochaSubtext0 without italic()
                 } else {
-                    text(warp.name) with mochaText without italic()
+                    text(warp.name) with mochaYellow without italic()
                 }
             },
             enchantmentGlint = isInCollection,

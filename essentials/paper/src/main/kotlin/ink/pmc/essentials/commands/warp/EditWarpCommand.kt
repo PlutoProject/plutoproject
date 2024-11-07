@@ -147,7 +147,7 @@ object EditWarpCommand {
             text("已将地标 ") with mochaPink
             text("${warp.name} ") with mochaText
             text("的图标修改为 ") with mochaPink
-            text("$material") with mochaText
+            text(material.name.lowercase()) with mochaText
         }
     }
 
@@ -253,7 +253,7 @@ object EditWarpCommand {
             text("已将地标 ") with mochaPink
             text("${warp.name} ") with mochaText
             text("的分类修改为 ") with mochaPink
-            text(category.toString()) with mochaText
+            text(category.toString().lowercase()) with mochaText
         }
     }
 
