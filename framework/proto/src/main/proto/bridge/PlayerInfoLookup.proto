@@ -1,0 +1,12 @@
+syntax = "proto3";
+package ink.pmc.framework.bridge.proto;
+
+import "bridge/PlayerInfo.proto";
+
+message PlayerInfoLookup {
+  string unique_id = 1;
+}
+
+message PlayerInfoLookupAck {
+  PlayerInfo player = 1;
+}

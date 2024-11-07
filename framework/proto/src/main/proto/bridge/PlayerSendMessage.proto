@@ -1,0 +1,24 @@
+syntax = "proto3";
+package ink.pmc.framework.bridge.proto;
+
+message Title {
+  int32 fade_in = 1;
+  int32 stay = 2;
+  int32 fade_out = 3;
+  string main_title = 4;
+  string sub_title = 5;
+}
+
+message Sound {
+  string key = 1;
+  float volume = 2;
+  float pitch = 3;
+}
+
+message PlayerSendMessage {
+  oneof content {
+    string message = 1;
+    Title title = 2;
+    Sound sound = 3;
+  }
+}

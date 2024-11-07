@@ -1,10 +1,18 @@
 syntax = "proto3";
 package ink.pmc.framework.bridge.proto;
 
-import "bridge/ServerRegistration.proto";
+import "bridge/ServerInfo.proto";
+import "bridge/PlayerInfoLookup.proto";
+
+message PlayerSwitchServer {
+  string player = 1;
+  string server = 2;
+}
 
 message Notification {
   oneof content {
-    ServerRegistration server_registration = 1;
+    ServerInfo server_registration = 1;
+    ServerInfo server_info_update = 2;
+    PlayerInfoLookup player_info_lookup = 3;
   }
 }

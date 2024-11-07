@@ -5,10 +5,6 @@ import "bridge/ServerInfo.proto";
 import "bridge/PlayerInfo.proto";
 import "bridge/WorldInfo.proto";
 
-message ServerRegistration {
-  ServerInfo server = 1;
-}
-
 message ServerRegistrationAck {
   oneof state {
     bool ok = 1;

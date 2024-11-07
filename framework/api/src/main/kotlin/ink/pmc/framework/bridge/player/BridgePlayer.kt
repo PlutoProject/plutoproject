@@ -6,6 +6,7 @@ import ink.pmc.advkt.title.TitleKt
 import ink.pmc.framework.bridge.server.ServerElement
 import ink.pmc.framework.bridge.world.BridgeLocation
 import ink.pmc.framework.bridge.world.BridgeWorld
+import kotlinx.coroutines.Deferred
 import net.kyori.adventure.sound.Sound
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.title.Title
@@ -14,7 +15,7 @@ import java.util.*
 interface BridgePlayer : ServerElement {
     val uniqueId: UUID
     val name: String
-    val location: BridgeLocation
+    val location: Deferred<BridgeLocation>
     val isOnline: Boolean
 
     fun teleport(location: BridgeLocation)

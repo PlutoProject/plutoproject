@@ -6,6 +6,7 @@ import "bridge/WorldInfo.proto";
 
 message ServerInfo {
   string id = 1;
-  repeated PlayerInfo players = 2;
-  repeated WorldInfo worlds = 3;
+  string group = 2;
+  repeated PlayerInfo players = 3;
+  repeated WorldInfo worlds = 4;
 }
