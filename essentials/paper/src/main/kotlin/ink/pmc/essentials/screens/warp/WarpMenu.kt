@@ -132,18 +132,10 @@ class WarpMenu : Screen {
     fun Warp(warp: Warp) {
         val model = model.current
         val player = LocalPlayer.current
-        var founderName by remember {
-            mutableStateOf<String?>(null)
-        }
-        var isInCollection by rememberSaveable { mutableStateOf(model.filter == WarpMenuModel.Filter.COLLECTED) }
-        // 需要的话再获取，减少 IO 耗时
-        if (model.filter == WarpMenuModel.Filter.COLLECTED) {
-            LaunchedEffect(Unit) {
-                isInCollection = WarpManager.getCollection(player).contains(warp)
-            }
-        }
+        var founderName by rememberSaveable(warp) { mutableStateOf<String?>(null) }
+        val isInCollection = model.collected.contains(warp)
         if (warp.founder != null) {
-            LaunchedEffect(Unit) {
+            LaunchedEffect(warp) {
                 founderName = warp.founder?.let {
                     val founder = it.await()
                     founder.name
@@ -232,13 +224,14 @@ class WarpMenu : Screen {
                     ClickType.RIGHT -> {
                         if (WarpManager.getCollection(player).contains(warp)) {
                             WarpManager.removeFromCollection(player, warp)
+                            model.collected.remove(warp)
                             if (model.filter == WarpMenuModel.Filter.COLLECTED) {
                                 model.contents.remove(warp)
                             }
                         } else {
                             WarpManager.addToCollection(player, warp)
+                            model.collected.add(warp)
                         }
-                        isInCollection = !isInCollection
                         player.playSound(UI_SUCCEED_SOUND)
                     }
 

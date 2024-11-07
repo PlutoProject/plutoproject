@@ -18,7 +18,8 @@ class WarpMenuModel(private val player: Player) : ScreenModel {
     var isLoading by mutableStateOf(true)
     var pageCount by mutableStateOf(-1)
     var page by mutableStateOf(0)
-    var contents = mutableStateListOf<Warp>()
+    val contents = mutableStateListOf<Warp>()
+    val collected = mutableStateListOf<Warp>()
 
     enum class Filter {
         ALL, COLLECTED, MACHINE, ARCHITECTURE, TOWN;
@@ -37,20 +38,24 @@ class WarpMenuModel(private val player: Player) : ScreenModel {
         isLoading = true
         pageCount = -1
         contents.clear()
+        collected.clear()
         when (filter) {
             ALL -> {
                 pageCount = WarpManager.getPageCount(PAGE_SIZE)
                 contents.addAll(WarpManager.listByPage(PAGE_SIZE, page))
+                collected.addAll(contents.filter { WarpManager.getCollection(player).contains(it) })
             }
 
             COLLECTED -> {
                 pageCount = WarpManager.getCollectionPageCount(player, PAGE_SIZE)
                 contents.addAll(WarpManager.getCollectionByPage(player, PAGE_SIZE, page))
+                collected.addAll(contents)
             }
 
             else -> {
                 pageCount = WarpManager.getPageCount(PAGE_SIZE, filter.category)
                 contents.addAll(WarpManager.listByPage(PAGE_SIZE, page, filter.category))
+                collected.addAll(contents.filter { WarpManager.getCollection(player).contains(it) })
             }
         }
         val range = 0 until pageCount
