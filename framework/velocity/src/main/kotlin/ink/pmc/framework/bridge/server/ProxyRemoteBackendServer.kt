@@ -9,12 +9,4 @@ class ProxyRemoteBackendServer(override val id: String, override val group: Brid
     override val worlds: MutableList<BridgeWorld> = mutableConcurrentListOf()
     override var isOnline: Boolean = true
     override val players: MutableList<BridgePlayer> = mutableConcurrentListOf()
-
-    override fun getWorld(name: String): BridgeWorld? {
-        TODO("Not yet implemented")
-    }
-
-    override fun isWorldExisted(name: String): Boolean {
-        TODO("Not yet implemented")
-    }
 }

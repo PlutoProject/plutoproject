@@ -9,7 +9,11 @@ interface BridgeServer : PlayerLookup, Grouped {
     val worlds: Collection<BridgeWorld>
     val isOnline: Boolean
 
-    fun getWorld(name: String): BridgeWorld?
+    fun getWorld(name: String): BridgeWorld? {
+        return worlds.firstOrNull { it.name == name }
+    }
 
-    fun isWorldExisted(name: String): Boolean
+    fun isWorldExisted(name: String): Boolean {
+        return getWorld(name) != null
+    }
 }
