@@ -121,7 +121,7 @@ object BridgeRpc : BridgeRpcCoroutineImplBase() {
 
     override suspend fun operatePlayer(request: PlayerOperation): PlayerOperationResult {
         val local = localServer.getPlayer(request.player.uuid) ?: return playerOperationResult {
-            playerNotOnline = true
+            playerOffline = true
         }
         val nonLocal = proxyBridge.getNonLocalPlayer(request.player.uuid)
         when (request.contentCase!!) {
@@ -146,7 +146,7 @@ object BridgeRpc : BridgeRpcCoroutineImplBase() {
                     }
                     null
                 } ?: playerOperationResult {
-                    playerNotOnline = true
+                    playerOffline = true
                 }
             }
 
@@ -175,7 +175,7 @@ object BridgeRpc : BridgeRpcCoroutineImplBase() {
                 val server = proxyBridge.getServer(request.teleport.server)
                 if (server == null || !server.isOnline) {
                     return playerOperationResult {
-                        serverNotOnline = true
+                        serverOffline = true
                     }
                 }
                 val world = server.getWorld(request.teleport.world) ?: return playerOperationResult {

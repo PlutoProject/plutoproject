@@ -104,8 +104,8 @@ message PlayerOperationResult {
   string server = 1;
   oneof content {
     bool ok = 2;
-    bool player_not_online = 3;
-    bool server_not_online = 4;
+    bool player_offline = 3;
+    bool server_offline = 4;
     bool world_not_found = 5;
     bool unsupported = 6;
   }
