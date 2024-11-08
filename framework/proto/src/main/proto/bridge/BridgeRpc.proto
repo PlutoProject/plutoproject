@@ -2,18 +2,102 @@ syntax = "proto3";
 package ink.pmc.framework.bridge.proto;
 
 import "google/protobuf/empty.proto";
-import "bridge/NotificationMessage.proto";
-import "bridge/ServerRegistrationAckMessage.proto";
-import "bridge/ServerInfo.proto";
-import "bridge/PlayerInfoLookupMessage.proto";
-import "bridge/PlayerInfo.proto";
-import "bridge/SendPlayerContentMessage.proto";
 
 service BridgeRpc {
-  rpc NotificationStream(google.protobuf.Empty) returns (stream NotificationMessage);
-  rpc RegisterServer(ServerInfo) returns (ServerRegistrationAckMessage);
+  rpc MonitorNotification(google.protobuf.Empty) returns (stream Notification);
+  rpc RegisterServer(ServerInfo) returns (ServerRegistrationAck);
   rpc Heartbeat(ServerInfo) returns (google.protobuf.Empty);
-  rpc PlayerInfoLookup(PlayerInfoLookupMessage) returns (PlayerInfo);
-  rpc PlayerInfoLookupAck(PlayerInfoLookupAckMessage) returns (google.protobuf.Empty);
-  rpc PlayerSendMessage(SendPlayerContentMessage) returns (google.protobuf.Empty);
+  rpc OperatePlayer(PlayerOperation) returns (PlayerOperationResult);
+  rpc AckPlayerOperation(PlayerOperationAck) returns (PlayerOperationAck);
+}
+
+message TitleInfo {
+  int32 fade_in = 1;
+  int32 stay = 2;
+  int32 fade_out = 3;
+  string main_title = 4;
+  string sub_title = 5;
+}
+
+message SoundInfo {
+  string key = 1;
+  float volume = 2;
+  float pitch = 3;
+}
+
+message ServerInfo {
+  string id = 1;
+  string group = 2;
+  repeated PlayerInfo players = 3;
+  repeated WorldInfo worlds = 4;
+}
+
+message WorldInfo {
+  string server = 1;
+  string name = 2;
+  LocationInfo spawn_point = 3;
+}
+
+message LocationInfo {
+  string server = 1;
+  string world = 2;
+  double x = 3;
+  double y = 4;
+  double z = 5;
+  float yaw = 6;
+  float pitch = 7;
+}
+
+message PlayerInfo {
+  string server = 1;
+  string unique_id = 2;
+  string name = 3;
+  LocationInfo location = 4;
+}
+
+message Notification {
+  oneof content {
+    ServerInfo server_registration = 1;
+    ServerInfo server_info_update = 2;
+    PlayerOperation player_operation = 3;
+  }
+}
+
+message ServerRegistrationAck {
+  oneof state {
+    bool ok = 1;
+    bool id_existed = 2;
+  }
+}
+
+message PlayerOperation {
+  string server = 1;
+  oneof content {
+    PlayerInfo info_lookup = 2;
+    string send_message = 3;
+    TitleInfo show_title = 4;
+    SoundInfo play_sound = 5;
+    LocationInfo teleport = 6;
+    string perform_command = 7;
+  }
+}
+
+message PlayerOperationAck {
+  string server = 1;
+  oneof content {
+    bool ok = 2;
+    bool unsupported = 3;
+  }
+  optional PlayerInfo info_lookup = 4;
+}
+
+message PlayerOperationResult {
+  string server = 1;
+  oneof content {
+    bool ok = 2;
+    bool player_not_online = 3;
+    bool server_not_online = 4;
+    bool unsupported = 5;
+  }
+  optional PlayerInfo info_lookup = 6;
 }

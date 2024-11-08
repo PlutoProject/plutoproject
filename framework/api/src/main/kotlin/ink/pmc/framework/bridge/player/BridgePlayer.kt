@@ -18,23 +18,23 @@ interface BridgePlayer : ServerElement {
     val location: Deferred<BridgeLocation>
     val isOnline: Boolean
 
-    fun teleport(location: BridgeLocation)
+    suspend fun teleport(location: BridgeLocation)
 
-    fun teleport(world: BridgeWorld)
+    suspend fun teleport(world: BridgeWorld)
 
-    fun sendMessage(message: String)
+    suspend fun sendMessage(message: String)
 
-    fun sendMessage(message: Component)
+    suspend fun sendMessage(message: Component)
 
-    fun sendMessage(component: RootComponentKt.() -> Unit)
+    suspend fun sendMessage(component: RootComponentKt.() -> Unit)
 
-    fun showTitle(title: Title)
+    suspend fun showTitle(title: Title)
 
-    fun showTitle(title: TitleKt.() -> Unit)
+    suspend fun showTitle(title: TitleKt.() -> Unit)
 
-    fun playSound(sound: Sound)
+    suspend fun playSound(sound: Sound)
 
-    fun playSound(sound: SoundKt.() -> Unit)
+    suspend fun playSound(sound: SoundKt.() -> Unit)
 
-    fun performCommand(command: String)
+    suspend fun performCommand(command: String)
 }

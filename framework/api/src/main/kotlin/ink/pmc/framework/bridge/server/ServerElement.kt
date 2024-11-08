@@ -7,5 +7,5 @@ interface ServerElement : Grouped {
     val isRemoteProxy: Boolean get() = serverType == ServerType.REMOTE_PROXY
     val isRemoteBackend: Boolean get() = serverType == ServerType.REMOTE_BACKEND
 
-    fun convertServer(type: ServerType): ServerElement?
+    fun <T : ServerElement> convertElement(type: ServerType): T?
 }
