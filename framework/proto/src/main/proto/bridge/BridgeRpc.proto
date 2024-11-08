@@ -35,7 +35,8 @@ message ServerInfo {
 message WorldInfo {
   string server = 1;
   string name = 2;
-  LocationInfo spawn_point = 3;
+  optional string alias = 3;
+  LocationInfo spawn_point = 4;
 }
 
 message LocationInfo {
