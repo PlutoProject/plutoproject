@@ -9,9 +9,9 @@ import ink.pmc.advkt.sound.SoundKt
 import ink.pmc.advkt.title.ComponentTitleKt
 import ink.pmc.framework.bridge.Bridge
 import ink.pmc.framework.bridge.InternalPlayer
+import ink.pmc.framework.bridge.proxyBridge
 import ink.pmc.framework.bridge.server.BridgeGroup
 import ink.pmc.framework.bridge.server.BridgeServer
-import ink.pmc.framework.bridge.server.ServerElement
 import ink.pmc.framework.bridge.server.ServerType
 import ink.pmc.framework.bridge.world.BridgeLocation
 import ink.pmc.framework.bridge.world.BridgeWorld
@@ -24,6 +24,7 @@ import java.util.*
 class ProxyLocalPlayer(private val actual: Player) : InternalPlayer() {
     override val server: BridgeServer = Bridge.local
     override val serverType: ServerType = Bridge.local.type
+
     override val group: BridgeGroup? = Bridge.local.group
     override val uniqueId: UUID = actual.uniqueId
     override val name: String = actual.username
@@ -74,7 +75,8 @@ class ProxyLocalPlayer(private val actual: Player) : InternalPlayer() {
         error("Unsupported")
     }
 
-    override fun <T : ServerElement> convertElement(type: ServerType): T? {
-        TODO()
+    override fun convertElement(type: ServerType): BridgePlayer? {
+        if (type == serverType) return this
+        return proxyBridge.getPlayer(uniqueId, type)
     }
 }

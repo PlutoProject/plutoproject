@@ -14,7 +14,7 @@ class ProxyBridge : Bridge {
     override val local: BridgeServer = ProxyLocalServer()
     override val master: BridgeServer = local
     override val groups: MutableList<BridgeGroup> = mutableConcurrentListOf()
-    override val servers: MutableList<BridgeServer> = mutableConcurrentListOf()
+    override val servers: MutableList<BridgeServer> = mutableConcurrentListOf(master)
     override val players: Collection<BridgePlayer>
         get() = servers.flatMap { it.players }
     override val playerCount: Int

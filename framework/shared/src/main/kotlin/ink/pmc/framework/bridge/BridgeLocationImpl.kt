@@ -3,7 +3,6 @@ package ink.pmc.framework.bridge
 import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.LocationInfo
 import ink.pmc.framework.bridge.server.BridgeGroup
 import ink.pmc.framework.bridge.server.BridgeServer
-import ink.pmc.framework.bridge.server.ServerElement
 import ink.pmc.framework.bridge.server.ServerType
 import ink.pmc.framework.bridge.world.BridgeLocation
 import ink.pmc.framework.bridge.world.BridgeWorld
@@ -24,7 +23,7 @@ class BridgeLocationImpl(
     override val serverType: ServerType = server.type
     override val group: BridgeGroup? = server.group
 
-    override fun <T : ServerElement> convertElement(type: ServerType): T? {
-        TODO("Not yet implemented")
+    override fun convertElement(type: ServerType): BridgeLocation? {
+        error("Unsupported")
     }
 }

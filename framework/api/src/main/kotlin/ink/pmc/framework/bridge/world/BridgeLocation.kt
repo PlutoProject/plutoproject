@@ -1,6 +1,6 @@
 package ink.pmc.framework.bridge.world
 
-interface BridgeLocation : WorldElement {
+interface BridgeLocation : WorldElement<BridgeLocation> {
     val x: Double
     val y: Double
     val z: Double

@@ -29,6 +29,20 @@ interface Bridge : PlayerLookup, ServerLookup {
 
     fun isGroupRegistered(id: String): Boolean
 
+    override fun getPlayer(name: String, type: ServerType?): BridgePlayer? {
+        if (type != null) {
+            return servers.flatMap { it.players }.firstOrNull { it.name == name && it.serverType == type }
+        }
+        return super.getPlayer(name, null)
+    }
+
+    override fun getPlayer(uniqueId: UUID, type: ServerType?): BridgePlayer? {
+        if (type != null) {
+            return servers.flatMap { it.players }.firstOrNull { it.uniqueId == uniqueId && it.serverType == type }
+        }
+        return super.getPlayer(uniqueId, null)
+    }
+
     override fun getNonLocalPlayer(name: String): BridgePlayer? {
         return servers.flatMap { it.players }.firstOrNull { it.name == name && !it.isLocal }
     }

@@ -12,7 +12,7 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.title.Title
 import java.util.*
 
-interface BridgePlayer : WorldElement {
+interface BridgePlayer : WorldElement<BridgePlayer> {
     val uniqueId: UUID
     val name: String
     val location: Deferred<BridgeLocation>

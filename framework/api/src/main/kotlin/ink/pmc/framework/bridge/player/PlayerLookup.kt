@@ -1,5 +1,6 @@
 package ink.pmc.framework.bridge.player
 
+import ink.pmc.framework.bridge.server.ServerType
 import java.util.*
 
 interface PlayerLookup {
@@ -7,12 +8,20 @@ interface PlayerLookup {
     val playerCount: Int
         get() = players.size
 
-    fun getPlayer(name: String): BridgePlayer? {
-        return players.firstOrNull { it.name == name }
+    fun getPlayer(name: String, type: ServerType? = null): BridgePlayer? {
+        return if (type == null) {
+            players.firstOrNull { it.name == name }
+        } else {
+            players.firstOrNull { it.name == name && it.serverType == type }
+        }
     }
 
-    fun getPlayer(uniqueId: UUID): BridgePlayer? {
-        return players.firstOrNull { it.uniqueId == uniqueId }
+    fun getPlayer(uniqueId: UUID, type: ServerType? = null): BridgePlayer? {
+        return if (type == null) {
+            players.firstOrNull { it.uniqueId == uniqueId }
+        } else {
+            players.firstOrNull { it.uniqueId == uniqueId && it.serverType == type }
+        }
     }
 
     fun getNonLocalPlayer(name: String): BridgePlayer? {
