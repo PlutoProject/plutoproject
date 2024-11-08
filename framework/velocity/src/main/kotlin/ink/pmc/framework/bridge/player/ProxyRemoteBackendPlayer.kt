@@ -28,7 +28,7 @@ import java.util.*
 class ProxyRemoteBackendPlayer(
     val actual: Player,
     override val server: BridgeServer,
-    override var world: BridgeWorld,
+    override var world: BridgeWorld? = null,
 ) : InternalPlayer() {
     override val group: BridgeGroup? = server.group
     override val serverType: ServerType = ServerType.REMOTE_BACKEND
@@ -38,6 +38,7 @@ class ProxyRemoteBackendPlayer(
         get() = submitAsync<BridgeLocation> {
             check(server.isOnline) { "Server offline" }
             check(isOnline) { "Player offline" }
+            checkNotNull(world) { "Uninitialized" }
             val result = BridgeRpc.operatePlayer(playerOperation {
                 id = UUID.randomUUID().toString()
                 playerUuid = uniqueId.toString()
@@ -46,7 +47,7 @@ class ProxyRemoteBackendPlayer(
             })
             val info = result.infoLookup.location
             when (result.contentCase!!) {
-                OK -> BridgeLocationImpl(server, world, info.x, info.y, info.z, info.yaw, info.pitch)
+                OK -> BridgeLocationImpl(server, world!!, info.x, info.y, info.z, info.yaw, info.pitch)
                 PLAYER_OFFLINE -> error("Player offline")
                 SERVER_OFFLINE -> error("Server offline")
                 WORLD_NOT_FOUND -> error("Unexpected")

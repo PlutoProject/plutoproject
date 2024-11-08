@@ -59,7 +59,7 @@ message PlayerInfo {
   string server = 1;
   string unique_id = 2;
   string name = 3;
-  LocationInfo location = 4;
+  optional LocationInfo location = 4;
 }
 
 message WorldLoading {
@@ -76,13 +76,12 @@ message Notification {
 
     // Player
     PlayerOperation player_operation = 4;
-    PlayerInfo player_info_update = 5;
-    string player_switch_server_uuid = 6;
+    PlayerInfo player_info_update = 5; // 没有就同步
     string player_disconnect_uuid = 7;
 
     // World
     WorldOperation world_operation = 8;
-    WorldInfo world_info_update = 9;
+    WorldInfo world_info_update = 9; // 没有就同步
     WorldLoading world_unload = 10;
   }
 }
