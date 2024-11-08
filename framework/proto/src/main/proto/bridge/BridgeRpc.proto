@@ -75,23 +75,29 @@ message ServerRegistrationAck {
 
 message PlayerOperation {
   string server = 1;
+  string player = 2;
+  oneof type {
+    bool remote_proxy = 3;
+    bool remote_backend = 4;
+  }
   oneof content {
-    PlayerInfo info_lookup = 2;
-    string send_message = 3;
-    TitleInfo show_title = 4;
-    SoundInfo play_sound = 5;
-    LocationInfo teleport = 6;
-    string perform_command = 7;
+    PlayerInfo info_lookup = 5;
+    string send_message = 6;
+    TitleInfo show_title = 7;
+    SoundInfo play_sound = 8;
+    LocationInfo teleport = 9;
+    string perform_command = 10;
   }
 }
 
 message PlayerOperationAck {
   string server = 1;
+  string player = 2;
   oneof content {
-    bool ok = 2;
-    bool unsupported = 3;
+    bool ok = 3;
+    bool unsupported = 4;
   }
-  optional PlayerInfo info_lookup = 4;
+  optional PlayerInfo info_lookup = 5;
 }
 
 message PlayerOperationResult {

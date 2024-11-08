@@ -15,6 +15,14 @@ interface PlayerLookup {
         return players.firstOrNull { it.uniqueId == uniqueId }
     }
 
+    fun getNonLocalPlayer(name: String): BridgePlayer? {
+        return players.firstOrNull { it.name == name && !it.isLocal }
+    }
+
+    fun getNonLocalPlayer(uniqueId: UUID): BridgePlayer? {
+        return players.firstOrNull { it.uniqueId == uniqueId && !it.isLocal }
+    }
+
     fun isPlayerOnline(name: String): Boolean {
         return getPlayer(name) != null
     }

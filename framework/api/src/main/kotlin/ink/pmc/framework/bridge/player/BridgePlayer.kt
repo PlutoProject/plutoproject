@@ -2,7 +2,7 @@ package ink.pmc.framework.bridge.player
 
 import ink.pmc.advkt.component.RootComponentKt
 import ink.pmc.advkt.sound.SoundKt
-import ink.pmc.advkt.title.TitleKt
+import ink.pmc.advkt.title.ComponentTitleKt
 import ink.pmc.framework.bridge.world.BridgeLocation
 import ink.pmc.framework.bridge.world.BridgeWorld
 import ink.pmc.framework.bridge.world.WorldElement
@@ -30,7 +30,7 @@ interface BridgePlayer : WorldElement {
 
     suspend fun showTitle(title: Title)
 
-    suspend fun showTitle(title: TitleKt.() -> Unit)
+    suspend fun showTitle(title: ComponentTitleKt.() -> Unit)
 
     suspend fun playSound(sound: Sound)
 

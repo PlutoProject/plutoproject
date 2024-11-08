@@ -1,21 +1,32 @@
 package ink.pmc.framework.bridge
 
 import com.google.protobuf.Empty
+import ink.pmc.advkt.sound.key
+import ink.pmc.advkt.sound.pitch
+import ink.pmc.advkt.sound.volume
+import ink.pmc.advkt.title.*
 import ink.pmc.framework.bridge.player.ProxyRemoteBackendPlayer
 import ink.pmc.framework.bridge.proto.BridgeRpcGrpcKt.BridgeRpcCoroutineImplBase
 import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.*
+import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.PlayerOperation.ContentCase.*
 import ink.pmc.framework.bridge.proto.notification
+import ink.pmc.framework.bridge.proto.playerOperationResult
 import ink.pmc.framework.bridge.proto.serverRegistrationAck
 import ink.pmc.framework.bridge.server.BridgeServer
 import ink.pmc.framework.bridge.server.ProxyRemoteBackendServer
+import ink.pmc.framework.bridge.server.localServer
 import ink.pmc.framework.bridge.world.ProxyRemoteBackendWorld
 import ink.pmc.framework.utils.concurrent.submitAsync
 import ink.pmc.framework.utils.platform.proxy
+import ink.pmc.framework.utils.player.uuid
 import ink.pmc.framework.utils.proto.empty
+import ink.pmc.framework.utils.time.ticks
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import net.kyori.adventure.key.Key
+import net.kyori.adventure.text.minimessage.MiniMessage
 import java.time.Instant
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.time.Duration.Companion.seconds
@@ -105,7 +116,50 @@ object BridgeRpc : BridgeRpcCoroutineImplBase() {
     }
 
     override suspend fun operatePlayer(request: PlayerOperation): PlayerOperationResult {
-        return super.operatePlayer(request)
+        val local = localServer.getPlayer(request.player.uuid) ?: return playerOperationResult {
+            playerNotOnline = true
+        }
+        val nonLocal = proxyBridge.getNonLocalPlayer(request.player.uuid)
+        when (request.contentCase!!) {
+            INFO_LOOKUP -> TODO()
+            SEND_MESSAGE -> local.sendMessage(MiniMessage.miniMessage().deserialize(request.server))
+            SHOW_TITLE -> local.showTitle {
+                val info = request.showTitle
+                times {
+                    fadeIn(info.fadeIn.ticks)
+                    stay(info.stay.ticks)
+                    fadeOut(info.fadeOut.ticks)
+                }
+                mainTitle(MiniMessage.miniMessage().deserialize(info.mainTitle))
+                subTitle(MiniMessage.miniMessage().deserialize(info.subTitle))
+            }
+
+            PLAY_SOUND -> {
+                local.playSound {
+                    val info = request.playSound
+                    key(Key.key(info.key))
+                    volume(info.volume)
+                    pitch(info.pitch)
+                }
+            }
+
+            TELEPORT -> {
+                nonLocal ?: return playerOperationResult {
+                    unsupported = true
+                }
+            }
+
+            PERFORM_COMMAND -> {
+                nonLocal ?: return playerOperationResult {
+                    unsupported = true
+                }
+            }
+
+            CONTENT_NOT_SET -> {}
+        }
+        return playerOperationResult {
+            ok = true
+        }
     }
 
     override suspend fun ackPlayerOperation(request: PlayerOperationAck): PlayerOperationAck {
