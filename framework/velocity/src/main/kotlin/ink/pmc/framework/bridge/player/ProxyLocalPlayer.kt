@@ -41,10 +41,6 @@ class ProxyLocalPlayer(private val actual: Player) : InternalPlayer() {
         error("Unsupported")
     }
 
-    override suspend fun teleport(world: BridgeWorld) {
-        error("Unsupported")
-    }
-
     override suspend fun sendMessage(message: String) {
         actual.sendMessage(Component.text(message))
     }

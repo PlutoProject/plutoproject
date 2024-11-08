@@ -85,10 +85,6 @@ class ProxyRemoteBackendPlayer(
         checkNoReturnResult(result, "teleporting $name")
     }
 
-    override suspend fun teleport(world: BridgeWorld) {
-        teleport(world.spawnPoint)
-    }
-
     override suspend fun sendMessage(message: String) {
         check(isOnline) { "Player offline" }
         local.sendMessage(message)

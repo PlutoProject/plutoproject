@@ -78,7 +78,7 @@ message Notification {
     PlayerOperation player_operation = 4;
     PlayerInfo player_info_update = 5;
     string player_switch_server_uuid = 6;
-    string player_offline_uuid = 7;
+    string player_disconnect_uuid = 7;
 
     // World
     WorldOperation world_operation = 8;

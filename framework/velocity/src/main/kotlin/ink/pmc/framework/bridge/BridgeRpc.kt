@@ -48,6 +48,10 @@ object BridgeRpc : BridgeRpcCoroutineImplBase() {
         return notificationFlow
     }
 
+    suspend fun notify(notification: Notification) {
+        notificationFlow.emit(notification)
+    }
+
     init {
         isRunning = true
         // Heartbeat check loop

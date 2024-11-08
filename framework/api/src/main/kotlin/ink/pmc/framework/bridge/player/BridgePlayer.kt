@@ -22,7 +22,13 @@ interface BridgePlayer : WorldElement<BridgePlayer> {
 
     suspend fun teleport(location: BridgeLocation)
 
-    suspend fun teleport(world: BridgeWorld)
+    suspend fun teleport(world: BridgeWorld) {
+        teleport(world.spawnPoint)
+    }
+
+    suspend fun teleport(player: BridgePlayer) {
+        teleport(player.location.await())
+    }
 
     suspend fun sendMessage(message: String)
 
