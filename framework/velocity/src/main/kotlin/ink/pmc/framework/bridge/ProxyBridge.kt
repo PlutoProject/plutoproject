@@ -6,7 +6,7 @@ import ink.pmc.framework.bridge.server.BridgeServer
 import ink.pmc.framework.utils.data.mutableConcurrentListOf
 
 class ProxyBridge : Bridge {
-    override val self: BridgeServer = ProxyLocalBridgeServer()
+    override val self: BridgeServer = LocalServer()
     override val master: BridgeServer = self
     override val groups: MutableList<BridgeGroup> = mutableConcurrentListOf()
     override val servers: Collection<BridgeServer> = mutableConcurrentListOf()
