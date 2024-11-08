@@ -75,8 +75,7 @@ message ServerRegistrationAck {
 
 message PlayerOperation {
   string id = 1;
-  string requester = 2;
-  string player = 3;
+  string player_uuid = 3;
   oneof type {
     bool remote_proxy = 4;
     bool remote_backend = 5;
@@ -93,8 +92,7 @@ message PlayerOperation {
 
 message PlayerOperationAck {
   string id = 1;
-  string requester = 2;
-  string player = 3;
+  string player_uuid = 3;
   oneof content {
     bool ok = 4;
     bool unsupported = 5;
@@ -103,13 +101,13 @@ message PlayerOperationAck {
 }
 
 message PlayerOperationResult {
-  string requester = 1;
   oneof content {
     bool ok = 2;
     bool player_offline = 3;
     bool server_offline = 4;
     bool world_not_found = 5;
-    bool unsupported = 6;
+    bool timeout = 6;
+    bool unsupported = 7;
   }
-  optional PlayerInfo info_lookup = 7;
+  optional PlayerInfo info_lookup = 8;
 }
