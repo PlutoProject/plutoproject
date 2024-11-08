@@ -29,7 +29,8 @@ class ProxyLocalPlayer(private val actual: Player) : InternalPlayer() {
     override val name: String = actual.username
     override val location: Deferred<BridgeLocation>
         get() = error("Unsupported")
-    override val world: BridgeWorld
+    override var world: BridgeWorld
+        set(_) {}
         get() = error("Unsupported")
     override var isOnline: Boolean
         set(_) {}
