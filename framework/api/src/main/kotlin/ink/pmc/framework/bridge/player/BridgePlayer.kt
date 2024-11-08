@@ -28,7 +28,7 @@ interface BridgePlayer : WorldElement<BridgePlayer> {
 
     suspend fun sendMessage(message: Component)
 
-    suspend fun sendMessage(component: RootComponentKt.() -> Unit)
+    suspend fun sendMessage(message: RootComponentKt.() -> Unit)
 
     suspend fun showTitle(title: Title)
 

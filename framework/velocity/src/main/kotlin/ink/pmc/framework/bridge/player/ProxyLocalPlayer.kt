@@ -31,8 +31,10 @@ class ProxyLocalPlayer(private val actual: Player) : InternalPlayer() {
         get() = error("Unsupported")
     override val world: BridgeWorld
         get() = error("Unsupported")
-    override val isOnline: Boolean
+    override var isOnline: Boolean
+        set(_) {}
         get() = actual.isActive
+
 
     override suspend fun teleport(location: BridgeLocation) {
         error("Unsupported")
@@ -50,8 +52,8 @@ class ProxyLocalPlayer(private val actual: Player) : InternalPlayer() {
         actual.sendMessage(message)
     }
 
-    override suspend fun sendMessage(component: RootComponentKt.() -> Unit) {
-        actual.send(component)
+    override suspend fun sendMessage(message: RootComponentKt.() -> Unit) {
+        actual.send(message)
     }
 
     override suspend fun showTitle(title: Title) {
