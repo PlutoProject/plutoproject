@@ -74,34 +74,36 @@ message ServerRegistrationAck {
 }
 
 message PlayerOperation {
-  string server = 1;
-  string player = 2;
+  string id = 1;
+  string requester = 2;
+  string player = 3;
   oneof type {
-    bool remote_proxy = 3;
-    bool remote_backend = 4;
+    bool remote_proxy = 4;
+    bool remote_backend = 5;
   }
   oneof content {
-    PlayerInfo info_lookup = 5;
-    string send_message = 6;
-    TitleInfo show_title = 7;
-    SoundInfo play_sound = 8;
-    LocationInfo teleport = 9;
-    string perform_command = 10;
+    google.protobuf.Empty info_lookup = 6;
+    string send_message = 7;
+    TitleInfo show_title = 8;
+    SoundInfo play_sound = 9;
+    LocationInfo teleport = 10;
+    string perform_command = 11;
   }
 }
 
 message PlayerOperationAck {
-  string server = 1;
-  string player = 2;
+  string id = 1;
+  string requester = 2;
+  string player = 3;
   oneof content {
-    bool ok = 3;
-    bool unsupported = 4;
+    bool ok = 4;
+    bool unsupported = 5;
   }
-  optional PlayerInfo info_lookup = 5;
+  optional PlayerInfo info_lookup = 6;
 }
 
 message PlayerOperationResult {
-  string server = 1;
+  string requester = 1;
   oneof content {
     bool ok = 2;
     bool player_offline = 3;

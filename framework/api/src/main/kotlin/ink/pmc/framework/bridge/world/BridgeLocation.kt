@@ -1,6 +1,10 @@
 package ink.pmc.framework.bridge.world
 
-interface BridgeLocation : WorldElement<BridgeLocation> {
+import ink.pmc.framework.bridge.server.BridgeServer
+
+interface BridgeLocation {
+    val server: BridgeServer
+    val world: BridgeWorld
     val x: Double
     val y: Double
     val z: Double
