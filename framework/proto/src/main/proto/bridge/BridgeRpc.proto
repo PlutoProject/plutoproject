@@ -60,8 +60,9 @@ message Notification {
   oneof content {
     ServerInfo server_registration = 1;
     ServerInfo server_info_update = 2;
-    PlayerOperation player_operation = 3;
-    string player_switch_server = 4;
+    string server_offline = 3;
+    PlayerOperation player_operation = 4;
+    string player_switch_server = 5;
   }
 }
 
