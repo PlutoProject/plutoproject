@@ -8,7 +8,7 @@ service BridgeRpc {
   rpc RegisterServer(ServerInfo) returns (ServerRegistrationAck);
   rpc Heartbeat(ServerInfo) returns (google.protobuf.Empty);
   rpc OperatePlayer(PlayerOperation) returns (PlayerOperationResult);
-  rpc AckPlayerOperation(PlayerOperationAck) returns (PlayerOperationAck);
+  rpc AckPlayerOperation(PlayerOperationAck) returns (google.protobuf.Empty);
 }
 
 message TitleInfo {
@@ -106,7 +106,8 @@ message PlayerOperationResult {
     bool ok = 2;
     bool player_not_online = 3;
     bool server_not_online = 4;
-    bool unsupported = 5;
+    bool world_not_found = 5;
+    bool unsupported = 6;
   }
-  optional PlayerInfo info_lookup = 6;
+  optional PlayerInfo info_lookup = 7;
 }

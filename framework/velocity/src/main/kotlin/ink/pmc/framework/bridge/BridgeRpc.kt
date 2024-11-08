@@ -9,6 +9,8 @@ import ink.pmc.framework.bridge.player.ProxyRemoteBackendPlayer
 import ink.pmc.framework.bridge.proto.BridgeRpcGrpcKt.BridgeRpcCoroutineImplBase
 import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.*
 import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.PlayerOperation.ContentCase.*
+import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.PlayerOperationAck.ContentCase.OK
+import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.PlayerOperationAck.ContentCase.UNSUPPORTED
 import ink.pmc.framework.bridge.proto.notification
 import ink.pmc.framework.bridge.proto.playerOperationResult
 import ink.pmc.framework.bridge.proto.serverRegistrationAck
@@ -22,9 +24,11 @@ import ink.pmc.framework.utils.player.uuid
 import ink.pmc.framework.utils.proto.empty
 import ink.pmc.framework.utils.time.ticks
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.withTimeoutOrNull
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.minimessage.MiniMessage
 import java.time.Instant
@@ -35,6 +39,7 @@ object BridgeRpc : BridgeRpcCoroutineImplBase() {
     private var isRunning = false
     private val heartbeatMap = ConcurrentHashMap<BridgeServer, Instant>()
     private val heartbeatCheckJob: Job
+    private val playerOperationAck = Channel<PlayerOperationAck>()
     val notificationFlow = MutableSharedFlow<Notification>()
 
     override fun monitorNotification(request: Empty): Flow<Notification> {
@@ -121,7 +126,35 @@ object BridgeRpc : BridgeRpcCoroutineImplBase() {
         }
         val nonLocal = proxyBridge.getNonLocalPlayer(request.player.uuid)
         when (request.contentCase!!) {
-            INFO_LOOKUP -> TODO()
+            INFO_LOOKUP -> {
+                notificationFlow.emit(notification {
+                    playerOperation = request
+                })
+                val result = withTimeoutOrNull(10) {
+                    for (ack in playerOperationAck) {
+                        if (ack.server != request.server || ack.player != request.player) {
+                            continue
+                        }
+                        return@withTimeoutOrNull when (ack.contentCase!!) {
+                            OK -> ack.infoLookup
+                            UNSUPPORTED -> playerOperationResult {
+                                unsupported = true
+                            }
+
+                            PlayerOperationAck.ContentCase.CONTENT_NOT_SET -> {}
+                        }
+                    }
+                }
+                return when (result) {
+                    is PlayerInfo -> playerOperationResult {
+                        infoLookup = result
+                    }
+
+                    is PlayerOperationResult -> result
+                    else -> error("Unexpected")
+                }
+            }
+
             SEND_MESSAGE -> local.sendMessage(MiniMessage.miniMessage().deserialize(request.server))
             SHOW_TITLE -> local.showTitle {
                 val info = request.showTitle
@@ -144,13 +177,23 @@ object BridgeRpc : BridgeRpcCoroutineImplBase() {
             }
 
             TELEPORT -> {
-                nonLocal ?: return playerOperationResult {
+                val server = proxyBridge.getServer(request.teleport.server)
+                if (server == null || !server.isOnline) {
+                    return playerOperationResult {
+                        serverNotOnline = true
+                    }
+                }
+                val world = server.getWorld(request.teleport.world) ?: return playerOperationResult {
+                    worldNotFound = true
+                }
+                val location = request.teleport.toImpl(server, world)
+                nonLocal?.teleport(location) ?: return playerOperationResult {
                     unsupported = true
                 }
             }
 
             PERFORM_COMMAND -> {
-                nonLocal ?: return playerOperationResult {
+                nonLocal?.performCommand(request.performCommand) ?: return playerOperationResult {
                     unsupported = true
                 }
             }
@@ -162,7 +205,8 @@ object BridgeRpc : BridgeRpcCoroutineImplBase() {
         }
     }
 
-    override suspend fun ackPlayerOperation(request: PlayerOperationAck): PlayerOperationAck {
-        return super.ackPlayerOperation(request)
+    override suspend fun ackPlayerOperation(request: PlayerOperationAck): Empty {
+        playerOperationAck.send(request)
+        return empty
     }
 }
