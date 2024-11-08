@@ -10,7 +10,7 @@ import ink.pmc.framework.utils.inject.inlinedGet
 interface Bridge : PlayerLookup, ServerLookup {
     companion object : Bridge by inlinedGet()
 
-    val self: BridgeServer
+    val local: BridgeServer
     val master: BridgeServer
         get() = servers.first { it.id == "_master" }
     val groups: Collection<BridgeGroup>

@@ -9,6 +9,9 @@ import ink.pmc.framework.utils.data.mutableConcurrentListOf
 import ink.pmc.framework.utils.platform.proxy
 import java.util.*
 
+internal val localServer: ProxyLocalServer
+    get() = Bridge.local as ProxyLocalServer
+
 class ProxyLocalServer : BridgeServer {
     override val id: String = "_master"
     override val type: ServerType = ServerType.LOCAL
