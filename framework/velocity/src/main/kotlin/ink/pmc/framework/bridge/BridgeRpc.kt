@@ -131,10 +131,17 @@ object BridgeRpc : BridgeRpcCoroutineImplBase() {
                 })
                 return withTimeoutOrNull(10) {
                     for (ack in playerOperationAck) {
-                        if (ack.server != request.server || ack.player != request.player) continue
+                        if (ack.server != request.server || ack.player != request.player) {
+                            continue
+                        }
                         return@withTimeoutOrNull when (ack.contentCase!!) {
-                            OK -> playerOperationResult { infoLookup = ack.infoLookup }
-                            else -> return@withTimeoutOrNull playerOperationResult { unsupported = true }
+                            OK -> playerOperationResult {
+                                infoLookup = ack.infoLookup
+                            }
+
+                            else -> return@withTimeoutOrNull playerOperationResult {
+                                unsupported = true
+                            }
                         }
                     }
                     null
