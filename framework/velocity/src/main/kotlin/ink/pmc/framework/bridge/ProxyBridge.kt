@@ -3,6 +3,7 @@ package ink.pmc.framework.bridge
 import ink.pmc.framework.bridge.player.BridgePlayer
 import ink.pmc.framework.bridge.server.BridgeGroup
 import ink.pmc.framework.bridge.server.BridgeServer
+import ink.pmc.framework.bridge.server.ProxyLocalServer
 import ink.pmc.framework.utils.data.mutableConcurrentListOf
 
 class ProxyBridge : Bridge {
