@@ -9,6 +9,8 @@ import com.velocitypowered.api.event.proxy.ProxyInitializeEvent
 import com.velocitypowered.api.event.proxy.ProxyShutdownEvent
 import com.velocitypowered.api.plugin.annotation.DataDirectory
 import com.velocitypowered.api.proxy.ProxyServer
+import ink.pmc.framework.bridge.Bridge
+import ink.pmc.framework.bridge.ProxyBridge
 import ink.pmc.framework.commands.RpcCommand
 import ink.pmc.framework.options.OptionsUpdateNotifier
 import ink.pmc.framework.options.ProxyOptionsUpdateNotifier
@@ -40,6 +42,7 @@ class VelocityPlugin @Inject constructor(private val spc: SuspendingPluginContai
         single<File>(FRAMEWORK_CONFIG) { saveDefaultConfig(VelocityPlugin::class.java, dataFolder) }
         single<OptionsUpdateNotifier> { ProxyOptionsUpdateNotifier() }
         single<DatabaseNotifier> { ProxyDatabaseNotifier() }
+        single<Bridge> { ProxyBridge() }
     }
     private lateinit var dataFolder: File
 
