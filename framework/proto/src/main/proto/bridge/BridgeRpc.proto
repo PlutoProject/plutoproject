@@ -9,12 +9,12 @@ service BridgeRpc {
   rpc Heartbeat(ServerInfo) returns (google.protobuf.Empty);
 
   rpc OperatePlayer(PlayerOperation) returns (PlayerOperationResult);
-  rpc UpdatePlayerInfo(PlayerInfo) returns (google.protobuf.Empty);
   rpc AckPlayerOperation(PlayerOperationAck) returns (google.protobuf.Empty);
+  rpc UpdatePlayerInfo(PlayerInfo) returns (google.protobuf.Empty);
 
   rpc OperateWorld(WorldOperation) returns (WorldOperationResult);
-  rpc UpdateWorldInfo(WorldInfo) returns (google.protobuf.Empty);
   rpc AckWorldOperation(WorldOperationAck) returns (google.protobuf.Empty);
+  rpc UpdateWorldInfo(WorldInfo) returns (google.protobuf.Empty);
 }
 
 message TitleInfo {
@@ -159,4 +159,5 @@ message PlayerOperationResult {
     bool timeout = 6;
     bool unsupported = 7;
   }
+  optional PlayerInfo info_lookup = 8;
 }

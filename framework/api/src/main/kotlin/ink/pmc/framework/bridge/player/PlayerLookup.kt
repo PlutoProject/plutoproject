@@ -24,11 +24,11 @@ interface PlayerLookup {
         }
     }
 
-    fun getNonLocalPlayer(name: String): BridgePlayer? {
+    fun getRemotePlayer(name: String): BridgePlayer? {
         return players.firstOrNull { it.name == name && !it.isLocal }
     }
 
-    fun getNonLocalPlayer(uniqueId: UUID): BridgePlayer? {
+    fun getRemotePlayer(uniqueId: UUID): BridgePlayer? {
         return players.firstOrNull { it.uniqueId == uniqueId && !it.isLocal }
     }
 

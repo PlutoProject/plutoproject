@@ -43,11 +43,11 @@ interface Bridge : PlayerLookup, ServerLookup {
         return super.getPlayer(uniqueId, null)
     }
 
-    override fun getNonLocalPlayer(name: String): BridgePlayer? {
+    override fun getRemotePlayer(name: String): BridgePlayer? {
         return servers.flatMap { it.players }.firstOrNull { it.name == name && !it.isLocal }
     }
 
-    override fun getNonLocalPlayer(uniqueId: UUID): BridgePlayer? {
+    override fun getRemotePlayer(uniqueId: UUID): BridgePlayer? {
         return servers.flatMap { it.players }.firstOrNull { it.uniqueId == uniqueId && !it.isLocal }
     }
 }

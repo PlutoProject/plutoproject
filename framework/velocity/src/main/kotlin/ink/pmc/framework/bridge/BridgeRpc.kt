@@ -140,10 +140,10 @@ object BridgeRpc : BridgeRpcCoroutineImplBase() {
     }
 
     override suspend fun operatePlayer(request: PlayerOperation): PlayerOperationResult {
-        val local = localServer.getPlayer(request.playerUuid.uuid) ?: return playerOperationResult {
+        val localPlayer = localServer.getPlayer(request.playerUuid.uuid) ?: return playerOperationResult {
             playerOffline = true
         }
-        val nonLocal = proxyBridge.getNonLocalPlayer(request.playerUuid.uuid) as ProxyRemoteBackendPlayer?
+        val remotePlayer = proxyBridge.getRemotePlayer(request.playerUuid.uuid) as ProxyRemoteBackendPlayer?
         when (request.contentCase!!) {
             INFO_LOOKUP -> {
                 notificationFlow.emit(notification {
@@ -171,8 +171,8 @@ object BridgeRpc : BridgeRpcCoroutineImplBase() {
                 }
             }
 
-            SEND_MESSAGE -> local.sendMessage(MiniMessage.miniMessage().deserialize(request.sendMessage))
-            SHOW_TITLE -> local.showTitle {
+            SEND_MESSAGE -> localPlayer.sendMessage(MiniMessage.miniMessage().deserialize(request.sendMessage))
+            SHOW_TITLE -> localPlayer.showTitle {
                 val info = request.showTitle
                 times {
                     fadeIn(info.fadeIn.ticks)
@@ -184,7 +184,7 @@ object BridgeRpc : BridgeRpcCoroutineImplBase() {
             }
 
             PLAY_SOUND -> {
-                local.playSound {
+                localPlayer.playSound {
                     val info = request.playSound
                     key(Key.key(info.key))
                     volume(info.volume)
@@ -193,10 +193,10 @@ object BridgeRpc : BridgeRpcCoroutineImplBase() {
             }
 
             TELEPORT -> {
-                nonLocal ?: return playerOperationResult {
+                remotePlayer ?: return playerOperationResult {
                     unsupported = true
                 }
-                nonLocal.actual.switchServer(request.teleport.server)
+                remotePlayer.actual.switchServer(request.teleport.server)
                 notificationFlow.emit(notification {
                     playerOperation = request
                 })
@@ -204,7 +204,7 @@ object BridgeRpc : BridgeRpcCoroutineImplBase() {
             }
 
             PERFORM_COMMAND -> {
-                nonLocal ?: return playerOperationResult {
+                remotePlayer ?: return playerOperationResult {
                     unsupported = true
                 }
                 notificationFlow.emit(notification {
@@ -225,11 +225,39 @@ object BridgeRpc : BridgeRpcCoroutineImplBase() {
         return empty
     }
 
-    override suspend fun operateWorld(request: WorldOperation): WorldOperationAck {
+    private fun InternalPlayer.update(info: PlayerInfo) {
+        world = server.getWorld(info.location.world) ?: error("World not found")
+    }
+
+    override suspend fun updatePlayerInfo(request: PlayerInfo): Empty {
+        val remotePlayer = proxyBridge.getRemotePlayer(request.uniqueId) as InternalPlayer? ?: error("Player not found")
+        remotePlayer.update(request)
+        notificationFlow.emit(notification {
+            playerInfoUpdate = request
+        })
+        return empty
+    }
+
+    override suspend fun operateWorld(request: WorldOperation): WorldOperationResult {
         return super.operateWorld(request)
     }
 
     override suspend fun ackWorldOperation(request: WorldOperationAck): Empty {
         return super.ackWorldOperation(request)
+    }
+
+    private fun InternalWorld.update(info: WorldInfo) {
+        val loc = info.spawnPoint
+        spawnPoint = BridgeLocationImpl(server, this, loc.x, loc.y, loc.z, loc.yaw, loc.pitch)
+    }
+
+    override suspend fun updateWorldInfo(request: WorldInfo): Empty {
+        val remoteServer = proxyBridge.getServer(request.server) ?: error("Server not registered")
+        val remoteWorld = remoteServer.getWorld(request.name) as InternalWorld? ?: error("World not found")
+        remoteWorld.update(request)
+        notificationFlow.emit(notification {
+            worldInfoUpdate = request
+        })
+        return super.updateWorldInfo(request)
     }
 }
