@@ -3,16 +3,16 @@ package ink.pmc.framework.bridge.player
 import ink.pmc.advkt.component.RootComponentKt
 import ink.pmc.advkt.sound.SoundKt
 import ink.pmc.advkt.title.TitleKt
-import ink.pmc.framework.bridge.server.ServerElement
 import ink.pmc.framework.bridge.world.BridgeLocation
 import ink.pmc.framework.bridge.world.BridgeWorld
+import ink.pmc.framework.bridge.world.WorldElement
 import kotlinx.coroutines.Deferred
 import net.kyori.adventure.sound.Sound
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.title.Title
 import java.util.*
 
-interface BridgePlayer : ServerElement {
+interface BridgePlayer : WorldElement {
     val uniqueId: UUID
     val name: String
     val location: Deferred<BridgeLocation>

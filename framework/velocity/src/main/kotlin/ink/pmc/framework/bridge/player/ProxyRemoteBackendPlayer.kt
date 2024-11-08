@@ -16,10 +16,12 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.title.Title
 import java.util.*
 
-class ProxyRemoteBackendPlayer(private val actual: Player) : BridgePlayer {
+class ProxyRemoteBackendPlayer(
+    private val actual: Player,
+    override val server: BridgeServer,
+    override val world: BridgeWorld
+) : BridgePlayer {
     override val group: BridgeGroup?
-        get() = TODO("Not yet implemented")
-    override val server: BridgeServer
         get() = TODO("Not yet implemented")
     override val serverType: ServerType
         get() = TODO("Not yet implemented")

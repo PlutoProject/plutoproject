@@ -2,18 +2,13 @@ package ink.pmc.framework.bridge.server
 
 import ink.pmc.framework.bridge.player.BridgePlayer
 import ink.pmc.framework.bridge.world.BridgeWorld
+import ink.pmc.framework.utils.data.mutableConcurrentListOf
 
-class ProxyRemoteBackendServer : BridgeServer {
-    override val id: String
-        get() = TODO("Not yet implemented")
-    override val type: ServerType
-        get() = TODO("Not yet implemented")
-    override val isOnline: Boolean
-        get() = TODO("Not yet implemented")
-    override val players: Collection<BridgePlayer>
-        get() = TODO("Not yet implemented")
-    override val group: BridgeGroup?
-        get() = TODO("Not yet implemented")
+class ProxyRemoteBackendServer(override val id: String, override val group: BridgeGroup?) : BridgeServer {
+    override val type: ServerType = ServerType.REMOTE_BACKEND
+    override val worlds: MutableList<BridgeWorld> = mutableConcurrentListOf()
+    override val isOnline: Boolean = true
+    override val players: MutableList<BridgePlayer> = mutableConcurrentListOf()
 
     override fun getWorld(name: String): BridgeWorld? {
         TODO("Not yet implemented")

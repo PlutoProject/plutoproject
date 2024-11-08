@@ -6,6 +6,7 @@ import ink.pmc.framework.bridge.world.BridgeWorld
 interface BridgeServer : PlayerLookup, Grouped {
     val id: String
     val type: ServerType
+    val worlds: Collection<BridgeWorld>
     val isOnline: Boolean
 
     fun getWorld(name: String): BridgeWorld?

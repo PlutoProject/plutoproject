@@ -1,6 +1,9 @@
 package ink.pmc.framework.bridge.world
 
-import ink.pmc.framework.bridge.server.ServerElement
-
-interface BridgeLocation : ServerElement {
+interface BridgeLocation : WorldElement {
+    val x: Double
+    val y: Double
+    val z: Double
+    val yaw: Float
+    val pitch: Float
 }

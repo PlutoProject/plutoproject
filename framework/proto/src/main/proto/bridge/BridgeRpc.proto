@@ -61,6 +61,7 @@ message Notification {
     ServerInfo server_registration = 1;
     ServerInfo server_info_update = 2;
     PlayerOperation player_operation = 3;
+    string player_switch_server = 4;
   }
 }
 
