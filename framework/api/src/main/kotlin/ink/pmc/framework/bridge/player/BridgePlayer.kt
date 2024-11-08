@@ -8,7 +8,6 @@ import ink.pmc.framework.bridge.server.ServerType
 import ink.pmc.framework.bridge.world.BridgeLocation
 import ink.pmc.framework.bridge.world.BridgeWorld
 import ink.pmc.framework.bridge.world.WorldElement
-import ink.pmc.framework.utils.concurrent.submitAsync
 import kotlinx.coroutines.Deferred
 import net.kyori.adventure.sound.Sound
 import net.kyori.adventure.text.Component
@@ -19,8 +18,6 @@ interface BridgePlayer : WorldElement<BridgePlayer> {
     val uniqueId: UUID
     val name: String
     val location: Deferred<BridgeLocation>
-    override val world: Deferred<BridgeWorld>
-        get() = submitAsync<BridgeWorld> { location.await().world }
     val isOnline: Boolean
 
     suspend fun teleport(location: BridgeLocation)

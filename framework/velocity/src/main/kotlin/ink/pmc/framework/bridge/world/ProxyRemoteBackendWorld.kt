@@ -15,8 +15,8 @@ class ProxyRemoteBackendWorld(
     override val players: Collection<BridgePlayer> = mutableConcurrentListOf()
     override val serverType: ServerType = ServerType.REMOTE_BACKEND
     override val group: BridgeGroup? = server.group
-
     override lateinit var spawnPoint: BridgeLocation
+
     override fun getLocation(x: Double, y: Double, z: Double, yaw: Float, pitch: Float): BridgeLocation {
         return BridgeLocationImpl(server, this, x, y, z, yaw, pitch)
     }

@@ -28,6 +28,7 @@ import java.util.*
 class ProxyRemoteBackendPlayer(
     val actual: Player,
     override val server: BridgeServer,
+    override var world: BridgeWorld,
 ) : InternalPlayer() {
     override val group: BridgeGroup? = server.group
     override val serverType: ServerType = ServerType.REMOTE_BACKEND
@@ -44,7 +45,6 @@ class ProxyRemoteBackendPlayer(
                 infoLookup = empty
             })
             val info = result.infoLookup.location
-            val world = server.getWorld(info.world) ?: error("World not found: ${info.world}")
             when (result.contentCase!!) {
                 OK -> BridgeLocationImpl(server, world, info.x, info.y, info.z, info.yaw, info.pitch)
                 PLAYER_OFFLINE -> error("Player offline")

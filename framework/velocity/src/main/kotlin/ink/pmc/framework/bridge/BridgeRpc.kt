@@ -41,8 +41,8 @@ object BridgeRpc : BridgeRpcCoroutineImplBase() {
     private var isRunning = false
     private val heartbeatMap = ConcurrentHashMap<BridgeServer, Instant>()
     private val heartbeatCheckJob: Job
-    val playerOperationAck = Channel<PlayerOperationAck>()
-    val notificationFlow = MutableSharedFlow<Notification>()
+    private val playerOperationAck = Channel<PlayerOperationAck>()
+    private val notificationFlow = MutableSharedFlow<Notification>()
 
     override fun monitorNotification(request: Empty): Flow<Notification> {
         return notificationFlow
@@ -77,8 +77,8 @@ object BridgeRpc : BridgeRpcCoroutineImplBase() {
         val id = request.id
         val group = request.group?.let { BridgeGroupImpl(it) }
         val server = ProxyRemoteBackendServer(id, group).apply {
-            updateWorlds(request)
-            updatePlayers(request)
+            setWorlds(request)
+            setPlayers(request)
         }
         proxyBridge.servers.add(server)
         heartbeatMap[server] = Instant.now()
@@ -90,7 +90,7 @@ object BridgeRpc : BridgeRpcCoroutineImplBase() {
         }
     }
 
-    private fun ProxyRemoteBackendServer.updateWorlds(info: ServerInfo) {
+    private fun ProxyRemoteBackendServer.setWorlds(info: ServerInfo) {
         worlds.addAll(info.worldsList.map {
             val world = ProxyRemoteBackendWorld(this, it.name, it.alias)
             val spawnPoint = it.spawnPoint.toImpl(this, world)
@@ -98,9 +98,10 @@ object BridgeRpc : BridgeRpcCoroutineImplBase() {
         })
     }
 
-    private fun ProxyRemoteBackendServer.updatePlayers(info: ServerInfo) {
+    private fun ProxyRemoteBackendServer.setPlayers(info: ServerInfo) {
         players.addAll(info.playersList.map {
-            ProxyRemoteBackendPlayer(proxy.getPlayer(it.uniqueId).get(), this)
+            val world = getWorld(it.location.world) ?: error("World not found: ${it.location.world}")
+            ProxyRemoteBackendPlayer(proxy.getPlayer(it.uniqueId).get(), this, world)
         })
     }
 
@@ -108,18 +109,16 @@ object BridgeRpc : BridgeRpcCoroutineImplBase() {
         val server = proxyBridge.getServer(request.id) as ProxyRemoteBackendServer? ?: return empty
         heartbeatMap[server] = Instant.now()
         server.isOnline = true
-        server.updateWorlds(request)
-        server.updatePlayers(request)
         notificationFlow.emit(notification {
             serverInfoUpdate = request
         })
         return empty
     }
 
-    private suspend fun waitNoReturnResult(request: PlayerOperation): PlayerOperationResult {
+    private suspend fun waitNoReturnAck(request: PlayerOperation): PlayerOperationResult {
         return withTimeoutOrNull(20) {
             for (ack in playerOperationAck) {
-                if (ack.id != request.id || ack.playerUuid != request.playerUuid) {
+                if (ack.uuid != request.id || ack.playerUuid != request.playerUuid) {
                     continue
                 }
                 when (ack.contentCase!!) {
@@ -152,7 +151,7 @@ object BridgeRpc : BridgeRpcCoroutineImplBase() {
                 })
                 return withTimeoutOrNull(20) {
                     for (ack in playerOperationAck) {
-                        if (ack.id != request.id || ack.playerUuid != request.playerUuid) {
+                        if (ack.uuid != request.id || ack.playerUuid != request.playerUuid) {
                             continue
                         }
                         return@withTimeoutOrNull when (ack.contentCase!!) {
@@ -201,7 +200,7 @@ object BridgeRpc : BridgeRpcCoroutineImplBase() {
                 notificationFlow.emit(notification {
                     playerOperation = request
                 })
-                return waitNoReturnResult(request)
+                return waitNoReturnAck(request)
             }
 
             PERFORM_COMMAND -> {
@@ -211,7 +210,7 @@ object BridgeRpc : BridgeRpcCoroutineImplBase() {
                 notificationFlow.emit(notification {
                     playerOperation = request
                 })
-                return waitNoReturnResult(request)
+                return waitNoReturnAck(request)
             }
 
             CONTENT_NOT_SET -> error("Received a operation request with no content: ${request.id}")
@@ -224,5 +223,13 @@ object BridgeRpc : BridgeRpcCoroutineImplBase() {
     override suspend fun ackPlayerOperation(request: PlayerOperationAck): Empty {
         playerOperationAck.send(request)
         return empty
+    }
+
+    override suspend fun operateWorld(request: WorldOperation): WorldOperationAck {
+        return super.operateWorld(request)
+    }
+
+    override suspend fun ackWorldOperation(request: WorldOperationAck): Empty {
+        return super.ackWorldOperation(request)
     }
 }

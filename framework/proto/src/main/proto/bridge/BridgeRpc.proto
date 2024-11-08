@@ -7,8 +7,14 @@ service BridgeRpc {
   rpc MonitorNotification(google.protobuf.Empty) returns (stream Notification);
   rpc RegisterServer(ServerInfo) returns (ServerRegistrationAck);
   rpc Heartbeat(ServerInfo) returns (google.protobuf.Empty);
+
   rpc OperatePlayer(PlayerOperation) returns (PlayerOperationResult);
+  rpc UpdatePlayerInfo(PlayerInfo) returns (google.protobuf.Empty);
   rpc AckPlayerOperation(PlayerOperationAck) returns (google.protobuf.Empty);
+
+  rpc OperateWorld(WorldOperation) returns (WorldOperationResult);
+  rpc UpdateWorldInfo(WorldInfo) returns (google.protobuf.Empty);
+  rpc AckWorldOperation(WorldOperationAck) returns (google.protobuf.Empty);
 }
 
 message TitleInfo {
@@ -56,13 +62,28 @@ message PlayerInfo {
   LocationInfo location = 4;
 }
 
+message WorldLoading {
+  string server = 1;
+  string world = 2;
+}
+
 message Notification {
   oneof content {
+    // Server
     ServerInfo server_registration = 1;
     ServerInfo server_info_update = 2;
     string server_offline = 3;
+
+    // Player
     PlayerOperation player_operation = 4;
-    string player_switch_server = 5;
+    PlayerInfo player_info_update = 5;
+    string player_switch_server_uuid = 6;
+    string player_offline_uuid = 7;
+
+    // World
+    WorldOperation world_operation = 8;
+    WorldInfo world_info_update = 9;
+    WorldLoading world_unload = 10;
   }
 }
 
@@ -90,8 +111,37 @@ message PlayerOperation {
   }
 }
 
+message WorldOperation {
+  string uuid = 1;
+  string server = 2;
+  string world = 3;
+  oneof content {
+    bool placeholder = 4;
+  }
+}
+
+message WorldOperationAck {
+  string uuid = 1;
+  string server = 2;
+  string world = 3;
+  oneof content {
+    bool ok = 4;
+    bool unsupported = 6;
+  }
+}
+
+message WorldOperationResult {
+  oneof content {
+    bool ok = 4;
+    bool server_offline = 5;
+    bool world_not_found = 6;
+    bool timeout = 7;
+    bool unsupported = 8;
+  }
+}
+
 message PlayerOperationAck {
-  string id = 1;
+  string uuid = 1;
   string player_uuid = 3;
   oneof content {
     bool ok = 4;
@@ -109,5 +159,4 @@ message PlayerOperationResult {
     bool timeout = 6;
     bool unsupported = 7;
   }
-  optional PlayerInfo info_lookup = 8;
 }
