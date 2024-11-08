@@ -9,7 +9,6 @@ import ink.pmc.advkt.sound.SoundKt
 import ink.pmc.advkt.title.ComponentTitleKt
 import ink.pmc.framework.bridge.Bridge
 import ink.pmc.framework.bridge.InternalPlayer
-import ink.pmc.framework.bridge.proxyBridge
 import ink.pmc.framework.bridge.server.BridgeGroup
 import ink.pmc.framework.bridge.server.BridgeServer
 import ink.pmc.framework.bridge.server.ServerType
@@ -77,6 +76,7 @@ class ProxyLocalPlayer(private val actual: Player) : InternalPlayer() {
 
     override fun convertElement(type: ServerType): BridgePlayer? {
         if (type == serverType) return this
-        return proxyBridge.getPlayer(uniqueId, type)
+        if (type == ServerType.REMOTE_PROXY) return null
+        return super.convertElement(type)
     }
 }

@@ -3,6 +3,7 @@ package ink.pmc.framework.bridge.player
 import com.velocitypowered.api.proxy.Player
 import ink.pmc.advkt.component.RootComponentKt
 import ink.pmc.advkt.sound.SoundKt
+import ink.pmc.advkt.title.ComponentTitleKt
 import ink.pmc.advkt.title.TitleKt
 import ink.pmc.framework.bridge.server.BridgeGroup
 import ink.pmc.framework.bridge.server.BridgeServer
@@ -60,7 +61,7 @@ class ProxyRemoteBackendPlayer(
         TODO("Not yet implemented")
     }
 
-    override suspend fun showTitle(title: TitleKt.() -> Unit) {
+    override suspend fun showTitle(title: ComponentTitleKt.() -> Unit) {
         TODO("Not yet implemented")
     }
 
