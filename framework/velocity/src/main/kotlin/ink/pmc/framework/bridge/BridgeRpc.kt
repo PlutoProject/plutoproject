@@ -10,7 +10,6 @@ import ink.pmc.framework.bridge.proto.BridgeRpcGrpcKt.BridgeRpcCoroutineImplBase
 import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.*
 import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.PlayerOperation.ContentCase.*
 import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.PlayerOperationAck.ContentCase.OK
-import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.PlayerOperationAck.ContentCase.UNSUPPORTED
 import ink.pmc.framework.bridge.proto.notification
 import ink.pmc.framework.bridge.proto.playerOperationResult
 import ink.pmc.framework.bridge.proto.serverRegistrationAck
@@ -130,28 +129,17 @@ object BridgeRpc : BridgeRpcCoroutineImplBase() {
                 notificationFlow.emit(notification {
                     playerOperation = request
                 })
-                val result = withTimeoutOrNull(10) {
+                return withTimeoutOrNull(10) {
                     for (ack in playerOperationAck) {
-                        if (ack.server != request.server || ack.player != request.player) {
-                            continue
-                        }
+                        if (ack.server != request.server || ack.player != request.player) continue
                         return@withTimeoutOrNull when (ack.contentCase!!) {
-                            OK -> ack.infoLookup
-                            UNSUPPORTED -> playerOperationResult {
-                                unsupported = true
-                            }
-
-                            PlayerOperationAck.ContentCase.CONTENT_NOT_SET -> {}
+                            OK -> playerOperationResult { infoLookup = ack.infoLookup }
+                            else -> return@withTimeoutOrNull playerOperationResult { unsupported = true }
                         }
                     }
-                }
-                return when (result) {
-                    is PlayerInfo -> playerOperationResult {
-                        infoLookup = result
-                    }
-
-                    is PlayerOperationResult -> result
-                    else -> error("Unexpected")
+                    null
+                } ?: playerOperationResult {
+                    playerNotOnline = true
                 }
             }
 
