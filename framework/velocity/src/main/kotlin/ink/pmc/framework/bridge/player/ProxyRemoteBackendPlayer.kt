@@ -57,12 +57,7 @@ class ProxyRemoteBackendPlayer(
                     location.pitch
                 )
 
-                PLAYER_OFFLINE -> error("Player offline")
-                SERVER_OFFLINE -> error("Server offline")
-                WORLD_NOT_FOUND -> error("Unexpected")
-                UNSUPPORTED -> error("Unsupported")
-                TIMEOUT -> error("Timeout while looking-up $name's info")
-                CONTENT_NOT_SET -> error("Unexpected")
+                else -> throw checkNoReturnResult(result)!!
             }
         }
     override var isOnline: Boolean
@@ -71,74 +66,74 @@ class ProxyRemoteBackendPlayer(
 
     private val local = localServer.getPlayer(uniqueId)!!
 
-    private fun checkNoReturnResult(result: PlayerOperationResult, operation: String) {
-        when (result.contentCase!!) {
-            OK -> {}
-            PLAYER_OFFLINE -> error("Player offline")
-            SERVER_OFFLINE -> error("Server offline")
-            WORLD_NOT_FOUND -> error("Unexpected")
+    private fun checkNoReturnResult(result: PlayerOperationResult): IllegalStateException? {
+        return when (result.contentCase!!) {
+            OK -> null
+            PLAYER_OFFLINE -> error("Player offline: $name")
+            SERVER_OFFLINE -> error("Server offline: ${server.id}")
+            WORLD_NOT_FOUND -> error("World not found: ${world?.name}")
             UNSUPPORTED -> error("Unsupported")
-            TIMEOUT -> error("Timeout while $operation")
-            CONTENT_NOT_SET -> error("Unexpected")
+            TIMEOUT -> error("Player operation timeout: $name")
+            CONTENT_NOT_SET -> error("Received a PlayerOperationResult without content (player: $name")
         }
     }
 
     override suspend fun teleport(location: BridgeLocation) {
-        check(server.isOnline) { "Server offline" }
-        check(isOnline) { "Player offline" }
+        check(server.isOnline) { "Server offline: ${server.id}" }
+        check(isOnline) { "Player offline: $name" }
         val result = BridgeRpc.operatePlayer(playerOperation {
             id = UUID.randomUUID().toString()
             playerUuid = uniqueId.toString()
             backend = true
             teleport = location.toInfo()
         })
-        checkNoReturnResult(result, "teleporting $name")
+        checkNoReturnResult(result)?.let { throw it }
     }
 
     override suspend fun sendMessage(message: String) {
-        check(isOnline) { "Player offline" }
+        check(isOnline) { "Player offline: $name" }
         local.sendMessage(message)
     }
 
     override suspend fun sendMessage(message: Component) {
-        check(isOnline) { "Player offline" }
+        check(isOnline) { "Player offline: $name" }
         local.sendMessage(message)
     }
 
     override suspend fun sendMessage(message: RootComponentKt.() -> Unit) {
-        check(isOnline) { "Player offline" }
+        check(isOnline) { "Player offline: $name" }
         local.sendMessage(message)
     }
 
     override suspend fun showTitle(title: Title) {
-        check(isOnline) { "Player offline" }
+        check(isOnline) { "Player offline: $name" }
         local.showTitle(title)
     }
 
     override suspend fun showTitle(title: ComponentTitleKt.() -> Unit) {
-        check(isOnline) { "Player offline" }
+        check(isOnline) { "Player offline: $name" }
         local.showTitle(title)
     }
 
     override suspend fun playSound(sound: Sound) {
-        check(isOnline) { "Player offline" }
+        check(isOnline) { "Player offline: $name" }
         local.playSound(sound)
     }
 
     override suspend fun playSound(sound: SoundKt.() -> Unit) {
-        check(isOnline) { "Player offline" }
+        check(isOnline) { "Player offline: $name" }
         local.playSound(sound)
     }
 
     override suspend fun performCommand(command: String) {
-        check(server.isOnline) { "Server offline" }
-        check(isOnline) { "Player offline" }
+        check(server.isOnline) { "Server offline: ${server.id}" }
+        check(isOnline) { "Player offline: $name" }
         val result = BridgeRpc.operatePlayer(playerOperation {
             id = UUID.randomUUID().toString()
             playerUuid = uniqueId.toString()
             backend = true
             performCommand = command
         })
-        checkNoReturnResult(result, "performing command ($command) on $name")
+        checkNoReturnResult(result)?.let { throw it }
     }
 }

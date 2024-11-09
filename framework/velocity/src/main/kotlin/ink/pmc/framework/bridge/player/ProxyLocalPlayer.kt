@@ -22,9 +22,8 @@ import net.kyori.adventure.title.Title
 import java.util.*
 
 class ProxyLocalPlayer(private val actual: Player) : InternalPlayer() {
-    override var server: BridgeServer
+    override var server: BridgeServer = Bridge.local
         set(_) = error("Unsupported")
-        get() = Bridge.local
     override val serverType: ServerType = Bridge.local.type
     override val serverState: ServerState = Bridge.local.state
 

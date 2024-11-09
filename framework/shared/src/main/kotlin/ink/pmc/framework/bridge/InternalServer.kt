@@ -27,6 +27,7 @@ fun BridgeServer.toInfo(): ServerInfo {
 abstract class InternalServer : BridgeServer {
     override val players: MutableList<BridgePlayer> = mutableConcurrentListOf()
     override val worlds: MutableList<BridgeWorld> = mutableConcurrentListOf()
+    abstract override var isOnline: Boolean
 
     override fun equals(other: Any?): Boolean {
         if (other !is BridgeServer) return false

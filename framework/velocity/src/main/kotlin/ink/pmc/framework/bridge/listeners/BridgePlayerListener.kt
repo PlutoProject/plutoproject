@@ -23,7 +23,8 @@ object BridgePlayerListener {
 
     @Subscribe
     suspend fun ServerConnectedEvent.e() {
-        val current = proxyBridge.getServer(server.serverInfo.name) as InternalServer? ?: error("Server not registered")
+        val current = proxyBridge.getServer(server.serverInfo.name) as InternalServer?
+            ?: error("Server not found: ${server.serverInfo.name}")
         val remotePlayer = proxyBridge.getRemotePlayer(player.uniqueId) as InternalPlayer?
             ?: ProxyRemoteBackendPlayer(player, current)
         val previous = previousServer.getOrNull()?.let { proxyBridge.getServer(it.serverInfo.name) } as InternalServer?

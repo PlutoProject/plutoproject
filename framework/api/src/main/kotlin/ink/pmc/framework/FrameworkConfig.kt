@@ -3,6 +3,7 @@ package ink.pmc.framework
 data class FrameworkConfig(
     val provider: ProviderConfig,
     val rpc: RpcConfig,
+    val bridge: BridgeConfig,
     val worldAliases: Map<String, String>
 )
 
@@ -26,4 +27,9 @@ data class GeoIp(
 data class RpcConfig(
     val host: String,
     val port: Int
+)
+
+data class BridgeConfig(
+    val id: String,
+    val group: String?
 )
