@@ -4,13 +4,15 @@ import com.velocitypowered.api.event.Subscribe
 import com.velocitypowered.api.event.connection.DisconnectEvent
 import com.velocitypowered.api.event.connection.LoginEvent
 import com.velocitypowered.api.event.player.ServerConnectedEvent
-import ink.pmc.framework.bridge.*
-import ink.pmc.framework.bridge.proxy.player.ProxyLocalPlayer
-import ink.pmc.framework.bridge.proxy.player.ProxyRemoteBackendPlayer
+import ink.pmc.framework.bridge.player.InternalPlayer
+import ink.pmc.framework.bridge.player.toInfo
 import ink.pmc.framework.bridge.proto.notification
 import ink.pmc.framework.bridge.proxy.BridgeRpc
+import ink.pmc.framework.bridge.proxy.player.ProxyLocalPlayer
+import ink.pmc.framework.bridge.proxy.player.ProxyRemoteBackendPlayer
 import ink.pmc.framework.bridge.proxy.proxyBridge
 import ink.pmc.framework.bridge.proxy.server.localServer
+import ink.pmc.framework.bridge.server.InternalServer
 import kotlin.jvm.optionals.getOrNull
 
 object BridgePlayerListener {
@@ -41,8 +43,6 @@ object BridgePlayerListener {
     @Subscribe
     suspend fun DisconnectEvent.e() {
         val uniqueId = player.uniqueId
-        val remotePlayer = proxyBridge.getRemotePlayer(uniqueId) as InternalPlayer?
-        remotePlayer?.isOnline = false
         proxyBridge.servers.forEach {
             val server = it as InternalServer
             server.players.removeIf { player -> player.uniqueId == uniqueId }

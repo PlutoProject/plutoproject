@@ -1,10 +1,8 @@
-package ink.pmc.framework.bridge
+package ink.pmc.framework.bridge.world
 
 import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.LocationInfo
 import ink.pmc.framework.bridge.proto.locationInfo
 import ink.pmc.framework.bridge.server.BridgeServer
-import ink.pmc.framework.bridge.world.BridgeLocation
-import ink.pmc.framework.bridge.world.BridgeWorld
 
 fun LocationInfo.toImpl(server: BridgeServer, world: BridgeWorld): BridgeLocation {
     return BridgeLocationImpl(server, world, x, y, z, yaw, pitch)

@@ -1,10 +1,10 @@
-package ink.pmc.framework.bridge
+package ink.pmc.framework.bridge.player
 
-import ink.pmc.framework.bridge.player.BridgePlayer
 import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.PlayerInfo
 import ink.pmc.framework.bridge.proto.playerInfo
 import ink.pmc.framework.bridge.server.BridgeServer
 import ink.pmc.framework.bridge.world.BridgeWorld
+import ink.pmc.framework.bridge.world.toInfo
 
 fun BridgePlayer.toInfo(): PlayerInfo {
     val player = this
@@ -29,11 +29,14 @@ abstract class InternalPlayer : BridgePlayer {
 
     override fun equals(other: Any?): Boolean {
         if (other !is BridgePlayer) return false
-        return other.uniqueId == uniqueId && other.serverType == serverType
+        return other.uniqueId == uniqueId
+                && other.serverState == serverState
+                && other.serverType == serverType
     }
 
     override fun hashCode(): Int {
         var result = uniqueId.hashCode()
+        result = 31 * result + serverState.hashCode()
         result = 31 * result + serverType.hashCode()
         return result
     }

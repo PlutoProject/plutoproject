@@ -3,6 +3,7 @@ package ink.pmc.framework.bridge
 import ink.pmc.framework.bridge.player.BridgePlayer
 import ink.pmc.framework.bridge.player.PlayerLookup
 import ink.pmc.framework.bridge.server.*
+import ink.pmc.framework.bridge.world.BridgeWorld
 import ink.pmc.framework.utils.inject.inlinedGet
 import java.util.*
 
@@ -13,6 +14,9 @@ interface Bridge : PlayerLookup, ServerLookup {
     val master: BridgeServer
         get() = servers.first { it.id == "_master" }
     val groups: Collection<BridgeGroup>
+        get() = servers.filter { it.group != null }.map { it.group!! }
+    val worlds: Collection<BridgeWorld>
+        get() = servers.flatMap { it.worlds }
     override val players: Collection<BridgePlayer>
         get() = servers.flatMap { it.players }.sortedBy {
             when {
@@ -23,9 +27,13 @@ interface Bridge : PlayerLookup, ServerLookup {
             }
         }.distinctBy { it.uniqueId }
 
-    fun getGroup(id: String): BridgeGroup?
+    fun getGroup(id: String): BridgeGroup? {
+        return groups.firstOrNull { it.id == id }
+    }
 
-    fun isGroupRegistered(id: String): Boolean
+    fun isGroupRegistered(id: String): Boolean {
+        return getGroup(id) != null
+    }
 
     private fun filterPlayer(state: ServerState?, type: ServerType?): List<BridgePlayer> {
         return servers.flatMap { it.players }.filter {
@@ -45,5 +53,9 @@ interface Bridge : PlayerLookup, ServerLookup {
             return filterPlayer(state, type).firstOrNull { it.uniqueId == uniqueId }
         }
         return super.getPlayer(uniqueId, null, null)
+    }
+
+    fun getWorld(server: BridgeServer, name: String): BridgeWorld? {
+        return worlds.firstOrNull { it.server == server && it.name == name }
     }
 }

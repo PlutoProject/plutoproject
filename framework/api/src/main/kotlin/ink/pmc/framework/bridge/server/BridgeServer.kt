@@ -5,8 +5,8 @@ import ink.pmc.framework.bridge.world.BridgeWorld
 
 interface BridgeServer : PlayerLookup, GroupElement {
     val id: String
-    val type: ServerType
     val state: ServerState
+    val type: ServerType
     val worlds: Collection<BridgeWorld>
     val isOnline: Boolean
     val isLocal: Boolean get() = state == ServerState.LOCAL

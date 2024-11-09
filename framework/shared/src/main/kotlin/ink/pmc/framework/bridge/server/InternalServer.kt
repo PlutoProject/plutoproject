@@ -1,11 +1,12 @@
-package ink.pmc.framework.bridge
+package ink.pmc.framework.bridge.server
 
+import ink.pmc.framework.bridge.Bridge
 import ink.pmc.framework.bridge.player.BridgePlayer
+import ink.pmc.framework.bridge.player.toInfo
 import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.ServerInfo
 import ink.pmc.framework.bridge.proto.serverInfo
-import ink.pmc.framework.bridge.server.BridgeServer
-import ink.pmc.framework.bridge.server.ServerType
 import ink.pmc.framework.bridge.world.BridgeWorld
+import ink.pmc.framework.bridge.world.toInfo
 import ink.pmc.framework.utils.data.mutableConcurrentListOf
 
 fun BridgeServer.toInfo(): ServerInfo {
@@ -31,11 +32,12 @@ abstract class InternalServer : BridgeServer {
 
     override fun equals(other: Any?): Boolean {
         if (other !is BridgeServer) return false
-        return other.id == id && other.type == type
+        return other.id == id && other.state == state && other.type == type
     }
 
     override fun hashCode(): Int {
         var result = id.hashCode()
+        result = 31 * result + state.hashCode()
         result = 31 * result + type.hashCode()
         return result
     }

@@ -1,8 +1,7 @@
-package ink.pmc.framework.bridge
+package ink.pmc.framework.bridge.server
 
+import ink.pmc.framework.bridge.Bridge
 import ink.pmc.framework.bridge.player.BridgePlayer
-import ink.pmc.framework.bridge.server.BridgeGroup
-import ink.pmc.framework.bridge.server.BridgeServer
 
 class BridgeGroupImpl(override val id: String) : BridgeGroup {
     override val players: Collection<BridgePlayer>

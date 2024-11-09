@@ -9,6 +9,7 @@ interface PlayerLookup {
     val playerCount: Int
         get() = players.size
 
+
     fun getPlayer(name: String, state: ServerState? = null, type: ServerType? = null): BridgePlayer? {
         return players.firstOrNull {
             it.name == name

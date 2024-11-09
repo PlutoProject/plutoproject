@@ -5,8 +5,8 @@ import ink.pmc.advkt.sound.key
 import ink.pmc.advkt.sound.pitch
 import ink.pmc.advkt.sound.volume
 import ink.pmc.advkt.title.*
-import ink.pmc.framework.bridge.*
-import ink.pmc.framework.bridge.proxy.player.ProxyRemoteBackendPlayer
+import ink.pmc.framework.bridge.Bridge
+import ink.pmc.framework.bridge.player.InternalPlayer
 import ink.pmc.framework.bridge.proto.BridgeRpcGrpcKt.BridgeRpcCoroutineImplBase
 import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.*
 import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.PlayerOperation.ContentCase.*
@@ -16,10 +16,13 @@ import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.PlayerOperationAck.Con
 import ink.pmc.framework.bridge.proto.notification
 import ink.pmc.framework.bridge.proto.playerOperationResult
 import ink.pmc.framework.bridge.proto.serverRegistrationAck
-import ink.pmc.framework.bridge.server.BridgeServer
-import ink.pmc.framework.bridge.proxy.server.ProxyRemoteBackendServer
+import ink.pmc.framework.bridge.proxy.player.ProxyRemoteBackendPlayer
 import ink.pmc.framework.bridge.proxy.server.localServer
 import ink.pmc.framework.bridge.proxy.world.ProxyRemoteBackendWorld
+import ink.pmc.framework.bridge.server.*
+import ink.pmc.framework.bridge.world.BridgeLocationImpl
+import ink.pmc.framework.bridge.world.InternalWorld
+import ink.pmc.framework.bridge.world.toImpl
 import ink.pmc.framework.frameworkLogger
 import ink.pmc.framework.utils.concurrent.submitAsync
 import ink.pmc.framework.utils.platform.proxy
@@ -84,8 +87,8 @@ object BridgeRpc : BridgeRpcCoroutineImplBase() {
             }
         }
         val id = request.id
-        val group = request.group?.let { BridgeGroupImpl(it) }
-        val server = ProxyRemoteBackendServer(id, group).apply {
+        val group = request.group?.let { proxyBridge.getGroup(it) ?: BridgeGroupImpl(it) }
+        val server = RemoteBackendServer(id, group).apply {
             setWorlds(request)
             setPlayers(request)
         }
@@ -100,7 +103,7 @@ object BridgeRpc : BridgeRpcCoroutineImplBase() {
         }
     }
 
-    private fun ProxyRemoteBackendServer.setWorlds(info: ServerInfo) {
+    private fun RemoteBackendServer.setWorlds(info: ServerInfo) {
         worlds.addAll(info.worldsList.map {
             val world = ProxyRemoteBackendWorld(this, it.name, it.alias)
             val spawnPoint = it.spawnPoint.toImpl(this, world)
@@ -108,7 +111,7 @@ object BridgeRpc : BridgeRpcCoroutineImplBase() {
         })
     }
 
-    private fun ProxyRemoteBackendServer.setPlayers(info: ServerInfo) {
+    private fun RemoteBackendServer.setPlayers(info: ServerInfo) {
         players.addAll(info.playersList.map {
             val worldName = it.world.name
             val world = getWorld(worldName) ?: error("World not found: $worldName")
@@ -273,5 +276,16 @@ object BridgeRpc : BridgeRpcCoroutineImplBase() {
             worldInfoUpdate = request
         })
         return super.updateWorldInfo(request)
+    }
+
+    override suspend fun unloadWorld(request: WorldLoading): Empty {
+        val remoteServer = proxyBridge.getServer(request.server) as InternalServer?
+            ?: error("Server not found: ${request.server}")
+        val remoteWorld = remoteServer.getWorld(request.world) ?: error("World not found: ${request.world}")
+        remoteServer.worlds.remove(remoteWorld)
+        notificationFlow.emit(notification {
+            worldUnload = request
+        })
+        return empty
     }
 }

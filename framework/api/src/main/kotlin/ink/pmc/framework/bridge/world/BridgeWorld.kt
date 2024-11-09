@@ -1,6 +1,7 @@
 package ink.pmc.framework.bridge.world
 
 import ink.pmc.framework.bridge.Bridge
+import ink.pmc.framework.bridge.player.BridgePlayer
 import ink.pmc.framework.bridge.player.PlayerLookup
 import ink.pmc.framework.bridge.server.ServerElement
 import ink.pmc.framework.bridge.server.ServerState
@@ -11,6 +12,8 @@ interface BridgeWorld : PlayerLookup, ServerElement<BridgeWorld> {
     val alias: String?
     val aliasOrName: String get() = alias ?: name
     val spawnPoint: BridgeLocation
+    override val players: Collection<BridgePlayer>
+        get() = server.players.filter { it.world == this }
 
     fun getLocation(
         x: Double,

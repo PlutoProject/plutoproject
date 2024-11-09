@@ -15,6 +15,7 @@ service BridgeRpc {
   rpc OperateWorld(WorldOperation) returns (WorldOperationResult);
   rpc AckWorldOperation(WorldOperationAck) returns (google.protobuf.Empty);
   rpc UpdateWorldInfo(WorldInfo) returns (google.protobuf.Empty);
+  rpc UnloadWorld(WorldLoading) returns (google.protobuf.Empty);
 }
 
 message TitleInfo {
