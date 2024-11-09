@@ -2,10 +2,7 @@ package ink.pmc.framework.bridge
 
 import ink.pmc.framework.bridge.player.BridgePlayer
 import ink.pmc.framework.bridge.player.PlayerLookup
-import ink.pmc.framework.bridge.server.BridgeGroup
-import ink.pmc.framework.bridge.server.BridgeServer
-import ink.pmc.framework.bridge.server.ServerLookup
-import ink.pmc.framework.bridge.server.ServerType
+import ink.pmc.framework.bridge.server.*
 import ink.pmc.framework.utils.inject.inlinedGet
 import java.util.*
 
@@ -30,18 +27,24 @@ interface Bridge : PlayerLookup, ServerLookup {
 
     fun isGroupRegistered(id: String): Boolean
 
-    override fun getPlayer(name: String, type: ServerType?): BridgePlayer? {
-        if (type != null) {
-            return servers.flatMap { it.players }.firstOrNull { it.name == name && it.serverType == type }
+    private fun filterPlayer(state: ServerState?, type: ServerType?): List<BridgePlayer> {
+        return servers.flatMap { it.players }.filter {
+            it.serverState == (state ?: it.serverState) && it.serverType == (type ?: it.serverType)
         }
-        return super.getPlayer(name, null)
     }
 
-    override fun getPlayer(uniqueId: UUID, type: ServerType?): BridgePlayer? {
-        if (type != null) {
-            return servers.flatMap { it.players }.firstOrNull { it.uniqueId == uniqueId && it.serverType == type }
+    override fun getPlayer(name: String, state: ServerState?, type: ServerType?): BridgePlayer? {
+        if (state != null || type != null) {
+            return filterPlayer(state, type).firstOrNull { it.name == name }
         }
-        return super.getPlayer(uniqueId, null)
+        return super.getPlayer(name, null, null)
+    }
+
+    override fun getPlayer(uniqueId: UUID, state: ServerState?, type: ServerType?): BridgePlayer? {
+        if (state != null || type != null) {
+            return filterPlayer(state, type).firstOrNull { it.uniqueId == uniqueId }
+        }
+        return super.getPlayer(uniqueId, null, null)
     }
 
     override fun getRemotePlayer(name: String): BridgePlayer? {
