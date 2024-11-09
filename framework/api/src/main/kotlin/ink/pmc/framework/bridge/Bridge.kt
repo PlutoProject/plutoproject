@@ -19,8 +19,8 @@ interface Bridge : PlayerLookup, ServerLookup {
     override val players: Collection<BridgePlayer>
         get() = servers.flatMap { it.players }.sortedBy {
             when {
-                it.isLocal -> 0
-                it.isRemoteBackend -> 1
+                it.isLocal -> if (local.type == ServerType.PROXY) 1 else 0
+                it.isRemoteBackend -> if (local.type == ServerType.PROXY) 0 else 1
                 it.isRemoteProxy -> 2
                 else -> error("Unexpected")
             }
