@@ -1,5 +1,5 @@
 package ink.pmc.framework.bridge.server
 
-interface Grouped {
+interface GroupElement {
     val group: BridgeGroup?
 }

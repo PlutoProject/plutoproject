@@ -1,6 +1,6 @@
 package ink.pmc.framework.bridge.server
 
-interface ServerElement<T : ServerElement<T>> : Grouped {
+interface ServerElement<T : ServerElement<T>> : GroupElement {
     val server: BridgeServer
     val serverType: ServerType
     val serverState: ServerState

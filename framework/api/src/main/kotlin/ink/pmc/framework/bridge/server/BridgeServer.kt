@@ -3,7 +3,7 @@ package ink.pmc.framework.bridge.server
 import ink.pmc.framework.bridge.player.PlayerLookup
 import ink.pmc.framework.bridge.world.BridgeWorld
 
-interface BridgeServer : PlayerLookup, Grouped {
+interface BridgeServer : PlayerLookup, GroupElement {
     val id: String
     val type: ServerType
     val state: ServerState
