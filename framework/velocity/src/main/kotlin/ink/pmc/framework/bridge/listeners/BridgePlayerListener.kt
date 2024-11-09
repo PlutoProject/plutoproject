@@ -31,6 +31,7 @@ object BridgePlayerListener {
             playerInfoUpdate = playerInfo {
                 server = current.id
                 uniqueId = player.uniqueId.toString()
+                name = player.username
             }
         })
     }

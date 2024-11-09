@@ -64,6 +64,7 @@ message PlayerInfo {
   string unique_id = 2;
   string name = 3;
   optional WorldInfo world = 4;
+  optional LocationInfo location = 5;
 }
 
 message WorldLoading {
@@ -102,8 +103,8 @@ message PlayerOperation {
   string id = 1;
   string player_uuid = 3;
   oneof type {
-    bool remote_proxy = 4;
-    bool remote_backend = 5;
+    bool proxy = 4;
+    bool backend = 5;
   }
   oneof content {
     google.protobuf.Empty info_lookup = 6;

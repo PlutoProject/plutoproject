@@ -11,6 +11,7 @@ import ink.pmc.framework.bridge.Bridge
 import ink.pmc.framework.bridge.InternalPlayer
 import ink.pmc.framework.bridge.server.BridgeGroup
 import ink.pmc.framework.bridge.server.BridgeServer
+import ink.pmc.framework.bridge.server.ServerState
 import ink.pmc.framework.bridge.server.ServerType
 import ink.pmc.framework.bridge.world.BridgeLocation
 import ink.pmc.framework.bridge.world.BridgeWorld
@@ -23,13 +24,14 @@ import java.util.*
 class ProxyLocalPlayer(private val actual: Player) : InternalPlayer() {
     override val server: BridgeServer = Bridge.local
     override val serverType: ServerType = Bridge.local.type
+    override val serverState: ServerState = Bridge.local.state
 
     override val group: BridgeGroup? = Bridge.local.group
     override val uniqueId: UUID = actual.uniqueId
     override val name: String = actual.username
     override val location: Deferred<BridgeLocation>
         get() = error("Unsupported")
-    override var world: BridgeWorld
+    override var world: BridgeWorld?
         set(_) {}
         get() = error("Unsupported")
     override var isOnline: Boolean
@@ -75,7 +77,7 @@ class ProxyLocalPlayer(private val actual: Player) : InternalPlayer() {
 
     override fun convertElement(type: ServerType): BridgePlayer? {
         if (type == serverType) return this
-        if (type == ServerType.REMOTE_PROXY) return null
+        if (isRemoteProxy) return null
         return super.convertElement(type)
     }
 }

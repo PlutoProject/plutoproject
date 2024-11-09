@@ -18,10 +18,11 @@ interface Bridge : PlayerLookup, ServerLookup {
     val groups: Collection<BridgeGroup>
     override val players: Collection<BridgePlayer>
         get() = servers.flatMap { it.players }.sortedBy {
-            when (it.serverType) {
-                ServerType.LOCAL -> 0
-                ServerType.REMOTE_BACKEND -> 1
-                ServerType.REMOTE_PROXY -> 2
+            when {
+                it.isLocal -> 0
+                it.isRemoteBackend -> 1
+                it.isRemoteProxy -> 2
+                else -> error("Unexpected")
             }
         }.distinctBy { it.uniqueId }
 

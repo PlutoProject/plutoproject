@@ -4,6 +4,7 @@ import ink.pmc.framework.bridge.BridgeLocationImpl
 import ink.pmc.framework.bridge.player.BridgePlayer
 import ink.pmc.framework.bridge.server.BridgeGroup
 import ink.pmc.framework.bridge.server.BridgeServer
+import ink.pmc.framework.bridge.server.ServerState
 import ink.pmc.framework.bridge.server.ServerType
 import ink.pmc.framework.utils.data.mutableConcurrentListOf
 
@@ -13,7 +14,8 @@ class ProxyRemoteBackendWorld(
     override val alias: String?,
 ) : BridgeWorld {
     override val players: Collection<BridgePlayer> = mutableConcurrentListOf()
-    override val serverType: ServerType = ServerType.REMOTE_BACKEND
+    override val serverType: ServerType = ServerType.BACKEND
+    override val serverState: ServerState = ServerState.REMOTE
     override val group: BridgeGroup? = server.group
     override lateinit var spawnPoint: BridgeLocation
 
@@ -23,7 +25,7 @@ class ProxyRemoteBackendWorld(
 
     override fun convertElement(type: ServerType): BridgeWorld? {
         if (type == serverType) return this
-        if (type == ServerType.REMOTE_PROXY) return null
+        if (isRemoteProxy) return null
         return super.convertElement(type)
     }
 }

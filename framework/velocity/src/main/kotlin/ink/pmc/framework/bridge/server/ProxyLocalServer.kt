@@ -13,7 +13,8 @@ internal inline val localServer: ProxyLocalServer
 
 class ProxyLocalServer : InternalServer() {
     override val id: String = "_master"
-    override val type: ServerType = ServerType.LOCAL
+    override val type: ServerType = ServerType.PROXY
+    override val state: ServerState = ServerState.LOCAL
     override val isOnline: Boolean = true
     override val players: MutableList<BridgePlayer> = mutableConcurrentListOf()
     override val playerCount: Int

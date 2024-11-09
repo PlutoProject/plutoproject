@@ -10,10 +10,7 @@ import ink.pmc.framework.bridge.InternalPlayer
 import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.PlayerOperationResult
 import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.PlayerOperationResult.ContentCase.*
 import ink.pmc.framework.bridge.proto.playerOperation
-import ink.pmc.framework.bridge.server.BridgeGroup
-import ink.pmc.framework.bridge.server.BridgeServer
-import ink.pmc.framework.bridge.server.ServerType
-import ink.pmc.framework.bridge.server.localServer
+import ink.pmc.framework.bridge.server.*
 import ink.pmc.framework.bridge.toInfo
 import ink.pmc.framework.bridge.world.BridgeLocation
 import ink.pmc.framework.bridge.world.BridgeWorld
@@ -31,7 +28,8 @@ class ProxyRemoteBackendPlayer(
     override var world: BridgeWorld? = null,
 ) : InternalPlayer() {
     override val group: BridgeGroup? = server.group
-    override val serverType: ServerType = ServerType.REMOTE_BACKEND
+    override val serverType: ServerType = ServerType.BACKEND
+    override val serverState: ServerState = ServerState.REMOTE
     override val uniqueId: UUID = actual.uniqueId
     override val name: String = actual.username
     override val location: Deferred<BridgeLocation>
@@ -42,12 +40,23 @@ class ProxyRemoteBackendPlayer(
             val result = BridgeRpc.operatePlayer(playerOperation {
                 id = UUID.randomUUID().toString()
                 playerUuid = uniqueId.toString()
-                remoteBackend = true
+                backend = true
                 infoLookup = empty
             })
-            val info = result.infoLookup.location
+            val info = result.infoLookup
+            check(info.hasLocation()) { "PlayerInfo missing required field" }
+            val location = info.location
             when (result.contentCase!!) {
-                OK -> BridgeLocationImpl(server, world!!, info.x, info.y, info.z, info.yaw, info.pitch)
+                OK -> BridgeLocationImpl(
+                    server,
+                    world!!,
+                    location.x,
+                    location.y,
+                    location.z,
+                    location.yaw,
+                    location.pitch
+                )
+
                 PLAYER_OFFLINE -> error("Player offline")
                 SERVER_OFFLINE -> error("Server offline")
                 WORLD_NOT_FOUND -> error("Unexpected")
@@ -80,7 +89,7 @@ class ProxyRemoteBackendPlayer(
         val result = BridgeRpc.operatePlayer(playerOperation {
             id = UUID.randomUUID().toString()
             playerUuid = uniqueId.toString()
-            remoteBackend = true
+            backend = true
             teleport = location.toInfo()
         })
         checkNoReturnResult(result, "teleporting $name")
@@ -127,7 +136,7 @@ class ProxyRemoteBackendPlayer(
         val result = BridgeRpc.operatePlayer(playerOperation {
             id = UUID.randomUUID().toString()
             playerUuid = uniqueId.toString()
-            remoteBackend = true
+            backend = true
             performCommand = command
         })
         checkNoReturnResult(result, "performing command ($command) on $name")
@@ -135,7 +144,7 @@ class ProxyRemoteBackendPlayer(
 
     override fun convertElement(type: ServerType): BridgePlayer? {
         if (type == serverType) return this
-        if (type == ServerType.REMOTE_PROXY) return null
+        if (isRemoteProxy) return null
         return super.convertElement(type)
     }
 }

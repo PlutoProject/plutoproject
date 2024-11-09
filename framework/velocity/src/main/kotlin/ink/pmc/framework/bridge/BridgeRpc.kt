@@ -91,7 +91,7 @@ object BridgeRpc : BridgeRpcCoroutineImplBase() {
         })
         return serverRegistrationAck {
             ok = true
-            servers.addAll(proxyBridge.servers.map { it.toInfo(true) })
+            servers.addAll(proxyBridge.servers.map { it.toInfo() })
         }
     }
 
