@@ -63,8 +63,12 @@ message PlayerInfo {
   string server = 1;
   string unique_id = 2;
   string name = 3;
-  optional WorldInfo world = 4;
-  optional LocationInfo location = 5;
+  oneof type {
+    bool proxy = 4;
+    bool backend = 5;
+  }
+  optional WorldInfo world = 6;
+  optional LocationInfo location = 7;
 }
 
 message WorldLoading {

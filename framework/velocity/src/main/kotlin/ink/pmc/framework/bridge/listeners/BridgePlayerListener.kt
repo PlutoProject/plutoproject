@@ -4,35 +4,34 @@ import com.velocitypowered.api.event.Subscribe
 import com.velocitypowered.api.event.connection.DisconnectEvent
 import com.velocitypowered.api.event.connection.LoginEvent
 import com.velocitypowered.api.event.player.ServerConnectedEvent
-import ink.pmc.framework.bridge.BridgeRpc
-import ink.pmc.framework.bridge.InternalServer
+import ink.pmc.framework.bridge.*
 import ink.pmc.framework.bridge.player.ProxyLocalPlayer
 import ink.pmc.framework.bridge.player.ProxyRemoteBackendPlayer
 import ink.pmc.framework.bridge.proto.notification
-import ink.pmc.framework.bridge.proto.playerInfo
-import ink.pmc.framework.bridge.proxyBridge
 import ink.pmc.framework.bridge.server.localServer
 import kotlin.jvm.optionals.getOrNull
 
 object BridgePlayerListener {
     @Subscribe
-    fun LoginEvent.e() {
-        localServer.players.add(ProxyLocalPlayer(player))
+    suspend fun LoginEvent.e() {
+        val localPlayer = ProxyLocalPlayer(player)
+        localServer.players.add(localPlayer)
+        BridgeRpc.notify(notification {
+            playerInfoUpdate = localPlayer.toInfo()
+        })
     }
 
     @Subscribe
     suspend fun ServerConnectedEvent.e() {
         val current = proxyBridge.getServer(server.serverInfo.name) as InternalServer? ?: error("Server not registered")
-        val remotePlayer = proxyBridge.getRemotePlayer(player.uniqueId) ?: ProxyRemoteBackendPlayer(player, current)
+        val remotePlayer = proxyBridge.getRemotePlayer(player.uniqueId) as InternalPlayer?
+            ?: ProxyRemoteBackendPlayer(player, current)
         val previous = previousServer.getOrNull()?.let { proxyBridge.getServer(it.serverInfo.name) } as InternalServer?
+        remotePlayer.server = current
         current.players.add(remotePlayer)
         previous?.players?.remove(remotePlayer)
         BridgeRpc.notify(notification {
-            playerInfoUpdate = playerInfo {
-                server = current.id
-                uniqueId = player.uniqueId.toString()
-                name = player.username
-            }
+            playerInfoUpdate = remotePlayer.toInfo()
         })
     }
 

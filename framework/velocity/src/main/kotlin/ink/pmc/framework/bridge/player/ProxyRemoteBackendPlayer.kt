@@ -24,7 +24,7 @@ import java.util.*
 
 class ProxyRemoteBackendPlayer(
     val actual: Player,
-    override val server: BridgeServer,
+    override var server: BridgeServer,
     override var world: BridgeWorld? = null,
 ) : InternalPlayer() {
     override val group: BridgeGroup? = server.group
@@ -140,11 +140,5 @@ class ProxyRemoteBackendPlayer(
             performCommand = command
         })
         checkNoReturnResult(result, "performing command ($command) on $name")
-    }
-
-    override fun convertElement(state: ServerState, type: ServerType?): BridgePlayer? {
-        if (type == serverType) return this
-        if (isRemoteProxy) return null
-        return super.convertElement(state, type)
     }
 }
