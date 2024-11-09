@@ -44,13 +44,7 @@ class BackendBridge : Bridge {
                                     val info = it.spawnPoint
                                     RemoteBackendWorld(this, it.name, it.alias).apply {
                                         spawnPoint = BridgeLocationImpl(
-                                            backendServer,
-                                            this,
-                                            info.x,
-                                            info.y,
-                                            info.z,
-                                            info.yaw,
-                                            info.pitch
+                                            backendServer, this, info.x, info.y, info.z, info.yaw, info.pitch
                                         )
                                     }
                                 })
