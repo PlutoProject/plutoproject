@@ -142,9 +142,9 @@ class ProxyRemoteBackendPlayer(
         checkNoReturnResult(result, "performing command ($command) on $name")
     }
 
-    override fun convertElement(type: ServerType): BridgePlayer? {
+    override fun convertElement(state: ServerState, type: ServerType?): BridgePlayer? {
         if (type == serverType) return this
         if (isRemoteProxy) return null
-        return super.convertElement(type)
+        return super.convertElement(state, type)
     }
 }

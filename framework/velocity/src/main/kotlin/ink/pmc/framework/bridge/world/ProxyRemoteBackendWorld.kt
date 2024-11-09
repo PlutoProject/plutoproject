@@ -23,9 +23,9 @@ class ProxyRemoteBackendWorld(
         return BridgeLocationImpl(server, this, x, y, z, yaw, pitch)
     }
 
-    override fun convertElement(type: ServerType): BridgeWorld? {
+    override fun convertElement(state: ServerState, type: ServerType?): BridgeWorld? {
         if (type == serverType) return this
         if (isRemoteProxy) return null
-        return super.convertElement(type)
+        return super.convertElement(state, type)
     }
 }

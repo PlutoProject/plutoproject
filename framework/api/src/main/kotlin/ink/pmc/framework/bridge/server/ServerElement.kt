@@ -8,5 +8,5 @@ interface ServerElement<T : ServerElement<T>> : Grouped {
     val isRemoteBackend: Boolean get() = serverState == ServerState.REMOTE && serverType == ServerType.BACKEND
     val isRemoteProxy: Boolean get() = serverState == ServerState.REMOTE && serverType == ServerType.PROXY
 
-    fun convertElement(type: ServerType): T?
+    fun convertElement(state: ServerState, type: ServerType? = null): T?
 }

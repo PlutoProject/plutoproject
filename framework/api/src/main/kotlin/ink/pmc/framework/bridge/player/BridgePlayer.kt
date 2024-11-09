@@ -4,6 +4,7 @@ import ink.pmc.advkt.component.RootComponentKt
 import ink.pmc.advkt.sound.SoundKt
 import ink.pmc.advkt.title.ComponentTitleKt
 import ink.pmc.framework.bridge.Bridge
+import ink.pmc.framework.bridge.server.ServerState
 import ink.pmc.framework.bridge.server.ServerType
 import ink.pmc.framework.bridge.world.BridgeLocation
 import ink.pmc.framework.bridge.world.BridgeWorld
@@ -46,7 +47,11 @@ interface BridgePlayer : WorldElement<BridgePlayer> {
 
     suspend fun performCommand(command: String)
 
-    override fun convertElement(type: ServerType): BridgePlayer? {
-        return Bridge.servers.flatMap { it.players }.firstOrNull { it.uniqueId == it.uniqueId && it.serverType == type }
+    override fun convertElement(state: ServerState, type: ServerType?): BridgePlayer? {
+        return Bridge.servers.flatMap { it.players }.firstOrNull {
+            it.uniqueId == it.uniqueId
+                    && it.serverState == state
+                    && it.serverType == (type ?: it.serverType)
+        }
     }
 }

@@ -3,6 +3,7 @@ package ink.pmc.framework.bridge.world
 import ink.pmc.framework.bridge.Bridge
 import ink.pmc.framework.bridge.player.PlayerLookup
 import ink.pmc.framework.bridge.server.ServerElement
+import ink.pmc.framework.bridge.server.ServerState
 import ink.pmc.framework.bridge.server.ServerType
 
 interface BridgeWorld : PlayerLookup, ServerElement<BridgeWorld> {
@@ -19,8 +20,13 @@ interface BridgeWorld : PlayerLookup, ServerElement<BridgeWorld> {
         pitch: Float = 0.0F
     ): BridgeLocation
 
-    override fun convertElement(type: ServerType): BridgeWorld? {
+    override fun convertElement(state: ServerState, type: ServerType?): BridgeWorld? {
         return Bridge.servers.flatMap { it.worlds }
-            .firstOrNull { it.name == name && it.server.id == server.id && it.serverType == type }
+            .firstOrNull {
+                it.name == name
+                        && it.server.id == server.id
+                        && it.serverState == state
+                        && it.serverType == (type ?: it.serverType)
+            }
     }
 }
