@@ -4,7 +4,7 @@ import ink.pmc.framework.bridge.backend.bridgeStub
 import ink.pmc.framework.bridge.backend.server.localServer
 import ink.pmc.framework.bridge.backend.world.BackendLocalWorld
 import ink.pmc.framework.bridge.backend.world.getBridge
-import ink.pmc.framework.bridge.proto.worldLoading
+import ink.pmc.framework.bridge.proto.worldLoad
 import ink.pmc.framework.bridge.world.toInfo
 import org.bukkit.event.Listener
 import org.bukkit.event.world.SpawnChangeEvent
@@ -27,7 +27,7 @@ object BridgeWorldListener : Listener {
     suspend fun WorldUnloadEvent.e() {
         val localWorld = localServer.getWorld(world.name) ?: error("Local world not found: ${world.name}")
         localServer.worlds.remove(localWorld)
-        bridgeStub.unloadWorld(worldLoading {
+        bridgeStub.unloadWorld(worldLoad {
             server = localServer.id
             world = localWorld.name
         })

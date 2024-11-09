@@ -15,7 +15,7 @@ service BridgeRpc {
   rpc OperateWorld(WorldOperation) returns (WorldOperationResult);
   rpc AckWorldOperation(WorldOperationAck) returns (google.protobuf.Empty);
   rpc UpdateWorldInfo(WorldInfo) returns (google.protobuf.Empty);
-  rpc UnloadWorld(WorldLoading) returns (google.protobuf.Empty);
+  rpc UnloadWorld(WorldLoad) returns (google.protobuf.Empty);
 }
 
 message TitleInfo {
@@ -72,9 +72,14 @@ message PlayerInfo {
   optional LocationInfo location = 7;
 }
 
-message WorldLoading {
+message WorldLoad {
   string server = 1;
   string world = 2;
+}
+
+message PlayerDisconnect {
+  string server = 1;
+  string unique_id = 2;
 }
 
 message Notification {
@@ -87,12 +92,12 @@ message Notification {
     // Player
     PlayerOperation player_operation = 4;
     PlayerInfo player_info_update = 5; // 没有就同步
-    string player_disconnect_uuid = 7;
+    PlayerDisconnect player_disconnect = 7;
 
     // World
     WorldOperation world_operation = 8;
     WorldInfo world_info_update = 9; // 没有就同步
-    WorldLoading world_unload = 10;
+    WorldLoad world_unload = 10;
   }
 }
 

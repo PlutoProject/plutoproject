@@ -19,6 +19,7 @@ import ink.pmc.framework.bridge.proto.serverRegistrationResult
 import ink.pmc.framework.bridge.proxy.player.ProxyRemoteBackendPlayer
 import ink.pmc.framework.bridge.proxy.server.localServer
 import ink.pmc.framework.bridge.server.*
+import ink.pmc.framework.bridge.update
 import ink.pmc.framework.bridge.world.BridgeLocationImpl
 import ink.pmc.framework.bridge.world.InternalWorld
 import ink.pmc.framework.bridge.world.RemoteBackendWorld
@@ -104,6 +105,7 @@ object BridgeRpc : BridgeRpcCoroutineImplBase() {
     }
 
     private fun RemoteBackendServer.setWorlds(info: ServerInfo) {
+        worlds.clear()
         worlds.addAll(info.worldsList.map {
             val world = RemoteBackendWorld(this, it.name, it.alias)
             val spawnPoint = it.spawnPoint.toImpl(this, world)
@@ -112,6 +114,7 @@ object BridgeRpc : BridgeRpcCoroutineImplBase() {
     }
 
     private fun RemoteBackendServer.setPlayers(info: ServerInfo) {
+        players.clear()
         players.addAll(info.playersList.map {
             val worldName = it.world.name
             val world = getWorld(worldName) ?: error("World not found: $worldName")
@@ -240,10 +243,6 @@ object BridgeRpc : BridgeRpcCoroutineImplBase() {
         return empty
     }
 
-    private fun InternalPlayer.update(info: PlayerInfo) {
-        world = server.getWorld(info.world.name) ?: error("World not found: ${info.world.name}")
-    }
-
     override suspend fun updatePlayerInfo(request: PlayerInfo): Empty {
         val remotePlayer = proxyBridge.getRemotePlayer(request.uniqueId) as InternalPlayer?
             ?: error("Player not found: ${request.name}")
@@ -278,7 +277,7 @@ object BridgeRpc : BridgeRpcCoroutineImplBase() {
         return super.updateWorldInfo(request)
     }
 
-    override suspend fun unloadWorld(request: WorldLoading): Empty {
+    override suspend fun unloadWorld(request: WorldLoad): Empty {
         val remoteServer = proxyBridge.getServer(request.server) as InternalServer?
             ?: error("Server not found: ${request.server}")
         val remoteWorld = remoteServer.getWorld(request.world) ?: error("World not found: ${request.world}")

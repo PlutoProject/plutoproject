@@ -24,15 +24,17 @@ class BackendBridge : Bridge {
     override val servers: MutableList<BridgeServer> = mutableConcurrentListOf(local)
 
     private fun setServers(result: ServerRegistrationResult) {
-        servers.addAll(result.serversList.map { server ->
-            if (server.proxy) {
-                BackendRemoteProxyServer().apply { setProxyPlayers(server) }
-            } else {
-                val group = getGroup(server.group) ?: BridgeGroupImpl(server.group)
-                RemoteBackendServer(server.id, group).apply {
-                    setWorlds(server)
-                    setRemotePlayers(server)
-                }
+        result.serversList.forEach { addServer(it) }
+    }
+
+    fun addServer(server: ServerInfo) {
+        servers.add(if (server.proxy) {
+            BackendRemoteProxyServer().apply { setProxyPlayers(server) }
+        } else {
+            val group = getGroup(server.group) ?: BridgeGroupImpl(server.group)
+            RemoteBackendServer(server.id, group).apply {
+                setWorlds(server)
+                setRemotePlayers(server)
             }
         })
     }
