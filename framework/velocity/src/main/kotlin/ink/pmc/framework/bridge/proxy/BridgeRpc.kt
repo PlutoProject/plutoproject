@@ -18,7 +18,7 @@ import ink.pmc.framework.bridge.proto.playerOperationResult
 import ink.pmc.framework.bridge.proto.serverRegistrationAck
 import ink.pmc.framework.bridge.proxy.player.ProxyRemoteBackendPlayer
 import ink.pmc.framework.bridge.proxy.server.localServer
-import ink.pmc.framework.bridge.proxy.world.ProxyRemoteBackendWorld
+import ink.pmc.framework.bridge.world.RemoteBackendWorld
 import ink.pmc.framework.bridge.server.*
 import ink.pmc.framework.bridge.world.BridgeLocationImpl
 import ink.pmc.framework.bridge.world.InternalWorld
@@ -105,7 +105,7 @@ object BridgeRpc : BridgeRpcCoroutineImplBase() {
 
     private fun RemoteBackendServer.setWorlds(info: ServerInfo) {
         worlds.addAll(info.worldsList.map {
-            val world = ProxyRemoteBackendWorld(this, it.name, it.alias)
+            val world = RemoteBackendWorld(this, it.name, it.alias)
             val spawnPoint = it.spawnPoint.toImpl(this, world)
             world.apply { this.spawnPoint = spawnPoint }
         })

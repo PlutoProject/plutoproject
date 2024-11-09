@@ -5,7 +5,7 @@ import "google/protobuf/empty.proto";
 
 service BridgeRpc {
   rpc MonitorNotification(google.protobuf.Empty) returns (stream Notification);
-  rpc RegisterServer(ServerInfo) returns (ServerRegistrationAck);
+  rpc RegisterServer(ServerInfo) returns (ServerRegistrationResult);
   rpc Heartbeat(ServerInfo) returns (google.protobuf.Empty);
 
   rpc OperatePlayer(PlayerOperation) returns (PlayerOperationResult);
@@ -96,7 +96,7 @@ message Notification {
   }
 }
 
-message ServerRegistrationAck {
+message ServerRegistrationResult {
   oneof state {
     bool ok = 1;
     bool id_existed = 2;

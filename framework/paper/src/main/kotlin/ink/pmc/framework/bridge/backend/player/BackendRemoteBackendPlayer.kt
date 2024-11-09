@@ -6,13 +6,14 @@ import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.PlayerOperation
 import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.PlayerOperationResult
 import ink.pmc.framework.bridge.server.BridgeServer
 import ink.pmc.framework.bridge.world.BridgeWorld
-import org.bukkit.entity.Player
+import java.util.*
 
 class BackendRemoteBackendPlayer(
-    actual: Player,
+    uniqueId: UUID,
+    name: String,
     server: BridgeServer,
     world: BridgeWorld?
-) : RemoteBackendPlayer(actual.uniqueId, actual.name, server, world) {
+) : RemoteBackendPlayer(uniqueId, name, server, world) {
     override suspend fun operatePlayer(request: PlayerOperation): PlayerOperationResult {
         return bridgeStub.operatePlayer(request)
     }

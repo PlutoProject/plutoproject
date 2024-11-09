@@ -1,14 +1,11 @@
-package ink.pmc.framework.bridge.proxy.world
+package ink.pmc.framework.bridge.world
 
 import ink.pmc.framework.bridge.server.BridgeGroup
 import ink.pmc.framework.bridge.server.BridgeServer
 import ink.pmc.framework.bridge.server.ServerState
 import ink.pmc.framework.bridge.server.ServerType
-import ink.pmc.framework.bridge.world.BridgeLocation
-import ink.pmc.framework.bridge.world.BridgeLocationImpl
-import ink.pmc.framework.bridge.world.BridgeWorld
 
-class ProxyRemoteBackendWorld(
+class RemoteBackendWorld(
     override val server: BridgeServer,
     override val name: String,
     override val alias: String?,

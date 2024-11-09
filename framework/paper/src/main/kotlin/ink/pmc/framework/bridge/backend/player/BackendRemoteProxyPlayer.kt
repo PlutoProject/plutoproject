@@ -5,9 +5,9 @@ import ink.pmc.framework.bridge.player.RemotePlayer
 import ink.pmc.framework.bridge.world.BridgeLocation
 import ink.pmc.framework.bridge.world.BridgeWorld
 import kotlinx.coroutines.Deferred
-import org.bukkit.entity.Player
+import java.util.*
 
-class BackendRemoteProxyPlayer(actual: Player) : RemotePlayer(actual.uniqueId, actual.name, Bridge.master) {
+class BackendRemoteProxyPlayer(uniqueId: UUID, name: String) : RemotePlayer(uniqueId, name, Bridge.master) {
     override var world: BridgeWorld?
         get() = error("Unsupported")
         set(_) = error("Unsupported")
