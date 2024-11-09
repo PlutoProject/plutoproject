@@ -66,8 +66,8 @@ class ProxyRemoteBackendPlayer(
             }
         }
     override var isOnline: Boolean
-        set(_) {}
-        get() = actual.isOnlineMode
+        set(_) = error("Unsupported")
+        get() = actual.isActive
 
     private val local = localServer.getPlayer(uniqueId)!!
 
