@@ -1,6 +1,7 @@
-package ink.pmc.framework.bridge
+package ink.pmc.framework.bridge.backend
 
 import ink.pmc.framework.FrameworkConfig
+import ink.pmc.framework.bridge.InternalServer
 import ink.pmc.framework.bridge.server.BridgeGroup
 import ink.pmc.framework.bridge.server.ServerState
 import ink.pmc.framework.bridge.server.ServerType

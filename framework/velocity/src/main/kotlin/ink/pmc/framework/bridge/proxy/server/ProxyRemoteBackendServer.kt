@@ -1,6 +1,10 @@
-package ink.pmc.framework.bridge.server
+package ink.pmc.framework.bridge.proxy.server
 
 import ink.pmc.framework.bridge.player.BridgePlayer
+import ink.pmc.framework.bridge.server.BridgeGroup
+import ink.pmc.framework.bridge.server.BridgeServer
+import ink.pmc.framework.bridge.server.ServerState
+import ink.pmc.framework.bridge.server.ServerType
 import ink.pmc.framework.bridge.world.BridgeWorld
 import ink.pmc.framework.utils.data.mutableConcurrentListOf
 

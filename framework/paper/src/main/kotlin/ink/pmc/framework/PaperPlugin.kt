@@ -2,7 +2,7 @@ package ink.pmc.framework
 
 import com.github.shynixn.mccoroutine.bukkit.SuspendingJavaPlugin
 import com.github.shynixn.mccoroutine.bukkit.registerSuspendingEvents
-import ink.pmc.framework.bridge.BackendBridge
+import ink.pmc.framework.bridge.backend.BackendBridge
 import ink.pmc.framework.bridge.Bridge
 import ink.pmc.framework.interactive.GuiListener
 import ink.pmc.framework.interactive.GuiManager

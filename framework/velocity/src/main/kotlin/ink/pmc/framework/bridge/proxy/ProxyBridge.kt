@@ -1,9 +1,10 @@
-package ink.pmc.framework.bridge
+package ink.pmc.framework.bridge.proxy
 
+import ink.pmc.framework.bridge.Bridge
 import ink.pmc.framework.bridge.player.BridgePlayer
 import ink.pmc.framework.bridge.server.BridgeGroup
 import ink.pmc.framework.bridge.server.BridgeServer
-import ink.pmc.framework.bridge.server.ProxyLocalServer
+import ink.pmc.framework.bridge.proxy.server.ProxyLocalServer
 import ink.pmc.framework.utils.data.mutableConcurrentListOf
 import org.koin.java.KoinJavaComponent.getKoin
 

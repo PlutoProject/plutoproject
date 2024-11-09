@@ -1,15 +1,16 @@
-package ink.pmc.framework.bridge.player
+package ink.pmc.framework.bridge.proxy.player
 
 import com.velocitypowered.api.proxy.Player
 import ink.pmc.advkt.component.RootComponentKt
 import ink.pmc.advkt.sound.SoundKt
 import ink.pmc.advkt.title.ComponentTitleKt
 import ink.pmc.framework.bridge.BridgeLocationImpl
-import ink.pmc.framework.bridge.BridgeRpc
+import ink.pmc.framework.bridge.proxy.BridgeRpc
 import ink.pmc.framework.bridge.InternalPlayer
 import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.PlayerOperationResult
 import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.PlayerOperationResult.ContentCase.*
 import ink.pmc.framework.bridge.proto.playerOperation
+import ink.pmc.framework.bridge.proxy.server.localServer
 import ink.pmc.framework.bridge.server.*
 import ink.pmc.framework.bridge.toInfo
 import ink.pmc.framework.bridge.world.BridgeLocation

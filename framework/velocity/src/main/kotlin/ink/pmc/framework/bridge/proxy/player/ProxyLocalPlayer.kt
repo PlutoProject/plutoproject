@@ -1,4 +1,4 @@
-package ink.pmc.framework.bridge.player
+package ink.pmc.framework.bridge.proxy.player
 
 import com.velocitypowered.api.proxy.Player
 import ink.pmc.advkt.component.RootComponentKt

@@ -1,11 +1,12 @@
-package ink.pmc.framework.bridge
+package ink.pmc.framework.bridge.proxy
 
 import com.google.protobuf.Empty
 import ink.pmc.advkt.sound.key
 import ink.pmc.advkt.sound.pitch
 import ink.pmc.advkt.sound.volume
 import ink.pmc.advkt.title.*
-import ink.pmc.framework.bridge.player.ProxyRemoteBackendPlayer
+import ink.pmc.framework.bridge.*
+import ink.pmc.framework.bridge.proxy.player.ProxyRemoteBackendPlayer
 import ink.pmc.framework.bridge.proto.BridgeRpcGrpcKt.BridgeRpcCoroutineImplBase
 import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.*
 import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.PlayerOperation.ContentCase.*
@@ -16,9 +17,9 @@ import ink.pmc.framework.bridge.proto.notification
 import ink.pmc.framework.bridge.proto.playerOperationResult
 import ink.pmc.framework.bridge.proto.serverRegistrationAck
 import ink.pmc.framework.bridge.server.BridgeServer
-import ink.pmc.framework.bridge.server.ProxyRemoteBackendServer
-import ink.pmc.framework.bridge.server.localServer
-import ink.pmc.framework.bridge.world.ProxyRemoteBackendWorld
+import ink.pmc.framework.bridge.proxy.server.ProxyRemoteBackendServer
+import ink.pmc.framework.bridge.proxy.server.localServer
+import ink.pmc.framework.bridge.proxy.world.ProxyRemoteBackendWorld
 import ink.pmc.framework.frameworkLogger
 import ink.pmc.framework.utils.concurrent.submitAsync
 import ink.pmc.framework.utils.platform.proxy

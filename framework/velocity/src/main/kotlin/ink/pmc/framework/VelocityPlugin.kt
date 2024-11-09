@@ -10,9 +10,9 @@ import com.velocitypowered.api.event.proxy.ProxyShutdownEvent
 import com.velocitypowered.api.plugin.annotation.DataDirectory
 import com.velocitypowered.api.proxy.ProxyServer
 import ink.pmc.framework.bridge.Bridge
-import ink.pmc.framework.bridge.BridgeRpc
-import ink.pmc.framework.bridge.ProxyBridge
-import ink.pmc.framework.bridge.listeners.BridgePlayerListener
+import ink.pmc.framework.bridge.proxy.BridgeRpc
+import ink.pmc.framework.bridge.proxy.ProxyBridge
+import ink.pmc.framework.bridge.proxy.listeners.BridgePlayerListener
 import ink.pmc.framework.commands.RpcCommand
 import ink.pmc.framework.options.OptionsUpdateNotifier
 import ink.pmc.framework.options.ProxyOptionsUpdateNotifier

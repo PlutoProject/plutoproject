@@ -1,5 +1,6 @@
-package ink.pmc.framework.bridge
+package ink.pmc.framework.bridge.backend
 
+import ink.pmc.framework.bridge.Bridge
 import ink.pmc.framework.bridge.server.BridgeGroup
 import ink.pmc.framework.bridge.server.BridgeServer
 import org.koin.java.KoinJavaComponent.getKoin
