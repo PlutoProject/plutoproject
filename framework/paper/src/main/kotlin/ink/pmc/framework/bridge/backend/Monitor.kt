@@ -49,6 +49,11 @@ fun startBridgeMonitor() {
     }
 }
 
+fun stopBridgeMonitor() {
+    monitorJob?.cancel()
+    monitorJob = null
+}
+
 private fun getRemoteServer(id: String): InternalServer? {
     if (localServer.id == id) return null
     return backendBridge.getServer(id) as InternalServer?

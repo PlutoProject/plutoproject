@@ -6,6 +6,8 @@ import ink.pmc.framework.bridge.Bridge
 import ink.pmc.framework.bridge.backend.BackendBridge
 import ink.pmc.framework.bridge.backend.listeners.BridgePlayerListener
 import ink.pmc.framework.bridge.backend.listeners.BridgeWorldListener
+import ink.pmc.framework.bridge.backend.startBridgeMonitor
+import ink.pmc.framework.bridge.backend.stopBridgeMonitor
 import ink.pmc.framework.interactive.GuiListener
 import ink.pmc.framework.interactive.GuiManager
 import ink.pmc.framework.interactive.GuiManagerImpl
@@ -68,8 +70,12 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
             modules(commonModule, bukkitModule)
         }
         preload()
-        Provider // 初始化
         RpcClient.start()
+        Provider
+        Bridge
+        startPlayerDbMonitor()
+        startOptionsMonitor()
+        startBridgeMonitor()
     }
 
     override suspend fun onEnableAsync() {
@@ -82,8 +88,6 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
         commandManager().annotationParser().apply {
             parse(InteractiveCommand)
         }
-        startPlayerDbMonitor()
-        startOptionsMonitor()
         initPaperHooks()
     }
 
@@ -91,6 +95,7 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
         GuiManager.disposeAll()
         stopPlayerDbMonitor()
         stopOptionsMonitor()
+        stopBridgeMonitor()
         withContext(Dispatchers.IO) {
             Provider.close()
         }
