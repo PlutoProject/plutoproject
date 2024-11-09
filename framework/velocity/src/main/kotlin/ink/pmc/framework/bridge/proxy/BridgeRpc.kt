@@ -254,11 +254,11 @@ object BridgeRpc : BridgeRpcCoroutineImplBase() {
     }
 
     override suspend fun operateWorld(request: WorldOperation): WorldOperationResult {
-        return super.operateWorld(request)
+        error("Placeholder")
     }
 
     override suspend fun ackWorldOperation(request: WorldOperationAck): Empty {
-        return super.ackWorldOperation(request)
+        error("Placeholder")
     }
 
     private fun InternalWorld.update(info: WorldInfo) {

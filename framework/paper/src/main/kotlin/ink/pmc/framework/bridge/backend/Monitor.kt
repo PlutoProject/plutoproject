@@ -163,10 +163,11 @@ private fun handlePlayerDisconnect(msg: PlayerDisconnect) {
 
 private fun handleWorldOperation(msg: WorldOperation) {
     if (msg.server == localServer.id) return
+    error("Placeholder")
 }
 
 private fun InternalWorld.update(info: WorldInfo) {
-    spawnPoint = info.spawnPoint.createBridge(server, this)
+    spawnPoint = info.spawnPoint.createBridge()
 }
 
 private fun handleWorldInfoUpdate(msg: WorldInfo) {

@@ -1,11 +1,18 @@
 package ink.pmc.framework.bridge.world
 
+import ink.pmc.framework.bridge.Bridge
 import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.LocationInfo
 import ink.pmc.framework.bridge.proto.locationInfo
 import ink.pmc.framework.bridge.server.BridgeServer
 
-fun LocationInfo.createBridge(server: BridgeServer, world: BridgeWorld): BridgeLocation {
-    return BridgeLocationImpl(server, world, x, y, z, yaw, pitch)
+fun LocationInfo.createBridge(server: BridgeServer? = null, world: BridgeWorld? = null): BridgeLocation {
+    val actualServer = server
+        ?: Bridge.getServer(this.server)
+        ?: error("Server not found: ${this.server}")
+    val actualWorld = world
+        ?: actualServer.getWorld(this.world)
+        ?: error("World not found: ${this.world} (server: ${actualServer.id})")
+    return BridgeLocationImpl(actualServer, actualWorld, x, y, z, yaw, pitch)
 }
 
 fun BridgeLocation.createInfo(): LocationInfo {
