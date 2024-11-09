@@ -3,8 +3,9 @@ package ink.pmc.framework.bridge.backend
 import ink.pmc.framework.bridge.backend.player.BackendRemoteBackendPlayer
 import ink.pmc.framework.bridge.backend.player.BackendRemoteProxyPlayer
 import ink.pmc.framework.bridge.backend.server.localServer
+import ink.pmc.framework.bridge.backend.world.getBridge
 import ink.pmc.framework.bridge.player.InternalPlayer
-import ink.pmc.framework.bridge.player.toInfo
+import ink.pmc.framework.bridge.player.createInfo
 import ink.pmc.framework.bridge.proto.BridgeRpcGrpcKt.BridgeRpcCoroutineStub
 import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.*
 import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.Notification.ContentCase.*
@@ -16,6 +17,7 @@ import ink.pmc.framework.bridge.server.ServerState
 import ink.pmc.framework.bridge.server.ServerType
 import ink.pmc.framework.bridge.world.InternalWorld
 import ink.pmc.framework.bridge.world.RemoteBackendWorld
+import ink.pmc.framework.bridge.world.createBridge
 import ink.pmc.framework.frameworkLogger
 import ink.pmc.framework.rpc.RpcClient
 import ink.pmc.framework.utils.concurrent.submitAsync
@@ -74,7 +76,7 @@ private suspend fun handlePlayerOperation(msg: PlayerOperation) {
         INFO_LOOKUP -> {
             bridgeStub.ackPlayerOperation(playerOperationAck {
                 ok = true
-                infoLookup = localPlayer.toInfo()
+                infoLookup = localPlayer.createInfo()
             })
             return
         }
@@ -99,6 +101,10 @@ private suspend fun handlePlayerOperation(msg: PlayerOperation) {
     bridgeStub.ackPlayerOperation(playerOperationAck {
         ok = true
     })
+}
+
+private fun InternalPlayer.update(info: PlayerInfo) {
+    world = info.world.getBridge() ?: error("World not found: ${info.world.name} (server: ${info.world.name})")
 }
 
 private fun handlePlayerInfoUpdate(info: PlayerInfo) {
@@ -134,7 +140,9 @@ private fun handlePlayerInfoUpdate(info: PlayerInfo) {
         remotePlayer.server = newServer
         newServer.players.add(remotePlayer)
         remoteServer.players.remove(remotePlayer)
+        return
     }
+    remotePlayer.update(info)
 }
 
 private fun handlePlayerDisconnect(msg: PlayerDisconnect) {
@@ -157,18 +165,25 @@ private fun handleWorldOperation(msg: WorldOperation) {
     if (msg.server == localServer.id) return
 }
 
+private fun InternalWorld.update(info: WorldInfo) {
+    spawnPoint = info.spawnPoint.createBridge(server, this)
+}
+
 private fun handleWorldInfoUpdate(msg: WorldInfo) {
     if (msg.server == localServer.id) return
     val remoteServer = getRemoteServer(msg.server) ?: error("Server not found: ${msg.server}")
-    val remoteWorld = remoteServer.getWorld(msg.name)
+    val remoteWorld = remoteServer.getWorld(msg.name) as InternalWorld?
     // 加载世界
     if (remoteWorld == null) {
         val new = RemoteBackendWorld(remoteServer, msg.name, msg.alias)
         remoteServer.worlds.add(new)
+        return
     }
+    remoteWorld.update(msg)
 }
 
 private fun handleWorldUnload(msg: WorldLoad) {
+    if (msg.server == localServer.id) return
     val remoteServer = getRemoteServer(msg.server) ?: error("Server not found: ${msg.server}")
     val remoteWorld = remoteServer.getRemoteWorld(msg.world)
         ?: error("World not found: ${msg.world} (server: ${msg.server})")

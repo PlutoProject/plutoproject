@@ -8,7 +8,7 @@ import ink.pmc.framework.bridge.server.BridgeServer
 import ink.pmc.framework.bridge.world.BridgeLocation
 import ink.pmc.framework.bridge.world.BridgeLocationImpl
 import ink.pmc.framework.bridge.world.BridgeWorld
-import ink.pmc.framework.bridge.world.toInfo
+import ink.pmc.framework.bridge.world.createInfo
 import ink.pmc.framework.utils.concurrent.submitAsync
 import ink.pmc.framework.utils.proto.empty
 import kotlinx.coroutines.Deferred
@@ -69,7 +69,7 @@ abstract class RemoteBackendPlayer(
             id = UUID.randomUUID().toString()
             playerUuid = uniqueId.toString()
             backend = true
-            teleport = location.toInfo()
+            teleport = location.createInfo()
         })
         checkNoReturnResult(result)?.let { throw it }
     }

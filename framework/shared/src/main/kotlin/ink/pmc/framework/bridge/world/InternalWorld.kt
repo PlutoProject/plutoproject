@@ -3,13 +3,13 @@ package ink.pmc.framework.bridge.world
 import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.WorldInfo
 import ink.pmc.framework.bridge.proto.worldInfo
 
-fun BridgeWorld.toInfo(): WorldInfo {
+fun BridgeWorld.createInfo(): WorldInfo {
     val world = this
     return worldInfo {
         this.server = world.server.id
         name = world.name
         world.alias?.also { alias = it }
-        spawnPoint = world.spawnPoint.toInfo()
+        spawnPoint = world.spawnPoint.createInfo()
     }
 }
 

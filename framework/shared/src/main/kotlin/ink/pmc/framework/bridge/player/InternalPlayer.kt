@@ -4,9 +4,9 @@ import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.PlayerInfo
 import ink.pmc.framework.bridge.proto.playerInfo
 import ink.pmc.framework.bridge.server.BridgeServer
 import ink.pmc.framework.bridge.world.BridgeWorld
-import ink.pmc.framework.bridge.world.toInfo
+import ink.pmc.framework.bridge.world.createInfo
 
-fun BridgePlayer.toInfo(): PlayerInfo {
+fun BridgePlayer.createInfo(): PlayerInfo {
     val player = this
     return playerInfo {
         server = player.server.id
@@ -17,7 +17,7 @@ fun BridgePlayer.toInfo(): PlayerInfo {
             else -> backend = true
         }
         if (!player.serverType.isProxy) {
-            player.world?.also { world = it.toInfo() }
+            player.world?.also { world = it.createInfo() }
         }
     }
 }

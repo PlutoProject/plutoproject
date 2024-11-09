@@ -2,14 +2,14 @@ package ink.pmc.framework.bridge.server
 
 import ink.pmc.framework.bridge.Bridge
 import ink.pmc.framework.bridge.player.BridgePlayer
-import ink.pmc.framework.bridge.player.toInfo
+import ink.pmc.framework.bridge.player.createInfo
 import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.ServerInfo
 import ink.pmc.framework.bridge.proto.serverInfo
 import ink.pmc.framework.bridge.world.BridgeWorld
-import ink.pmc.framework.bridge.world.toInfo
+import ink.pmc.framework.bridge.world.createInfo
 import ink.pmc.framework.utils.data.mutableConcurrentSetOf
 
-fun BridgeServer.toInfo(): ServerInfo {
+fun BridgeServer.createInfo(): ServerInfo {
     val server = this
     val localType = Bridge.local.type
     return serverInfo {
@@ -20,8 +20,8 @@ fun BridgeServer.toInfo(): ServerInfo {
             server.isRemoteBackend -> backend = true
             server.isRemoteProxy -> if (localType == ServerType.PROXY) error("Unexpected") else backend = true
         }
-        players.addAll(server.players.map { it.toInfo() })
-        worlds.addAll(server.worlds.map { it.toInfo() })
+        players.addAll(server.players.map { it.createInfo() })
+        worlds.addAll(server.worlds.map { it.createInfo() })
     }
 }
 

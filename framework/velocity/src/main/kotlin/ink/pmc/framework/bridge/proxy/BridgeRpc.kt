@@ -23,7 +23,7 @@ import ink.pmc.framework.bridge.update
 import ink.pmc.framework.bridge.world.BridgeLocationImpl
 import ink.pmc.framework.bridge.world.InternalWorld
 import ink.pmc.framework.bridge.world.RemoteBackendWorld
-import ink.pmc.framework.bridge.world.toImpl
+import ink.pmc.framework.bridge.world.createBridge
 import ink.pmc.framework.frameworkLogger
 import ink.pmc.framework.utils.concurrent.submitAsync
 import ink.pmc.framework.utils.platform.proxy
@@ -100,7 +100,7 @@ object BridgeRpc : BridgeRpcCoroutineImplBase() {
         })
         return serverRegistrationResult {
             ok = true
-            servers.addAll(proxyBridge.servers.map { it.toInfo() })
+            servers.addAll(proxyBridge.servers.map { it.createInfo() })
         }
     }
 
@@ -108,7 +108,7 @@ object BridgeRpc : BridgeRpcCoroutineImplBase() {
         worlds.clear()
         worlds.addAll(info.worldsList.map {
             val world = RemoteBackendWorld(this, it.name, it.alias)
-            val spawnPoint = it.spawnPoint.toImpl(this, world)
+            val spawnPoint = it.spawnPoint.createBridge(this, world)
             world.apply { this.spawnPoint = spawnPoint }
         })
     }

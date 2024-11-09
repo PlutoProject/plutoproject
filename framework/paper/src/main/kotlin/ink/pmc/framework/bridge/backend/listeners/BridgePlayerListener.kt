@@ -4,7 +4,7 @@ import ink.pmc.framework.bridge.backend.backendBridge
 import ink.pmc.framework.bridge.backend.bridgeStub
 import ink.pmc.framework.bridge.backend.player.BackendLocalPlayer
 import ink.pmc.framework.bridge.backend.server.localServer
-import ink.pmc.framework.bridge.player.toInfo
+import ink.pmc.framework.bridge.player.createInfo
 import ink.pmc.framework.bridge.server.InternalServer
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -22,7 +22,7 @@ object BridgePlayerListener : Listener {
         if (remotePlayer != null && remotePlayer.serverType.isBackend) {
             (remotePlayer.server as InternalServer).players.remove(remotePlayer)
         }
-        bridgeStub.updatePlayerInfo(localPlayer.toInfo())
+        bridgeStub.updatePlayerInfo(localPlayer.createInfo())
     }
 
     @EventHandler

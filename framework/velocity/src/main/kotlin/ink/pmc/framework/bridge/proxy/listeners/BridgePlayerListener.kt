@@ -5,7 +5,7 @@ import com.velocitypowered.api.event.connection.DisconnectEvent
 import com.velocitypowered.api.event.connection.LoginEvent
 import com.velocitypowered.api.event.player.ServerConnectedEvent
 import ink.pmc.framework.bridge.player.InternalPlayer
-import ink.pmc.framework.bridge.player.toInfo
+import ink.pmc.framework.bridge.player.createInfo
 import ink.pmc.framework.bridge.proto.notification
 import ink.pmc.framework.bridge.proxy.BridgeRpc
 import ink.pmc.framework.bridge.proxy.player.ProxyLocalPlayer
@@ -21,7 +21,7 @@ object BridgePlayerListener {
         val localPlayer = ProxyLocalPlayer(player)
         localServer.players.add(localPlayer)
         BridgeRpc.notify(notification {
-            playerInfoUpdate = localPlayer.toInfo()
+            playerInfoUpdate = localPlayer.createInfo()
         })
     }
 
@@ -36,7 +36,7 @@ object BridgePlayerListener {
         current.players.add(remotePlayer)
         previous?.players?.remove(remotePlayer)
         BridgeRpc.notify(notification {
-            playerInfoUpdate = remotePlayer.toInfo()
+            playerInfoUpdate = remotePlayer.createInfo()
         })
     }
 

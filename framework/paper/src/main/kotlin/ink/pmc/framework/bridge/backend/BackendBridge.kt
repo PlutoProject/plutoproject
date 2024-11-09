@@ -10,7 +10,7 @@ import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.ServerRegistrationResu
 import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.ServerRegistrationResult.StateCase.*
 import ink.pmc.framework.bridge.server.*
 import ink.pmc.framework.bridge.world.RemoteBackendWorld
-import ink.pmc.framework.bridge.world.toImpl
+import ink.pmc.framework.bridge.world.createBridge
 import ink.pmc.framework.utils.data.mutableConcurrentListOf
 import ink.pmc.framework.utils.player.uuid
 import kotlinx.coroutines.runBlocking
@@ -42,7 +42,7 @@ class BackendBridge : Bridge {
     private fun InternalServer.setWorlds(info: ServerInfo) {
         worlds.addAll(info.worldsList.map {
             val world = RemoteBackendWorld(this, it.name, it.alias)
-            val spawnPoint = it.spawnPoint.toImpl(this, world)
+            val spawnPoint = it.spawnPoint.createBridge(this, world)
             world.apply { this.spawnPoint = spawnPoint }
         })
     }
@@ -63,7 +63,7 @@ class BackendBridge : Bridge {
 
     init {
         runBlocking {
-            val result = bridgeStub.registerServer(local.toInfo())
+            val result = bridgeStub.registerServer(local.createInfo())
             when (result.stateCase!!) {
                 OK -> setServers(result)
                 ID_EXISTED -> error("Server id existed on master")
