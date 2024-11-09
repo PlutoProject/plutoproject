@@ -93,9 +93,14 @@ private suspend fun handlePlayerOperation(msg: PlayerOperation) {
                 msg.teleport.pitch,
             ) ?: error("World not found: ${msg.teleport.world} (server: ${msg.teleport.server})")
             localPlayer.teleport(location)
+            bridgeStub.ackPlayerOperation(playerOperationAck { ok = true })
         }
 
-        PERFORM_COMMAND -> localPlayer.performCommand(msg.performCommand)
+        PERFORM_COMMAND -> {
+            localPlayer.performCommand(msg.performCommand)
+            bridgeStub.ackPlayerOperation(playerOperationAck { ok = true })
+        }
+
         PlayerOperation.ContentCase.CONTENT_NOT_SET -> error("Received a PlayerOperation without content")
     }
     bridgeStub.ackPlayerOperation(playerOperationAck {

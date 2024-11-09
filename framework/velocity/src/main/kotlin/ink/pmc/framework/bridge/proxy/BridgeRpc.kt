@@ -184,10 +184,7 @@ object BridgeRpc : BridgeRpcCoroutineImplBase() {
     }
 
     private suspend fun handleSendMessage(request: PlayerOperation, player: InternalPlayer): PlayerOperationResult {
-        val localPlayer = localServer.getPlayer(request.playerUuid.uuid) ?: return playerOperationResult {
-            playerOffline = true
-        }
-        localPlayer.sendMessage(MiniMessage.miniMessage().deserialize(request.sendMessage))
+        player.sendMessage(MiniMessage.miniMessage().deserialize(request.sendMessage))
         return playerOperationResult { ok = true }
     }
 
