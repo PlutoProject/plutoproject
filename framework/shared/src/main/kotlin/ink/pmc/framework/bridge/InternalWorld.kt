@@ -1,7 +1,19 @@
 package ink.pmc.framework.bridge
 
+import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.WorldInfo
+import ink.pmc.framework.bridge.proto.worldInfo
 import ink.pmc.framework.bridge.world.BridgeLocation
 import ink.pmc.framework.bridge.world.BridgeWorld
+
+fun BridgeWorld.toInfo(): WorldInfo {
+    val world = this
+    return worldInfo {
+        this.server = world.server.id
+        name = world.name
+        world.alias?.also { alias = it }
+        spawnPoint = world.spawnPoint.toInfo()
+    }
+}
 
 abstract class InternalWorld : BridgeWorld {
     abstract override var spawnPoint: BridgeLocation

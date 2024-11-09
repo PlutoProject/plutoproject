@@ -91,6 +91,7 @@ object BridgeRpc : BridgeRpcCoroutineImplBase() {
         })
         return serverRegistrationAck {
             ok = true
+            servers.addAll(proxyBridge.servers.map { it.toInfo(true) })
         }
     }
 
@@ -104,7 +105,8 @@ object BridgeRpc : BridgeRpcCoroutineImplBase() {
 
     private fun ProxyRemoteBackendServer.setPlayers(info: ServerInfo) {
         players.addAll(info.playersList.map {
-            val world = getWorld(it.location.world) ?: error("World not found: ${it.location.world}")
+            val worldName = it.world.name
+            val world = getWorld(worldName) ?: error("World not found: $worldName")
             ProxyRemoteBackendPlayer(proxy.getPlayer(it.uniqueId).get(), this, world)
         })
     }
@@ -230,7 +232,7 @@ object BridgeRpc : BridgeRpcCoroutineImplBase() {
     }
 
     private fun InternalPlayer.update(info: PlayerInfo) {
-        world = server.getWorld(info.location.world) ?: error("World not found")
+        world = server.getWorld(info.world.name) ?: error("World not found")
     }
 
     override suspend fun updatePlayerInfo(request: PlayerInfo): Empty {

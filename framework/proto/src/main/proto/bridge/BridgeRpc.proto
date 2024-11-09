@@ -34,8 +34,12 @@ message SoundInfo {
 message ServerInfo {
   string id = 1;
   string group = 2;
-  repeated PlayerInfo players = 3;
-  repeated WorldInfo worlds = 4;
+  oneof type {
+    bool proxy = 3;
+    bool backend = 4;
+  }
+  repeated PlayerInfo players = 5;
+  repeated WorldInfo worlds = 6;
 }
 
 message WorldInfo {
@@ -59,7 +63,7 @@ message PlayerInfo {
   string server = 1;
   string unique_id = 2;
   string name = 3;
-  optional LocationInfo location = 4;
+  optional WorldInfo world = 4;
 }
 
 message WorldLoading {
@@ -91,6 +95,7 @@ message ServerRegistrationAck {
     bool ok = 1;
     bool id_existed = 2;
   }
+  repeated ServerInfo servers = 3;
 }
 
 message PlayerOperation {

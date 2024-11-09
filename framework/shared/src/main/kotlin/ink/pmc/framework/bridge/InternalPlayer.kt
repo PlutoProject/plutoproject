@@ -1,7 +1,19 @@
 package ink.pmc.framework.bridge
 
 import ink.pmc.framework.bridge.player.BridgePlayer
+import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.PlayerInfo
+import ink.pmc.framework.bridge.proto.playerInfo
 import ink.pmc.framework.bridge.world.BridgeWorld
+
+fun BridgePlayer.toInfo(): PlayerInfo {
+    val player = this
+    return playerInfo {
+        server = player.server.id
+        uniqueId = player.uniqueId.toString()
+        name = player.name
+        player.world?.also { world = it.toInfo() }
+    }
+}
 
 abstract class InternalPlayer : BridgePlayer {
     abstract override var world: BridgeWorld?
