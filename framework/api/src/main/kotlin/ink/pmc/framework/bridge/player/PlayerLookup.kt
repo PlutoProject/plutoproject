@@ -26,11 +26,11 @@ interface PlayerLookup {
     }
 
     fun getRemotePlayer(name: String): BridgePlayer? {
-        return players.firstOrNull { it.name == name && !it.isLocal }
+        return getPlayer(name, ServerState.REMOTE)
     }
 
     fun getRemotePlayer(uniqueId: UUID): BridgePlayer? {
-        return players.firstOrNull { it.uniqueId == uniqueId && !it.isLocal }
+        return getPlayer(uniqueId, ServerState.REMOTE)
     }
 
     fun isPlayerOnline(name: String): Boolean {

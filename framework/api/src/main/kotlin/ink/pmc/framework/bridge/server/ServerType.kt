@@ -1,6 +1,10 @@
 package ink.pmc.framework.bridge.server
 
 enum class ServerType {
-    // LOCAL, REMOTE_PROXY, REMOTE_BACKEND
-    PROXY, BACKEND
+    PROXY, BACKEND;
+
+    val isProxy: Boolean
+        get() = this == PROXY
+    val isBackend: Boolean
+        get() = this == BACKEND
 }

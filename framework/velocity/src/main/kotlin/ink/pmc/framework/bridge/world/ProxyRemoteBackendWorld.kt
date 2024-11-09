@@ -22,10 +22,4 @@ class ProxyRemoteBackendWorld(
     override fun getLocation(x: Double, y: Double, z: Double, yaw: Float, pitch: Float): BridgeLocation {
         return BridgeLocationImpl(server, this, x, y, z, yaw, pitch)
     }
-
-    override fun convertElement(state: ServerState, type: ServerType?): BridgeWorld? {
-        if (type == serverType) return this
-        if (isRemoteProxy) return null
-        return super.convertElement(state, type)
-    }
 }

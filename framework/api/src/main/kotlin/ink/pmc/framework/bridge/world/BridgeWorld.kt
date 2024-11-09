@@ -20,13 +20,14 @@ interface BridgeWorld : PlayerLookup, ServerElement<BridgeWorld> {
         pitch: Float = 0.0F
     ): BridgeLocation
 
-    override fun convertElement(state: ServerState, type: ServerType?): BridgeWorld? {
+    override fun convertElement(state: ServerState, type: ServerType): BridgeWorld? {
+        if (serverState == state && serverType == type) return this
         return Bridge.servers.flatMap { it.worlds }
             .firstOrNull {
                 it.name == name
                         && it.server.id == server.id
                         && it.serverState == state
-                        && it.serverType == (type ?: it.serverType)
+                        && it.serverType == type
             }
     }
 }

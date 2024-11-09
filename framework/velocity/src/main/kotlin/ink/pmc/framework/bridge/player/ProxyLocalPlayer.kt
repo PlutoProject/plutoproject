@@ -74,10 +74,4 @@ class ProxyLocalPlayer(private val actual: Player) : InternalPlayer() {
     override suspend fun performCommand(command: String) {
         error("Unsupported")
     }
-
-    override fun convertElement(state: ServerState, type: ServerType?): BridgePlayer? {
-        if (type == serverType) return this
-        if (isRemoteProxy) return null
-        return super.convertElement(state, type)
-    }
 }

@@ -47,11 +47,12 @@ interface BridgePlayer : WorldElement<BridgePlayer> {
 
     suspend fun performCommand(command: String)
 
-    override fun convertElement(state: ServerState, type: ServerType?): BridgePlayer? {
+    override fun convertElement(state: ServerState, type: ServerType): BridgePlayer? {
+        if (serverState == state && serverType == type) return this
         return Bridge.servers.flatMap { it.players }.firstOrNull {
             it.uniqueId == it.uniqueId
                     && it.serverState == state
-                    && it.serverType == (type ?: it.serverType)
+                    && it.serverType == type
         }
     }
 }
