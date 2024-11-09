@@ -7,6 +7,7 @@ import com.velocitypowered.api.event.player.ServerConnectedEvent
 import ink.pmc.framework.bridge.player.InternalPlayer
 import ink.pmc.framework.bridge.player.createInfo
 import ink.pmc.framework.bridge.proto.notification
+import ink.pmc.framework.bridge.proto.playerDisconnect
 import ink.pmc.framework.bridge.proxy.BridgeRpc
 import ink.pmc.framework.bridge.proxy.player.ProxyLocalPlayer
 import ink.pmc.framework.bridge.proxy.player.ProxyRemoteBackendPlayer
@@ -48,7 +49,10 @@ object BridgePlayerListener {
             server.players.removeIf { player -> player.uniqueId == uniqueId }
         }
         BridgeRpc.notify(notification {
-            playerDisconnectUuid = player.uniqueId.toString()
+            playerDisconnect = playerDisconnect {
+                server = localServer.id
+                this.uniqueId = uniqueId.toString()
+            }
         })
     }
 }

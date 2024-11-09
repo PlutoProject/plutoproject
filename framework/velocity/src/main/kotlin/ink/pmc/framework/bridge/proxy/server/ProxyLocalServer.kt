@@ -17,7 +17,7 @@ class ProxyLocalServer : InternalServer() {
     override val id: String = "_master"
     override val type: ServerType = ServerType.PROXY
     override val state: ServerState = ServerState.LOCAL
-    override val worlds: MutableList<BridgeWorld>
+    override val worlds: MutableSet<BridgeWorld>
         get() = error("Unsupported")
     override var isOnline: Boolean = true
         set(_) = error("Unsupported")
