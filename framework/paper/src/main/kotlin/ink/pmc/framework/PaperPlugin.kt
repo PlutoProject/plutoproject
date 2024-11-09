@@ -2,6 +2,8 @@ package ink.pmc.framework
 
 import com.github.shynixn.mccoroutine.bukkit.SuspendingJavaPlugin
 import com.github.shynixn.mccoroutine.bukkit.registerSuspendingEvents
+import ink.pmc.framework.bridge.BackendBridge
+import ink.pmc.framework.bridge.Bridge
 import ink.pmc.framework.interactive.GuiListener
 import ink.pmc.framework.interactive.GuiManager
 import ink.pmc.framework.interactive.GuiManagerImpl
@@ -52,6 +54,7 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
         single<TextDisplayManager> { TextDisplayManagerImpl() }
         single<TextDisplayFactory> { TextDisplayFactoryImpl() }
         single<TextDisplayRenderer>(named("internal")) { NmsTextDisplayRenderer() }
+        single<Bridge> { BackendBridge() }
     }
 
     override fun onLoad() {

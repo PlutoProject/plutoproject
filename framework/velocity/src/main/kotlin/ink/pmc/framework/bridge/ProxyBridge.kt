@@ -7,7 +7,7 @@ import ink.pmc.framework.bridge.server.ProxyLocalServer
 import ink.pmc.framework.utils.data.mutableConcurrentListOf
 import org.koin.java.KoinJavaComponent.getKoin
 
-internal inline val proxyBridge: ProxyBridge
+internal val proxyBridge: ProxyBridge
     get() = getKoin().get<Bridge>() as ProxyBridge
 
 class ProxyBridge : Bridge {
