@@ -95,10 +95,7 @@ private suspend fun handlePlayerOperation(msg: PlayerOperation) {
             localPlayer.teleport(location)
         }
 
-        PERFORM_COMMAND -> {
-            localPlayer.performCommand(msg.performCommand)
-        }
-
+        PERFORM_COMMAND -> localPlayer.performCommand(msg.performCommand)
         PlayerOperation.ContentCase.CONTENT_NOT_SET -> error("Received a PlayerOperation without content")
     }
     bridgeStub.ackPlayerOperation(playerOperationAck { ok = true })
