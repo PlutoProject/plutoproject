@@ -2,8 +2,10 @@ package ink.pmc.framework
 
 import com.github.shynixn.mccoroutine.bukkit.SuspendingJavaPlugin
 import com.github.shynixn.mccoroutine.bukkit.registerSuspendingEvents
-import ink.pmc.framework.bridge.backend.BackendBridge
 import ink.pmc.framework.bridge.Bridge
+import ink.pmc.framework.bridge.backend.BackendBridge
+import ink.pmc.framework.bridge.backend.listeners.BridgePlayerListener
+import ink.pmc.framework.bridge.backend.listeners.BridgeWorldListener
 import ink.pmc.framework.interactive.GuiListener
 import ink.pmc.framework.interactive.GuiManager
 import ink.pmc.framework.interactive.GuiManagerImpl
@@ -75,6 +77,8 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
         paper.pluginManager.registerSuspendingEvents(InventoryListener, frameworkPaper)
         paper.pluginManager.registerSuspendingEvents(BukkitOptionsListener, frameworkPaper)
         paper.pluginManager.registerSuspendingEvents(TextDisplayListener, frameworkPaper)
+        paper.pluginManager.registerSuspendingEvents(BridgePlayerListener, frameworkPaper)
+        paper.pluginManager.registerSuspendingEvents(BridgeWorldListener, frameworkPaper)
         commandManager().annotationParser().apply {
             parse(InteractiveCommand)
         }
