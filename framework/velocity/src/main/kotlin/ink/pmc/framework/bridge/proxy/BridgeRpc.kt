@@ -58,6 +58,20 @@ object BridgeRpc : BridgeRpcCoroutineImplBase() {
         notificationFlow.emit(notification)
     }
 
+    private suspend fun handleHeartbeat(server: BridgeServer) {
+        if (server.state.isLocal) return
+        val remoteServer = server as InternalServer
+        val time = heartbeatMap[server]
+        val requirement = Instant.now().minusSeconds(5)
+        if (time == null || time.isBefore(requirement)) {
+            remoteServer.isOnline = false
+            notificationFlow.emit(notification {
+                serverOffline = server.id
+            })
+            frameworkLogger.warning("Server ${remoteServer.id} heartbeat timeout")
+        }
+    }
+
     init {
         isRunning = true
         // Heartbeat check loop
@@ -65,17 +79,7 @@ object BridgeRpc : BridgeRpcCoroutineImplBase() {
             while (isRunning) {
                 delay(5.seconds)
                 proxyBridge.servers.forEach {
-                    if (it.state.isLocal) return@forEach
-                    val remoteServer = it as InternalServer
-                    val time = heartbeatMap[it]
-                    val requirement = Instant.now().minusSeconds(5)
-                    if (time == null || time.isBefore(requirement)) {
-                        remoteServer.isOnline = false
-                        notificationFlow.emit(notification {
-                            serverOffline = it.id
-                        })
-                        frameworkLogger.warning("Server ${remoteServer.id} heartbeat timeout")
-                    }
+                    handleHeartbeat(it)
                 }
             }
         }
@@ -133,23 +137,19 @@ object BridgeRpc : BridgeRpcCoroutineImplBase() {
         return empty
     }
 
+    private fun handleNoReturnAck(ack: PlayerOperationAck): PlayerOperationResult {
+        return when (ack.contentCase!!) {
+            OK -> playerOperationResult { ok = true }
+            UNSUPPORTED -> playerOperationResult { unsupported = true }
+            ContentCase.CONTENT_NOT_SET -> error("Unexpected")
+        }
+    }
+
     private suspend fun waitNoReturnAck(request: PlayerOperation): PlayerOperationResult {
         return withTimeoutOrNull(20) {
             for (ack in playerOperationAck) {
-                if (ack.uuid != request.id || ack.playerUuid != request.playerUuid) {
-                    continue
-                }
-                when (ack.contentCase!!) {
-                    OK -> return@withTimeoutOrNull playerOperationResult {
-                        ok = true
-                    }
-
-                    UNSUPPORTED -> return@withTimeoutOrNull playerOperationResult {
-                        unsupported = true
-                    }
-
-                    ContentCase.CONTENT_NOT_SET -> error("Unexpected")
-                }
+                if (ack.uuid != request.id) continue
+                return@withTimeoutOrNull handleNoReturnAck(ack)
             }
             null
         } ?: return playerOperationResult {
@@ -157,84 +157,94 @@ object BridgeRpc : BridgeRpcCoroutineImplBase() {
         }
     }
 
-    override suspend fun operatePlayer(request: PlayerOperation): PlayerOperationResult {
+    private fun handleInfoLookupAck(ack: PlayerOperationAck): PlayerOperationResult {
+        return when (ack.contentCase!!) {
+            OK -> playerOperationResult {
+                ok = true
+                infoLookup = ack.infoLookup
+            }
+
+            else -> playerOperationResult { unsupported = true }
+        }
+    }
+
+    private suspend fun handleInfoLookup(request: PlayerOperation): PlayerOperationResult {
+        notificationFlow.emit(notification {
+            playerOperation = request
+        })
+        return withTimeoutOrNull(20) {
+            for (ack in playerOperationAck) {
+                if (ack.uuid != request.id) continue
+                return@withTimeoutOrNull handleInfoLookupAck(ack)
+            }
+            null
+        } ?: playerOperationResult {
+            timeout = true
+        }
+    }
+
+    private suspend fun handleSendMessage(request: PlayerOperation, player: InternalPlayer): PlayerOperationResult {
         val localPlayer = localServer.getPlayer(request.playerUuid.uuid) ?: return playerOperationResult {
             playerOffline = true
         }
-        val remotePlayer = proxyBridge.getRemotePlayer(request.playerUuid.uuid) as ProxyRemoteBackendPlayer?
-        when (request.contentCase!!) {
-            INFO_LOOKUP -> {
-                notificationFlow.emit(notification {
-                    playerOperation = request
-                })
-                return withTimeoutOrNull(20) {
-                    for (ack in playerOperationAck) {
-                        if (ack.uuid != request.id || ack.playerUuid != request.playerUuid) {
-                            continue
-                        }
-                        return@withTimeoutOrNull when (ack.contentCase!!) {
-                            OK -> playerOperationResult {
-                                ok = true
-                                infoLookup = ack.infoLookup
-                            }
+        localPlayer.sendMessage(MiniMessage.miniMessage().deserialize(request.sendMessage))
+        return playerOperationResult { ok = true }
+    }
 
-                            else -> return@withTimeoutOrNull playerOperationResult {
-                                unsupported = true
-                            }
-                        }
-                    }
-                    null
-                } ?: playerOperationResult {
-                    timeout = true
-                }
+    private suspend fun handleSendTitle(request: PlayerOperation, player: InternalPlayer): PlayerOperationResult {
+        player.showTitle {
+            val info = request.showTitle
+            times {
+                fadeIn(info.fadeIn.ticks)
+                stay(info.stay.ticks)
+                fadeOut(info.fadeOut.ticks)
             }
-
-            SEND_MESSAGE -> localPlayer.sendMessage(MiniMessage.miniMessage().deserialize(request.sendMessage))
-            SHOW_TITLE -> localPlayer.showTitle {
-                val info = request.showTitle
-                times {
-                    fadeIn(info.fadeIn.ticks)
-                    stay(info.stay.ticks)
-                    fadeOut(info.fadeOut.ticks)
-                }
-                mainTitle(MiniMessage.miniMessage().deserialize(info.mainTitle))
-                subTitle(MiniMessage.miniMessage().deserialize(info.subTitle))
-            }
-
-            PLAY_SOUND -> {
-                localPlayer.playSound {
-                    val info = request.playSound
-                    key(Key.key(info.key))
-                    volume(info.volume)
-                    pitch(info.pitch)
-                }
-            }
-
-            TELEPORT -> {
-                remotePlayer ?: return playerOperationResult {
-                    unsupported = true
-                }
-                remotePlayer.actual.switchServer(request.teleport.server)
-                notificationFlow.emit(notification {
-                    playerOperation = request
-                })
-                return waitNoReturnAck(request)
-            }
-
-            PERFORM_COMMAND -> {
-                remotePlayer ?: return playerOperationResult {
-                    unsupported = true
-                }
-                notificationFlow.emit(notification {
-                    playerOperation = request
-                })
-                return waitNoReturnAck(request)
-            }
-
-            CONTENT_NOT_SET -> error("Received a PlayerOperation without content (id: ${request.id}, player: ${request.playerUuid})")
+            mainTitle(MiniMessage.miniMessage().deserialize(info.mainTitle))
+            subTitle(MiniMessage.miniMessage().deserialize(info.subTitle))
         }
-        return playerOperationResult {
-            ok = true
+        return playerOperationResult { ok = true }
+    }
+
+    private suspend fun handlePlaySound(request: PlayerOperation, player: InternalPlayer): PlayerOperationResult {
+        player.playSound {
+            val info = request.playSound
+            key(Key.key(info.key))
+            volume(info.volume)
+            pitch(info.pitch)
+        }
+        return playerOperationResult { ok = true }
+    }
+
+    private fun PlayerOperation.getRemotePlayer(): InternalPlayer? {
+        return proxyBridge.getRemotePlayer(playerUuid.uuid) as InternalPlayer?
+    }
+
+    private suspend fun handleTeleport(request: PlayerOperation): PlayerOperationResult {
+        val remotePlayer = request.getRemotePlayer() as ProxyRemoteBackendPlayer?
+            ?: return playerOperationResult { unsupported = true }
+        remotePlayer.actual.switchServer(request.teleport.server)
+        notificationFlow.emit(notification { playerOperation = request })
+        return waitNoReturnAck(request)
+    }
+
+    private suspend fun handlePerformCommand(request: PlayerOperation): PlayerOperationResult {
+        request.getRemotePlayer()
+            ?: return playerOperationResult { unsupported = true }
+        notificationFlow.emit(notification { playerOperation = request })
+        return waitNoReturnAck(request)
+    }
+
+    override suspend fun operatePlayer(request: PlayerOperation): PlayerOperationResult {
+        val localPlayer = localServer.getPlayer(request.playerUuid.uuid) as InternalPlayer?
+            ?: return playerOperationResult { playerOffline = true }
+        return when (request.contentCase!!) {
+            INFO_LOOKUP -> handleInfoLookup(request)
+            SEND_MESSAGE -> handleSendMessage(request, localPlayer)
+            SHOW_TITLE -> handleSendTitle(request, localPlayer)
+            PLAY_SOUND -> handlePlaySound(request, localPlayer)
+            TELEPORT -> handleTeleport(request)
+            PERFORM_COMMAND -> handlePerformCommand(request)
+            CONTENT_NOT_SET -> error("Received a PlayerOperation without content (id: ${request.id}, player: ${request.playerUuid})")
         }
     }
 
@@ -247,9 +257,7 @@ object BridgeRpc : BridgeRpcCoroutineImplBase() {
         val remotePlayer = proxyBridge.getRemotePlayer(request.uniqueId) as InternalPlayer?
             ?: error("Player not found: ${request.name}")
         remotePlayer.update(request)
-        notificationFlow.emit(notification {
-            playerInfoUpdate = request
-        })
+        notificationFlow.emit(notification { playerInfoUpdate = request })
         return empty
     }
 
@@ -271,9 +279,7 @@ object BridgeRpc : BridgeRpcCoroutineImplBase() {
         val remoteWorld = remoteServer.getWorld(request.name) as InternalWorld?
             ?: error("World not found: ${request.name}")
         remoteWorld.update(request)
-        notificationFlow.emit(notification {
-            worldInfoUpdate = request
-        })
+        notificationFlow.emit(notification { worldInfoUpdate = request })
         return super.updateWorldInfo(request)
     }
 
@@ -282,9 +288,7 @@ object BridgeRpc : BridgeRpcCoroutineImplBase() {
             ?: error("Server not found: ${request.server}")
         val remoteWorld = remoteServer.getWorld(request.world) ?: error("World not found: ${request.world}")
         remoteServer.worlds.remove(remoteWorld)
-        notificationFlow.emit(notification {
-            worldUnload = request
-        })
+        notificationFlow.emit(notification { worldUnload = request })
         return empty
     }
 }
