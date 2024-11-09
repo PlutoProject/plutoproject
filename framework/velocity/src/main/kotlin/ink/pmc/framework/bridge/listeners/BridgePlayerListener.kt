@@ -37,8 +37,12 @@ object BridgePlayerListener {
 
     @Subscribe
     suspend fun DisconnectEvent.e() {
+        val uniqueId = player.uniqueId
+        val remotePlayer = proxyBridge.getRemotePlayer(uniqueId) as InternalPlayer?
+        remotePlayer?.isOnline = false
         proxyBridge.servers.forEach {
-            (it as InternalServer).players.removeIf { player -> player.uniqueId == player.uniqueId }
+            val server = it as InternalServer
+            server.players.removeIf { player -> player.uniqueId == uniqueId }
         }
         BridgeRpc.notify(notification {
             playerDisconnectUuid = player.uniqueId.toString()
