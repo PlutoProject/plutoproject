@@ -15,13 +15,13 @@ import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.PlayerOperationAck.Con
 import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.PlayerOperationAck.ContentCase.UNSUPPORTED
 import ink.pmc.framework.bridge.proto.notification
 import ink.pmc.framework.bridge.proto.playerOperationResult
-import ink.pmc.framework.bridge.proto.serverRegistrationAck
+import ink.pmc.framework.bridge.proto.serverRegistrationResult
 import ink.pmc.framework.bridge.proxy.player.ProxyRemoteBackendPlayer
 import ink.pmc.framework.bridge.proxy.server.localServer
-import ink.pmc.framework.bridge.world.RemoteBackendWorld
 import ink.pmc.framework.bridge.server.*
 import ink.pmc.framework.bridge.world.BridgeLocationImpl
 import ink.pmc.framework.bridge.world.InternalWorld
+import ink.pmc.framework.bridge.world.RemoteBackendWorld
 import ink.pmc.framework.bridge.world.toImpl
 import ink.pmc.framework.frameworkLogger
 import ink.pmc.framework.utils.concurrent.submitAsync
@@ -80,9 +80,9 @@ object BridgeRpc : BridgeRpcCoroutineImplBase() {
         }
     }
 
-    override suspend fun registerServer(request: ServerInfo): ServerRegistrationAck {
+    override suspend fun registerServer(request: ServerInfo): ServerRegistrationResult {
         if (Bridge.isServerRegistered(request.id)) {
-            return serverRegistrationAck {
+            return serverRegistrationResult {
                 idExisted = true
             }
         }
@@ -97,7 +97,7 @@ object BridgeRpc : BridgeRpcCoroutineImplBase() {
         notificationFlow.emit(notification {
             serverRegistration = request
         })
-        return serverRegistrationAck {
+        return serverRegistrationResult {
             ok = true
             servers.addAll(proxyBridge.servers.map { it.toInfo() })
         }
