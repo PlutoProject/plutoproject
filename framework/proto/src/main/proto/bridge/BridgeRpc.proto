@@ -16,7 +16,7 @@ service BridgeRpc {
   rpc OperateWorld(WorldOperation) returns (WorldOperationResult);
   rpc AckWorldOperation(WorldOperationAck) returns (google.protobuf.Empty);
   rpc UpdateWorldInfo(WorldInfo) returns (google.protobuf.Empty);
-  rpc LoadWorld(WorldLoad) returns (google.protobuf.Empty);
+  rpc LoadWorld(WorldInfo) returns (google.protobuf.Empty);
   rpc UnloadWorld(WorldLoad) returns (google.protobuf.Empty);
 }
 
@@ -121,7 +121,7 @@ message Notification {
     // World
     WorldOperation world_operation = 9;
     WorldInfo world_info_update = 10;
-    WorldLoad world_load = 11;
+    WorldInfo world_load = 11;
     WorldLoad world_unload = 12;
   }
 }
@@ -129,7 +129,6 @@ message Notification {
 message ServerRegistrationResult {
   oneof state {
     bool ok = 1;
-    bool id_existed = 2;
   }
   repeated ServerInfo servers = 3;
 }

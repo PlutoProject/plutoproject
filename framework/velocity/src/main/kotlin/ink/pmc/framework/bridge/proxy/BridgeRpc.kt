@@ -5,32 +5,25 @@ import ink.pmc.advkt.sound.key
 import ink.pmc.advkt.sound.pitch
 import ink.pmc.advkt.sound.volume
 import ink.pmc.advkt.title.*
-import ink.pmc.framework.bridge.Bridge
 import ink.pmc.framework.bridge.internalBridge
 import ink.pmc.framework.bridge.player.InternalPlayer
+import ink.pmc.framework.bridge.proto.*
 import ink.pmc.framework.bridge.proto.BridgeRpcGrpcKt.BridgeRpcCoroutineImplBase
 import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.*
 import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.PlayerOperation.ContentCase.*
 import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.PlayerOperationAck.ContentCase
 import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.PlayerOperationAck.ContentCase.OK
 import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.PlayerOperationAck.ContentCase.UNSUPPORTED
-import ink.pmc.framework.bridge.proto.heartbeatResult
-import ink.pmc.framework.bridge.proto.notification
-import ink.pmc.framework.bridge.proto.playerOperationResult
-import ink.pmc.framework.bridge.proto.serverRegistrationResult
 import ink.pmc.framework.bridge.proxy.player.ProxyRemoteBackendPlayer
 import ink.pmc.framework.bridge.proxy.server.localServer
-import ink.pmc.framework.bridge.server.*
-import ink.pmc.framework.bridge.world.InternalWorld
-import ink.pmc.framework.bridge.world.RemoteBackendWorld
-import ink.pmc.framework.bridge.world.createBridge
+import ink.pmc.framework.bridge.server.BridgeServer
+import ink.pmc.framework.bridge.server.InternalServer
+import ink.pmc.framework.bridge.server.createInfo
 import ink.pmc.framework.frameworkLogger
 import ink.pmc.framework.utils.concurrent.submitAsync
-import ink.pmc.framework.utils.platform.proxy
 import ink.pmc.framework.utils.player.switchServer
 import ink.pmc.framework.utils.player.uuid
 import ink.pmc.framework.utils.proto.empty
-import ink.pmc.framework.utils.time.ticks
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
@@ -41,6 +34,7 @@ import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.minimessage.MiniMessage
 import java.time.Instant
 import java.util.concurrent.ConcurrentHashMap
+import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
 object BridgeRpc : BridgeRpcCoroutineImplBase() {
@@ -58,7 +52,7 @@ object BridgeRpc : BridgeRpcCoroutineImplBase() {
         notificationFlow.emit(notification)
     }
 
-    private suspend fun handleHeartbeat(server: BridgeServer) {
+    private suspend fun checkHeartbeat(server: BridgeServer) {
         if (server.state.isLocal) return
         val remoteServer = server as InternalServer
         val time = heartbeatMap[server]
@@ -79,25 +73,14 @@ object BridgeRpc : BridgeRpcCoroutineImplBase() {
             while (isRunning) {
                 delay(5.seconds)
                 internalBridge.servers.forEach {
-                    handleHeartbeat(it)
+                    checkHeartbeat(it)
                 }
             }
         }
     }
 
     override suspend fun registerServer(request: ServerInfo): ServerRegistrationResult {
-        if (Bridge.isServerRegistered(request.id)) {
-            return serverRegistrationResult {
-                idExisted = true
-            }
-        }
-        val id = request.id
-        val group = request.group?.let { internalBridge.getGroup(it) ?: BridgeGroupImpl(it) }
-        val server = RemoteBackendServer(id, group).apply {
-            setWorlds(request)
-            setPlayers(request)
-        }
-        internalBridge.servers.add(server)
+        val server = internalBridge.registerServer(request)
         heartbeatMap[server] = Instant.now()
         notificationFlow.emit(notification {
             serverRegistration = request
@@ -106,24 +89,6 @@ object BridgeRpc : BridgeRpcCoroutineImplBase() {
             ok = true
             servers.addAll(internalBridge.servers.map { it.createInfo() })
         }
-    }
-
-    private fun RemoteBackendServer.setWorlds(info: ServerInfo) {
-        worlds.clear()
-        worlds.addAll(info.worldsList.map {
-            val world = RemoteBackendWorld(this, it.name, it.alias)
-            val spawnPoint = it.spawnPoint.createBridge(this, world)
-            world.apply { this.spawnPoint = spawnPoint }
-        })
-    }
-
-    private fun RemoteBackendServer.setPlayers(info: ServerInfo) {
-        players.clear()
-        players.addAll(info.playersList.map {
-            val worldName = it.world.name
-            val world = getWorld(worldName) ?: error("World not found: $worldName")
-            ProxyRemoteBackendPlayer(proxy.getPlayer(it.uniqueId).get(), this, world)
-        })
     }
 
     override suspend fun heartbeat(request: HeartbeatMessage): HeartbeatResult {
@@ -141,8 +106,15 @@ object BridgeRpc : BridgeRpcCoroutineImplBase() {
     }
 
     override suspend fun syncData(request: ServerInfo): DataSyncResult {
-        val remoteServer = internalBridge.getServer(request.id) ?: error("Server not found ${request.id}")
-        return super.syncData(request)
+        val remoteServer = internalBridge.syncData(request)
+        heartbeatMap[remoteServer] = Instant.now()
+        remoteServer.isOnline = true
+        notificationFlow.emit(notification {
+            serverInfoUpdate = request
+        })
+        return dataSyncResult {
+            servers.addAll(internalBridge.servers.map { it.createInfo() })
+        }
     }
 
     private fun handleNoReturnAck(ack: PlayerOperationAck): PlayerOperationResult {
@@ -198,9 +170,9 @@ object BridgeRpc : BridgeRpcCoroutineImplBase() {
         player.showTitle {
             val info = request.showTitle
             times {
-                fadeIn(info.fadeIn.ticks)
-                stay(info.stay.ticks)
-                fadeOut(info.fadeOut.ticks)
+                fadeIn(info.fadeInMs.milliseconds)
+                stay(info.stayMs.milliseconds)
+                fadeOut(info.fadeOutMs.milliseconds)
             }
             mainTitle(MiniMessage.miniMessage().deserialize(info.mainTitle))
             subTitle(MiniMessage.miniMessage().deserialize(info.subTitle))
@@ -257,9 +229,7 @@ object BridgeRpc : BridgeRpcCoroutineImplBase() {
     }
 
     override suspend fun updatePlayerInfo(request: PlayerInfo): Empty {
-        val remotePlayer = internalBridge.getRemotePlayer(request.uniqueId) as InternalPlayer?
-            ?: error("Player not found: ${request.name}")
-        remotePlayer.update(request)
+        internalBridge.updatePlayerInfo(request)
         notificationFlow.emit(notification { playerInfoUpdate = request })
         return empty
     }
@@ -272,20 +242,22 @@ object BridgeRpc : BridgeRpcCoroutineImplBase() {
         error("Placeholder")
     }
 
+    override suspend fun loadWorld(request: WorldInfo): Empty {
+        internalBridge.addWorld(request)
+        notificationFlow.emit(notification {
+            worldLoad = request
+        })
+        return empty
+    }
+
     override suspend fun updateWorldInfo(request: WorldInfo): Empty {
-        val remoteServer = internalBridge.getServer(request.server) ?: error("Server not found: ${request.server}")
-        val remoteWorld = remoteServer.getWorld(request.name) as InternalWorld?
-            ?: error("World not found: ${request.name}")
-        remoteWorld.update(request)
+        internalBridge.updateWorldInfo(request)
         notificationFlow.emit(notification { worldInfoUpdate = request })
-        return super.updateWorldInfo(request)
+        return empty
     }
 
     override suspend fun unloadWorld(request: WorldLoad): Empty {
-        val remoteServer = internalBridge.getServer(request.server) as InternalServer?
-            ?: error("Server not found: ${request.server}")
-        val remoteWorld = remoteServer.getWorld(request.world) ?: error("World not found: ${request.world}")
-        remoteServer.worlds.remove(remoteWorld)
+        internalBridge.removeWorld(request)
         notificationFlow.emit(notification { worldUnload = request })
         return empty
     }
