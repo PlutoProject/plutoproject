@@ -16,9 +16,7 @@ import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.PlayerOperationAck.Con
 import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.PlayerOperationAck.ContentCase.UNSUPPORTED
 import ink.pmc.framework.bridge.proxy.player.ProxyRemoteBackendPlayer
 import ink.pmc.framework.bridge.proxy.server.localServer
-import ink.pmc.framework.bridge.server.BridgeServer
-import ink.pmc.framework.bridge.server.InternalServer
-import ink.pmc.framework.bridge.server.createInfo
+import ink.pmc.framework.bridge.server.*
 import ink.pmc.framework.frameworkLogger
 import ink.pmc.framework.utils.concurrent.submitAsync
 import ink.pmc.framework.utils.player.switchServer
@@ -195,23 +193,23 @@ object BridgeRpc : BridgeRpcCoroutineImplBase() {
     }
 
     private suspend fun handleTeleport(request: PlayerOperation): PlayerOperationResult {
-        val remotePlayer = request.getRemotePlayer() as ProxyRemoteBackendPlayer?
-            ?: return playerOperationResult { unsupported = true }
+        val remotePlayer = request.getRemotePlayer() as ProxyRemoteBackendPlayer? ?: return playerOperationResult {
+            unsupported = true
+        }
         remotePlayer.actual.switchServer(request.teleport.server)
         notificationFlow.emit(notification { playerOperation = request })
         return waitNoReturnAck(request)
     }
 
     private suspend fun handlePerformCommand(request: PlayerOperation): PlayerOperationResult {
-        request.getRemotePlayer()
-            ?: return playerOperationResult { unsupported = true }
+        request.getRemotePlayer() ?: return playerOperationResult { unsupported = true }
         notificationFlow.emit(notification { playerOperation = request })
         return waitNoReturnAck(request)
     }
 
     override suspend fun operatePlayer(request: PlayerOperation): PlayerOperationResult {
-        val localPlayer = localServer.getPlayer(request.playerUuid.uuid) as InternalPlayer?
-            ?: return playerOperationResult { playerOffline = true }
+        val localPlayer = localServer.getPlayer(request.playerUuid.uuid, ServerState.LOCAL, ServerType.PROXY)
+                as InternalPlayer? ?: return playerOperationResult { playerOffline = true }
         return when (request.contentCase!!) {
             INFO_LOOKUP -> handleInfoLookup(request)
             SEND_MESSAGE -> handleSendMessage(request, localPlayer)
