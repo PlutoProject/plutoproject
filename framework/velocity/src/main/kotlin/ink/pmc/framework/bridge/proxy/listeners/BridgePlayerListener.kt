@@ -9,6 +9,7 @@ import ink.pmc.framework.bridge.player.InternalPlayer
 import ink.pmc.framework.bridge.player.createInfo
 import ink.pmc.framework.bridge.proto.notification
 import ink.pmc.framework.bridge.proto.playerDisconnect
+import ink.pmc.framework.bridge.proto.playerSwitchServer
 import ink.pmc.framework.bridge.proxy.BridgeRpc
 import ink.pmc.framework.bridge.proxy.player.ProxyLocalPlayer
 import ink.pmc.framework.bridge.proxy.player.ProxyRemoteBackendPlayer
@@ -22,7 +23,7 @@ object BridgePlayerListener {
         val localPlayer = ProxyLocalPlayer(player)
         localServer.players.add(localPlayer)
         BridgeRpc.notify(notification {
-            playerInfoUpdate = localPlayer.createInfo()
+            playerJoin = localPlayer.createInfo()
         })
     }
 
@@ -36,7 +37,10 @@ object BridgePlayerListener {
         current.players.add(remotePlayer)
         previous?.players?.remove(remotePlayer)
         BridgeRpc.notify(notification {
-            playerInfoUpdate = remotePlayer.createInfo()
+            playerSwitchServer = playerSwitchServer {
+                server = current.id
+                playerUuid = remotePlayer.uniqueId.toString()
+            }
         })
     }
 

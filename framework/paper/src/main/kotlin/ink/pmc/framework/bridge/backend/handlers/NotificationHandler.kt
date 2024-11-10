@@ -1,9 +1,6 @@
 package ink.pmc.framework.bridge.backend.handlers
 
-import ink.pmc.framework.bridge.backend.handlers.player.PlayerDisconnectHandler
-import ink.pmc.framework.bridge.backend.handlers.player.PlayerInfoUpdateHandler
-import ink.pmc.framework.bridge.backend.handlers.player.PlayerOperationHandler
-import ink.pmc.framework.bridge.backend.handlers.player.PlayerSwitchServerHandler
+import ink.pmc.framework.bridge.backend.handlers.player.*
 import ink.pmc.framework.bridge.backend.handlers.server.ServerInfoUpdateHandler
 import ink.pmc.framework.bridge.backend.handlers.server.ServerOfflineHandler
 import ink.pmc.framework.bridge.backend.handlers.server.ServerOnlineHandler
@@ -27,6 +24,7 @@ interface NotificationHandler {
             PLAYER_OPERATION to PlayerOperationHandler,
             PLAYER_INFO_UPDATE to PlayerInfoUpdateHandler,
             PLAYER_SWITCH_SERVER to PlayerSwitchServerHandler,
+            PLAYER_JOIN to PlayerJoinHandler,
             PLAYER_DISCONNECT to PlayerDisconnectHandler,
 
             WORLD_OPERATION to WorldOperationHandler,

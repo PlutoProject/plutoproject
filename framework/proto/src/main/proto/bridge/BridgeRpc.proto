@@ -120,13 +120,14 @@ message Notification {
     PlayerOperation player_operation = 5;
     PlayerInfo player_info_update = 6;
     PlayerSwitchServer player_switch_server = 7;
-    PlayerDisconnect player_disconnect = 8;
+    PlayerInfo player_join = 8;
+    PlayerDisconnect player_disconnect = 9;
 
     // World
-    WorldOperation world_operation = 9;
-    WorldInfo world_info_update = 10;
-    WorldInfo world_load = 11;
-    WorldLoad world_unload = 12;
+    WorldOperation world_operation = 10;
+    WorldInfo world_info_update = 11;
+    WorldInfo world_load = 12;
+    WorldLoad world_unload = 13;
   }
 }
 
