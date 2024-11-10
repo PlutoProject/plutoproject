@@ -9,7 +9,7 @@ class RemoteBackendWorld(
     override val server: BridgeServer,
     override val name: String,
     override val alias: String?,
-) : BridgeWorld {
+) : InternalWorld() {
     override val serverType: ServerType = ServerType.BACKEND
     override val serverState: ServerState = ServerState.REMOTE
     override val group: BridgeGroup? = server.group

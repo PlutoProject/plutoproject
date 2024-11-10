@@ -86,7 +86,11 @@ message HeartbeatResult {
 }
 
 message DataSyncResult {
-  repeated ServerInfo servers = 1;
+  oneof result {
+    bool ok = 1;
+    bool not_registered = 2;
+  }
+  repeated ServerInfo servers = 3;
 }
 
 message WorldLoad {

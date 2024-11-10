@@ -7,6 +7,7 @@ import ink.pmc.framework.bridge.server.BridgeServer
 import ink.pmc.framework.bridge.server.InternalServer
 import ink.pmc.framework.bridge.server.RemoteBackendServer
 import ink.pmc.framework.bridge.world.InternalWorld
+import ink.pmc.framework.bridge.world.RemoteBackendWorld
 import ink.pmc.framework.bridge.world.createBridge
 import ink.pmc.framework.utils.player.uuid
 import org.koin.java.KoinJavaComponent.getKoin
@@ -30,7 +31,10 @@ abstract class InternalBridge : Bridge {
 
     abstract fun createPlayer(info: PlayerInfo, server: InternalServer? = null): InternalPlayer
 
-    abstract fun createWorld(info: WorldInfo, server: InternalServer? = null): InternalWorld
+    fun createWorld(info: WorldInfo, server: InternalServer? = null): InternalWorld {
+        val actualServer = server ?: getInternalServer(info.server)
+        return RemoteBackendWorld(actualServer, info.name, info.alias)
+    }
 
     fun getInternalServer(id: String): InternalServer {
         return getServer(id) as InternalServer? ?: error("Server not found: $id")

@@ -4,6 +4,7 @@ import com.velocitypowered.api.event.Subscribe
 import com.velocitypowered.api.event.connection.DisconnectEvent
 import com.velocitypowered.api.event.connection.LoginEvent
 import com.velocitypowered.api.event.player.ServerConnectedEvent
+import ink.pmc.framework.bridge.internalBridge
 import ink.pmc.framework.bridge.player.InternalPlayer
 import ink.pmc.framework.bridge.player.createInfo
 import ink.pmc.framework.bridge.proto.notification
@@ -11,7 +12,6 @@ import ink.pmc.framework.bridge.proto.playerDisconnect
 import ink.pmc.framework.bridge.proxy.BridgeRpc
 import ink.pmc.framework.bridge.proxy.player.ProxyLocalPlayer
 import ink.pmc.framework.bridge.proxy.player.ProxyRemoteBackendPlayer
-import ink.pmc.framework.bridge.proxy.proxyBridge
 import ink.pmc.framework.bridge.proxy.server.localServer
 import ink.pmc.framework.bridge.server.InternalServer
 import kotlin.jvm.optionals.getOrNull
@@ -28,11 +28,10 @@ object BridgePlayerListener {
 
     @Subscribe
     suspend fun ServerConnectedEvent.e() {
-        val current = proxyBridge.getServer(server.serverInfo.name) as InternalServer?
-            ?: error("Server not found: ${server.serverInfo.name}")
-        val remotePlayer = proxyBridge.getRemotePlayer(player.uniqueId) as InternalPlayer?
-            ?: ProxyRemoteBackendPlayer(player, current)
-        val previous = previousServer.getOrNull()?.let { proxyBridge.getServer(it.serverInfo.name) } as InternalServer?
+        val current = internalBridge.getInternalServer(server.serverInfo.name)
+        val remotePlayer = internalBridge.getRemotePlayer(player.uniqueId) as InternalPlayer?
+            ?: ProxyRemoteBackendPlayer(player, current, null)
+        val previous = previousServer.getOrNull()?.let { internalBridge.getInternalServer(it.serverInfo.name) }
         remotePlayer.server = current
         current.players.add(remotePlayer)
         previous?.players?.remove(remotePlayer)
@@ -44,7 +43,7 @@ object BridgePlayerListener {
     @Subscribe
     suspend fun DisconnectEvent.e() {
         val uniqueId = player.uniqueId
-        proxyBridge.servers.forEach {
+        internalBridge.servers.forEach {
             val server = it as InternalServer
             server.players.removeIf { player -> player.uniqueId == uniqueId }
         }

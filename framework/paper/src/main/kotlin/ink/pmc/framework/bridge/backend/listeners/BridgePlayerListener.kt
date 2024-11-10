@@ -1,9 +1,9 @@
 package ink.pmc.framework.bridge.backend.listeners
 
-import ink.pmc.framework.bridge.backend.backendBridge
 import ink.pmc.framework.bridge.backend.bridgeStub
 import ink.pmc.framework.bridge.backend.player.BackendLocalPlayer
 import ink.pmc.framework.bridge.backend.server.localServer
+import ink.pmc.framework.bridge.internalBridge
 import ink.pmc.framework.bridge.player.createInfo
 import ink.pmc.framework.bridge.server.InternalServer
 import org.bukkit.event.EventHandler
@@ -17,7 +17,7 @@ object BridgePlayerListener : Listener {
     suspend fun PlayerJoinEvent.e() {
         val localPlayer = BackendLocalPlayer(player)
         localServer.players.add(localPlayer)
-        val remotePlayer = backendBridge.getRemotePlayer(player.uniqueId)
+        val remotePlayer = internalBridge.getRemotePlayer(player.uniqueId)
         // 玩家切换到本服
         if (remotePlayer != null && remotePlayer.serverType.isBackend) {
             (remotePlayer.server as InternalServer).players.remove(remotePlayer)

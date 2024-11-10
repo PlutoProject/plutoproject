@@ -6,8 +6,8 @@ import ink.pmc.framework.bridge.Bridge
 import ink.pmc.framework.bridge.backend.BackendBridge
 import ink.pmc.framework.bridge.backend.listeners.BridgePlayerListener
 import ink.pmc.framework.bridge.backend.listeners.BridgeWorldListener
-import ink.pmc.framework.bridge.backend.startBridgeMonitor
-import ink.pmc.framework.bridge.backend.stopBridgeMonitor
+import ink.pmc.framework.bridge.backend.startBridgeBackgroundTask
+import ink.pmc.framework.bridge.backend.stopBridgeBackgroundTask
 import ink.pmc.framework.interactive.GuiListener
 import ink.pmc.framework.interactive.GuiManager
 import ink.pmc.framework.interactive.GuiManagerImpl
@@ -75,7 +75,7 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
         Bridge
         startPlayerDbMonitor()
         startOptionsMonitor()
-        startBridgeMonitor()
+        startBridgeBackgroundTask()
     }
 
     override suspend fun onEnableAsync() {
@@ -95,7 +95,7 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
         GuiManager.disposeAll()
         stopPlayerDbMonitor()
         stopOptionsMonitor()
-        stopBridgeMonitor()
+        stopBridgeBackgroundTask()
         withContext(Dispatchers.IO) {
             Provider.close()
         }
