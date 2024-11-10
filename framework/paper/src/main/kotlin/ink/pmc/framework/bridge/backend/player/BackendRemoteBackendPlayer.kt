@@ -11,11 +11,13 @@ import ink.pmc.framework.utils.player.uuid
 import java.util.*
 
 class BackendRemoteBackendPlayer(
-    uniqueId: UUID,
-    name: String,
-    server: BridgeServer,
-    world: BridgeWorld?
-) : RemoteBackendPlayer(uniqueId, name, server, world) {
+    override val uniqueId: UUID,
+    override val name: String,
+    override var server: BridgeServer,
+    override var world: BridgeWorld?
+) : RemoteBackendPlayer() {
+    override var isOnline: Boolean = true
+
     override suspend fun operatePlayer(request: PlayerOperation): PlayerOperationResult {
         operationsSent.add(request.id.uuid)
         return bridgeStub.operatePlayer(request)

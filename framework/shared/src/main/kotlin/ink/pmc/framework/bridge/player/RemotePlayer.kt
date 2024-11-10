@@ -3,62 +3,63 @@ package ink.pmc.framework.bridge.player
 import ink.pmc.advkt.component.RootComponentKt
 import ink.pmc.advkt.sound.SoundKt
 import ink.pmc.advkt.title.ComponentTitleKt
-import ink.pmc.framework.bridge.Bridge
-import ink.pmc.framework.bridge.server.BridgeGroup
-import ink.pmc.framework.bridge.server.BridgeServer
-import ink.pmc.framework.bridge.server.ServerState
-import ink.pmc.framework.bridge.server.ServerType
-import ink.pmc.framework.bridge.world.BridgeWorld
+import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.PlayerOperation
+import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.PlayerOperationResult
+import ink.pmc.framework.bridge.proto.playerOperation
+import ink.pmc.framework.bridge.proto.soundInfo
+import ink.pmc.framework.bridge.proto.titleInfo
 import net.kyori.adventure.sound.Sound
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.minimessage.MiniMessage
 import net.kyori.adventure.title.Title
-import java.util.*
 
-abstract class RemotePlayer(
-    final override val uniqueId: UUID,
-    final override val name: String,
-    final override var server: BridgeServer,
-    override var world: BridgeWorld? = null
-) : InternalPlayer() {
-    private val local = Bridge.local.getPlayer(uniqueId)
-        ?: error("Corresponding local player instance not found: $name")
-    override val group: BridgeGroup? = server.group
-    override val serverType: ServerType = ServerType.BACKEND
-    override val serverState: ServerState = ServerState.REMOTE
+abstract class RemotePlayer : InternalPlayer() {
     override var isOnline: Boolean = true
 
     override suspend fun sendMessage(message: String) {
-        check(isOnline) { "Player offline: $name" }
-        local.sendMessage(message)
+        sendMessage(Component.text(message))
     }
 
     override suspend fun sendMessage(message: Component) {
-        check(isOnline) { "Player offline: $name" }
-        local.sendMessage(message)
+        operatePlayer(playerOperation {
+            sendMessage = MiniMessage.miniMessage().serialize(message)
+        })
     }
 
     override suspend fun sendMessage(message: RootComponentKt.() -> Unit) {
-        check(isOnline) { "Player offline: $name" }
-        local.sendMessage(message)
+        sendMessage(RootComponentKt().apply(message).build())
     }
 
     override suspend fun showTitle(title: Title) {
-        check(isOnline) { "Player offline: $name" }
-        local.showTitle(title)
+        operatePlayer(playerOperation {
+            showTitle = titleInfo {
+                val times = title.times()
+                fadeInMs = times?.fadeIn()?.toMillis() ?: 500
+                stayMs = times?.stay()?.toMillis() ?: 3500
+                fadeOutMs = times?.fadeOut()?.toMillis() ?: 1000
+                mainTitle = MiniMessage.miniMessage().serialize(title.title())
+                subTitle = MiniMessage.miniMessage().serialize(title.subtitle())
+            }
+        })
     }
 
     override suspend fun showTitle(title: ComponentTitleKt.() -> Unit) {
-        check(isOnline) { "Player offline: $name" }
-        local.showTitle(title)
+        showTitle(ComponentTitleKt().apply(title).build())
     }
 
     override suspend fun playSound(sound: Sound) {
-        check(isOnline) { "Player offline: $name" }
-        local.playSound(sound)
+        operatePlayer(playerOperation {
+            playSound = soundInfo {
+                key = sound.name().asString()
+                volume = sound.volume()
+                pitch = sound.pitch()
+            }
+        })
     }
 
     override suspend fun playSound(sound: SoundKt.() -> Unit) {
-        check(isOnline) { "Player offline: $name" }
-        local.playSound(sound)
+        playSound(SoundKt().apply(sound).build())
     }
+
+    abstract suspend fun operatePlayer(request: PlayerOperation): PlayerOperationResult
 }

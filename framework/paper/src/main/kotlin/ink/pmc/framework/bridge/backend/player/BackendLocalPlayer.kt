@@ -6,15 +6,12 @@ import ink.pmc.advkt.send
 import ink.pmc.advkt.showTitle
 import ink.pmc.advkt.sound.SoundKt
 import ink.pmc.advkt.title.ComponentTitleKt
-import ink.pmc.framework.bridge.backend.backendBridge
+import ink.pmc.framework.bridge.Bridge
 import ink.pmc.framework.bridge.backend.world.BackendLocalWorld
 import ink.pmc.framework.bridge.backend.world.createBridge
 import ink.pmc.framework.bridge.backend.world.createBukkit
 import ink.pmc.framework.bridge.player.InternalPlayer
-import ink.pmc.framework.bridge.server.BridgeGroup
 import ink.pmc.framework.bridge.server.BridgeServer
-import ink.pmc.framework.bridge.server.ServerState
-import ink.pmc.framework.bridge.server.ServerType
 import ink.pmc.framework.bridge.world.BridgeLocation
 import ink.pmc.framework.bridge.world.BridgeWorld
 import ink.pmc.framework.utils.entity.teleportSuspend
@@ -29,11 +26,8 @@ import java.util.*
 class BackendLocalPlayer(private val actual: Player) : InternalPlayer() {
     override val uniqueId: UUID = actual.uniqueId
     override val name: String = actual.name
-    override var server: BridgeServer = backendBridge.local
+    override var server: BridgeServer = Bridge.local
         set(_) = error("Unsupported")
-    override val group: BridgeGroup? = server.group
-    override val serverState: ServerState = ServerState.LOCAL
-    override val serverType: ServerType = ServerType.BACKEND
     override var world: BridgeWorld?
         get() = BackendLocalWorld(actual.world)
         set(_) = error("Unsupported")

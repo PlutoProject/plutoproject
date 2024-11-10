@@ -1,25 +1,17 @@
 package ink.pmc.framework.bridge.player
 
-import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.PlayerOperation
 import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.PlayerOperationResult
 import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.PlayerOperationResult.ContentCase.*
 import ink.pmc.framework.bridge.proto.playerOperation
-import ink.pmc.framework.bridge.server.BridgeServer
 import ink.pmc.framework.bridge.world.BridgeLocation
 import ink.pmc.framework.bridge.world.BridgeLocationImpl
-import ink.pmc.framework.bridge.world.BridgeWorld
 import ink.pmc.framework.bridge.world.createInfo
 import ink.pmc.framework.utils.concurrent.submitAsync
 import ink.pmc.framework.utils.proto.empty
 import kotlinx.coroutines.Deferred
 import java.util.*
 
-abstract class RemoteBackendPlayer(
-    uniqueId: UUID,
-    name: String,
-    server: BridgeServer,
-    world: BridgeWorld? = null
-) : RemotePlayer(uniqueId, name, server, world) {
+abstract class RemoteBackendPlayer : RemotePlayer() {
     override val location: Deferred<BridgeLocation>
         get() = submitAsync<BridgeLocation> {
             check(server.isOnline) { "Server offline" }
@@ -85,6 +77,4 @@ abstract class RemoteBackendPlayer(
         })
         checkNoReturnResult(result)?.let { throw it }
     }
-
-    abstract suspend fun operatePlayer(request: PlayerOperation): PlayerOperationResult
 }

@@ -21,9 +21,9 @@ service BridgeRpc {
 }
 
 message TitleInfo {
-  int32 fade_in = 1;
-  int32 stay = 2;
-  int32 fade_out = 3;
+  int64 fade_in_ms = 1;
+  int64 stay_ms = 2;
+  int64 fade_out_ms = 3;
   string main_title = 4;
   string sub_title = 5;
 }
