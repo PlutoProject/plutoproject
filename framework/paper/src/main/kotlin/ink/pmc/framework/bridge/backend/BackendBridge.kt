@@ -21,4 +21,8 @@ class BackendBridge : InternalBridge() {
             BackendRemoteBackendPlayer(info.uniqueId.uuid, info.name, remoteServer, null)
         }
     }
+
+    init {
+        servers.add(local)
+    }
 }

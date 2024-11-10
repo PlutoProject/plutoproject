@@ -40,6 +40,14 @@ private fun getCurrentServerInfo(): ServerInfo {
     }
 }
 
+private suspend fun registerServer() {
+    val result = bridgeStub.registerServer(getCurrentServerInfo())
+    result.serversList.forEach {
+        if (it.id == internalBridge.local.id) return@forEach
+        internalBridge.registerServer(it)
+    }
+}
+
 private suspend fun monitor() = runCatching {
     bridgeStub.monitorNotification(empty).also {
         // 已初始化但从 Master 断开：可能是因为网络问题，同步一次数据防止不一致
@@ -47,12 +55,12 @@ private suspend fun monitor() = runCatching {
             val result = bridgeStub.syncData(getCurrentServerInfo())
             // 未知原因：Master 侧未注册此服务器，进行注册
             if (result.notRegistered) {
-                bridgeStub.registerServer(getCurrentServerInfo())
+                registerServer()
             }
         }
         // 未初始化：注册服务器
         if (!isInitialized) {
-            bridgeStub.registerServer(getCurrentServerInfo())
+            registerServer()
             isInitialized = true
         }
         isConnected = true
@@ -74,7 +82,7 @@ private fun startMonitor() {
     }
 }
 
-private suspend fun heartbeat() {
+private suspend fun heartbeat() = runCatching {
     val result = bridgeStub.heartbeat(heartbeatMessage {
         server = internalBridge.local.id
     })
