@@ -1,5 +1,6 @@
 package ink.pmc.framework.bridge.world
 
+import ink.pmc.framework.bridge.Bridge
 import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.WorldInfo
 import ink.pmc.framework.bridge.proto.worldInfo
 
@@ -13,8 +14,17 @@ fun BridgeWorld.createInfo(): WorldInfo {
     }
 }
 
+internal fun WorldInfo.getBridge(): BridgeWorld? {
+    val remoteServer = Bridge.getServer(server) ?: return null
+    return Bridge.getWorld(remoteServer, name)
+}
+
 abstract class InternalWorld : BridgeWorld {
     abstract override var spawnPoint: BridgeLocation
+
+    fun update(info: WorldInfo) {
+        spawnPoint = info.spawnPoint.createBridge()
+    }
 
     override fun equals(other: Any?): Boolean {
         if (other !is BridgeWorld) return false

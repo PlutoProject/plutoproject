@@ -6,6 +6,7 @@ import ink.pmc.advkt.sound.pitch
 import ink.pmc.advkt.sound.volume
 import ink.pmc.advkt.title.*
 import ink.pmc.framework.bridge.Bridge
+import ink.pmc.framework.bridge.internalBridge
 import ink.pmc.framework.bridge.player.InternalPlayer
 import ink.pmc.framework.bridge.proto.BridgeRpcGrpcKt.BridgeRpcCoroutineImplBase
 import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.*
@@ -13,14 +14,13 @@ import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.PlayerOperation.Conten
 import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.PlayerOperationAck.ContentCase
 import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.PlayerOperationAck.ContentCase.OK
 import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.PlayerOperationAck.ContentCase.UNSUPPORTED
+import ink.pmc.framework.bridge.proto.heartbeatResult
 import ink.pmc.framework.bridge.proto.notification
 import ink.pmc.framework.bridge.proto.playerOperationResult
 import ink.pmc.framework.bridge.proto.serverRegistrationResult
 import ink.pmc.framework.bridge.proxy.player.ProxyRemoteBackendPlayer
 import ink.pmc.framework.bridge.proxy.server.localServer
 import ink.pmc.framework.bridge.server.*
-import ink.pmc.framework.bridge.update
-import ink.pmc.framework.bridge.world.BridgeLocationImpl
 import ink.pmc.framework.bridge.world.InternalWorld
 import ink.pmc.framework.bridge.world.RemoteBackendWorld
 import ink.pmc.framework.bridge.world.createBridge
@@ -78,7 +78,7 @@ object BridgeRpc : BridgeRpcCoroutineImplBase() {
         heartbeatCheckJob = submitAsync {
             while (isRunning) {
                 delay(5.seconds)
-                proxyBridge.servers.forEach {
+                internalBridge.servers.forEach {
                     handleHeartbeat(it)
                 }
             }
@@ -92,19 +92,19 @@ object BridgeRpc : BridgeRpcCoroutineImplBase() {
             }
         }
         val id = request.id
-        val group = request.group?.let { proxyBridge.getGroup(it) ?: BridgeGroupImpl(it) }
+        val group = request.group?.let { internalBridge.getGroup(it) ?: BridgeGroupImpl(it) }
         val server = RemoteBackendServer(id, group).apply {
             setWorlds(request)
             setPlayers(request)
         }
-        proxyBridge.servers.add(server)
+        internalBridge.servers.add(server)
         heartbeatMap[server] = Instant.now()
         notificationFlow.emit(notification {
             serverRegistration = request
         })
         return serverRegistrationResult {
             ok = true
-            servers.addAll(proxyBridge.servers.map { it.createInfo() })
+            servers.addAll(internalBridge.servers.map { it.createInfo() })
         }
     }
 
@@ -126,15 +126,23 @@ object BridgeRpc : BridgeRpcCoroutineImplBase() {
         })
     }
 
-    override suspend fun heartbeat(request: ServerInfo): Empty {
-        val remoteServer = proxyBridge.getServer(request.id) as InternalServer?
-            ?: error("Server not found: ${request.id}")
+    override suspend fun heartbeat(request: HeartbeatMessage): HeartbeatResult {
+        val remoteServer = internalBridge.getServer(request.server) as InternalServer? ?: return heartbeatResult {
+            notRegistered = true
+        }
         heartbeatMap[remoteServer] = Instant.now()
         remoteServer.isOnline = true
         notificationFlow.emit(notification {
-            serverInfoUpdate = request
+            serverOnline = request.server
         })
-        return empty
+        return heartbeatResult {
+            ok = true
+        }
+    }
+
+    override suspend fun syncData(request: ServerInfo): DataSyncResult {
+        val remoteServer = internalBridge.getServer(request.id) ?: error("Server not found ${request.id}")
+        return super.syncData(request)
     }
 
     private fun handleNoReturnAck(ack: PlayerOperationAck): PlayerOperationResult {
@@ -178,9 +186,7 @@ object BridgeRpc : BridgeRpcCoroutineImplBase() {
                 return@withTimeoutOrNull handleInfoLookupAck(ack)
             }
             null
-        } ?: playerOperationResult {
-            timeout = true
-        }
+        } ?: playerOperationResult { timeout = true }
     }
 
     private suspend fun handleSendMessage(request: PlayerOperation, player: InternalPlayer): PlayerOperationResult {
@@ -213,7 +219,7 @@ object BridgeRpc : BridgeRpcCoroutineImplBase() {
     }
 
     private fun PlayerOperation.getRemotePlayer(): InternalPlayer? {
-        return proxyBridge.getRemotePlayer(playerUuid.uuid) as InternalPlayer?
+        return internalBridge.getRemotePlayer(playerUuid.uuid) as InternalPlayer?
     }
 
     private suspend fun handleTeleport(request: PlayerOperation): PlayerOperationResult {
@@ -251,7 +257,7 @@ object BridgeRpc : BridgeRpcCoroutineImplBase() {
     }
 
     override suspend fun updatePlayerInfo(request: PlayerInfo): Empty {
-        val remotePlayer = proxyBridge.getRemotePlayer(request.uniqueId) as InternalPlayer?
+        val remotePlayer = internalBridge.getRemotePlayer(request.uniqueId) as InternalPlayer?
             ?: error("Player not found: ${request.name}")
         remotePlayer.update(request)
         notificationFlow.emit(notification { playerInfoUpdate = request })
@@ -266,13 +272,8 @@ object BridgeRpc : BridgeRpcCoroutineImplBase() {
         error("Placeholder")
     }
 
-    private fun InternalWorld.update(info: WorldInfo) {
-        val loc = info.spawnPoint
-        spawnPoint = BridgeLocationImpl(server, this, loc.x, loc.y, loc.z, loc.yaw, loc.pitch)
-    }
-
     override suspend fun updateWorldInfo(request: WorldInfo): Empty {
-        val remoteServer = proxyBridge.getServer(request.server) ?: error("Server not found: ${request.server}")
+        val remoteServer = internalBridge.getServer(request.server) ?: error("Server not found: ${request.server}")
         val remoteWorld = remoteServer.getWorld(request.name) as InternalWorld?
             ?: error("World not found: ${request.name}")
         remoteWorld.update(request)
@@ -281,7 +282,7 @@ object BridgeRpc : BridgeRpcCoroutineImplBase() {
     }
 
     override suspend fun unloadWorld(request: WorldLoad): Empty {
-        val remoteServer = proxyBridge.getServer(request.server) as InternalServer?
+        val remoteServer = internalBridge.getServer(request.server) as InternalServer?
             ?: error("Server not found: ${request.server}")
         val remoteWorld = remoteServer.getWorld(request.world) ?: error("World not found: ${request.world}")
         remoteServer.worlds.remove(remoteWorld)

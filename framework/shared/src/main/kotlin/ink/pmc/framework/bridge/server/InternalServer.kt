@@ -30,6 +30,10 @@ abstract class InternalServer : BridgeServer {
     override val worlds: MutableSet<BridgeWorld> = mutableConcurrentSetOf()
     abstract override var isOnline: Boolean
 
+    fun update(info: ServerInfo) {
+        
+    }
+
     override fun equals(other: Any?): Boolean {
         if (other !is BridgeServer) return false
         return other.id == id && other.state == state && other.type == type

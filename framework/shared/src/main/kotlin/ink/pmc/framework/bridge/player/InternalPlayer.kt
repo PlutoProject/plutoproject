@@ -5,6 +5,7 @@ import ink.pmc.framework.bridge.proto.playerInfo
 import ink.pmc.framework.bridge.server.BridgeServer
 import ink.pmc.framework.bridge.world.BridgeWorld
 import ink.pmc.framework.bridge.world.createInfo
+import ink.pmc.framework.bridge.world.getBridge
 
 fun BridgePlayer.createInfo(): PlayerInfo {
     val player = this
@@ -26,6 +27,10 @@ abstract class InternalPlayer : BridgePlayer {
     abstract override var server: BridgeServer
     abstract override var world: BridgeWorld?
     abstract override var isOnline: Boolean
+
+    fun update(info: PlayerInfo) {
+        world = info.world.getBridge() ?: error("World not found: ${info.world.name} (server: ${info.world.name})")
+    }
 
     override fun equals(other: Any?): Boolean {
         if (other !is BridgePlayer) return false

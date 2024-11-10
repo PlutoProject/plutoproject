@@ -2,7 +2,6 @@ package ink.pmc.framework.bridge.backend.world
 
 import ink.pmc.framework.bridge.Bridge
 import ink.pmc.framework.bridge.backend.server.localServer
-import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.WorldInfo
 import ink.pmc.framework.bridge.server.BridgeGroup
 import ink.pmc.framework.bridge.server.BridgeServer
 import ink.pmc.framework.bridge.server.ServerState
@@ -16,17 +15,13 @@ import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.World
 
-internal fun World.getBridge(): BridgeWorld? {
-    return localServer.getWorld(name)
-}
-
-internal fun WorldInfo.getBridge(): BridgeWorld? {
-    return localServer.getWorld(name)
-}
-
 internal fun BridgeWorld.getBukkit(): World {
     check(serverState.isLocal) { "Only local location can be converted" }
     return Bukkit.getWorld(name)!!
+}
+
+internal fun World.getBridge(): BridgeWorld? {
+    return localServer.getWorld(name)
 }
 
 internal fun Location.createBridge(): BridgeLocation {

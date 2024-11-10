@@ -6,7 +6,8 @@ import "google/protobuf/empty.proto";
 service BridgeRpc {
   rpc MonitorNotification(google.protobuf.Empty) returns (stream Notification);
   rpc RegisterServer(ServerInfo) returns (ServerRegistrationResult);
-  rpc Heartbeat(ServerInfo) returns (google.protobuf.Empty);
+  rpc Heartbeat(HeartbeatMessage) returns (HeartbeatResult);
+  rpc SyncData(ServerInfo) returns (DataSyncResult);
 
   rpc OperatePlayer(PlayerOperation) returns (PlayerOperationResult);
   rpc AckPlayerOperation(PlayerOperationAck) returns (google.protobuf.Empty);
@@ -15,6 +16,7 @@ service BridgeRpc {
   rpc OperateWorld(WorldOperation) returns (WorldOperationResult);
   rpc AckWorldOperation(WorldOperationAck) returns (google.protobuf.Empty);
   rpc UpdateWorldInfo(WorldInfo) returns (google.protobuf.Empty);
+  rpc LoadWorld(WorldLoad) returns (google.protobuf.Empty);
   rpc UnloadWorld(WorldLoad) returns (google.protobuf.Empty);
 }
 
@@ -72,6 +74,21 @@ message PlayerInfo {
   optional LocationInfo location = 7;
 }
 
+message HeartbeatMessage {
+  string server = 1;
+}
+
+message HeartbeatResult {
+  oneof result {
+    bool ok = 1;
+    bool not_registered = 2;
+  }
+}
+
+message DataSyncResult {
+  repeated ServerInfo servers = 1;
+}
+
 message WorldLoad {
   string server = 1;
   string world = 2;
@@ -82,22 +99,30 @@ message PlayerDisconnect {
   string unique_id = 2;
 }
 
+message PlayerSwitchServer {
+  string server = 1;
+  string player_uuid = 2;
+}
+
 message Notification {
   oneof content {
     // Server
     ServerInfo server_registration = 1;
     ServerInfo server_info_update = 2;
     string server_offline = 3;
+    string server_online = 4;
 
     // Player
-    PlayerOperation player_operation = 4;
-    PlayerInfo player_info_update = 5; // 没有就同步
-    PlayerDisconnect player_disconnect = 7;
+    PlayerOperation player_operation = 5;
+    PlayerInfo player_info_update = 6;
+    PlayerSwitchServer player_switch_server = 7;
+    PlayerDisconnect player_disconnect = 8;
 
     // World
-    WorldOperation world_operation = 8;
-    WorldInfo world_info_update = 9; // 没有就同步
-    WorldLoad world_unload = 10;
+    WorldOperation world_operation = 9;
+    WorldInfo world_info_update = 10;
+    WorldLoad world_load = 11;
+    WorldLoad world_unload = 12;
   }
 }
 
