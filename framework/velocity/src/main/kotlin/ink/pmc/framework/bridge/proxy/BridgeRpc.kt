@@ -241,7 +241,7 @@ object BridgeRpc : BridgeRpcCoroutineImplBase() {
     }
 
     override suspend fun loadWorld(request: WorldInfo): Empty {
-        internalBridge.addWorld(request)
+        internalBridge.addRemoteWorld(request)
         notificationFlow.emit(notification {
             worldLoad = request
         })
@@ -255,7 +255,7 @@ object BridgeRpc : BridgeRpcCoroutineImplBase() {
     }
 
     override suspend fun unloadWorld(request: WorldLoad): Empty {
-        internalBridge.removeWorld(request)
+        internalBridge.removeRemoteWorld(request)
         notificationFlow.emit(notification { worldUnload = request })
         return empty
     }

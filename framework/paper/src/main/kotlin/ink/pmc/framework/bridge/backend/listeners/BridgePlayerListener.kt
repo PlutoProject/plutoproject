@@ -5,7 +5,8 @@ import ink.pmc.framework.bridge.backend.player.BackendLocalPlayer
 import ink.pmc.framework.bridge.backend.server.localServer
 import ink.pmc.framework.bridge.internalBridge
 import ink.pmc.framework.bridge.player.createInfo
-import ink.pmc.framework.bridge.server.InternalServer
+import ink.pmc.framework.bridge.server.ServerState
+import ink.pmc.framework.bridge.server.ServerType
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
@@ -17,10 +18,10 @@ object BridgePlayerListener : Listener {
     suspend fun PlayerJoinEvent.e() {
         val localPlayer = BackendLocalPlayer(player)
         localServer.players.add(localPlayer)
-        val remotePlayer = internalBridge.getRemotePlayer(player.uniqueId)
+        val remotePlayer = internalBridge.getPlayer(player.uniqueId, ServerState.REMOTE, ServerType.BACKEND)
         // 玩家切换到本服
-        if (remotePlayer != null && remotePlayer.serverType.isBackend) {
-            (remotePlayer.server as InternalServer).players.remove(remotePlayer)
+        if (remotePlayer != null) {
+            internalBridge.removeRemoteBackendPlayer(remotePlayer.uniqueId)
         }
         bridgeStub.updatePlayerInfo(localPlayer.createInfo())
     }

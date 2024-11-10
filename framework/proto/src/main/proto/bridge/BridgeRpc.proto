@@ -155,7 +155,7 @@ message PlayerOperation {
 }
 
 message WorldOperation {
-  string uuid = 1;
+  string id = 1;
   string server = 2;
   string world = 3;
   oneof content {
