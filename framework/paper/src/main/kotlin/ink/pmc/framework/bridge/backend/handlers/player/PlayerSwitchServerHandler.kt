@@ -7,8 +7,8 @@ import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.Notification
 
 object PlayerSwitchServerHandler : NotificationHandler {
     override suspend fun handle(request: Notification) {
-        debugInfo("PlayerSwitchServerHandler: $request")
         if (request.playerSwitchServer.server == internalBridge.local.id) return
+        debugInfo("PlayerSwitchServerHandler: $request")
         internalBridge.remotePlayerSwitchServer(request.playerSwitchServer)
     }
 }

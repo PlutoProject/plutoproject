@@ -8,7 +8,7 @@ import ink.pmc.framework.utils.player.uuid
 
 object WorldOperationHandler : NotificationHandler {
     override suspend fun handle(request: BridgeRpcOuterClass.Notification) {
-        debugInfo("WorldOperationHandler: $request")
         if (operationsSent.remove(request.worldOperation.id.uuid)) return
+        debugInfo("WorldOperationHandler: $request")
     }
 }

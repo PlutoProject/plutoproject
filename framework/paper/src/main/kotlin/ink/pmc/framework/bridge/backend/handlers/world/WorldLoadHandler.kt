@@ -7,8 +7,8 @@ import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.Notification
 
 object WorldLoadHandler : NotificationHandler {
     override suspend fun handle(request: Notification) {
-        debugInfo("WorldLoadHandler: $request")
         if (request.worldLoad.server == internalBridge.local.id) return
+        debugInfo("WorldLoadHandler: $request")
         internalBridge.addRemoteWorld(request.worldLoad)
     }
 }

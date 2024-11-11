@@ -7,8 +7,8 @@ import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.Notification
 
 object PlayerJoinHandler : NotificationHandler {
     override suspend fun handle(request: Notification) {
-        debugInfo("PlayerJoinHandler: $request")
         if (request.playerJoin.server == internalBridge.local.id) return
+        debugInfo("PlayerJoinHandler: $request")
         internalBridge.addRemotePlayer(request.playerJoin)
     }
 }

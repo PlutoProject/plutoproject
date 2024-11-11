@@ -7,8 +7,8 @@ import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.Notification
 
 object ServerRegistrationHandler : NotificationHandler {
     override suspend fun handle(request: Notification) {
-        debugInfo("ServerRegistrationHandler: $request")
         if (request.serverRegistration.id == internalBridge.local.id) return
+        debugInfo("ServerRegistrationHandler: $request")
         internalBridge.registerRemoteServer(request.serverRegistration)
     }
 }

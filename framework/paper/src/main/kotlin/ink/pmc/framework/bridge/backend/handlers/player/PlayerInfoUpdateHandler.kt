@@ -7,8 +7,8 @@ import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.Notification
 
 object PlayerInfoUpdateHandler : NotificationHandler {
     override suspend fun handle(request: Notification) {
-        debugInfo("PlayerInfoUpdateHandler: $request")
         if (request.playerInfoUpdate.server == internalBridge.local.id) return
+        debugInfo("PlayerInfoUpdateHandler: $request")
         internalBridge.updateRemotePlayerInfo(request.playerInfoUpdate)
     }
 }

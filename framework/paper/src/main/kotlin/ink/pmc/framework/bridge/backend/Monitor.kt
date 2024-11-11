@@ -49,6 +49,7 @@ private suspend fun registerServer() {
         if (it.id == internalBridge.local.id) return@forEach
         internalBridge.registerRemoteServer(it)
     }
+    isInitialized = true
     debugInfo("Server registered")
 }
 
@@ -59,7 +60,6 @@ private suspend fun monitor() = runCatching {
         if (isInitialized && !isConnected) {
             debugInfo("Trying to sync data")
             val result = bridgeStub.syncData(getCurrentServerInfo())
-            // 未知原因：Master 侧未注册此服务器，进行注册
             if (result.notRegistered) {
                 registerServer()
             }
@@ -68,7 +68,6 @@ private suspend fun monitor() = runCatching {
         // 未初始化：注册服务器
         if (!isInitialized) {
             registerServer()
-            isInitialized = true
         }
         isConnected = true
         frameworkLogger.info("Bridge monitor connected successfully")
@@ -80,10 +79,10 @@ private suspend fun monitor() = runCatching {
     if (isConnected) {
         frameworkLogger.log(Level.SEVERE, "Bridge monitor disconnected, wait 10s before retry", it)
     } else {
-        frameworkLogger.log(Level.SEVERE, "Failed to connect Bridge monitor, wait 10s before retry", it)
+        frameworkLogger.log(Level.SEVERE, "Failed to connect Bridge monitor, wait 5s before retry", it)
     }
     isConnected = false
-    delay(10.seconds)
+    delay(5.seconds)
 }
 
 private fun startMonitor() {
@@ -99,7 +98,7 @@ private suspend fun heartbeat() = runCatching {
         server = internalBridge.local.id
     })
     // Master 报告未注册：可能是因为 Master 重启了，重新初始化
-    if (result.notRegistered) {
+    if (result.notRegistered && isInitialized) {
         debugInfo("Master responded notRegistered")
         isInitialized = false
         isConnected = false

@@ -7,8 +7,8 @@ import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.Notification
 
 object ServerOfflineHandler : NotificationHandler {
     override suspend fun handle(request: Notification) {
-        debugInfo("ServerOfflineHandler: $request")
         if (request.serverOffline == internalBridge.local.id) return
+        debugInfo("ServerOfflineHandler: $request")
         internalBridge.markRemoteServerOffline(request.serverOffline)
     }
 }

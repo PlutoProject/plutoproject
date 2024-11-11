@@ -17,9 +17,9 @@ import ink.pmc.framework.utils.player.uuid
 
 object PlayerOperationHandler : NotificationHandler {
     override suspend fun handle(request: Notification) {
-        debugInfo("PlayerOperationHandler: $request")
         val msg = request.playerOperation
         if (operationsSent.remove(msg.id.uuid)) return
+        debugInfo("PlayerOperationHandler: $request")
         val localPlayer = internalBridge.getInternalLocalPlayer(msg.playerUuid.uuid)
             ?: localPlayerNotFound(msg.playerUuid)
         when (msg.contentCase!!) {
