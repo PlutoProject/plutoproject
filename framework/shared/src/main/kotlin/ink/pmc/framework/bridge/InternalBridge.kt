@@ -159,8 +159,8 @@ abstract class InternalBridge : Bridge {
     fun removeRemoteBackendPlayer(uuid: UUID) {
         debugInfo("InternalBridge - removeRemoteBackendPlayer called: $uuid")
         val remotePlayer = getInternalRemoteBackendPlayer(uuid) ?: remotePlayerNotFound(uuid.toString())
-        remotePlayer.isOnline = false
         (remotePlayer.server as InternalServer).players.remove(remotePlayer)
+        remotePlayer.isOnline = false
     }
 
     fun addRemoteWorld(info: WorldInfo): InternalWorld {
