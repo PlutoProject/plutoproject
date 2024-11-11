@@ -77,7 +77,7 @@ private suspend fun monitor() = runCatching {
     }
 }.onFailure {
     if (isConnected) {
-        frameworkLogger.log(Level.SEVERE, "Bridge monitor disconnected, wait 10s before retry", it)
+        frameworkLogger.log(Level.SEVERE, "Bridge monitor disconnected, wait 5s before retry", it)
     } else {
         frameworkLogger.log(Level.SEVERE, "Failed to connect Bridge monitor, wait 5s before retry", it)
     }
