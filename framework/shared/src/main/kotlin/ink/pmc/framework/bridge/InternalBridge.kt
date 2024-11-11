@@ -16,8 +16,8 @@ val internalBridge: InternalBridge
 abstract class InternalBridge : Bridge {
     override val servers: MutableSet<BridgeServer> = mutableSetOf()
 
-    private fun unregisterServer(id: String) {
-        debugInfo("InternalBridge unregisterServer: $id")
+    private fun unregisterRemoteServer(id: String) {
+        debugInfo("InternalBridge unregisterRemoteServer: $id")
         require(id != local.id) { "Cannot unregister local server" }
         val remoteServer = getInternalRemoteServer(id) ?: remoteServerNotFound(id)
         remoteServer.isOnline = false
@@ -58,21 +58,21 @@ abstract class InternalBridge : Bridge {
         return world
     }
 
-    private fun InternalServer.setInitialPlayers(info: ServerInfo, server: InternalServer) {
+    fun InternalServer.setInitialPlayers(info: ServerInfo, server: InternalServer) {
         players.clear()
         players.addAll(info.playersList.map {
             createRemotePlayer(it, server)
         })
     }
 
-    private fun InternalServer.setInitialWorlds(info: ServerInfo, server: InternalServer) {
+    fun InternalServer.setInitialWorlds(info: ServerInfo, server: InternalServer) {
         worlds.clear()
         worlds.addAll(info.worldsList.map {
             createRemoteWorld(it, server)
         })
     }
 
-    private fun createServer(info: ServerInfo): InternalServer {
+    open fun createRemoteServer(info: ServerInfo): InternalServer {
         val id = info.id
         val group = info.group?.let { getGroup(it) ?: BridgeGroupImpl(it) }
         val server = RemoteBackendServer(id, group).apply {
@@ -82,13 +82,13 @@ abstract class InternalBridge : Bridge {
         return server
     }
 
-    fun registerServer(info: ServerInfo): BridgeServer {
-        debugInfo("InternalBridge registerServer: $info")
+    fun registerRemoteServer(info: ServerInfo): BridgeServer {
+        debugInfo("InternalBridge registerRemoteServer: $info")
         val id = info.id
         if (isServerRegistered(id)) {
-            unregisterServer(id)
+            unregisterRemoteServer(id)
         }
-        val server = createServer(info)
+        val server = createRemoteServer(info)
         servers.add(server)
         return server
     }

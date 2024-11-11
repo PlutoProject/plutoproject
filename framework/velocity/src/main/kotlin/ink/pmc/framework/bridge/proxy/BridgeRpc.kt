@@ -94,8 +94,8 @@ object BridgeRpc : BridgeRpcCoroutineImplBase(), KoinComponent {
     }
 
     override suspend fun registerServer(request: ServerInfo): ServerRegistrationResult = rpcCatching {
-        debugInfo("registerServer called: $request")
-        val server = internalBridge.registerServer(request)
+        debugInfo("registerRemoteServer called: $request")
+        val server = internalBridge.registerRemoteServer(request)
         heartbeatMap[server] = Instant.now()
         notificationFlow.emit(notification {
             serverRegistration = request

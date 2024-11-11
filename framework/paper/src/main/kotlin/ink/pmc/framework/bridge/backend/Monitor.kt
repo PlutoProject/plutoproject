@@ -47,7 +47,7 @@ private suspend fun registerServer() {
     val result = bridgeStub.registerServer(getCurrentServerInfo())
     result.serversList.forEach {
         if (it.id == internalBridge.local.id) return@forEach
-        internalBridge.registerServer(it)
+        internalBridge.registerRemoteServer(it)
     }
     debugInfo("Server registered")
 }

@@ -9,6 +9,6 @@ object ServerRegistrationHandler : NotificationHandler {
     override suspend fun handle(request: Notification) {
         debugInfo("ServerRegistrationHandler: $request")
         if (request.serverRegistration.id == internalBridge.local.id) return
-        internalBridge.registerServer(request.serverRegistration)
+        internalBridge.registerRemoteServer(request.serverRegistration)
     }
 }

@@ -13,9 +13,9 @@ import java.util.*
 
 class BackendRemoteProxyPlayer(
     override val uniqueId: UUID,
-    override val name: String
+    override val name: String,
+    override var server: BridgeServer
 ) : RemotePlayer() {
-    override var server: BridgeServer = Bridge.master
     override var world: BridgeWorld?
         get() = error("Unsupported")
         set(_) = error("Unsupported")
