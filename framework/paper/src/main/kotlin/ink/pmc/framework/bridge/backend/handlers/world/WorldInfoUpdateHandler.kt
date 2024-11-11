@@ -9,6 +9,6 @@ object WorldInfoUpdateHandler : NotificationHandler {
     override suspend fun handle(request: Notification) {
         debugInfo("WorldInfoUpdateHandler: $request")
         if (request.worldInfoUpdate.server == internalBridge.local.id) return
-        internalBridge.updateWorldInfo(request.worldInfoUpdate)
+        internalBridge.updateRemoteWorldInfo(request.worldInfoUpdate)
     }
 }

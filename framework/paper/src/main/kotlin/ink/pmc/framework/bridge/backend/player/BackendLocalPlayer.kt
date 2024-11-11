@@ -28,7 +28,7 @@ class BackendLocalPlayer(private val actual: Player, server: BridgeServer) : Int
     override var server: BridgeServer = server
         set(_) = error("Unsupported")
     override var world: BridgeWorld?
-        get() = BackendLocalWorld(actual.world, server)
+        get() = server.getWorld(actual.world.name) ?: BackendLocalWorld(actual.world, server)
         set(_) = error("Unsupported")
     override val location: Deferred<BridgeLocation>
         get() = CompletableDeferred(actual.location.createBridge())

@@ -53,7 +53,6 @@ object BridgePlayerListener {
         }
         BridgeRpc.notify(notification {
             playerDisconnect = playerDisconnect {
-                server = localServer.id
                 this.uniqueId = uniqueId.toString()
             }
         })

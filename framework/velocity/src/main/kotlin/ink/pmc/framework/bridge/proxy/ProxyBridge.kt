@@ -20,7 +20,7 @@ class ProxyBridge : InternalBridge() {
         servers.add(local)
     }
 
-    override fun createPlayer(info: PlayerInfo, server: InternalServer?): InternalPlayer {
+    override fun createRemotePlayer(info: PlayerInfo, server: InternalServer?): InternalPlayer {
         val actualServer = server ?: getInternalServer(info.server)
         return ProxyRemoteBackendPlayer(proxy.getPlayer(info.uniqueId.uuid).get(), actualServer, null)
     }

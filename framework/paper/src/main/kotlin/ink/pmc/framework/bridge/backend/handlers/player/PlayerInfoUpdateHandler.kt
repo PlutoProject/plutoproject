@@ -9,6 +9,6 @@ object PlayerInfoUpdateHandler : NotificationHandler {
     override suspend fun handle(request: Notification) {
         debugInfo("PlayerInfoUpdateHandler: $request")
         if (request.playerInfoUpdate.server == internalBridge.local.id) return
-        internalBridge.updatePlayerInfo(request.playerInfoUpdate)
+        internalBridge.updateRemotePlayerInfo(request.playerInfoUpdate)
     }
 }

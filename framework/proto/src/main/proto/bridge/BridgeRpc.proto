@@ -99,8 +99,7 @@ message WorldLoad {
 }
 
 message PlayerDisconnect {
-  string server = 1;
-  string unique_id = 2;
+  string unique_id = 1;
 }
 
 message PlayerSwitchServer {

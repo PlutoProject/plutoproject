@@ -13,7 +13,7 @@ import ink.pmc.framework.utils.player.uuid
 class BackendBridge : InternalBridge() {
     override val local: BridgeServer = BackendLocalServer()
 
-    override fun createPlayer(info: PlayerInfo, server: InternalServer?): InternalPlayer {
+    override fun createRemotePlayer(info: PlayerInfo, server: InternalServer?): InternalPlayer {
         return if (info.proxy) {
             BackendRemoteProxyPlayer(info.uniqueId.uuid, info.name)
         } else {

@@ -250,7 +250,7 @@ object BridgeRpc : BridgeRpcCoroutineImplBase(), KoinComponent {
     }
 
     override suspend fun updatePlayerInfo(request: PlayerInfo): Empty = rpcCatching {
-        internalBridge.updatePlayerInfo(request)
+        internalBridge.updateRemotePlayerInfo(request)
         notificationFlow.emit(notification { playerInfoUpdate = request })
         return@rpcCatching empty
     }
@@ -275,8 +275,8 @@ object BridgeRpc : BridgeRpcCoroutineImplBase(), KoinComponent {
     }
 
     override suspend fun updateWorldInfo(request: WorldInfo): Empty = rpcCatching {
-        debugInfo("updateWorldInfo called: $request")
-        internalBridge.updateWorldInfo(request)
+        debugInfo("updateRemoteWorldInfo called: $request")
+        internalBridge.updateRemoteWorldInfo(request)
         notificationFlow.emit(notification { worldInfoUpdate = request })
         return@rpcCatching empty
     }

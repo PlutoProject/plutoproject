@@ -9,7 +9,6 @@ import ink.pmc.framework.utils.player.uuid
 object PlayerDisconnectHandler : NotificationHandler {
     override suspend fun handle(request: Notification) {
         debugInfo("PlayerDisconnectHandler: $request")
-        if (request.playerDisconnect.server == internalBridge.local.id) return
         internalBridge.removeRemotePlayers(request.playerDisconnect.uniqueId.uuid)
     }
 }

@@ -9,6 +9,7 @@ import ink.pmc.framework.bridge.server.ServerState
 import ink.pmc.framework.bridge.server.ServerType
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
+import org.bukkit.event.player.PlayerChangedWorldEvent
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
 
@@ -27,8 +28,14 @@ object BridgePlayerListener : Listener {
     }
 
     @EventHandler
+    suspend fun PlayerChangedWorldEvent.e() {
+        val localPlayer = internalBridge.getInternalLocalPlayer(player.uniqueId)
+        bridgeStub.updatePlayerInfo(localPlayer.createInfo())
+    }
+
+    @EventHandler
     fun PlayerQuitEvent.e() {
-        val localPlayer = localServer.getPlayer(player.uniqueId) ?: error("Local player not found: ${player.name}")
+        val localPlayer = internalBridge.getInternalLocalPlayer(player.uniqueId)
         localServer.players.remove(localPlayer)
     }
 }
