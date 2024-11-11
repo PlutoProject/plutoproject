@@ -32,9 +32,6 @@ class BackendLocalPlayer(private val actual: Player, server: BridgeServer) : Int
         set(_) = error("Unsupported")
     override val location: Deferred<BridgeLocation>
         get() = CompletableDeferred(actual.location.createBridge())
-    override var isOnline: Boolean
-        get() = actual.isOnline
-        set(_) = error("Unsupported")
 
     override suspend fun teleport(location: BridgeLocation) {
         actual.teleportSuspend(location.createBukkit())

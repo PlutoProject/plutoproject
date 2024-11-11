@@ -5,6 +5,9 @@ import ink.pmc.framework.bridge.backend.handlers.NotificationHandler
 import ink.pmc.framework.bridge.backend.operationsSent
 import ink.pmc.framework.bridge.backend.server.localServer
 import ink.pmc.framework.bridge.debugInfo
+import ink.pmc.framework.bridge.internalBridge
+import ink.pmc.framework.bridge.localPlayerNotFound
+import ink.pmc.framework.bridge.localWorldNotFound
 import ink.pmc.framework.bridge.player.createInfo
 import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.Notification
 import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.PlayerOperation
@@ -17,7 +20,8 @@ object PlayerOperationHandler : NotificationHandler {
         debugInfo("PlayerOperationHandler: $request")
         val msg = request.playerOperation
         if (operationsSent.remove(msg.id.uuid)) return
-        val localPlayer = localServer.getPlayer(msg.playerUuid.uuid) ?: error("Player not found: ${msg.playerUuid}")
+        val localPlayer = internalBridge.getInternalLocalPlayer(msg.playerUuid.uuid)
+            ?: localPlayerNotFound(msg.playerUuid)
         when (msg.contentCase!!) {
             INFO_LOOKUP -> {
                 bridgeStub.ackPlayerOperation(playerOperationAck {
@@ -37,7 +41,7 @@ object PlayerOperationHandler : NotificationHandler {
                     msg.teleport.z,
                     msg.teleport.yaw,
                     msg.teleport.pitch,
-                ) ?: error("World not found: ${msg.teleport.world} (server: ${msg.teleport.server})")
+                ) ?: localWorldNotFound(msg.teleport.world)
                 localPlayer.teleport(location)
             }
 

@@ -29,10 +29,10 @@ object BridgePlayerListener {
 
     @Subscribe
     suspend fun ServerConnectedEvent.e() {
-        val current = internalBridge.getInternalServer(server.serverInfo.name)
+        val current = internalBridge.getInternalRemoteServer(server.serverInfo.name)
         val remotePlayer = internalBridge.getRemotePlayer(player.uniqueId) as InternalPlayer?
             ?: ProxyRemoteBackendPlayer(player, current, null)
-        val previous = previousServer.getOrNull()?.let { internalBridge.getInternalServer(it.serverInfo.name) }
+        val previous = previousServer.getOrNull()?.let { internalBridge.getInternalRemoteServer(it.serverInfo.name) }
         remotePlayer.server = current
         current.players.add(remotePlayer)
         previous?.players?.remove(remotePlayer)

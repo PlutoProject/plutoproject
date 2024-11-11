@@ -34,9 +34,6 @@ class ProxyLocalPlayer(private val actual: Player, server: BridgeServer) : Inter
     override var world: BridgeWorld?
         set(_) = error("Unsupported")
         get() = error("Unsupported")
-    override var isOnline: Boolean
-        set(_) = error("Unsupported")
-        get() = actual.isActive
 
 
     override suspend fun teleport(location: BridgeLocation) {

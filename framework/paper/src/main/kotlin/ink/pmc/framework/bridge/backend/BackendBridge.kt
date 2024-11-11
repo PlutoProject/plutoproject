@@ -17,7 +17,7 @@ class BackendBridge : InternalBridge() {
         return if (info.proxy) {
             BackendRemoteProxyPlayer(info.uniqueId.uuid, info.name)
         } else {
-            val remoteServer = getInternalServer(info.server)
+            val remoteServer = getInternalRemoteServer(info.server)
             BackendRemoteBackendPlayer(info.uniqueId.uuid, info.name, remoteServer, null)
         }
     }

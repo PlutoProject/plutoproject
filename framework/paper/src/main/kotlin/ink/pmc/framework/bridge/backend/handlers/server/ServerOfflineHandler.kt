@@ -9,6 +9,6 @@ object ServerOfflineHandler : NotificationHandler {
     override suspend fun handle(request: Notification) {
         debugInfo("ServerOfflineHandler: $request")
         if (request.serverOffline == internalBridge.local.id) return
-        internalBridge.markServerOffline(request.serverOffline)
+        internalBridge.markRemoteServerOffline(request.serverOffline)
     }
 }

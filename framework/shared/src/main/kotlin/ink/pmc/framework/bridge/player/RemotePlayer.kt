@@ -14,8 +14,6 @@ import net.kyori.adventure.text.minimessage.MiniMessage
 import net.kyori.adventure.title.Title
 
 abstract class RemotePlayer : InternalPlayer() {
-    override var isOnline: Boolean = true
-
     override suspend fun sendMessage(message: String) {
         sendMessage(Component.text(message))
     }

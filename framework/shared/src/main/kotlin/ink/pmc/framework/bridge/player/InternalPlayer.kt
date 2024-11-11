@@ -25,7 +25,7 @@ fun BridgePlayer.createInfo(): PlayerInfo {
 abstract class InternalPlayer : BridgePlayer {
     abstract override var server: BridgeServer
     abstract override var world: BridgeWorld?
-    abstract override var isOnline: Boolean
+    override var isOnline: Boolean = true
 
     override fun equals(other: Any?): Boolean {
         if (other !is BridgePlayer) return false

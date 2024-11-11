@@ -16,8 +16,6 @@ class BackendRemoteBackendPlayer(
     override var server: BridgeServer,
     override var world: BridgeWorld?
 ) : RemoteBackendPlayer() {
-    override var isOnline: Boolean = true
-
     override suspend fun operatePlayer(request: PlayerOperation): PlayerOperationResult {
         operationsSent.add(request.id.uuid)
         return bridgeStub.operatePlayer(request)

@@ -25,9 +25,6 @@ class ProxyRemoteBackendPlayer(
 ) : RemoteBackendPlayer() {
     override val uniqueId: UUID = actual.uniqueId
     override val name: String = actual.username
-    override var isOnline: Boolean
-        get() = actual.isActive
-        set(_) = error("Unsupported")
 
     override suspend fun sendMessage(message: String) {
         check(isOnline) { "Player offline: $name" }
