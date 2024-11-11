@@ -17,6 +17,7 @@ abstract class InternalBridge : Bridge {
     override val servers: MutableSet<BridgeServer> = mutableSetOf()
 
     private fun unregisterServer(id: String) {
+        debugInfo("InternalBridge unregisterServer: $id")
         require(id != local.id) { "Cannot unregister local server" }
         val remoteServer = getServer(id) as InternalServer? ?: error("Server not found: $id")
         remoteServer.isOnline = false
@@ -77,6 +78,7 @@ abstract class InternalBridge : Bridge {
     }
 
     fun registerServer(info: ServerInfo): BridgeServer {
+        debugInfo("InternalBridge registerServer: $info")
         val id = info.id
         if (isServerRegistered(id)) {
             unregisterServer(id)
@@ -87,6 +89,7 @@ abstract class InternalBridge : Bridge {
     }
 
     fun markServerOffline(id: String) {
+        debugInfo("InternalBridge markServerOffline: $id")
         val remoteServer = getInternalServer(id)
         remoteServer.isOnline = false
         remoteServer.players.forEach { (it as InternalPlayer).isOnline = false }
@@ -95,11 +98,13 @@ abstract class InternalBridge : Bridge {
     }
 
     fun markServerOnline(id: String) {
+        debugInfo("InternalBridge markServerOnline: $id")
         val remoteServer = getInternalServer(id)
         remoteServer.isOnline = true
     }
 
     fun syncData(info: ServerInfo): InternalServer {
+        debugInfo("InternalBridge syncData: $info")
         val remoteServer = getInternalServer(info.id)
         remoteServer.players.forEach { (it as InternalPlayer).isOnline = false }
         remoteServer.setInitialPlayers(info, remoteServer)
@@ -108,18 +113,21 @@ abstract class InternalBridge : Bridge {
     }
 
     fun addRemotePlayer(info: PlayerInfo): InternalPlayer {
+        debugInfo("InternalBridge addRemotePlayer: $info")
         val remotePlayer = createPlayer(info)
         (remotePlayer.server as InternalServer).players.add(remotePlayer)
         return remotePlayer
     }
 
     fun updatePlayerInfo(info: PlayerInfo): InternalPlayer {
+        debugInfo("InternalBridge updatePlayerInfo: $info")
         val remotePlayer = getInternalRemoteBackendPlayer(info.uniqueId.uuid)
         remotePlayer.world = getInternalWorld(remotePlayer.server, info.world.name)
         return remotePlayer
     }
 
     fun remotePlayerSwitchServer(info: PlayerSwitchServer) {
+        debugInfo("InternalBridge remotePlayerSwitchServer: $info")
         val remotePlayer = getInternalRemoteBackendPlayer(info.playerUuid.uuid)
         val target = getInternalServer(info.server)
         target.players.add(remotePlayer)
@@ -129,6 +137,7 @@ abstract class InternalBridge : Bridge {
     }
 
     fun removeRemotePlayers(uuid: UUID) {
+        debugInfo("InternalBridge removeRemotePlayers: $uuid")
         servers.flatMap { it.players }.filter { it.uniqueId == uuid }.forEach {
             it as InternalPlayer
             it.isOnline = false
@@ -137,18 +146,21 @@ abstract class InternalBridge : Bridge {
     }
 
     fun removeRemoteBackendPlayer(uuid: UUID) {
+        debugInfo("InternalBridge removeRemoteBackendPlayer: $uuid")
         val remotePlayer = getInternalRemoteBackendPlayer(uuid)
         remotePlayer.isOnline = false
         (remotePlayer.server as InternalServer).players.remove(remotePlayer)
     }
 
     fun addRemoteWorld(info: WorldInfo): InternalWorld {
+        debugInfo("InternalBridge addRemoteWorld: $info")
         val remoteWorld = createWorld(info)
         (remoteWorld.server as InternalServer).worlds.add(remoteWorld)
         return remoteWorld
     }
 
     fun updateWorldInfo(info: WorldInfo): InternalWorld {
+        debugInfo("InternalBridge updateWorldInfo: $info")
         val remoteServer = getInternalServer(info.server)
         val remoteWorld = getInternalWorld(remoteServer, info.name)
         remoteWorld.spawnPoint = info.spawnPoint.createBridge()
@@ -156,6 +168,7 @@ abstract class InternalBridge : Bridge {
     }
 
     fun removeRemoteWorld(load: WorldLoad) {
+        debugInfo("InternalBridge removeRemoteWorld: $load")
         val remoteServer = getInternalServer(load.server)
         val remoteWorld = getInternalWorld(remoteServer, load.world)
         remoteServer.worlds.remove(remoteWorld)

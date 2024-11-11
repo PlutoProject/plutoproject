@@ -1,6 +1,7 @@
 package ink.pmc.framework.bridge.backend
 
 import ink.pmc.framework.bridge.backend.handlers.NotificationHandler
+import ink.pmc.framework.bridge.debugInfo
 import ink.pmc.framework.bridge.internalBridge
 import ink.pmc.framework.bridge.player.createInfo
 import ink.pmc.framework.bridge.proto.BridgeRpcGrpcKt.BridgeRpcCoroutineStub
@@ -42,27 +43,27 @@ private fun getCurrentServerInfo(): ServerInfo {
 }
 
 private suspend fun registerServer() {
-    println("Trying to register server")
+    debugInfo("Trying to register server")
     val result = bridgeStub.registerServer(getCurrentServerInfo())
     result.serversList.forEach {
         if (it.id == internalBridge.local.id) return@forEach
         internalBridge.registerServer(it)
     }
-    println("Server registered")
+    debugInfo("Server registered")
 }
 
 private suspend fun monitor() = runCatching {
     bridgeStub.monitorNotification(empty).also {
-        println("Trying to monitor")
+        debugInfo("Trying to monitor")
         // 已初始化但从 Master 断开：可能是因为网络问题，同步一次数据防止不一致
         if (isInitialized && !isConnected) {
-            println("Trying to sync data")
+            debugInfo("Trying to sync data")
             val result = bridgeStub.syncData(getCurrentServerInfo())
             // 未知原因：Master 侧未注册此服务器，进行注册
             if (result.notRegistered) {
                 registerServer()
             }
-            println("Data synced")
+            debugInfo("Data synced")
         }
         // 未初始化：注册服务器
         if (!isInitialized) {
@@ -71,6 +72,7 @@ private suspend fun monitor() = runCatching {
         }
         isConnected = true
         frameworkLogger.info("Bridge monitor connected successfully")
+        debugInfo("Monitor connected")
     }.collect {
         handleNotification(it)
     }
@@ -98,6 +100,7 @@ private suspend fun heartbeat() = runCatching {
     })
     // Master 报告未注册：可能是因为 Master 重启了，重新初始化
     if (result.notRegistered) {
+        debugInfo("Master responded notRegistered")
         isInitialized = false
         isConnected = false
     }

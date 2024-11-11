@@ -6,6 +6,7 @@ import ink.pmc.advkt.sound.pitch
 import ink.pmc.advkt.sound.volume
 import ink.pmc.advkt.title.*
 import ink.pmc.framework.FrameworkConfig
+import ink.pmc.framework.bridge.debugInfo
 import ink.pmc.framework.bridge.internalBridge
 import ink.pmc.framework.bridge.player.InternalPlayer
 import ink.pmc.framework.bridge.proto.*
@@ -47,6 +48,7 @@ object BridgeRpc : BridgeRpcCoroutineImplBase(), KoinComponent {
     private val notificationFlow = MutableSharedFlow<Notification>()
 
     override fun monitorNotification(request: Empty): Flow<Notification> {
+        debugInfo("monitorNotification called")
         return notificationFlow
     }
 
@@ -56,6 +58,7 @@ object BridgeRpc : BridgeRpcCoroutineImplBase(), KoinComponent {
 
     private suspend fun checkHeartbeat(server: BridgeServer) {
         if (server.state.isLocal) return
+        debugInfo("Check heartbeat: ${server.id}")
         val remoteServer = server as InternalServer
         val time = heartbeatMap[server]
         val requirement = Instant.now().minusSeconds(5)
@@ -82,6 +85,7 @@ object BridgeRpc : BridgeRpcCoroutineImplBase(), KoinComponent {
     }
 
     override suspend fun registerServer(request: ServerInfo): ServerRegistrationResult {
+        debugInfo("registerServer called: $request")
         val server = internalBridge.registerServer(request)
         heartbeatMap[server] = Instant.now()
         notificationFlow.emit(notification {
@@ -95,6 +99,7 @@ object BridgeRpc : BridgeRpcCoroutineImplBase(), KoinComponent {
     }
 
     override suspend fun heartbeat(request: HeartbeatMessage): HeartbeatResult {
+        debugInfo("heartbeat called: $request")
         val remoteServer = internalBridge.getServer(request.server) as InternalServer? ?: return heartbeatResult {
             notRegistered = true
         }
@@ -109,6 +114,7 @@ object BridgeRpc : BridgeRpcCoroutineImplBase(), KoinComponent {
     }
 
     override suspend fun syncData(request: ServerInfo): DataSyncResult {
+        debugInfo("syncData called: $request")
         val remoteServer = internalBridge.syncData(request)
         heartbeatMap[remoteServer] = Instant.now()
         remoteServer.isOnline = true
@@ -213,6 +219,7 @@ object BridgeRpc : BridgeRpcCoroutineImplBase(), KoinComponent {
     }
 
     override suspend fun operatePlayer(request: PlayerOperation): PlayerOperationResult {
+        debugInfo("operatePlayer called: $request")
         val localPlayer = localServer.getPlayer(request.playerUuid.uuid, ServerState.LOCAL, ServerType.PROXY)
                 as InternalPlayer? ?: return playerOperationResult { playerOffline = true }
         return when (request.contentCase!!) {
@@ -227,6 +234,7 @@ object BridgeRpc : BridgeRpcCoroutineImplBase(), KoinComponent {
     }
 
     override suspend fun ackPlayerOperation(request: PlayerOperationAck): Empty {
+        debugInfo("ackPlayerOperation called: $request")
         playerOperationAck.send(request)
         return empty
     }
@@ -238,14 +246,17 @@ object BridgeRpc : BridgeRpcCoroutineImplBase(), KoinComponent {
     }
 
     override suspend fun operateWorld(request: WorldOperation): WorldOperationResult {
+        debugInfo("operateWorld called: $request")
         error("Placeholder")
     }
 
     override suspend fun ackWorldOperation(request: WorldOperationAck): Empty {
+        debugInfo("ackWorldOperation called: $request")
         error("Placeholder")
     }
 
     override suspend fun loadWorld(request: WorldInfo): Empty {
+        debugInfo("loadWorld called: $request")
         internalBridge.addRemoteWorld(request)
         notificationFlow.emit(notification {
             worldLoad = request
@@ -254,12 +265,14 @@ object BridgeRpc : BridgeRpcCoroutineImplBase(), KoinComponent {
     }
 
     override suspend fun updateWorldInfo(request: WorldInfo): Empty {
+        debugInfo("updateWorldInfo called: $request")
         internalBridge.updateWorldInfo(request)
         notificationFlow.emit(notification { worldInfoUpdate = request })
         return empty
     }
 
     override suspend fun unloadWorld(request: WorldLoad): Empty {
+        debugInfo("unloadWorld called: $request")
         internalBridge.removeRemoteWorld(request)
         notificationFlow.emit(notification { worldUnload = request })
         return empty

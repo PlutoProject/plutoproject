@@ -72,10 +72,6 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
         preload()
         RpcClient.start()
         Provider
-        Bridge
-        startPlayerDbMonitor()
-        startOptionsMonitor()
-        startBridgeBackgroundTask()
     }
 
     override suspend fun onEnableAsync() {
@@ -88,6 +84,10 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
         commandManager().annotationParser().apply {
             parse(InteractiveCommand)
         }
+        Bridge
+        startPlayerDbMonitor()
+        startOptionsMonitor()
+        startBridgeBackgroundTask()
         initPaperHooks()
     }
 
