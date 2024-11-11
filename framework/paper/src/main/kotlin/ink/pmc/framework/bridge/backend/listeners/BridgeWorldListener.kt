@@ -14,7 +14,7 @@ import org.bukkit.event.world.WorldUnloadEvent
 @Suppress("UnusedReceiverParameter")
 object BridgeWorldListener : Listener {
     suspend fun WorldLoadEvent.e() {
-        val localWorld = BackendLocalWorld(world)
+        val localWorld = BackendLocalWorld(world, localServer)
         localServer.worlds.add(localWorld)
         bridgeStub.updateWorldInfo(localWorld.createInfo())
     }

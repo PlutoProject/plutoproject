@@ -6,7 +6,6 @@ import ink.pmc.advkt.send
 import ink.pmc.advkt.showTitle
 import ink.pmc.advkt.sound.SoundKt
 import ink.pmc.advkt.title.ComponentTitleKt
-import ink.pmc.framework.bridge.Bridge
 import ink.pmc.framework.bridge.backend.world.BackendLocalWorld
 import ink.pmc.framework.bridge.backend.world.createBridge
 import ink.pmc.framework.bridge.backend.world.createBukkit
@@ -23,13 +22,13 @@ import net.kyori.adventure.title.Title
 import org.bukkit.entity.Player
 import java.util.*
 
-class BackendLocalPlayer(private val actual: Player) : InternalPlayer() {
+class BackendLocalPlayer(private val actual: Player, server: BridgeServer) : InternalPlayer() {
     override val uniqueId: UUID = actual.uniqueId
     override val name: String = actual.name
-    override var server: BridgeServer = Bridge.local
+    override var server: BridgeServer = server
         set(_) = error("Unsupported")
     override var world: BridgeWorld?
-        get() = BackendLocalWorld(actual.world)
+        get() = BackendLocalWorld(actual.world, server)
         set(_) = error("Unsupported")
     override val location: Deferred<BridgeLocation>
         get() = CompletableDeferred(actual.location.createBridge())

@@ -20,7 +20,7 @@ import kotlin.jvm.optionals.getOrNull
 object BridgePlayerListener {
     @Subscribe
     suspend fun LoginEvent.e() {
-        val localPlayer = ProxyLocalPlayer(player)
+        val localPlayer = ProxyLocalPlayer(player, localServer)
         localServer.players.add(localPlayer)
         BridgeRpc.notify(notification {
             playerJoin = localPlayer.createInfo()

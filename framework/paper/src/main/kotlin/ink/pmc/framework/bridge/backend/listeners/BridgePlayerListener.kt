@@ -16,7 +16,7 @@ import org.bukkit.event.player.PlayerQuitEvent
 object BridgePlayerListener : Listener {
     @EventHandler
     suspend fun PlayerJoinEvent.e() {
-        val localPlayer = BackendLocalPlayer(player)
+        val localPlayer = BackendLocalPlayer(player, localServer)
         localServer.players.add(localPlayer)
         val remotePlayer = internalBridge.getPlayer(player.uniqueId, ServerState.REMOTE, ServerType.BACKEND)
         // 玩家切换到本服

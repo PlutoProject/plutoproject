@@ -33,8 +33,7 @@ internal fun BridgeLocation.createBukkit(): Location {
     return Location(world.getBukkit(), x, y, z, yaw, pitch)
 }
 
-class BackendLocalWorld(private val actual: World) : InternalWorld() {
-    override val server: BridgeServer = Bridge.local
+class BackendLocalWorld(private val actual: World, override val server: BridgeServer) : InternalWorld() {
     override val group: BridgeGroup? = server.group
     override val serverType: ServerType = ServerType.BACKEND
     override val serverState: ServerState = ServerState.LOCAL

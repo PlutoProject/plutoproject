@@ -22,7 +22,7 @@ class BackendLocalServer : InternalServer(), KoinComponent {
         set(_) = error("Unsupported")
 
     init {
-        worlds.addAll(paper.worlds.map { BackendLocalWorld(it) })
-        players.addAll(paper.onlinePlayers.map { BackendLocalPlayer(it) })
+        worlds.addAll(paper.worlds.map { BackendLocalWorld(it, this) })
+        players.addAll(paper.onlinePlayers.map { BackendLocalPlayer(it, this) })
     }
 }
