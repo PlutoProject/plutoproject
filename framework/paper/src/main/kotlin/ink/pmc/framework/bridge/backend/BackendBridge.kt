@@ -6,6 +6,7 @@ import ink.pmc.framework.bridge.backend.player.BackendRemoteProxyPlayer
 import ink.pmc.framework.bridge.backend.server.BackendLocalServer
 import ink.pmc.framework.bridge.player.InternalPlayer
 import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.PlayerInfo
+import ink.pmc.framework.bridge.remoteServerNotFound
 import ink.pmc.framework.bridge.server.BridgeServer
 import ink.pmc.framework.bridge.server.InternalServer
 import ink.pmc.framework.utils.player.uuid
@@ -17,7 +18,7 @@ class BackendBridge : InternalBridge() {
         return if (info.proxy) {
             BackendRemoteProxyPlayer(info.uniqueId.uuid, info.name)
         } else {
-            val remoteServer = getInternalRemoteServer(info.server)
+            val remoteServer = getInternalRemoteServer(info.server) ?: remoteServerNotFound(info.server)
             BackendRemoteBackendPlayer(info.uniqueId.uuid, info.name, remoteServer, null)
         }
     }

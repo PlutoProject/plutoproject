@@ -5,7 +5,6 @@ import com.velocitypowered.api.event.connection.DisconnectEvent
 import com.velocitypowered.api.event.connection.LoginEvent
 import com.velocitypowered.api.event.player.ServerConnectedEvent
 import ink.pmc.framework.bridge.internalBridge
-import ink.pmc.framework.bridge.player.InternalPlayer
 import ink.pmc.framework.bridge.player.createInfo
 import ink.pmc.framework.bridge.proto.notification
 import ink.pmc.framework.bridge.proto.playerDisconnect
@@ -14,6 +13,7 @@ import ink.pmc.framework.bridge.proxy.BridgeRpc
 import ink.pmc.framework.bridge.proxy.player.ProxyLocalPlayer
 import ink.pmc.framework.bridge.proxy.player.ProxyRemoteBackendPlayer
 import ink.pmc.framework.bridge.proxy.server.localServer
+import ink.pmc.framework.bridge.remoteServerNotFound
 import ink.pmc.framework.bridge.server.InternalServer
 import kotlin.jvm.optionals.getOrNull
 
@@ -30,7 +30,8 @@ object BridgePlayerListener {
     @Subscribe
     suspend fun ServerConnectedEvent.e() {
         val current = internalBridge.getInternalRemoteServer(server.serverInfo.name)
-        val remotePlayer = internalBridge.getRemotePlayer(player.uniqueId) as InternalPlayer?
+            ?: remoteServerNotFound(server.serverInfo.name)
+        val remotePlayer = internalBridge.getInternalRemoteBackendPlayer(player.uniqueId)
             ?: ProxyRemoteBackendPlayer(player, current, null)
         val previous = previousServer.getOrNull()?.let { internalBridge.getInternalRemoteServer(it.serverInfo.name) }
         remotePlayer.server = current

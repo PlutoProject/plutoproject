@@ -4,6 +4,8 @@ import ink.pmc.framework.bridge.backend.bridgeStub
 import ink.pmc.framework.bridge.backend.player.BackendLocalPlayer
 import ink.pmc.framework.bridge.backend.server.localServer
 import ink.pmc.framework.bridge.internalBridge
+import ink.pmc.framework.bridge.localPlayerNotFound
+import ink.pmc.framework.bridge.localWorldNotFound
 import ink.pmc.framework.bridge.player.createInfo
 import ink.pmc.framework.bridge.server.ServerState
 import ink.pmc.framework.bridge.server.ServerType
@@ -30,12 +32,14 @@ object BridgePlayerListener : Listener {
     @EventHandler
     suspend fun PlayerChangedWorldEvent.e() {
         val localPlayer = internalBridge.getInternalLocalPlayer(player.uniqueId)
+            ?: localWorldNotFound(player.world.name)
         bridgeStub.updatePlayerInfo(localPlayer.createInfo())
     }
 
     @EventHandler
     fun PlayerQuitEvent.e() {
         val localPlayer = internalBridge.getInternalLocalPlayer(player.uniqueId)
+            ?: localPlayerNotFound(player.name)
         localServer.players.remove(localPlayer)
     }
 }
