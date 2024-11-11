@@ -3,7 +3,7 @@ package ink.pmc.framework.bridge.backend
 import ink.pmc.framework.bridge.backend.handlers.NotificationHandler
 import ink.pmc.framework.bridge.debugInfo
 import ink.pmc.framework.bridge.internalBridge
-import ink.pmc.framework.bridge.player.createInfo
+import ink.pmc.framework.bridge.player.createInfoWithoutLocation
 import ink.pmc.framework.bridge.proto.BridgeRpcGrpcKt.BridgeRpcCoroutineStub
 import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.Notification
 import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.ServerInfo
@@ -37,7 +37,7 @@ private fun getCurrentServerInfo(): ServerInfo {
         id = localServer.id
         localServer.group?.let { group = it.id }
         backend = true
-        players.addAll(localServer.players.map { it.createInfo() })
+        players.addAll(localServer.players.map { it.createInfoWithoutLocation() })
         worlds.addAll(localServer.worlds.map { it.createInfo() })
     }
 }

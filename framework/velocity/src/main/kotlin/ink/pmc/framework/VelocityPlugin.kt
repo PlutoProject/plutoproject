@@ -3,13 +3,13 @@ package ink.pmc.framework
 import com.github.shynixn.mccoroutine.velocity.SuspendingPluginContainer
 import com.github.shynixn.mccoroutine.velocity.registerSuspend
 import com.google.inject.Inject
-import com.velocitypowered.api.command.CommandSource
 import com.velocitypowered.api.event.Subscribe
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent
 import com.velocitypowered.api.event.proxy.ProxyShutdownEvent
 import com.velocitypowered.api.plugin.annotation.DataDirectory
 import com.velocitypowered.api.proxy.ProxyServer
 import ink.pmc.framework.bridge.Bridge
+import ink.pmc.framework.bridge.proxy.BridgeCommand
 import ink.pmc.framework.bridge.proxy.BridgeRpc
 import ink.pmc.framework.bridge.proxy.ProxyBridge
 import ink.pmc.framework.bridge.proxy.listeners.BridgePlayerListener
@@ -23,16 +23,17 @@ import ink.pmc.framework.playerdb.ProxyDatabaseNotifier
 import ink.pmc.framework.playerdb.proto.PlayerDbRpc
 import ink.pmc.framework.provider.Provider
 import ink.pmc.framework.rpc.RpcServer
+import ink.pmc.framework.utils.command.annotationParser
+import ink.pmc.framework.utils.command.commandManager
 import ink.pmc.framework.utils.inject.startKoinIfNotPresent
 import ink.pmc.framework.utils.platform.proxy
 import ink.pmc.framework.utils.platform.proxyThread
 import ink.pmc.framework.utils.platform.saveDefaultConfig
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import org.incendo.cloud.SenderMapper
-import org.incendo.cloud.annotations.AnnotationParser
-import org.incendo.cloud.execution.ExecutionCoordinator
-import org.incendo.cloud.velocity.VelocityCommandManager
+import net.kyori.adventure.text.minimessage.MiniMessage
+import org.incendo.cloud.minecraft.extras.parser.ComponentParser
+import org.incendo.cloud.parser.standard.StringParser
 import org.koin.dsl.module
 import java.io.File
 import java.nio.file.Path
@@ -77,15 +78,16 @@ class VelocityPlugin @Inject constructor(private val spc: SuspendingPluginContai
 
     @Subscribe
     fun ProxyInitializeEvent.e() {
-        VelocityCommandManager(
-            spc.pluginContainer,
-            proxy,
-            ExecutionCoordinator.asyncCoordinator(),
-            SenderMapper.identity()
-        ).apply {
-            AnnotationParser(this, CommandSource::class.java).apply {
-                parse(RpcCommand)
+        spc.commandManager().apply {
+            parserRegistry().apply {
+                registerNamedParser(
+                    "bridge-component",
+                    ComponentParser.componentParser(MiniMessage.miniMessage(), StringParser.StringMode.QUOTED)
+                )
             }
+        }.annotationParser().apply {
+            parse(RpcCommand)
+            parse(BridgeCommand)
         }
         RpcServer.start()
     }

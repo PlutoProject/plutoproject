@@ -8,11 +8,12 @@ import ink.pmc.framework.bridge.debugInfo
 import ink.pmc.framework.bridge.internalBridge
 import ink.pmc.framework.bridge.localPlayerNotFound
 import ink.pmc.framework.bridge.localWorldNotFound
-import ink.pmc.framework.bridge.player.createInfo
+import ink.pmc.framework.bridge.player.createInfoWithoutLocation
 import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.Notification
 import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.PlayerOperation
 import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.PlayerOperation.ContentCase.*
 import ink.pmc.framework.bridge.proto.playerOperationAck
+import ink.pmc.framework.bridge.world.createInfo
 import ink.pmc.framework.utils.player.uuid
 
 object PlayerOperationHandler : NotificationHandler {
@@ -26,7 +27,9 @@ object PlayerOperationHandler : NotificationHandler {
             INFO_LOOKUP -> {
                 bridgeStub.ackPlayerOperation(playerOperationAck {
                     ok = true
-                    infoLookup = localPlayer.createInfo()
+                    infoLookup = localPlayer.createInfoWithoutLocation().toBuilder().apply {
+                        location = localPlayer.location.await().createInfo()
+                    }.build()
                 })
                 return
             }

@@ -2,7 +2,7 @@ package ink.pmc.framework.bridge.server
 
 import ink.pmc.framework.bridge.Bridge
 import ink.pmc.framework.bridge.player.BridgePlayer
-import ink.pmc.framework.bridge.player.createInfo
+import ink.pmc.framework.bridge.player.createInfoWithoutLocation
 import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.ServerInfo
 import ink.pmc.framework.bridge.proto.serverInfo
 import ink.pmc.framework.bridge.world.BridgeWorld
@@ -20,7 +20,7 @@ fun BridgeServer.createInfo(): ServerInfo {
             server.isRemoteBackend -> backend = true
             server.isRemoteProxy -> if (localType == ServerType.PROXY) error("Unexpected") else proxy = true
         }
-        players.addAll(server.players.map { it.createInfo() })
+        players.addAll(server.players.map { it.createInfoWithoutLocation() })
         if (!type.isProxy) {
             worlds.addAll(server.worlds.map { it.createInfo() })
         }

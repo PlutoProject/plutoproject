@@ -8,14 +8,11 @@ import ink.pmc.framework.bridge.proxy.server.ProxyLocalServer
 import ink.pmc.framework.bridge.remoteServerNotFound
 import ink.pmc.framework.bridge.server.BridgeServer
 import ink.pmc.framework.bridge.server.InternalServer
-import ink.pmc.framework.bridge.world.BridgeWorld
 import ink.pmc.framework.utils.platform.proxy
 import ink.pmc.framework.utils.player.uuid
 
 class ProxyBridge : InternalBridge() {
     override val local: BridgeServer = ProxyLocalServer()
-    override val worlds: Collection<BridgeWorld>
-        get() = servers.filter { it != local }.flatMap { it.worlds }
 
     init {
         servers.add(local)

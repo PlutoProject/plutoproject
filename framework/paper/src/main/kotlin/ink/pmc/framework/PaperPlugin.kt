@@ -4,6 +4,7 @@ import com.github.shynixn.mccoroutine.bukkit.SuspendingJavaPlugin
 import com.github.shynixn.mccoroutine.bukkit.registerSuspendingEvents
 import ink.pmc.framework.bridge.Bridge
 import ink.pmc.framework.bridge.backend.BackendBridge
+import ink.pmc.framework.bridge.backend.BridgeCommand
 import ink.pmc.framework.bridge.backend.listeners.BridgePlayerListener
 import ink.pmc.framework.bridge.backend.listeners.BridgeWorldListener
 import ink.pmc.framework.bridge.backend.startBridgeBackgroundTask
@@ -39,7 +40,10 @@ import ink.pmc.framework.visual.toast.ToastRenderer
 import ink.pmc.framework.visual.toast.renderers.NmsToastRenderer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.entity.Player
+import org.incendo.cloud.minecraft.extras.parser.ComponentParser
+import org.incendo.cloud.parser.standard.StringParser
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.qualifier.named
@@ -81,8 +85,16 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
         paper.pluginManager.registerSuspendingEvents(TextDisplayListener, frameworkPaper)
         paper.pluginManager.registerSuspendingEvents(BridgePlayerListener, frameworkPaper)
         paper.pluginManager.registerSuspendingEvents(BridgeWorldListener, frameworkPaper)
-        commandManager().annotationParser().apply {
+        commandManager().apply {
+            parserRegistry().apply {
+                registerNamedParser(
+                    "bridge-component",
+                    ComponentParser.componentParser(MiniMessage.miniMessage(), StringParser.StringMode.QUOTED)
+                )
+            }
+        }.annotationParser().apply {
             parse(InteractiveCommand)
+            parse(BridgeCommand)
         }
         Bridge
         startPlayerDbMonitor()

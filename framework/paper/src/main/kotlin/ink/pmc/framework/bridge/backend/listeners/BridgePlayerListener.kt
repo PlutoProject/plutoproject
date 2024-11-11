@@ -6,7 +6,7 @@ import ink.pmc.framework.bridge.backend.server.localServer
 import ink.pmc.framework.bridge.internalBridge
 import ink.pmc.framework.bridge.localPlayerNotFound
 import ink.pmc.framework.bridge.localWorldNotFound
-import ink.pmc.framework.bridge.player.createInfo
+import ink.pmc.framework.bridge.player.createInfoWithoutLocation
 import ink.pmc.framework.bridge.server.ServerState
 import ink.pmc.framework.bridge.server.ServerType
 import org.bukkit.event.EventHandler
@@ -26,14 +26,14 @@ object BridgePlayerListener : Listener {
         if (remotePlayer != null) {
             internalBridge.removeRemoteBackendPlayer(remotePlayer.uniqueId)
         }
-        bridgeStub.updatePlayerInfo(localPlayer.createInfo())
+        bridgeStub.updatePlayerInfo(localPlayer.createInfoWithoutLocation())
     }
 
     @EventHandler
     suspend fun PlayerChangedWorldEvent.e() {
         val localPlayer = internalBridge.getInternalLocalPlayer(player.uniqueId)
             ?: localWorldNotFound(player.world.name)
-        bridgeStub.updatePlayerInfo(localPlayer.createInfo())
+        bridgeStub.updatePlayerInfo(localPlayer.createInfoWithoutLocation())
     }
 
     @EventHandler

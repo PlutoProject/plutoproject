@@ -6,7 +6,7 @@ import com.velocitypowered.api.event.connection.DisconnectEvent
 import com.velocitypowered.api.event.connection.LoginEvent
 import com.velocitypowered.api.event.player.ServerPreConnectEvent
 import ink.pmc.framework.bridge.internalBridge
-import ink.pmc.framework.bridge.player.createInfo
+import ink.pmc.framework.bridge.player.createInfoWithoutLocation
 import ink.pmc.framework.bridge.proto.notification
 import ink.pmc.framework.bridge.proto.playerDisconnect
 import ink.pmc.framework.bridge.proto.playerSwitchServer
@@ -23,7 +23,7 @@ object BridgePlayerListener {
         val localPlayer = ProxyLocalPlayer(player, localServer)
         localServer.players.add(localPlayer)
         BridgeRpc.notify(notification {
-            playerJoin = localPlayer.createInfo()
+            playerJoin = localPlayer.createInfoWithoutLocation()
         })
     }
 

@@ -6,7 +6,7 @@ import ink.pmc.framework.bridge.server.BridgeServer
 import ink.pmc.framework.bridge.world.BridgeWorld
 import ink.pmc.framework.bridge.world.createInfo
 
-fun BridgePlayer.createInfo(): PlayerInfo {
+fun BridgePlayer.createInfoWithoutLocation(): PlayerInfo {
     val player = this
     return playerInfo {
         server = player.server.id

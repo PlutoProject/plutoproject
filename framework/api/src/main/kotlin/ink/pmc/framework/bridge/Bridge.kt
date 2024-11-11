@@ -16,7 +16,7 @@ interface Bridge : PlayerLookup, ServerLookup {
     val groups: Collection<BridgeGroup>
         get() = servers.filter { it.group != null }.map { it.group!! }
     val worlds: Collection<BridgeWorld>
-        get() = servers.flatMap { it.worlds }
+        get() = servers.filter { !it.type.isProxy }.flatMap { it.worlds }
     override val players: Collection<BridgePlayer>
         get() = servers.flatMap { it.players }.sortedBy {
             when {

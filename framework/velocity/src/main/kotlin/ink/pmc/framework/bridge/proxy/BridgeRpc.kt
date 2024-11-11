@@ -37,6 +37,7 @@ import org.koin.core.component.get
 import java.time.Instant
 import java.util.concurrent.ConcurrentHashMap
 import java.util.logging.Level
+import kotlin.jvm.optionals.getOrNull
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
@@ -223,7 +224,10 @@ object BridgeRpc : BridgeRpcCoroutineImplBase(), KoinComponent {
         val remotePlayer = request.getRemotePlayer() as ProxyRemoteBackendPlayer? ?: return playerOperationResult {
             unsupported = true
         }
-        remotePlayer.actual.switchServer(request.teleport.server)
+        val currentServerInfo = remotePlayer.actual.currentServer.getOrNull()?.serverInfo
+        if (currentServerInfo?.name != request.teleport.server) {
+            remotePlayer.actual.switchServer(request.teleport.server)
+        }
         notificationFlow.emit(notification { playerOperation = request })
         return waitNoReturnAck(request)
     }
