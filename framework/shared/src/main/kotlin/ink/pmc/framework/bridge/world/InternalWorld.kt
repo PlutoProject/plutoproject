@@ -22,10 +22,6 @@ internal fun WorldInfo.getBridge(): BridgeWorld? {
 abstract class InternalWorld : BridgeWorld {
     abstract override var spawnPoint: BridgeLocation
 
-    fun update(info: WorldInfo) {
-        spawnPoint = info.spawnPoint.createBridge()
-    }
-
     override fun equals(other: Any?): Boolean {
         if (other !is BridgeWorld) return false
         return other.server == server

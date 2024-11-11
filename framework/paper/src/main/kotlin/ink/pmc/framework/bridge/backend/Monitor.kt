@@ -20,6 +20,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import java.util.*
+import java.util.logging.Level
 import kotlin.time.Duration.Companion.seconds
 
 private var isInitialized by MutableStateFlow(false)
@@ -41,22 +42,27 @@ private fun getCurrentServerInfo(): ServerInfo {
 }
 
 private suspend fun registerServer() {
+    println("Trying to register server")
     val result = bridgeStub.registerServer(getCurrentServerInfo())
     result.serversList.forEach {
         if (it.id == internalBridge.local.id) return@forEach
         internalBridge.registerServer(it)
     }
+    println("Server registered")
 }
 
 private suspend fun monitor() = runCatching {
     bridgeStub.monitorNotification(empty).also {
+        println("Trying to monitor")
         // 已初始化但从 Master 断开：可能是因为网络问题，同步一次数据防止不一致
         if (isInitialized && !isConnected) {
+            println("Trying to sync data")
             val result = bridgeStub.syncData(getCurrentServerInfo())
             // 未知原因：Master 侧未注册此服务器，进行注册
             if (result.notRegistered) {
                 registerServer()
             }
+            println("Data synced")
         }
         // 未初始化：注册服务器
         if (!isInitialized) {
@@ -69,8 +75,12 @@ private suspend fun monitor() = runCatching {
         handleNotification(it)
     }
 }.onFailure {
+    if (isConnected) {
+        frameworkLogger.log(Level.SEVERE, "Bridge monitor disconnected, wait 10s before retry", it)
+    } else {
+        frameworkLogger.log(Level.SEVERE, "Failed to connect Bridge monitor, wait 10s before retry", it)
+    }
     isConnected = false
-    frameworkLogger.severe("Bridge monitor disconnected, wait 10s before retry")
     delay(10.seconds)
 }
 

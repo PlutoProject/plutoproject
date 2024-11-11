@@ -30,6 +30,8 @@ data class RpcConfig(
 )
 
 data class BridgeConfig(
+    val verbose: Boolean,
+    val operationTimeoutMs: Long,
     val id: String,
     val group: String?
 )

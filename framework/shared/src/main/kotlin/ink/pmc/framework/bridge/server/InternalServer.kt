@@ -18,10 +18,12 @@ fun BridgeServer.createInfo(): ServerInfo {
         when {
             server.isLocal -> if (localType == ServerType.PROXY) proxy = true else backend = true
             server.isRemoteBackend -> backend = true
-            server.isRemoteProxy -> if (localType == ServerType.PROXY) error("Unexpected") else backend = true
+            server.isRemoteProxy -> if (localType == ServerType.PROXY) error("Unexpected") else proxy = true
         }
         players.addAll(server.players.map { it.createInfo() })
-        worlds.addAll(server.worlds.map { it.createInfo() })
+        if (!type.isProxy) {
+            worlds.addAll(server.worlds.map { it.createInfo() })
+        }
     }
 }
 
@@ -29,10 +31,6 @@ abstract class InternalServer : BridgeServer {
     override val players: MutableSet<BridgePlayer> = mutableConcurrentSetOf()
     override val worlds: MutableSet<BridgeWorld> = mutableConcurrentSetOf()
     abstract override var isOnline: Boolean
-
-    fun update(info: ServerInfo) {
-        
-    }
 
     override fun equals(other: Any?): Boolean {
         if (other !is BridgeServer) return false

@@ -5,6 +5,7 @@ import ink.pmc.advkt.sound.key
 import ink.pmc.advkt.sound.pitch
 import ink.pmc.advkt.sound.volume
 import ink.pmc.advkt.title.*
+import ink.pmc.framework.FrameworkConfig
 import ink.pmc.framework.bridge.internalBridge
 import ink.pmc.framework.bridge.player.InternalPlayer
 import ink.pmc.framework.bridge.proto.*
@@ -30,12 +31,15 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.withTimeoutOrNull
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.minimessage.MiniMessage
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
 import java.time.Instant
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
-object BridgeRpc : BridgeRpcCoroutineImplBase() {
+object BridgeRpc : BridgeRpcCoroutineImplBase(), KoinComponent {
+    private val config by lazy { get<FrameworkConfig>().bridge }
     private var isRunning = false
     private val heartbeatMap = ConcurrentHashMap<BridgeServer, Instant>()
     private val heartbeatCheckJob: Job
@@ -83,6 +87,7 @@ object BridgeRpc : BridgeRpcCoroutineImplBase() {
         notificationFlow.emit(notification {
             serverRegistration = request
         })
+        frameworkLogger.info("A server registered successfully: ${request.id} (${request.playersCount} players, ${request.worldsCount} worlds)")
         return serverRegistrationResult {
             ok = true
             servers.addAll(internalBridge.servers.map { it.createInfo() })
@@ -124,7 +129,7 @@ object BridgeRpc : BridgeRpcCoroutineImplBase() {
     }
 
     private suspend fun waitNoReturnAck(request: PlayerOperation): PlayerOperationResult {
-        return withTimeoutOrNull(20) {
+        return withTimeoutOrNull(config.operationTimeoutMs) {
             for (ack in playerOperationAck) {
                 if (ack.uuid != request.id) continue
                 return@withTimeoutOrNull handleNoReturnAck(ack)
@@ -150,7 +155,7 @@ object BridgeRpc : BridgeRpcCoroutineImplBase() {
         notificationFlow.emit(notification {
             playerOperation = request
         })
-        return withTimeoutOrNull(20) {
+        return withTimeoutOrNull(config.operationTimeoutMs) {
             for (ack in playerOperationAck) {
                 if (ack.uuid != request.id) continue
                 return@withTimeoutOrNull handleInfoLookupAck(ack)

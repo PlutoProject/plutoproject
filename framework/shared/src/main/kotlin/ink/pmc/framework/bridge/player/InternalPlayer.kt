@@ -28,10 +28,6 @@ abstract class InternalPlayer : BridgePlayer {
     abstract override var world: BridgeWorld?
     abstract override var isOnline: Boolean
 
-    fun update(info: PlayerInfo) {
-        world = info.world.getBridge() ?: error("World not found: ${info.world.name} (server: ${info.world.name})")
-    }
-
     override fun equals(other: Any?): Boolean {
         if (other !is BridgePlayer) return false
         return other.uniqueId == uniqueId
