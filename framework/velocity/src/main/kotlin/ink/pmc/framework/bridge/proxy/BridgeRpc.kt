@@ -36,6 +36,7 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import java.time.Instant
 import java.util.concurrent.ConcurrentHashMap
+import java.util.logging.Level
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
@@ -71,6 +72,14 @@ object BridgeRpc : BridgeRpcCoroutineImplBase(), KoinComponent {
         }
     }
 
+    private suspend fun <T> rpcCatching(block: suspend () -> T): T {
+        return runCatching {
+            block()
+        }.onFailure {
+            frameworkLogger.log(Level.SEVERE, "BridgeRpc: Internal error", it)
+        }.getOrThrow()
+    }
+
     init {
         isRunning = true
         // Heartbeat check loop
@@ -84,7 +93,7 @@ object BridgeRpc : BridgeRpcCoroutineImplBase(), KoinComponent {
         }
     }
 
-    override suspend fun registerServer(request: ServerInfo): ServerRegistrationResult {
+    override suspend fun registerServer(request: ServerInfo): ServerRegistrationResult = rpcCatching {
         debugInfo("registerServer called: $request")
         val server = internalBridge.registerServer(request)
         heartbeatMap[server] = Instant.now()
@@ -92,28 +101,29 @@ object BridgeRpc : BridgeRpcCoroutineImplBase(), KoinComponent {
             serverRegistration = request
         })
         frameworkLogger.info("A server registered successfully: ${request.id} (${request.playersCount} players, ${request.worldsCount} worlds)")
-        return serverRegistrationResult {
+        return@rpcCatching serverRegistrationResult {
             ok = true
             servers.addAll(internalBridge.servers.map { it.createInfo() })
         }
     }
 
-    override suspend fun heartbeat(request: HeartbeatMessage): HeartbeatResult {
+    override suspend fun heartbeat(request: HeartbeatMessage): HeartbeatResult = rpcCatching {
         debugInfo("heartbeat called: $request")
-        val remoteServer = internalBridge.getServer(request.server) as InternalServer? ?: return heartbeatResult {
-            notRegistered = true
-        }
+        val remoteServer = internalBridge.getServer(request.server) as InternalServer?
+            ?: return@rpcCatching heartbeatResult {
+                notRegistered = true
+            }
         heartbeatMap[remoteServer] = Instant.now()
         remoteServer.isOnline = true
         notificationFlow.emit(notification {
             serverOnline = request.server
         })
-        return heartbeatResult {
+        return@rpcCatching heartbeatResult {
             ok = true
         }
     }
 
-    override suspend fun syncData(request: ServerInfo): DataSyncResult {
+    override suspend fun syncData(request: ServerInfo): DataSyncResult = rpcCatching {
         debugInfo("syncData called: $request")
         val remoteServer = internalBridge.syncData(request)
         heartbeatMap[remoteServer] = Instant.now()
@@ -121,7 +131,7 @@ object BridgeRpc : BridgeRpcCoroutineImplBase(), KoinComponent {
         notificationFlow.emit(notification {
             serverInfoUpdate = request
         })
-        return dataSyncResult {
+        return@rpcCatching dataSyncResult {
             servers.addAll(internalBridge.servers.map { it.createInfo() })
         }
     }
@@ -218,11 +228,11 @@ object BridgeRpc : BridgeRpcCoroutineImplBase(), KoinComponent {
         return waitNoReturnAck(request)
     }
 
-    override suspend fun operatePlayer(request: PlayerOperation): PlayerOperationResult {
+    override suspend fun operatePlayer(request: PlayerOperation): PlayerOperationResult = rpcCatching {
         debugInfo("operatePlayer called: $request")
         val localPlayer = localServer.getPlayer(request.playerUuid.uuid, ServerState.LOCAL, ServerType.PROXY)
-                as InternalPlayer? ?: return playerOperationResult { playerOffline = true }
-        return when (request.contentCase!!) {
+                as InternalPlayer? ?: return@rpcCatching playerOperationResult { playerOffline = true }
+        return@rpcCatching when (request.contentCase!!) {
             INFO_LOOKUP -> handleInfoLookup(request)
             SEND_MESSAGE -> handleSendMessage(request, localPlayer)
             SHOW_TITLE -> handleSendTitle(request, localPlayer)
@@ -233,48 +243,48 @@ object BridgeRpc : BridgeRpcCoroutineImplBase(), KoinComponent {
         }
     }
 
-    override suspend fun ackPlayerOperation(request: PlayerOperationAck): Empty {
+    override suspend fun ackPlayerOperation(request: PlayerOperationAck): Empty = rpcCatching {
         debugInfo("ackPlayerOperation called: $request")
         playerOperationAck.send(request)
-        return empty
+        return@rpcCatching empty
     }
 
-    override suspend fun updatePlayerInfo(request: PlayerInfo): Empty {
+    override suspend fun updatePlayerInfo(request: PlayerInfo): Empty = rpcCatching {
         internalBridge.updatePlayerInfo(request)
         notificationFlow.emit(notification { playerInfoUpdate = request })
-        return empty
+        return@rpcCatching empty
     }
 
-    override suspend fun operateWorld(request: WorldOperation): WorldOperationResult {
+    override suspend fun operateWorld(request: WorldOperation): WorldOperationResult = rpcCatching {
         debugInfo("operateWorld called: $request")
         error("Placeholder")
     }
 
-    override suspend fun ackWorldOperation(request: WorldOperationAck): Empty {
+    override suspend fun ackWorldOperation(request: WorldOperationAck): Empty = rpcCatching {
         debugInfo("ackWorldOperation called: $request")
         error("Placeholder")
     }
 
-    override suspend fun loadWorld(request: WorldInfo): Empty {
+    override suspend fun loadWorld(request: WorldInfo): Empty = rpcCatching {
         debugInfo("loadWorld called: $request")
         internalBridge.addRemoteWorld(request)
         notificationFlow.emit(notification {
             worldLoad = request
         })
-        return empty
+        return@rpcCatching empty
     }
 
-    override suspend fun updateWorldInfo(request: WorldInfo): Empty {
+    override suspend fun updateWorldInfo(request: WorldInfo): Empty = rpcCatching {
         debugInfo("updateWorldInfo called: $request")
         internalBridge.updateWorldInfo(request)
         notificationFlow.emit(notification { worldInfoUpdate = request })
-        return empty
+        return@rpcCatching empty
     }
 
-    override suspend fun unloadWorld(request: WorldLoad): Empty {
+    override suspend fun unloadWorld(request: WorldLoad): Empty = rpcCatching {
         debugInfo("unloadWorld called: $request")
         internalBridge.removeRemoteWorld(request)
         notificationFlow.emit(notification { worldUnload = request })
-        return empty
+        return@rpcCatching empty
     }
 }

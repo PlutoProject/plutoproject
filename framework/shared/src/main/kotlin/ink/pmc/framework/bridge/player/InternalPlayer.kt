@@ -5,7 +5,6 @@ import ink.pmc.framework.bridge.proto.playerInfo
 import ink.pmc.framework.bridge.server.BridgeServer
 import ink.pmc.framework.bridge.world.BridgeWorld
 import ink.pmc.framework.bridge.world.createInfo
-import ink.pmc.framework.bridge.world.getBridge
 
 fun BridgePlayer.createInfo(): PlayerInfo {
     val player = this

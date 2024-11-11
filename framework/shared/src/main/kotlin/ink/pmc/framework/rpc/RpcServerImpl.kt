@@ -27,7 +27,7 @@ class RpcServerImpl : RpcServer, KoinComponent {
         check(!isRunning) { "RPC server already running" }
         try {
             _server = serverBuilder
-                .intercept(ExceptionLoggingInterceptor)
+                .intercept(InternalErrorInterceptor)
                 .build()
                 .start()
             isRunning = true

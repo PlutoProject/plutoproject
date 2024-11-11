@@ -31,7 +31,9 @@ abstract class InternalBridge : Bridge {
 
     fun createWorld(info: WorldInfo, server: InternalServer? = null): InternalWorld {
         val actualServer = server ?: getInternalServer(info.server)
-        return RemoteBackendWorld(actualServer, info.name, info.alias)
+        return RemoteBackendWorld(actualServer, info.name, info.alias).apply {
+            spawnPoint = info.spawnPoint.createBridge(actualServer, this)
+        }
     }
 
     fun getInternalServer(id: String): InternalServer {
