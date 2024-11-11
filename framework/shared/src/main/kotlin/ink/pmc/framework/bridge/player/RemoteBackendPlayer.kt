@@ -25,18 +25,12 @@ abstract class RemoteBackendPlayer : RemotePlayer() {
                 infoLookup = empty
             })
             val info = result.infoLookup
-            check(info.hasLocation()) { "PlayerInfo missing required field" }
-            val location = info.location
             when (result.contentCase!!) {
-                OK -> BridgeLocationImpl(
-                    server,
-                    world!!,
-                    location.x,
-                    location.y,
-                    location.z,
-                    location.yaw,
-                    location.pitch
-                )
+                OK -> {
+                    check(info.hasLocation()) { "PlayerInfo missing required field" }
+                    val loc = info.location
+                    BridgeLocationImpl(server, world!!, loc.x, loc.y, loc.z, loc.yaw, loc.pitch)
+                }
 
                 else -> throw checkNoReturnResult(result) ?: error("Unexpected")
             }

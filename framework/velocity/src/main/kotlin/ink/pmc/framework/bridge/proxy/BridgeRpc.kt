@@ -152,7 +152,7 @@ object BridgeRpc : BridgeRpcCoroutineImplBase(), KoinComponent {
     }
 
     private suspend fun waitNoReturnAck(request: PlayerOperation): PlayerOperationResult {
-        return withTimeoutOrNull(config.operationTimeoutMs) {
+        return withTimeoutOrNull(config.operationTimeout) {
             for (ack in playerOperationAck) {
                 if (ack.uuid != request.id) continue
                 return@withTimeoutOrNull handleNoReturnAck(ack)
@@ -178,7 +178,7 @@ object BridgeRpc : BridgeRpcCoroutineImplBase(), KoinComponent {
         notificationFlow.emit(notification {
             playerOperation = request
         })
-        return withTimeoutOrNull(config.operationTimeoutMs) {
+        return withTimeoutOrNull(config.operationTimeout) {
             for (ack in playerOperationAck) {
                 if (ack.uuid != request.id) continue
                 return@withTimeoutOrNull handleInfoLookupAck(ack)

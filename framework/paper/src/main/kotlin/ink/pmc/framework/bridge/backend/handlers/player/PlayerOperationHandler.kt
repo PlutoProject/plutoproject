@@ -26,6 +26,7 @@ object PlayerOperationHandler : NotificationHandler {
         when (msg.contentCase!!) {
             INFO_LOOKUP -> {
                 bridgeStub.ackPlayerOperation(playerOperationAck {
+                    uuid = request.playerOperation.id
                     ok = true
                     infoLookup = localPlayer.createInfoWithoutLocation().toBuilder().apply {
                         location = localPlayer.location.await().createInfo()
@@ -51,6 +52,9 @@ object PlayerOperationHandler : NotificationHandler {
             PERFORM_COMMAND -> localPlayer.performCommand(msg.performCommand)
             PlayerOperation.ContentCase.CONTENT_NOT_SET -> error("Received a PlayerOperation without content")
         }
-        bridgeStub.ackPlayerOperation(playerOperationAck { ok = true })
+        bridgeStub.ackPlayerOperation(playerOperationAck {
+            uuid = request.playerOperation.id
+            ok = true
+        })
     }
 }

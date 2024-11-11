@@ -1,5 +1,7 @@
 package ink.pmc.framework
 
+import kotlin.time.Duration
+
 data class FrameworkConfig(
     val provider: ProviderConfig,
     val rpc: RpcConfig,
@@ -31,7 +33,7 @@ data class RpcConfig(
 
 data class BridgeConfig(
     val debug: Boolean,
-    val operationTimeoutMs: Long,
+    val operationTimeout: Duration,
     val id: String,
     val group: String?
 )
