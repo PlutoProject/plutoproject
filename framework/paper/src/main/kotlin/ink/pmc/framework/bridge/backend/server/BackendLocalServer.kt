@@ -22,6 +22,7 @@ class BackendLocalServer : InternalServer(), KoinComponent {
         set(_) = error("Unsupported")
 
     init {
+        require(id != "_master") { "\"_master\" is an internal reserved ID" }
         worlds.addAll(paper.worlds.map { BackendLocalWorld(it, this) })
         players.addAll(paper.onlinePlayers.map { BackendLocalPlayer(it, this) })
     }

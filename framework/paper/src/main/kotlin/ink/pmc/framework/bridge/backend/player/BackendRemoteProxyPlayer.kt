@@ -1,6 +1,5 @@
 package ink.pmc.framework.bridge.backend.player
 
-import ink.pmc.framework.bridge.Bridge
 import ink.pmc.framework.bridge.backend.bridgeStub
 import ink.pmc.framework.bridge.player.RemotePlayer
 import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.PlayerOperation

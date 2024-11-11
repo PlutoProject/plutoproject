@@ -29,7 +29,6 @@ class BackendBridge : InternalBridge() {
         if (info.id == "_master") {
             val server = BackendRemoteProxyServer().apply {
                 setInitialPlayers(info, this)
-                setInitialWorlds(info, this)
             }
             return server
         }

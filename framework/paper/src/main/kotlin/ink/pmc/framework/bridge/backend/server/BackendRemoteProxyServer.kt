@@ -13,7 +13,5 @@ class BackendRemoteProxyServer : InternalServer() {
     override val type: ServerType = ServerType.PROXY
     override val worlds: MutableSet<BridgeWorld>
         get() = error("Unsupported")
-    override var isOnline: Boolean
-        get() = true
-        set(_) = error("Unsupported")
+    override var isOnline: Boolean = true
 }

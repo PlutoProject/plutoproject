@@ -25,7 +25,9 @@ abstract class InternalBridge : Bridge {
             remoteServer.players.forEach { (it as InternalPlayer).isOnline = false }
         }
         remoteServer.players.clear()
-        remoteServer.worlds.clear()
+        if (!remoteServer.type.isProxy) {
+            remoteServer.worlds.clear()
+        }
         servers.remove(remoteServer)
     }
 
@@ -99,7 +101,9 @@ abstract class InternalBridge : Bridge {
         remoteServer.isOnline = false
         remoteServer.players.forEach { (it as InternalPlayer).isOnline = false }
         remoteServer.players.clear()
-        remoteServer.worlds.clear()
+        if (!remoteServer.type.isProxy) {
+            remoteServer.worlds.clear()
+        }
     }
 
     fun markRemoteServerOnline(id: String) {
@@ -113,7 +117,9 @@ abstract class InternalBridge : Bridge {
         val remoteServer = getInternalRemoteServer(info.id) ?: remoteServerNotFound(info.id)
         remoteServer.players.forEach { (it as InternalPlayer).isOnline = false }
         remoteServer.setInitialPlayers(info, remoteServer)
-        remoteServer.setInitialWorlds(info, remoteServer)
+        if (!remoteServer.type.isProxy) {
+            remoteServer.setInitialWorlds(info, remoteServer)
+        }
         return remoteServer
     }
 
@@ -160,6 +166,7 @@ abstract class InternalBridge : Bridge {
     fun addRemoteWorld(info: WorldInfo): InternalWorld {
         debugInfo("InternalBridge addRemoteWorld: $info")
         val remoteWorld = createRemoteWorld(info)
+        require(!remoteWorld.server.type.isProxy) { "Cannot add world to proxy server" }
         (remoteWorld.server as InternalServer).worlds.add(remoteWorld)
         return remoteWorld
     }
@@ -175,6 +182,7 @@ abstract class InternalBridge : Bridge {
     fun removeRemoteWorld(load: WorldLoad) {
         debugInfo("InternalBridge removeRemoteWorld: $load")
         val remoteServer = getInternalRemoteServer(load.server) ?: remoteServerNotFound(load.server)
+        require(!remoteServer.type.isProxy) { "Cannot remove world from proxy server" }
         val remoteWorld = getInternalRemoteWorld(remoteServer, load.world)
             ?: remoteWorldNotFound(load.world, load.server)
         remoteServer.worlds.remove(remoteWorld)
