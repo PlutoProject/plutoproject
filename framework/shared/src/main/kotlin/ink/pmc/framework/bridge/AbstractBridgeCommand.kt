@@ -3,6 +3,7 @@ package ink.pmc.framework.bridge
 import ink.pmc.advkt.component.*
 import ink.pmc.framework.bridge.player.BridgePlayer
 import ink.pmc.framework.bridge.server.BridgeServer
+import ink.pmc.framework.bridge.world.BridgeLocation
 import ink.pmc.framework.bridge.world.BridgeWorld
 import ink.pmc.framework.utils.visual.*
 import net.kyori.adventure.text.Component
@@ -26,6 +27,10 @@ abstract class AbstractBridgeCommand<T> {
                 text("${it.state}") with mochaLavender
                 text(", 类型 ") with mochaText
                 text("${it.type}") with mochaLavender
+                if (it.group != null) {
+                    text(", 组 ") with mochaText
+                    text(it.group!!.id) with mochaLavender
+                }
                 text(", 玩家 ") with mochaText
                 text(it.playerCount) with mochaLavender
                 if (!it.type.isProxy) {
@@ -53,7 +58,10 @@ abstract class AbstractBridgeCommand<T> {
     private suspend fun getPlayerListMessage(list: Collection<BridgePlayer>): Component {
         var component = Component.empty()
         list.forEachIndexed { index, it ->
-            val loc = it.location.await()
+            var loc: BridgeLocation? = null
+            if (!it.serverType.isProxy) {
+                loc = it.location.await()
+            }
             component = component.append(component {
                 text("- ") with mochaSubtext0
                 text("${it.name}: ") with mochaText
@@ -61,7 +69,7 @@ abstract class AbstractBridgeCommand<T> {
                 text("${it.serverState}") with mochaLavender
                 text(", 类型 ") with mochaText
                 text("${it.serverType}") with mochaLavender
-                if (!it.serverType.isProxy) {
+                if (loc != null) {
                     text(", 位置 ") with mochaText
                     text("${loc.world.aliasOrName} ${loc.x.toInt()}, ${loc.y.toInt()}, ${loc.z.toInt()}") with mochaLavender
                 }

@@ -14,15 +14,18 @@ import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.PlayerOperation
 import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.PlayerOperation.ContentCase.*
 import ink.pmc.framework.bridge.proto.playerOperationAck
 import ink.pmc.framework.bridge.world.createInfo
+import ink.pmc.framework.utils.platform.paper
 import ink.pmc.framework.utils.player.uuid
 
 object PlayerOperationHandler : NotificationHandler {
     override suspend fun handle(request: Notification) {
         val msg = request.playerOperation
+        val playerUuid = request.playerOperation.playerUuid.uuid
+        if (paper.getPlayer(playerUuid) == null) return
         if (operationsSent.remove(msg.id.uuid)) return
         debugInfo("PlayerOperationHandler: $request")
-        val localPlayer = internalBridge.getInternalLocalPlayer(msg.playerUuid.uuid)
-            ?: localPlayerNotFound(msg.playerUuid)
+        val localPlayer = internalBridge.getInternalLocalPlayer(playerUuid)
+            ?: localPlayerNotFound(playerUuid.toString())
         when (msg.contentCase!!) {
             INFO_LOOKUP -> {
                 bridgeStub.ackPlayerOperation(playerOperationAck {

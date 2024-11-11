@@ -137,14 +137,14 @@ abstract class InternalBridge : Bridge {
         return remotePlayer
     }
 
-    fun remotePlayerSwitchServer(info: PlayerSwitchServer) {
+    fun remotePlayerSwitchServer(info: PlayerInfo) {
         debugInfo("InternalBridge - remotePlayerSwitchServer called: $info")
-        val remotePlayer = getInternalRemoteBackendPlayer(info.playerUuid.uuid) ?: remotePlayerNotFound(info.playerUuid)
+        val remotePlayer = getInternalRemoteBackendPlayer(info.uniqueId.uuid) ?: createRemotePlayer(info)
         val target = getInternalRemoteServer(info.server) ?: remoteServerNotFound(info.server)
+        (remotePlayer.server as InternalServer).players.remove(remotePlayer)
         target.players.add(remotePlayer)
         remotePlayer.server = target
         remotePlayer.world = null
-        (remotePlayer.server as InternalServer).players.remove(remotePlayer)
     }
 
     fun removeRemotePlayers(uuid: UUID) {

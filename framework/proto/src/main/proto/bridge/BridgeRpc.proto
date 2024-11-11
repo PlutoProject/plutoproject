@@ -102,11 +102,6 @@ message PlayerDisconnect {
   string unique_id = 1;
 }
 
-message PlayerSwitchServer {
-  string server = 1;
-  string player_uuid = 2;
-}
-
 message Notification {
   oneof content {
     // Server
@@ -118,7 +113,7 @@ message Notification {
     // Player
     PlayerOperation player_operation = 5;
     PlayerInfo player_info_update = 6;
-    PlayerSwitchServer player_switch_server = 7;
+    PlayerInfo player_switch_server = 7;
     PlayerInfo player_join = 8;
     PlayerDisconnect player_disconnect = 9;
 
