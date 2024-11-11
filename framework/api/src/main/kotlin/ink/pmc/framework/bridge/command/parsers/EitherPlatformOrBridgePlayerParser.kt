@@ -17,11 +17,11 @@ import org.incendo.cloud.type.Either
 import java.util.concurrent.CompletableFuture
 import kotlin.jvm.optionals.getOrNull
 
-fun <P : Any> eitherPlatformOrBridgePlayerParser(platformParser: ArgumentParser<P, BridgePlayer>) {
+fun <C : Any, P : Any> eitherPlatformOrBridgePlayerParser(platformParser: ArgumentParser<C, P>) {
     EitherPlatformOrBridgePlayerParser(platformParser)
 }
 
-fun <P : Any> eitherPlatformOrBridgePlayerParser(platformParser: ParserDescriptor<P, BridgePlayer>) {
+fun <C : Any, P : Any> eitherPlatformOrBridgePlayerParser(platformParser: ParserDescriptor<C, P>) {
     eitherPlatformOrBridgePlayerParser(platformParser.parser())
 }
 
