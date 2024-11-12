@@ -18,7 +18,11 @@ class BackendBridge : InternalBridge() {
 
     override fun createRemotePlayer(info: PlayerInfo, server: InternalServer?): InternalPlayer {
         val remoteServer = server ?: getInternalRemoteServer(info.server) ?: remoteServerNotFound(info.server)
-        val remoteWorld = getInternalRemoteWorld(remoteServer, info.world.name)
+        val remoteWorld = if (!remoteServer.type.isProxy) {
+            getInternalRemoteWorld(remoteServer, info.world.name)
+        } else {
+            null
+        }
         return if (info.proxy) {
             BackendRemoteProxyPlayer(info.uniqueId.uuid, info.name, remoteServer)
         } else {
