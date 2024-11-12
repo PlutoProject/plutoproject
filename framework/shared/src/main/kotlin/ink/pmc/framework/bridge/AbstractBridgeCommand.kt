@@ -23,6 +23,11 @@ abstract class AbstractBridgeCommand<T> {
             list.forEachIndexed { index, it ->
                 text("- ") with mochaSubtext0
                 text("${it.id}: ") with mochaText
+                if (it.isOnline) {
+                    text("在线 ") with mochaGreen
+                } else {
+                    text("离线 ") with mochaGreen
+                }
                 text("状态 ") with mochaText
                 text("${it.state}") with mochaLavender
                 text(", 类型 ") with mochaText
@@ -65,7 +70,9 @@ abstract class AbstractBridgeCommand<T> {
             component = component.append(component {
                 text("- ") with mochaSubtext0
                 text("${it.name}: ") with mochaText
-                text("状态 ") with mochaText
+                text("服务器 ") with mochaText
+                text(it.server.id) with mochaLavender
+                text(", 状态 ") with mochaText
                 text("${it.serverState}") with mochaLavender
                 text(", 类型 ") with mochaText
                 text("${it.serverType}") with mochaLavender
@@ -129,7 +136,9 @@ abstract class AbstractBridgeCommand<T> {
             list.forEachIndexed { index, it ->
                 text("- ") with mochaSubtext0
                 text("${it.name}: ") with mochaText
-                text("状态 ") with mochaText
+                text("服务器 ") with mochaText
+                text(it.server.id) with mochaLavender
+                text(", 状态 ") with mochaText
                 text("${it.serverState}") with mochaLavender
                 text(", 类型 ") with mochaText
                 text("${it.serverType}") with mochaLavender

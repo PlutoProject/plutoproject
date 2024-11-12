@@ -14,19 +14,19 @@ object BridgeCommand : AbstractBridgeCommand<CommandSender>() {
         sendMessage(component)
     }
 
-    @Command("bridge_backend list_servers")
+    @Command("backendbridge list_servers")
     @Permission("bridge.command")
     fun CommandSender.commandListServers() {
         listServers()
     }
 
-    @Command("bridge_backend list_player")
+    @Command("backendbridge list_players")
     @Permission("bridge.command")
     suspend fun CommandSender.commandListPlayers() {
         listPlayers()
     }
 
-    @Command("bridge_backend player <player> teleport <other>")
+    @Command("backendbridge player <player> teleport <other>")
     @Permission("bridge.command")
     suspend fun CommandSender.commandTeleport(
         player: BridgePlayer,
@@ -35,7 +35,7 @@ object BridgeCommand : AbstractBridgeCommand<CommandSender>() {
         teleport(player, other)
     }
 
-    @Command("bridge_backend player <player> send_message <message>")
+    @Command("backendbridge player <player> send_message <message>")
     @Permission("bridge.command")
     suspend fun CommandSender.commandSendMessage(
         player: BridgePlayer,
@@ -44,7 +44,7 @@ object BridgeCommand : AbstractBridgeCommand<CommandSender>() {
         sendMessage(player, message)
     }
 
-    @Command("bridge_backend list_worlds")
+    @Command("backendbridge list_worlds")
     @Permission("bridge.command")
     fun CommandSender.commandListWorlds() {
         listWorlds()
