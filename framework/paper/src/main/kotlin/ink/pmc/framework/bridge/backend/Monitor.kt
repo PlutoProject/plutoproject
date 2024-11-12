@@ -1,16 +1,13 @@
 package ink.pmc.framework.bridge.backend
 
+import ink.pmc.framework.bridge.*
 import ink.pmc.framework.bridge.backend.handlers.NotificationHandler
-import ink.pmc.framework.bridge.debugInfo
-import ink.pmc.framework.bridge.internalBridge
-import ink.pmc.framework.bridge.missingFields
 import ink.pmc.framework.bridge.player.createInfoWithoutLocation
 import ink.pmc.framework.bridge.proto.BridgeRpcGrpcKt.BridgeRpcCoroutineStub
 import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.*
 import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.DataSyncResult.StatusCase.*
 import ink.pmc.framework.bridge.proto.heartbeatMessage
 import ink.pmc.framework.bridge.proto.serverInfo
-import ink.pmc.framework.bridge.statusNotSet
 import ink.pmc.framework.bridge.world.createInfo
 import ink.pmc.framework.frameworkLogger
 import ink.pmc.framework.rpc.RpcClient
@@ -148,7 +145,7 @@ private suspend fun heartbeat() = runCatching {
 private fun startHeartbeat() {
     heartbeatJob = submitAsync {
         while (true) {
-            delay(5.seconds)
+            delay(HEARTBEAT_SEND_INTERVAL_SECS.seconds)
             heartbeat()
         }
     }

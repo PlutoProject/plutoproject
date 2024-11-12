@@ -6,9 +6,7 @@ import ink.pmc.advkt.sound.pitch
 import ink.pmc.advkt.sound.volume
 import ink.pmc.advkt.title.*
 import ink.pmc.framework.FrameworkConfig
-import ink.pmc.framework.bridge.contentNotSet
-import ink.pmc.framework.bridge.debugInfo
-import ink.pmc.framework.bridge.internalBridge
+import ink.pmc.framework.bridge.*
 import ink.pmc.framework.bridge.player.InternalPlayer
 import ink.pmc.framework.bridge.proto.*
 import ink.pmc.framework.bridge.proto.BridgeRpcGrpcKt.BridgeRpcCoroutineImplBase
@@ -18,7 +16,6 @@ import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.PlayerOperationAck.Sta
 import ink.pmc.framework.bridge.proxy.player.ProxyRemoteBackendPlayer
 import ink.pmc.framework.bridge.proxy.server.localServer
 import ink.pmc.framework.bridge.server.*
-import ink.pmc.framework.bridge.statusNotSet
 import ink.pmc.framework.frameworkLogger
 import ink.pmc.framework.utils.concurrent.frameworkIoScope
 import ink.pmc.framework.utils.concurrent.submitAsync
@@ -65,13 +62,15 @@ object BridgeRpc : BridgeRpcCoroutineImplBase(), KoinComponent {
         // debugInfo("Check heartbeat: ${server.id}")
         val remoteServer = server as InternalServer
         val time = heartbeatMap[server]
-        val requirement = Instant.now().minusSeconds(5)
+        val requirement = Instant.now().minusSeconds(HEARTBEAT_THRESHOLD_SECS + HEARTBEAT_GRACE_PERIOD_SECS)
         if (time == null || time.isBefore(requirement)) {
-            remoteServer.isOnline = false
+            if (remoteServer.isOnline) {
+                internalBridge.markRemoteServerOffline(remoteServer.id)
+                frameworkLogger.warning("Server ${remoteServer.id} heartbeat timeout")
+            }
             notify.emit(notification {
                 serverOffline = server.id
             })
-            frameworkLogger.warning("Server ${remoteServer.id} heartbeat timeout")
         }
     }
 
@@ -88,7 +87,7 @@ object BridgeRpc : BridgeRpcCoroutineImplBase(), KoinComponent {
         // Heartbeat check loop
         heartbeatCheckJob = submitAsync {
             while (isRunning) {
-                delay(5.seconds)
+                delay(HEARTBEAT_CHECK_INTERVAL_SECS.seconds)
                 internalBridge.servers.forEach {
                     checkHeartbeat(it)
                 }
@@ -123,7 +122,9 @@ object BridgeRpc : BridgeRpcCoroutineImplBase(), KoinComponent {
                 notRegistered = true
             }
         heartbeatMap[remoteServer] = Instant.now()
-        remoteServer.isOnline = true
+        if (!remoteServer.isOnline) {
+            internalBridge.markRemoteServerOnline(remoteServer.id)
+        }
         notify.emit(notification {
             serverOnline = request.server
         })
@@ -144,7 +145,9 @@ object BridgeRpc : BridgeRpcCoroutineImplBase(), KoinComponent {
         }
         val remoteServer = internalBridge.syncData(request)
         heartbeatMap[remoteServer] = Instant.now()
-        remoteServer.isOnline = true
+        if (!remoteServer.isOnline) {
+            internalBridge.markRemoteServerOnline(remoteServer.id)
+        }
         notify.emit(notification {
             serverInfoUpdate = request
         })
