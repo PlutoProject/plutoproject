@@ -10,14 +10,21 @@ service BridgeRpc {
   rpc SyncData(ServerInfo) returns (DataSyncResult);
 
   rpc OperatePlayer(PlayerOperation) returns (PlayerOperationResult);
-  rpc AckPlayerOperation(PlayerOperationAck) returns (google.protobuf.Empty);
-  rpc UpdatePlayerInfo(PlayerInfo) returns (google.protobuf.Empty);
+  rpc AckPlayerOperation(PlayerOperationAck) returns (CommonResult);
+  rpc UpdatePlayerInfo(PlayerInfo) returns (CommonResult);
 
   rpc OperateWorld(WorldOperation) returns (WorldOperationResult);
-  rpc AckWorldOperation(WorldOperationAck) returns (google.protobuf.Empty);
-  rpc UpdateWorldInfo(WorldInfo) returns (google.protobuf.Empty);
-  rpc LoadWorld(WorldInfo) returns (google.protobuf.Empty);
-  rpc UnloadWorld(WorldLoad) returns (google.protobuf.Empty);
+  rpc AckWorldOperation(WorldOperationAck) returns (CommonResult);
+  rpc UpdateWorldInfo(WorldInfo) returns (CommonResult);
+  rpc LoadWorld(WorldInfo) returns (CommonResult);
+  rpc UnloadWorld(WorldLoad) returns (CommonResult);
+}
+
+message CommonResult {
+  oneof status {
+    bool ok = 1;
+    bool missing_fields = 2;
+  }
 }
 
 message TitleInfo {
@@ -36,7 +43,7 @@ message SoundInfo {
 
 message ServerInfo {
   string id = 1;
-  string group = 2;
+  optional string group = 2;
   oneof type {
     bool proxy = 3;
     bool backend = 4;
@@ -79,18 +86,20 @@ message HeartbeatMessage {
 }
 
 message HeartbeatResult {
-  oneof result {
+  oneof status {
     bool ok = 1;
     bool not_registered = 2;
+    bool missing_fields = 3;
   }
 }
 
 message DataSyncResult {
-  oneof result {
+  oneof status {
     bool ok = 1;
     bool not_registered = 2;
+    bool missing_fields = 3;
   }
-  repeated ServerInfo servers = 3;
+  repeated ServerInfo servers = 4;
 }
 
 message WorldLoad {
@@ -126,14 +135,16 @@ message Notification {
 }
 
 message ServerRegistrationResult {
-  oneof state {
+  oneof status {
     bool ok = 1;
+    bool missing_fields = 2;
   }
   repeated ServerInfo servers = 3;
 }
 
 message PlayerOperation {
   string id = 1;
+  string executor = 2;
   string player_uuid = 3;
   oneof type {
     bool proxy = 4;
@@ -159,43 +170,46 @@ message WorldOperation {
 }
 
 message WorldOperationAck {
-  string uuid = 1;
+  string id = 1;
   string server = 2;
   string world = 3;
-  oneof content {
+  oneof status {
     bool ok = 4;
-    bool unsupported = 6;
+    bool unsupported = 5;
+    bool missing_fields = 6;
   }
 }
 
 message WorldOperationResult {
-  oneof content {
-    bool ok = 4;
-    bool server_offline = 5;
-    bool world_not_found = 6;
-    bool timeout = 7;
-    bool unsupported = 8;
+  oneof status {
+    bool ok = 1;
+    bool server_offline = 2;
+    bool world_not_found = 3;
+    bool timeout = 4;
+    bool unsupported = 5;
+    bool missing_fields = 6;
   }
 }
 
 message PlayerOperationAck {
-  string uuid = 1;
-  string player_uuid = 3;
-  oneof content {
-    bool ok = 4;
-    bool unsupported = 5;
+  string id = 1;
+  oneof status {
+    bool ok = 2;
+    bool unsupported = 3;
+    bool missing_fields = 4;
   }
-  optional PlayerInfo info_lookup = 6;
+  optional PlayerInfo info_lookup = 5;
 }
 
 message PlayerOperationResult {
-  oneof content {
-    bool ok = 2;
-    bool player_offline = 3;
-    bool server_offline = 4;
-    bool world_not_found = 5;
-    bool timeout = 6;
-    bool unsupported = 7;
+  oneof status {
+    bool ok = 1;
+    bool player_offline = 2;
+    bool server_offline = 3;
+    bool world_not_found = 4;
+    bool timeout = 5;
+    bool unsupported = 6;
+    bool missing_fields = 7;
   }
   optional PlayerInfo info_lookup = 8;
 }

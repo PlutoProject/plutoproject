@@ -1,6 +1,7 @@
 package ink.pmc.framework.bridge.backend.player
 
 import ink.pmc.framework.bridge.backend.bridgeStub
+import ink.pmc.framework.bridge.checkPlayerOperationResult
 import ink.pmc.framework.bridge.player.RemotePlayer
 import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.PlayerOperation
 import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.PlayerOperationResult
@@ -30,6 +31,8 @@ class BackendRemoteProxyPlayer(
     }
 
     override suspend fun operatePlayer(request: PlayerOperation): PlayerOperationResult {
-        return bridgeStub.operatePlayer(request)
+        val result = bridgeStub.operatePlayer(request)
+        checkPlayerOperationResult(request, result)
+        return result
     }
 }

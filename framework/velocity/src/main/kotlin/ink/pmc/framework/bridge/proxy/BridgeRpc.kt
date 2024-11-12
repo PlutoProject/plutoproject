@@ -6,6 +6,7 @@ import ink.pmc.advkt.sound.pitch
 import ink.pmc.advkt.sound.volume
 import ink.pmc.advkt.title.*
 import ink.pmc.framework.FrameworkConfig
+import ink.pmc.framework.bridge.contentNotSet
 import ink.pmc.framework.bridge.debugInfo
 import ink.pmc.framework.bridge.internalBridge
 import ink.pmc.framework.bridge.player.InternalPlayer
@@ -13,17 +14,16 @@ import ink.pmc.framework.bridge.proto.*
 import ink.pmc.framework.bridge.proto.BridgeRpcGrpcKt.BridgeRpcCoroutineImplBase
 import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.*
 import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.PlayerOperation.ContentCase.*
-import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.PlayerOperationAck.ContentCase
-import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.PlayerOperationAck.ContentCase.OK
-import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.PlayerOperationAck.ContentCase.UNSUPPORTED
+import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.PlayerOperationAck.StatusCase.*
 import ink.pmc.framework.bridge.proxy.player.ProxyRemoteBackendPlayer
 import ink.pmc.framework.bridge.proxy.server.localServer
 import ink.pmc.framework.bridge.server.*
+import ink.pmc.framework.bridge.statusNotSet
 import ink.pmc.framework.frameworkLogger
 import ink.pmc.framework.utils.concurrent.submitAsync
 import ink.pmc.framework.utils.player.switchServer
 import ink.pmc.framework.utils.player.uuid
-import ink.pmc.framework.utils.proto.empty
+import ink.pmc.framework.utils.structure.checkMultiple
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
@@ -46,11 +46,12 @@ object BridgeRpc : BridgeRpcCoroutineImplBase(), KoinComponent {
     private var isRunning = false
     private val heartbeatMap = ConcurrentHashMap<BridgeServer, Instant>()
     private val heartbeatCheckJob: Job
-    private val playerOperationAck = Channel<PlayerOperationAck>()
+    private val playerOperationAckNotify = Channel<PlayerOperationAck>()
     private val notificationFlow = MutableSharedFlow<Notification>()
 
     override fun monitorNotification(request: Empty): Flow<Notification> {
         debugInfo("BridgeRpc - monitorNotification called")
+        notificationFlow
         return notificationFlow
     }
 
@@ -96,6 +97,9 @@ object BridgeRpc : BridgeRpcCoroutineImplBase(), KoinComponent {
 
     override suspend fun registerServer(request: ServerInfo): ServerRegistrationResult = rpcCatching {
         debugInfo("BridgeRpc - registerRemoteServer called: $request")
+        if (!checkMultiple(request.id != "", (request.hasProxy() || request.hasBackend()))) {
+            return@rpcCatching serverRegistrationResult { missingFields = true }
+        }
         val server = internalBridge.registerRemoteServer(request)
         heartbeatMap[server] = Instant.now()
         notificationFlow.emit(notification {
@@ -109,7 +113,10 @@ object BridgeRpc : BridgeRpcCoroutineImplBase(), KoinComponent {
     }
 
     override suspend fun heartbeat(request: HeartbeatMessage): HeartbeatResult = rpcCatching {
-        // debugInfo("BridgeRpc - heartbeat called: $request")
+        debugInfo("BridgeRpc - heartbeat called: $request")
+        if (!checkMultiple(request.server != "")) {
+            return@rpcCatching heartbeatResult { missingFields = true }
+        }
         val remoteServer = internalBridge.getServer(request.server) as InternalServer?
             ?: return@rpcCatching heartbeatResult {
                 notRegistered = true
@@ -126,6 +133,9 @@ object BridgeRpc : BridgeRpcCoroutineImplBase(), KoinComponent {
 
     override suspend fun syncData(request: ServerInfo): DataSyncResult = rpcCatching {
         debugInfo("BridgeRpc - syncData called: $request")
+        if (!checkMultiple(request.id != "", (request.proxy || request.backend))) {
+            return@rpcCatching dataSyncResult { missingFields = true }
+        }
         if (internalBridge.getInternalRemoteServer(request.id) == null) {
             return@rpcCatching dataSyncResult {
                 notRegistered = true
@@ -144,48 +154,41 @@ object BridgeRpc : BridgeRpcCoroutineImplBase(), KoinComponent {
     }
 
     private fun handleNoReturnAck(ack: PlayerOperationAck): PlayerOperationResult {
-        return when (ack.contentCase!!) {
+        return when (ack.statusCase!!) {
             OK -> playerOperationResult { ok = true }
             UNSUPPORTED -> playerOperationResult { unsupported = true }
-            ContentCase.CONTENT_NOT_SET -> error("Unexpected")
+            MISSING_FIELDS -> playerOperationResult { missingFields = true }
+            STATUS_NOT_SET -> statusNotSet("PlayerOperationAck")
         }
     }
 
-    private suspend fun waitNoReturnAck(request: PlayerOperation): PlayerOperationResult {
-        return withTimeoutOrNull(config.operationTimeout) {
-            for (ack in playerOperationAck) {
-                if (ack.uuid != request.id) continue
-                return@withTimeoutOrNull handleNoReturnAck(ack)
-            }
-            null
-        } ?: return playerOperationResult {
-            timeout = true
+    private suspend fun waitAck(
+        request: PlayerOperation,
+        then: (PlayerOperationAck) -> PlayerOperationResult
+    ): PlayerOperationResult {
+        for (ack in playerOperationAckNotify) {
+            if (ack.id != request.id) continue
+            return then(ack)
         }
+        error("PlayerOperationAck channel closed unexpectedly")
     }
 
-    private fun handleInfoLookupAck(ack: PlayerOperationAck): PlayerOperationResult {
-        return when (ack.contentCase!!) {
-            OK -> playerOperationResult {
-                ok = true
-                infoLookup = ack.infoLookup
-            }
+    private suspend fun handleInfoLookup(request: PlayerOperation): PlayerOperationResult =
+        withTimeoutOrNull(config.operationTimeout) {
+            notificationFlow.emit(notification { playerOperation = request })
+            waitAck(request) {
+                when (it.statusCase!!) {
+                    OK -> playerOperationResult {
+                        ok = true
+                        infoLookup = it.infoLookup
+                    }
 
-            else -> playerOperationResult { unsupported = true }
-        }
-    }
-
-    private suspend fun handleInfoLookup(request: PlayerOperation): PlayerOperationResult {
-        notificationFlow.emit(notification {
-            playerOperation = request
-        })
-        return withTimeoutOrNull(config.operationTimeout) {
-            for (ack in playerOperationAck) {
-                if (ack.uuid != request.id) continue
-                return@withTimeoutOrNull handleInfoLookupAck(ack)
+                    UNSUPPORTED -> playerOperationResult { unsupported = true }
+                    MISSING_FIELDS -> playerOperationResult { missingFields = true }
+                    STATUS_NOT_SET -> playerOperationResult { missingFields = true }
+                }
             }
-            null
         } ?: playerOperationResult { timeout = true }
-    }
 
     private suspend fun handleSendMessage(request: PlayerOperation, player: InternalPlayer): PlayerOperationResult {
         player.sendMessage(MiniMessage.miniMessage().deserialize(request.sendMessage))
@@ -220,26 +223,52 @@ object BridgeRpc : BridgeRpcCoroutineImplBase(), KoinComponent {
         return internalBridge.getRemotePlayer(playerUuid.uuid) as InternalPlayer?
     }
 
-    private suspend fun handleTeleport(request: PlayerOperation): PlayerOperationResult {
-        val remotePlayer = request.getRemotePlayer() as ProxyRemoteBackendPlayer? ?: return playerOperationResult {
-            unsupported = true
-        }
+    private suspend fun handleTeleport(request: PlayerOperation) = withTimeoutOrNull(config.operationTimeout) {
+        val remotePlayer = request.getRemotePlayer() as ProxyRemoteBackendPlayer?
+            ?: return@withTimeoutOrNull playerOperationResult {
+                unsupported = true
+            }
         val currentServerInfo = remotePlayer.actual.currentServer.getOrNull()?.serverInfo
         if (currentServerInfo?.name != request.teleport.server) {
+            // serverConnectedWaiting.add(remotePlayer.uniqueId)
             remotePlayer.actual.switchServer(request.teleport.server)
+            /*
+            for (uuid in serverConnectedNotify) {
+                if (uuid == remotePlayer.uniqueId) break
+            }
+             */
         }
         notificationFlow.emit(notification { playerOperation = request })
-        return waitNoReturnAck(request)
+        waitAck(request, ::handleNoReturnAck)
+    } ?: playerOperationResult {
+        timeout = true
     }
 
-    private suspend fun handlePerformCommand(request: PlayerOperation): PlayerOperationResult {
-        request.getRemotePlayer() ?: return playerOperationResult { unsupported = true }
+    private suspend fun handlePerformCommand(request: PlayerOperation) = withTimeoutOrNull(config.operationTimeout) {
+        request.getRemotePlayer() ?: return@withTimeoutOrNull playerOperationResult { unsupported = true }
         notificationFlow.emit(notification { playerOperation = request })
-        return waitNoReturnAck(request)
+        waitAck(request, ::handleNoReturnAck)
+    } ?: playerOperationResult {
+        timeout = true
     }
 
     override suspend fun operatePlayer(request: PlayerOperation): PlayerOperationResult = rpcCatching {
         debugInfo("BridgeRpc - operatePlayer called: $request")
+        if (!checkMultiple(
+                request.id != "",
+                request.executor != "",
+                request.playerUuid != "",
+                (request.hasProxy() || request.hasBackend()),
+                (request.hasInfoLookup()
+                        || request.hasSendMessage()
+                        || request.hasShowTitle()
+                        || request.hasPlaySound()
+                        || request.hasTeleport()
+                        || request.hasPerformCommand())
+            )
+        ) {
+            return@rpcCatching playerOperationResult { missingFields = true }
+        }
         val localPlayer = localServer.getPlayer(request.playerUuid.uuid, ServerState.LOCAL, ServerType.PROXY)
                 as InternalPlayer? ?: return@rpcCatching playerOperationResult { playerOffline = true }
         return@rpcCatching when (request.contentCase!!) {
@@ -249,53 +278,100 @@ object BridgeRpc : BridgeRpcCoroutineImplBase(), KoinComponent {
             PLAY_SOUND -> handlePlaySound(request, localPlayer)
             TELEPORT -> handleTeleport(request)
             PERFORM_COMMAND -> handlePerformCommand(request)
-            CONTENT_NOT_SET -> error("Received a PlayerOperation without content (id: ${request.id}, player: ${request.playerUuid})")
+            CONTENT_NOT_SET -> contentNotSet("PlayerOperation")
         }
     }
 
-    override suspend fun ackPlayerOperation(request: PlayerOperationAck): Empty = rpcCatching {
+    override suspend fun ackPlayerOperation(request: PlayerOperationAck): CommonResult = rpcCatching {
         debugInfo("BridgeRpc - ackPlayerOperation called: $request")
-        playerOperationAck.send(request)
-        return@rpcCatching empty
+        if (!checkMultiple(
+                request.id != "",
+                (request.hasOk()
+                        || request.hasUnsupported()
+                        || request.hasMissingFields())
+            )
+        ) {
+            return@rpcCatching commonResult { missingFields = true }
+        }
+        playerOperationAckNotify.send(request)
+        commonResult { ok = true }
     }
 
-    override suspend fun updatePlayerInfo(request: PlayerInfo): Empty = rpcCatching {
+    override suspend fun updatePlayerInfo(request: PlayerInfo): CommonResult = rpcCatching {
         debugInfo("BridgeRpc - updatePlayerInfo called: $request")
+        if (!checkMultiple(
+                request.server != "",
+                request.uniqueId != "",
+                request.name != "",
+                (request.hasProxy() || request.hasBackend())
+            )
+        ) {
+            return@rpcCatching commonResult { missingFields = true }
+        }
         internalBridge.updateRemotePlayerInfo(request)
         notificationFlow.emit(notification { playerInfoUpdate = request })
-        return@rpcCatching empty
+        commonResult { ok = true }
     }
 
     override suspend fun operateWorld(request: WorldOperation): WorldOperationResult = rpcCatching {
         debugInfo("BridgeRpc - operateWorld called: $request")
-        error("Placeholder")
+        if (!checkMultiple(request.id != "", request.server != "", request.world != "")) {
+            return@rpcCatching worldOperationResult { missingFields = true }
+        }
+        worldOperationResult { ok = true }
     }
 
-    override suspend fun ackWorldOperation(request: WorldOperationAck): Empty = rpcCatching {
+    private fun checkWorldInfo(info: WorldInfo): Boolean {
+        return checkMultiple(
+            info.server != "",
+            info.name != "",
+            info.hasSpawnPoint()
+        )
+    }
+
+    override suspend fun ackWorldOperation(request: WorldOperationAck): CommonResult = rpcCatching {
         debugInfo("BridgeRpc - ackWorldOperation called: $request")
-        error("Placeholder")
+        if (!checkMultiple(
+                request.id != "",
+                request.server != "",
+                request.world != "",
+                (request.hasOk() || request.hasUnsupported() || request.hasMissingFields())
+            )
+        ) {
+            return@rpcCatching commonResult { missingFields = true }
+        }
+        commonResult { ok = true }
     }
 
-    override suspend fun loadWorld(request: WorldInfo): Empty = rpcCatching {
+    override suspend fun loadWorld(request: WorldInfo): CommonResult = rpcCatching {
         debugInfo("BridgeRpc - loadWorld called: $request")
+        if (!checkWorldInfo(request)) {
+            return@rpcCatching commonResult { missingFields = true }
+        }
         internalBridge.addRemoteWorld(request)
         notificationFlow.emit(notification {
             worldLoad = request
         })
-        return@rpcCatching empty
+        commonResult { ok = true }
     }
 
-    override suspend fun updateWorldInfo(request: WorldInfo): Empty = rpcCatching {
+    override suspend fun updateWorldInfo(request: WorldInfo): CommonResult = rpcCatching {
         debugInfo("BridgeRpc - updateRemoteWorldInfo called: $request")
+        if (!checkWorldInfo(request)) {
+            return@rpcCatching commonResult { missingFields = true }
+        }
         internalBridge.updateRemoteWorldInfo(request)
         notificationFlow.emit(notification { worldInfoUpdate = request })
-        return@rpcCatching empty
+        commonResult { ok = true }
     }
 
-    override suspend fun unloadWorld(request: WorldLoad): Empty = rpcCatching {
+    override suspend fun unloadWorld(request: WorldLoad): CommonResult = rpcCatching {
         debugInfo("BridgeRpc - unloadWorld called: $request")
+        if (!checkMultiple(request.world != "", request.world != "")) {
+            return@rpcCatching commonResult { missingFields = true }
+        }
         internalBridge.removeRemoteWorld(request)
         notificationFlow.emit(notification { worldUnload = request })
-        return@rpcCatching empty
+        commonResult { ok = true }
     }
 }

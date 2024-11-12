@@ -1,7 +1,7 @@
 package ink.pmc.framework.bridge.player
 
 import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.PlayerOperationResult
-import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.PlayerOperationResult.ContentCase.*
+import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.PlayerOperationResult.StatusCase.*
 import ink.pmc.framework.bridge.proto.playerOperation
 import ink.pmc.framework.bridge.remoteWorldNotFound
 import ink.pmc.framework.bridge.world.BridgeLocation
@@ -20,12 +20,13 @@ abstract class RemoteBackendPlayer : RemotePlayer() {
             checkNotNull(world) { "Uninitialized" }
             val result = operatePlayer(playerOperation {
                 id = UUID.randomUUID().toString()
+                executor = server.id
                 playerUuid = uniqueId.toString()
                 backend = true
                 infoLookup = empty
             })
             val info = result.infoLookup
-            when (result.contentCase!!) {
+            when (result.statusCase!!) {
                 OK -> {
                     check(info.hasLocation()) { "PlayerInfo missing required field" }
                     val loc = info.location
@@ -38,14 +39,15 @@ abstract class RemoteBackendPlayer : RemotePlayer() {
 
 
     private fun checkNoReturnResult(result: PlayerOperationResult): IllegalStateException? {
-        return when (result.contentCase!!) {
+        return when (result.statusCase!!) {
             OK -> null
             PLAYER_OFFLINE -> error("Player offline: $name")
             SERVER_OFFLINE -> error("Remote server offline: ${server.id}")
             WORLD_NOT_FOUND -> remoteWorldNotFound("${world?.name}", server.id)
             UNSUPPORTED -> error("Unsupported")
             TIMEOUT -> error("Player operation timeout: $name")
-            CONTENT_NOT_SET -> error("Received a PlayerOperationResult without content (player: $name")
+            MISSING_FIELDS -> error("Missing fields")
+            STATUS_NOT_SET -> error("Received a PlayerOperationResult without status (player: $name")
         }
     }
 
@@ -54,6 +56,7 @@ abstract class RemoteBackendPlayer : RemotePlayer() {
         check(isOnline) { "Player offline: $name" }
         val result = operatePlayer(playerOperation {
             id = UUID.randomUUID().toString()
+            executor = server.id
             playerUuid = uniqueId.toString()
             backend = true
             teleport = location.createInfo()
@@ -66,6 +69,7 @@ abstract class RemoteBackendPlayer : RemotePlayer() {
         check(isOnline) { "Player offline: $name" }
         val result = operatePlayer(playerOperation {
             id = UUID.randomUUID().toString()
+            executor = server.id
             playerUuid = uniqueId.toString()
             backend = true
             performCommand = command

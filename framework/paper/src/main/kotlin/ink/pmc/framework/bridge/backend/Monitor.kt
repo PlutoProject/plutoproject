@@ -3,16 +3,18 @@ package ink.pmc.framework.bridge.backend
 import ink.pmc.framework.bridge.backend.handlers.NotificationHandler
 import ink.pmc.framework.bridge.debugInfo
 import ink.pmc.framework.bridge.internalBridge
+import ink.pmc.framework.bridge.missingFields
 import ink.pmc.framework.bridge.player.createInfoWithoutLocation
 import ink.pmc.framework.bridge.proto.BridgeRpcGrpcKt.BridgeRpcCoroutineStub
-import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.Notification
-import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.ServerInfo
+import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.*
 import ink.pmc.framework.bridge.proto.heartbeatMessage
 import ink.pmc.framework.bridge.proto.serverInfo
+import ink.pmc.framework.bridge.statusNotSet
 import ink.pmc.framework.bridge.world.createInfo
 import ink.pmc.framework.frameworkLogger
 import ink.pmc.framework.rpc.RpcClient
 import ink.pmc.framework.utils.concurrent.submitAsync
+import ink.pmc.framework.utils.currentUnixTimestamp
 import ink.pmc.framework.utils.data.getValue
 import ink.pmc.framework.utils.data.mutableConcurrentSetOf
 import ink.pmc.framework.utils.data.setValue
@@ -45,6 +47,11 @@ private fun getCurrentServerInfo(): ServerInfo {
 private suspend fun registerServer() {
     debugInfo("Trying to register server")
     val result = bridgeStub.registerServer(getCurrentServerInfo())
+    when (result.statusCase!!) {
+        ServerRegistrationResult.StatusCase.OK -> {}
+        ServerRegistrationResult.StatusCase.MISSING_FIELDS -> missingFields()
+        ServerRegistrationResult.StatusCase.STATUS_NOT_SET -> statusNotSet("ServerRegistrationResult")
+    }
     result.serversList.forEach {
         if (it.id == internalBridge.local.id) return@forEach
         internalBridge.registerRemoteServer(it)
@@ -97,11 +104,17 @@ private suspend fun heartbeat() = runCatching {
     val result = bridgeStub.heartbeat(heartbeatMessage {
         server = internalBridge.local.id
     })
-    // Master 报告未注册：可能是因为 Master 重启了，重新初始化
-    if (result.notRegistered && isInitialized) {
-        debugInfo("Master responded notRegistered")
-        isInitialized = false
-        isConnected = false
+    when (result.statusCase!!) {
+        HeartbeatResult.StatusCase.OK -> {}
+        // Master 报告未注册：可能是因为 Master 重启了，重新初始化
+        HeartbeatResult.StatusCase.NOT_REGISTERED -> if (isInitialized) {
+            debugInfo("Master responded notRegistered")
+            isInitialized = false
+            isConnected = false
+        }
+
+        HeartbeatResult.StatusCase.MISSING_FIELDS -> missingFields()
+        HeartbeatResult.StatusCase.STATUS_NOT_SET -> statusNotSet("HeartbeatResult")
     }
 }
 
@@ -127,5 +140,6 @@ fun stopBridgeBackgroundTask() {
 }
 
 private suspend fun handleNotification(msg: Notification) {
+    debugInfo("Notification received: $msg, $currentUnixTimestamp")
     NotificationHandler[msg.contentCase].handle(msg)
 }

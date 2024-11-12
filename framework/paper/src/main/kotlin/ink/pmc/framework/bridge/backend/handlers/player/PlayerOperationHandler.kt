@@ -1,40 +1,36 @@
 package ink.pmc.framework.bridge.backend.handlers.player
 
+import ink.pmc.framework.bridge.*
 import ink.pmc.framework.bridge.backend.bridgeStub
 import ink.pmc.framework.bridge.backend.handlers.NotificationHandler
-import ink.pmc.framework.bridge.backend.operationsSent
 import ink.pmc.framework.bridge.backend.server.localServer
-import ink.pmc.framework.bridge.debugInfo
-import ink.pmc.framework.bridge.internalBridge
-import ink.pmc.framework.bridge.localPlayerNotFound
-import ink.pmc.framework.bridge.localWorldNotFound
 import ink.pmc.framework.bridge.player.createInfoWithoutLocation
 import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.Notification
 import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.PlayerOperation
 import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.PlayerOperation.ContentCase.*
 import ink.pmc.framework.bridge.proto.playerOperationAck
 import ink.pmc.framework.bridge.world.createInfo
-import ink.pmc.framework.utils.platform.paper
+import ink.pmc.framework.utils.currentUnixTimestamp
 import ink.pmc.framework.utils.player.uuid
 
 object PlayerOperationHandler : NotificationHandler {
     override suspend fun handle(request: Notification) {
         val msg = request.playerOperation
         val playerUuid = request.playerOperation.playerUuid.uuid
-        if (paper.getPlayer(playerUuid) == null) return
-        if (operationsSent.remove(msg.id.uuid)) return
-        debugInfo("PlayerOperationHandler: $request")
+        if (msg.executor != internalBridge.local.id) return
         val localPlayer = internalBridge.getInternalLocalPlayer(playerUuid)
             ?: localPlayerNotFound(playerUuid.toString())
+        debugInfo("PlayerOperationHandler: $request, $currentUnixTimestamp")
         when (msg.contentCase!!) {
             INFO_LOOKUP -> {
-                bridgeStub.ackPlayerOperation(playerOperationAck {
-                    uuid = request.playerOperation.id
+                val result = bridgeStub.ackPlayerOperation(playerOperationAck {
+                    id = request.playerOperation.id
                     ok = true
                     infoLookup = localPlayer.createInfoWithoutLocation().toBuilder().apply {
                         location = localPlayer.location.await().createInfo()
                     }.build()
                 })
+                checkCommonResult(result)
                 return
             }
 
@@ -53,11 +49,12 @@ object PlayerOperationHandler : NotificationHandler {
             }
 
             PERFORM_COMMAND -> localPlayer.performCommand(msg.performCommand)
-            PlayerOperation.ContentCase.CONTENT_NOT_SET -> error("Received a PlayerOperation without content")
+            PlayerOperation.ContentCase.CONTENT_NOT_SET -> contentNotSet("PlayerOperation")
         }
-        bridgeStub.ackPlayerOperation(playerOperationAck {
-            uuid = request.playerOperation.id
+        val result = bridgeStub.ackPlayerOperation(playerOperationAck {
+            id = request.playerOperation.id
             ok = true
         })
+        checkCommonResult(result)
     }
 }

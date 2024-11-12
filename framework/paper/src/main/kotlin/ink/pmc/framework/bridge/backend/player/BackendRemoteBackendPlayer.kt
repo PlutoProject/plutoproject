@@ -2,6 +2,7 @@ package ink.pmc.framework.bridge.backend.player
 
 import ink.pmc.framework.bridge.backend.bridgeStub
 import ink.pmc.framework.bridge.backend.operationsSent
+import ink.pmc.framework.bridge.checkPlayerOperationResult
 import ink.pmc.framework.bridge.player.RemoteBackendPlayer
 import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.PlayerOperation
 import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.PlayerOperationResult
@@ -18,6 +19,8 @@ class BackendRemoteBackendPlayer(
 ) : RemoteBackendPlayer() {
     override suspend fun operatePlayer(request: PlayerOperation): PlayerOperationResult {
         operationsSent.add(request.id.uuid)
-        return bridgeStub.operatePlayer(request)
+        val result = bridgeStub.operatePlayer(request)
+        checkPlayerOperationResult(request, result)
+        return result
     }
 }

@@ -4,6 +4,7 @@ import com.velocitypowered.api.event.PostOrder
 import com.velocitypowered.api.event.Subscribe
 import com.velocitypowered.api.event.connection.DisconnectEvent
 import com.velocitypowered.api.event.connection.LoginEvent
+import com.velocitypowered.api.event.player.ServerConnectedEvent
 import com.velocitypowered.api.event.player.ServerPreConnectEvent
 import ink.pmc.framework.bridge.internalBridge
 import ink.pmc.framework.bridge.player.createInfoWithoutLocation
@@ -15,6 +16,7 @@ import ink.pmc.framework.bridge.proxy.player.ProxyRemoteBackendPlayer
 import ink.pmc.framework.bridge.proxy.server.localServer
 import ink.pmc.framework.bridge.remoteServerNotFound
 import ink.pmc.framework.bridge.server.InternalServer
+import ink.pmc.framework.utils.currentUnixTimestamp
 
 object BridgePlayerListener {
     @Subscribe(order = PostOrder.FIRST)
@@ -26,19 +28,27 @@ object BridgePlayerListener {
         })
     }
 
-    @Subscribe(order = PostOrder.LAST)
+    @Subscribe(order = PostOrder.FIRST)
     suspend fun ServerPreConnectEvent.e() {
+        println("ServerPreConnectEvent start: $currentUnixTimestamp")
         val current = internalBridge.getInternalRemoteServer(originalServer.serverInfo.name)
             ?: remoteServerNotFound(originalServer.serverInfo.name)
         val remotePlayer = internalBridge.getInternalRemoteBackendPlayer(player.uniqueId)
             ?: ProxyRemoteBackendPlayer(player, current, null)
         val previous = previousServer?.let { internalBridge.getInternalRemoteServer(it.serverInfo.name) }
+        previous?.players?.remove(remotePlayer)
         remotePlayer.server = current
         current.players.add(remotePlayer)
-        previous?.players?.remove(remotePlayer)
         BridgeRpc.notify(notification {
             playerSwitchServer = remotePlayer.createInfoWithoutLocation()
         })
+        println("ServerPreConnectEvent end: $currentUnixTimestamp")
+    }
+
+    @Subscribe(order = PostOrder.FIRST)
+    fun ServerConnectedEvent.e() {
+        println("ServerConnectEvent start: $currentUnixTimestamp")
+        println("ServerConnectEvent end: $currentUnixTimestamp")
     }
 
     @Subscribe(order = PostOrder.LAST)

@@ -12,6 +12,7 @@ import net.kyori.adventure.sound.Sound
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.minimessage.MiniMessage
 import net.kyori.adventure.title.Title
+import java.util.*
 
 abstract class RemotePlayer : InternalPlayer() {
     override suspend fun sendMessage(message: String) {
@@ -20,6 +21,9 @@ abstract class RemotePlayer : InternalPlayer() {
 
     override suspend fun sendMessage(message: Component) {
         operatePlayer(playerOperation {
+            id = UUID.randomUUID().toString()
+            executor = server.id
+            playerUuid = uniqueId.toString()
             sendMessage = MiniMessage.miniMessage().serialize(message)
         })
     }
@@ -30,6 +34,9 @@ abstract class RemotePlayer : InternalPlayer() {
 
     override suspend fun showTitle(title: Title) {
         operatePlayer(playerOperation {
+            id = UUID.randomUUID().toString()
+            executor = server.id
+            playerUuid = uniqueId.toString()
             showTitle = titleInfo {
                 val times = title.times()
                 fadeInMs = times?.fadeIn()?.toMillis() ?: 500
@@ -47,6 +54,9 @@ abstract class RemotePlayer : InternalPlayer() {
 
     override suspend fun playSound(sound: Sound) {
         operatePlayer(playerOperation {
+            id = UUID.randomUUID().toString()
+            executor = server.id
+            playerUuid = uniqueId.toString()
             playSound = soundInfo {
                 key = sound.name().asString()
                 volume = sound.volume()
