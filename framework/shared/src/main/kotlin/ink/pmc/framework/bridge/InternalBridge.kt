@@ -116,10 +116,10 @@ abstract class InternalBridge : Bridge {
         debugInfo("InternalBridge - syncData called: $info")
         val remoteServer = getInternalRemoteServer(info.id) ?: remoteServerNotFound(info.id)
         remoteServer.players.forEach { (it as InternalPlayer).isOnline = false }
-        remoteServer.setInitialPlayers(info, remoteServer)
         if (!remoteServer.type.isProxy) {
             remoteServer.setInitialWorlds(info, remoteServer)
         }
+        remoteServer.setInitialPlayers(info, remoteServer)
         return remoteServer
     }
 

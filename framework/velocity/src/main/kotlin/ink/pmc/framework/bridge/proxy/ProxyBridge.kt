@@ -1,6 +1,7 @@
 package ink.pmc.framework.bridge.proxy
 
 import ink.pmc.framework.bridge.InternalBridge
+import ink.pmc.framework.bridge.internalBridge
 import ink.pmc.framework.bridge.player.InternalPlayer
 import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.PlayerInfo
 import ink.pmc.framework.bridge.proxy.player.ProxyRemoteBackendPlayer
@@ -20,6 +21,7 @@ class ProxyBridge : InternalBridge() {
 
     override fun createRemotePlayer(info: PlayerInfo, server: InternalServer?): InternalPlayer {
         val actualServer = server ?: getInternalRemoteServer(info.server) ?: remoteServerNotFound(info.server)
-        return ProxyRemoteBackendPlayer(proxy.getPlayer(info.uniqueId.uuid).get(), actualServer, null)
+        val remoteWorld = internalBridge.getInternalRemoteWorld(actualServer, info.world.name)
+        return ProxyRemoteBackendPlayer(proxy.getPlayer(info.uniqueId.uuid).get(), actualServer, remoteWorld)
     }
 }
