@@ -82,10 +82,10 @@ object BridgeCommand : AbstractBridgeCommand<CommandSource>() {
 
     @Command("bridgeproxy player <player> perform_command <command>")
     @Permission("bridge.command")
-    suspend fun commandPlaySound(
+    suspend fun commandPerformCommand(
         sender: CommandSource,
         player: BridgePlayer,
-        command: String
+        @Quoted command: String
     ) {
         sender.performCommand(player, command)
     }
