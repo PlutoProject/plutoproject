@@ -19,7 +19,6 @@ import org.bukkit.event.player.PlayerQuitEvent
 object BridgePlayerListener : Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     suspend fun PlayerLoginEvent.e() {
-        println("PlayerLoginEvent start: $currentUnixTimestamp")
         val localPlayer = BackendLocalPlayer(player, localServer)
         localServer.players.add(localPlayer)
         val remotePlayer = internalBridge.getPlayer(player.uniqueId, ServerState.REMOTE, ServerType.BACKEND)
@@ -29,7 +28,6 @@ object BridgePlayerListener : Listener {
         }
         val result = bridgeStub.updatePlayerInfo(localPlayer.createInfoWithoutLocation())
         checkCommonResult(result)
-        println("PlayerLoginEvent end: $currentUnixTimestamp")
     }
 
     @EventHandler(priority = EventPriority.LOWEST)

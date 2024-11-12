@@ -237,13 +237,7 @@ object BridgeRpc : BridgeRpcCoroutineImplBase(), KoinComponent {
             }
         val currentServerInfo = remotePlayer.actual.currentServer.getOrNull()?.serverInfo
         if (currentServerInfo?.name != request.teleport.server) {
-            // serverConnectedWaiting.add(remotePlayer.uniqueId)
             remotePlayer.actual.switchServer(request.teleport.server)
-            /*
-            for (uuid in serverConnectedNotify) {
-                if (uuid == remotePlayer.uniqueId) break
-            }
-             */
         }
         notify.emit(notification { playerOperation = request })
         waitAck(request, ::handleNoReturnAck)

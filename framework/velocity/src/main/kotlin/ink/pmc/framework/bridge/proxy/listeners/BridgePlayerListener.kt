@@ -4,7 +4,6 @@ import com.velocitypowered.api.event.PostOrder
 import com.velocitypowered.api.event.Subscribe
 import com.velocitypowered.api.event.connection.DisconnectEvent
 import com.velocitypowered.api.event.connection.LoginEvent
-import com.velocitypowered.api.event.player.ServerConnectedEvent
 import com.velocitypowered.api.event.player.ServerPreConnectEvent
 import ink.pmc.framework.bridge.internalBridge
 import ink.pmc.framework.bridge.player.createInfoWithoutLocation
@@ -17,7 +16,6 @@ import ink.pmc.framework.bridge.proxy.server.localServer
 import ink.pmc.framework.bridge.server.InternalServer
 import ink.pmc.framework.bridge.throwRemoteServerNotFound
 import ink.pmc.framework.bridge.warn
-import ink.pmc.framework.utils.currentUnixTimestamp
 
 object BridgePlayerListener {
     @Subscribe(order = PostOrder.FIRST)
@@ -31,7 +29,6 @@ object BridgePlayerListener {
 
     @Subscribe(order = PostOrder.FIRST)
     suspend fun ServerPreConnectEvent.e() {
-        println("ServerPreConnectEvent start: $currentUnixTimestamp")
         val current = internalBridge.getInternalRemoteServer(originalServer.serverInfo.name)
             ?: return warn { throwRemoteServerNotFound(originalServer.serverInfo.name) }
         val remotePlayer = internalBridge.getInternalRemoteBackendPlayer(player.uniqueId)
@@ -43,13 +40,6 @@ object BridgePlayerListener {
         BridgeRpc.notify(notification {
             playerSwitchServer = remotePlayer.createInfoWithoutLocation()
         })
-        println("ServerPreConnectEvent end: $currentUnixTimestamp")
-    }
-
-    @Subscribe(order = PostOrder.FIRST)
-    fun ServerConnectedEvent.e() {
-        println("ServerConnectEvent start: $currentUnixTimestamp")
-        println("ServerConnectEvent end: $currentUnixTimestamp")
     }
 
     @Subscribe(order = PostOrder.LAST)
