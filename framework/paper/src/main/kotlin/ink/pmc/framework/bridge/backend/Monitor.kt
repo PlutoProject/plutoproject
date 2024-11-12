@@ -7,6 +7,7 @@ import ink.pmc.framework.bridge.missingFields
 import ink.pmc.framework.bridge.player.createInfoWithoutLocation
 import ink.pmc.framework.bridge.proto.BridgeRpcGrpcKt.BridgeRpcCoroutineStub
 import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.*
+import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.DataSyncResult.StatusCase.*
 import ink.pmc.framework.bridge.proto.heartbeatMessage
 import ink.pmc.framework.bridge.proto.serverInfo
 import ink.pmc.framework.bridge.statusNotSet
@@ -67,8 +68,20 @@ private suspend fun monitor() = runCatching {
         if (isInitialized && !isConnected) {
             debugInfo("Trying to sync data")
             val result = bridgeStub.syncData(getCurrentServerInfo())
-            if (result.notRegistered) {
-                registerServer()
+            when (result.statusCase!!) {
+                OK -> {}
+                NOT_REGISTERED -> {
+                    registerServer()
+                    debugInfo("Data synced")
+                    return@also
+                }
+
+                MISSING_FIELDS -> missingFields()
+                STATUS_NOT_SET -> statusNotSet("DataSyncResult")
+            }
+            result.serversList.forEach {
+                if (it.id == internalBridge.local.id) return@forEach
+                internalBridge.syncData(it)
             }
             debugInfo("Data synced")
         }

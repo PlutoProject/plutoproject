@@ -84,7 +84,7 @@ abstract class InternalBridge : Bridge {
         return server
     }
 
-    fun registerRemoteServer(info: ServerInfo): BridgeServer {
+    fun registerRemoteServer(info: ServerInfo): InternalServer {
         debugInfo("InternalBridge - registerRemoteServer called: $info")
         val id = info.id
         if (isServerRegistered(id)) {
@@ -114,7 +114,7 @@ abstract class InternalBridge : Bridge {
 
     fun syncData(info: ServerInfo): InternalServer {
         debugInfo("InternalBridge - syncData called: $info")
-        val remoteServer = getInternalRemoteServer(info.id) ?: remoteServerNotFound(info.id)
+        val remoteServer = getInternalRemoteServer(info.id) ?: return registerRemoteServer(info)
         remoteServer.players.forEach { (it as InternalPlayer).isOnline = false }
         if (!remoteServer.type.isProxy) {
             remoteServer.setInitialWorlds(info, remoteServer)
