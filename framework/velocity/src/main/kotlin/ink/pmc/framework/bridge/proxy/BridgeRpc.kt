@@ -112,6 +112,13 @@ object BridgeRpc : BridgeRpcCoroutineImplBase(), KoinComponent {
         }
     }
 
+    private fun markAlive(remoteServer: InternalServer) {
+        heartbeatMap[remoteServer] = Instant.now()
+        if (!remoteServer.isOnline) {
+            internalBridge.markRemoteServerOnline(remoteServer.id)
+        }
+    }
+
     override suspend fun heartbeat(request: HeartbeatMessage): HeartbeatResult = rpcCatching {
         debugInfo("BridgeRpc - heartbeat called: $request")
         if (!checkMultiple(request.server != "")) {
@@ -121,12 +128,9 @@ object BridgeRpc : BridgeRpcCoroutineImplBase(), KoinComponent {
             ?: return@rpcCatching heartbeatResult {
                 notRegistered = true
             }
-        heartbeatMap[remoteServer] = Instant.now()
-        if (!remoteServer.isOnline) {
-            internalBridge.markRemoteServerOnline(remoteServer.id)
-        }
+        markAlive(remoteServer)
         notify.emit(notification {
-            serverOnline = request.server
+            serverOnline = remoteServer.id
         })
         return@rpcCatching heartbeatResult {
             ok = true
@@ -144,10 +148,7 @@ object BridgeRpc : BridgeRpcCoroutineImplBase(), KoinComponent {
             }
         }
         val remoteServer = internalBridge.syncData(request)
-        heartbeatMap[remoteServer] = Instant.now()
-        if (!remoteServer.isOnline) {
-            internalBridge.markRemoteServerOnline(remoteServer.id)
-        }
+        markAlive(remoteServer)
         notify.emit(notification {
             serverInfoUpdate = request
         })
