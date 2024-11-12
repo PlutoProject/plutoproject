@@ -56,7 +56,7 @@ abstract class RemoteBackendPlayer : RemotePlayer() {
         check(isOnline) { "Player offline: $name" }
         val result = operatePlayer(playerOperation {
             id = UUID.randomUUID().toString()
-            executor = server.id
+            executor = location.server.id
             playerUuid = uniqueId.toString()
             backend = true
             teleport = location.createInfo()
