@@ -59,7 +59,6 @@ object BridgeRpc : BridgeRpcCoroutineImplBase(), KoinComponent {
 
     private suspend fun checkHeartbeat(server: BridgeServer) {
         if (server.state.isLocal) return
-        // debugInfo("Check heartbeat: ${server.id}")
         val remoteServer = server as InternalServer
         val time = heartbeatMap[server]
         val requirement = Instant.now().minusSeconds(HEARTBEAT_THRESHOLD_SECS + HEARTBEAT_GRACE_PERIOD_SECS)
@@ -67,10 +66,10 @@ object BridgeRpc : BridgeRpcCoroutineImplBase(), KoinComponent {
             if (remoteServer.isOnline) {
                 internalBridge.markRemoteServerOffline(remoteServer.id)
                 frameworkLogger.warning("Server ${remoteServer.id} heartbeat timeout")
+                notify.emit(notification {
+                    serverOffline = server.id
+                })
             }
-            notify.emit(notification {
-                serverOffline = server.id
-            })
         }
     }
 
@@ -112,10 +111,13 @@ object BridgeRpc : BridgeRpcCoroutineImplBase(), KoinComponent {
         }
     }
 
-    private fun markAlive(remoteServer: InternalServer) {
+    private suspend fun markAlive(remoteServer: InternalServer) {
         heartbeatMap[remoteServer] = Instant.now()
         if (!remoteServer.isOnline) {
             internalBridge.markRemoteServerOnline(remoteServer.id)
+            notify.emit(notification {
+                serverOnline = remoteServer.id
+            })
         }
     }
 
@@ -129,9 +131,6 @@ object BridgeRpc : BridgeRpcCoroutineImplBase(), KoinComponent {
                 notRegistered = true
             }
         markAlive(remoteServer)
-        notify.emit(notification {
-            serverOnline = remoteServer.id
-        })
         return@rpcCatching heartbeatResult {
             ok = true
         }
