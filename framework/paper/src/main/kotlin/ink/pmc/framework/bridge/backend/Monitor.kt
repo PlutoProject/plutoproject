@@ -165,5 +165,9 @@ fun stopBridgeBackgroundTask() {
 
 private suspend fun handleNotification(msg: Notification) {
     debugInfo("Notification received: $msg, $currentUnixTimestamp")
-    NotificationHandler[msg.contentCase].handle(msg)
+    runCatching {
+        NotificationHandler[msg.contentCase].handle(msg)
+    }.onFailure {
+        frameworkLogger.log(Level.WARNING, "Exception caught while handling notification", it)
+    }
 }
