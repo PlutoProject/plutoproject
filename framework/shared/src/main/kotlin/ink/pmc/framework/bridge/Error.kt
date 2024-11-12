@@ -2,39 +2,39 @@ package ink.pmc.framework.bridge
 
 import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.*
 
-fun serverNotFound(id: String): Nothing {
+fun throwServerNotFound(id: String): Nothing {
     error("Server not found: $id")
 }
 
-fun remoteServerNotFound(id: String): Nothing {
+fun throwRemoteServerNotFound(id: String): Nothing {
     error("Remote server not found: $id")
 }
 
-fun remoteServerOffline(id: String): Nothing {
+fun throwRemoteServerOffline(id: String): Nothing {
     error("Remote server offline: $id")
 }
 
-fun playerNotFound(name: String): Nothing {
+fun throwPlayerNotFound(name: String): Nothing {
     error("Player not found: $name")
 }
 
-fun remotePlayerNotFound(name: String): Nothing {
+fun throwRemotePlayerNotFound(name: String): Nothing {
     error("Remote player not found: $name")
 }
 
-fun remotePlayerOffline(name: String): Nothing {
+fun throwRemotePlayerOffline(name: String): Nothing {
     error("Remote player offline: $name")
 }
 
-fun localPlayerNotFound(name: String): Nothing {
+fun throwLocalPlayerNotFound(name: String): Nothing {
     error("Local player not found: $name")
 }
 
-fun worldNotFound(): Nothing {
+fun throwWorldNotFound(): Nothing {
     error("World not found")
 }
 
-fun worldNotFound(name: String, server: String?): Nothing {
+fun throwWorldNotFound(name: String, server: String?): Nothing {
     if (server != null) {
         error("World not found: $name (server: $server)")
     } else {
@@ -42,7 +42,7 @@ fun worldNotFound(name: String, server: String?): Nothing {
     }
 }
 
-fun remoteWorldNotFound(name: String, server: String?): Nothing {
+fun throwRemoteWorldNotFound(name: String, server: String?): Nothing {
     if (server != null) {
         error("Remote world not found: $name (server: $server)")
     } else {
@@ -50,43 +50,43 @@ fun remoteWorldNotFound(name: String, server: String?): Nothing {
     }
 }
 
-fun localWorldNotFound(name: String): Nothing {
+fun throwLocalWorldNotFound(name: String): Nothing {
     error("Local world not found: $name")
 }
 
-fun playerOperationTimeout(player: String): Nothing {
+fun throwPlayerOperationTimeout(player: String): Nothing {
     error("Player operation timeout: $player")
 }
 
-fun missingFields(): Nothing {
+fun throwMissingFields(): Nothing {
     error("Missing fields")
 }
 
-fun statusNotSet(name: String): Nothing {
+fun throwStatusNotSet(name: String): Nothing {
     error("Received a $name without status")
 }
 
-fun contentNotSet(name: String): Nothing {
+fun throwContentNotSet(name: String): Nothing {
     error("Received a $name without content")
 }
 
 fun checkCommonResult(result: CommonResult) {
     when (result.statusCase!!) {
         CommonResult.StatusCase.OK -> {}
-        CommonResult.StatusCase.MISSING_FIELDS -> missingFields()
-        CommonResult.StatusCase.STATUS_NOT_SET -> statusNotSet("CommonResult")
+        CommonResult.StatusCase.MISSING_FIELDS -> throwMissingFields()
+        CommonResult.StatusCase.STATUS_NOT_SET -> throwStatusNotSet("CommonResult")
     }
 }
 
 fun checkPlayerOperationResult(request: PlayerOperation, result: PlayerOperationResult) {
     when (result.statusCase!!) {
         PlayerOperationResult.StatusCase.OK -> {}
-        PlayerOperationResult.StatusCase.PLAYER_OFFLINE -> playerNotFound(request.playerUuid)
-        PlayerOperationResult.StatusCase.SERVER_OFFLINE -> serverNotFound(request.executor)
-        PlayerOperationResult.StatusCase.WORLD_NOT_FOUND -> worldNotFound()
-        PlayerOperationResult.StatusCase.TIMEOUT -> playerOperationTimeout(request.playerUuid)
+        PlayerOperationResult.StatusCase.PLAYER_OFFLINE -> throwPlayerNotFound(request.playerUuid)
+        PlayerOperationResult.StatusCase.SERVER_OFFLINE -> throwServerNotFound(request.executor)
+        PlayerOperationResult.StatusCase.WORLD_NOT_FOUND -> throwWorldNotFound()
+        PlayerOperationResult.StatusCase.TIMEOUT -> throwPlayerOperationTimeout(request.playerUuid)
         PlayerOperationResult.StatusCase.UNSUPPORTED -> error("Unsupported")
-        PlayerOperationResult.StatusCase.MISSING_FIELDS -> missingFields()
-        PlayerOperationResult.StatusCase.STATUS_NOT_SET -> statusNotSet("PlayerOperationResult")
+        PlayerOperationResult.StatusCase.MISSING_FIELDS -> throwMissingFields()
+        PlayerOperationResult.StatusCase.STATUS_NOT_SET -> throwStatusNotSet("PlayerOperationResult")
     }
 }

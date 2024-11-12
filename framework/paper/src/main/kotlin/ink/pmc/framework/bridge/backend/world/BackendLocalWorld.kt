@@ -2,7 +2,7 @@ package ink.pmc.framework.bridge.backend.world
 
 import ink.pmc.framework.bridge.Bridge
 import ink.pmc.framework.bridge.backend.server.localServer
-import ink.pmc.framework.bridge.localWorldNotFound
+import ink.pmc.framework.bridge.throwLocalWorldNotFound
 import ink.pmc.framework.bridge.server.BridgeGroup
 import ink.pmc.framework.bridge.server.BridgeServer
 import ink.pmc.framework.bridge.server.ServerState
@@ -26,7 +26,7 @@ internal fun World.getBridge(): BridgeWorld? {
 }
 
 internal fun Location.createBridge(): BridgeLocation {
-    val localWorld = world.getBridge() ?: localWorldNotFound(world.name)
+    val localWorld = world.getBridge() ?: throwLocalWorldNotFound(world.name)
     return BridgeLocationImpl(Bridge.local, localWorld, x, y, z, yaw, pitch)
 }
 

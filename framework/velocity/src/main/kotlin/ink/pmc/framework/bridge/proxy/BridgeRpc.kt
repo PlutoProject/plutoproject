@@ -162,7 +162,7 @@ object BridgeRpc : BridgeRpcCoroutineImplBase(), KoinComponent {
             OK -> playerOperationResult { ok = true }
             UNSUPPORTED -> playerOperationResult { unsupported = true }
             MISSING_FIELDS -> playerOperationResult { missingFields = true }
-            STATUS_NOT_SET -> statusNotSet("PlayerOperationAck")
+            STATUS_NOT_SET -> throwStatusNotSet("PlayerOperationAck")
         }
     }
 
@@ -281,7 +281,7 @@ object BridgeRpc : BridgeRpcCoroutineImplBase(), KoinComponent {
             PLAY_SOUND -> handlePlaySound(request, localPlayer)
             TELEPORT -> handleTeleport(request)
             PERFORM_COMMAND -> handlePerformCommand(request)
-            CONTENT_NOT_SET -> contentNotSet("PlayerOperation")
+            CONTENT_NOT_SET -> throwContentNotSet("PlayerOperation")
         }
     }
 

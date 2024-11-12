@@ -14,7 +14,7 @@ import ink.pmc.framework.bridge.proxy.BridgeRpc
 import ink.pmc.framework.bridge.proxy.player.ProxyLocalPlayer
 import ink.pmc.framework.bridge.proxy.player.ProxyRemoteBackendPlayer
 import ink.pmc.framework.bridge.proxy.server.localServer
-import ink.pmc.framework.bridge.remoteServerNotFound
+import ink.pmc.framework.bridge.throwRemoteServerNotFound
 import ink.pmc.framework.bridge.server.InternalServer
 import ink.pmc.framework.utils.currentUnixTimestamp
 
@@ -32,7 +32,7 @@ object BridgePlayerListener {
     suspend fun ServerPreConnectEvent.e() {
         println("ServerPreConnectEvent start: $currentUnixTimestamp")
         val current = internalBridge.getInternalRemoteServer(originalServer.serverInfo.name)
-            ?: remoteServerNotFound(originalServer.serverInfo.name)
+            ?: throwRemoteServerNotFound(originalServer.serverInfo.name)
         val remotePlayer = internalBridge.getInternalRemoteBackendPlayer(player.uniqueId)
             ?: ProxyRemoteBackendPlayer(player, current, null)
         val previous = previousServer?.let { internalBridge.getInternalRemoteServer(it.serverInfo.name) }

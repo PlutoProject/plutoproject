@@ -3,7 +3,7 @@ package ink.pmc.framework.bridge.player
 import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.PlayerOperationResult
 import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.PlayerOperationResult.StatusCase.*
 import ink.pmc.framework.bridge.proto.playerOperation
-import ink.pmc.framework.bridge.remoteWorldNotFound
+import ink.pmc.framework.bridge.throwRemoteWorldNotFound
 import ink.pmc.framework.bridge.world.BridgeLocation
 import ink.pmc.framework.bridge.world.BridgeLocationImpl
 import ink.pmc.framework.bridge.world.createInfo
@@ -42,7 +42,7 @@ abstract class RemoteBackendPlayer : RemotePlayer() {
             OK -> null
             PLAYER_OFFLINE -> error("Player offline: $name")
             SERVER_OFFLINE -> error("Remote server offline: ${server.id}")
-            WORLD_NOT_FOUND -> remoteWorldNotFound("${world?.name}", server.id)
+            WORLD_NOT_FOUND -> throwRemoteWorldNotFound("${world?.name}", server.id)
             UNSUPPORTED -> error("Unsupported")
             TIMEOUT -> error("Player operation timeout: $name")
             MISSING_FIELDS -> error("Missing fields")
