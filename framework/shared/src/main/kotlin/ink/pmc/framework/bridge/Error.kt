@@ -14,7 +14,7 @@ fun remoteServerOffline(id: String): Nothing {
     error("Remote server offline: $id")
 }
 
-fun playerNotFound(name: String) {
+fun playerNotFound(name: String): Nothing {
     error("Player not found: $name")
 }
 
@@ -54,7 +54,7 @@ fun localWorldNotFound(name: String): Nothing {
     error("Local world not found: $name")
 }
 
-fun playerOperationTimeout(player: String) {
+fun playerOperationTimeout(player: String): Nothing {
     error("Player operation timeout: $player")
 }
 
