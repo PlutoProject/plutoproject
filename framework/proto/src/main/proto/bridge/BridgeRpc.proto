@@ -37,8 +37,9 @@ message TitleInfo {
 
 message SoundInfo {
   string key = 1;
-  float volume = 2;
-  float pitch = 3;
+  string source = 2;
+  float volume = 3;
+  float pitch = 4;
 }
 
 message ServerInfo {

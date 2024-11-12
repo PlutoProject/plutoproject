@@ -3,6 +3,7 @@ package ink.pmc.framework.bridge.proxy
 import com.google.protobuf.Empty
 import ink.pmc.advkt.sound.key
 import ink.pmc.advkt.sound.pitch
+import ink.pmc.advkt.sound.source
 import ink.pmc.advkt.sound.volume
 import ink.pmc.advkt.title.*
 import ink.pmc.framework.FrameworkConfig
@@ -29,6 +30,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.produceIn
 import kotlinx.coroutines.withTimeoutOrNull
 import net.kyori.adventure.key.Key
+import net.kyori.adventure.sound.Sound
 import net.kyori.adventure.text.minimessage.MiniMessage
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
@@ -217,6 +219,7 @@ object BridgeRpc : BridgeRpcCoroutineImplBase(), KoinComponent {
         player.playSound {
             val info = request.playSound
             key(Key.key(info.key))
+            source(Sound.Source.valueOf(info.source))
             volume(info.volume)
             pitch(info.pitch)
         }

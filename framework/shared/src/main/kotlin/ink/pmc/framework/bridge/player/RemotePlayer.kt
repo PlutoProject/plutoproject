@@ -59,6 +59,7 @@ abstract class RemotePlayer : InternalPlayer() {
             playerUuid = uniqueId.toString()
             playSound = soundInfo {
                 key = sound.name().asString()
+                source = sound.source().toString()
                 volume = sound.volume()
                 pitch = sound.pitch()
             }
