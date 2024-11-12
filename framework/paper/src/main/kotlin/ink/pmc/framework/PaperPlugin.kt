@@ -2,6 +2,13 @@ package ink.pmc.framework
 
 import com.github.shynixn.mccoroutine.bukkit.SuspendingJavaPlugin
 import com.github.shynixn.mccoroutine.bukkit.registerSuspendingEvents
+import ink.pmc.framework.bridge.Bridge
+import ink.pmc.framework.bridge.backend.BackendBridge
+import ink.pmc.framework.bridge.backend.BridgeCommand
+import ink.pmc.framework.bridge.backend.listeners.BridgePlayerListener
+import ink.pmc.framework.bridge.backend.listeners.BridgeWorldListener
+import ink.pmc.framework.bridge.backend.startBridgeBackgroundTask
+import ink.pmc.framework.bridge.backend.stopBridgeBackgroundTask
 import ink.pmc.framework.interactive.GuiListener
 import ink.pmc.framework.interactive.GuiManager
 import ink.pmc.framework.interactive.GuiManagerImpl
@@ -20,6 +27,7 @@ import ink.pmc.framework.provider.Provider
 import ink.pmc.framework.rpc.RpcClient
 import ink.pmc.framework.utils.command.annotationParser
 import ink.pmc.framework.utils.command.commandManager
+import ink.pmc.framework.utils.concurrent.cancelFrameworkScopes
 import ink.pmc.framework.utils.currentUnixTimestamp
 import ink.pmc.framework.utils.hook.initPaperHooks
 import ink.pmc.framework.utils.inject.startKoinIfNotPresent
@@ -31,9 +39,10 @@ import ink.pmc.framework.visual.display.text.*
 import ink.pmc.framework.visual.display.text.renderers.NmsTextDisplayRenderer
 import ink.pmc.framework.visual.toast.ToastRenderer
 import ink.pmc.framework.visual.toast.renderers.NmsToastRenderer
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.entity.Player
+import org.incendo.cloud.minecraft.extras.parser.ComponentParser
+import org.incendo.cloud.parser.standard.StringParser
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.qualifier.named
@@ -52,6 +61,7 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
         single<TextDisplayManager> { TextDisplayManagerImpl() }
         single<TextDisplayFactory> { TextDisplayFactoryImpl() }
         single<TextDisplayRenderer>(named("internal")) { NmsTextDisplayRenderer() }
+        single<Bridge> { BackendBridge() }
     }
 
     override fun onLoad() {
@@ -62,9 +72,9 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
         startKoinIfNotPresent {
             modules(commonModule, bukkitModule)
         }
-        preload()
-        Provider // 初始化
+        if (config.preload) preload()
         RpcClient.start()
+        Provider
     }
 
     override suspend fun onEnableAsync() {
@@ -72,27 +82,39 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
         paper.pluginManager.registerSuspendingEvents(InventoryListener, frameworkPaper)
         paper.pluginManager.registerSuspendingEvents(BukkitOptionsListener, frameworkPaper)
         paper.pluginManager.registerSuspendingEvents(TextDisplayListener, frameworkPaper)
-        commandManager().annotationParser().apply {
+        paper.pluginManager.registerSuspendingEvents(BridgePlayerListener, frameworkPaper)
+        paper.pluginManager.registerSuspendingEvents(BridgeWorldListener, frameworkPaper)
+        commandManager().apply {
+            parserRegistry().apply {
+                registerNamedParser(
+                    "bridge-component",
+                    ComponentParser.componentParser(MiniMessage.miniMessage(), StringParser.StringMode.QUOTED)
+                )
+            }
+        }.annotationParser().apply {
             parse(InteractiveCommand)
+            parse(BridgeCommand)
         }
+        Bridge
         startPlayerDbMonitor()
         startOptionsMonitor()
+        startBridgeBackgroundTask()
         initPaperHooks()
     }
 
-    override suspend fun onDisableAsync() {
+    override fun onDisable() {
         GuiManager.disposeAll()
         stopPlayerDbMonitor()
         stopOptionsMonitor()
-        withContext(Dispatchers.IO) {
-            Provider.close()
-        }
+        stopBridgeBackgroundTask()
+        Provider.close()
         RpcClient.stop()
         // gRPC 和数据库相关 IO 连接不会立马关闭
         // 可能导致在插件卸载之后，后台还有正在运行的 IO 操作
         // 若对应操作中加载了没有加载的类，而 framework 已经卸载，就会找不到类
         logger.info("Waiting 1s for finalizing...")
         Thread.sleep(1000)
+        cancelFrameworkScopes()
     }
 
     private fun preload() {

@@ -26,7 +26,10 @@ class RpcServerImpl : RpcServer, KoinComponent {
     override fun start() {
         check(!isRunning) { "RPC server already running" }
         try {
-            _server = serverBuilder.build().start()
+            _server = serverBuilder
+                .intercept(InternalErrorInterceptor)
+                .build()
+                .start()
             isRunning = true
             frameworkLogger.info("Running gRPC server at ${config.port}")
         } catch (e: Exception) {
