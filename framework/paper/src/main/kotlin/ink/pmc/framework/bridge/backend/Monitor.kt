@@ -61,6 +61,20 @@ private suspend fun registerServer() {
     debugInfo("Server registered")
 }
 
+private fun markConnect() {
+    isConnected = true
+    if (internalBridge.getInternalRemoteServer("_master") != null) {
+        internalBridge.markRemoteServerOnline("_master")
+    }
+}
+
+private fun markDisconnect() {
+    isConnected = false
+    if (internalBridge.getInternalRemoteServer("_master") != null) {
+        internalBridge.markRemoteServerOffline("_master")
+    }
+}
+
 private suspend fun monitor() = runCatching {
     bridgeStub.monitorNotification(empty).also {
         debugInfo("Trying to monitor")
@@ -89,7 +103,7 @@ private suspend fun monitor() = runCatching {
         if (!isInitialized) {
             registerServer()
         }
-        isConnected = true
+        markConnect()
         frameworkLogger.info("Bridge monitor connected successfully")
         debugInfo("Monitor connected")
     }.collect {
@@ -98,10 +112,10 @@ private suspend fun monitor() = runCatching {
 }.onFailure {
     if (isConnected) {
         frameworkLogger.log(Level.SEVERE, "Bridge monitor disconnected, wait 5s before retry", it)
+        markDisconnect()
     } else {
         frameworkLogger.log(Level.SEVERE, "Failed to connect Bridge monitor, wait 5s before retry", it)
     }
-    isConnected = false
     delay(5.seconds)
 }
 
@@ -123,7 +137,7 @@ private suspend fun heartbeat() = runCatching {
         HeartbeatResult.StatusCase.NOT_REGISTERED -> if (isInitialized) {
             debugInfo("Master responded notRegistered")
             isInitialized = false
-            isConnected = false
+            markDisconnect()
         }
 
         HeartbeatResult.StatusCase.MISSING_FIELDS -> missingFields()
