@@ -8,12 +8,12 @@ import ink.pmc.advkt.sound.SoundKt
 import ink.pmc.advkt.title.ComponentTitleKt
 import ink.pmc.framework.bridge.backend.world.BackendLocalWorld
 import ink.pmc.framework.bridge.backend.world.createBridge
-import ink.pmc.framework.bridge.backend.world.createBukkit
 import ink.pmc.framework.bridge.player.InternalPlayer
 import ink.pmc.framework.bridge.server.BridgeServer
+import ink.pmc.framework.bridge.server.ServerState
+import ink.pmc.framework.bridge.server.ServerType
 import ink.pmc.framework.bridge.world.BridgeLocation
 import ink.pmc.framework.bridge.world.BridgeWorld
-import ink.pmc.framework.utils.entity.teleportSuspend
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Deferred
 import net.kyori.adventure.sound.Sound
@@ -34,7 +34,9 @@ class BackendLocalPlayer(private val actual: Player, server: BridgeServer) : Int
         get() = CompletableDeferred(actual.location.createBridge())
 
     override suspend fun teleport(location: BridgeLocation) {
-        actual.teleportSuspend(location.createBukkit())
+        val convert = convertElement(ServerState.REMOTE, ServerType.PROXY)
+            ?: error("Remote proxy player not found. Is the server disconnected from master?")
+        convert.teleport(location)
     }
 
     override suspend fun sendMessage(message: String) {
