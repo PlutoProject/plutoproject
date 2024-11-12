@@ -98,6 +98,7 @@ abstract class InternalBridge : Bridge {
     fun markRemoteServerOffline(id: String) {
         debugInfo("InternalBridge - markRemoteServerOffline called: $id")
         val remoteServer = getInternalRemoteServer(id) ?: remoteServerNotFound(id)
+        if (!remoteServer.isOnline) return
         remoteServer.isOnline = false
         remoteServer.players.forEach { (it as InternalPlayer).isOnline = false }
         remoteServer.players.clear()
@@ -109,12 +110,16 @@ abstract class InternalBridge : Bridge {
     fun markRemoteServerOnline(id: String) {
         debugInfo("InternalBridge - markRemoteServerOnline called: $id")
         val remoteServer = getInternalRemoteServer(id) ?: remoteServerNotFound(id)
+        if (remoteServer.isOnline) return
         remoteServer.isOnline = true
     }
 
     fun syncData(info: ServerInfo): InternalServer {
         debugInfo("InternalBridge - syncData called: $info")
         val remoteServer = getInternalRemoteServer(info.id) ?: return registerRemoteServer(info)
+        if (!remoteServer.isOnline) {
+            markRemoteServerOnline(remoteServer.id)
+        }
         remoteServer.players.forEach { (it as InternalPlayer).isOnline = false }
         if (!remoteServer.type.isProxy) {
             remoteServer.setInitialWorlds(info, remoteServer)
