@@ -1,14 +1,18 @@
 package ink.pmc.framework.bridge
 
 import ink.pmc.advkt.component.*
+import ink.pmc.advkt.sound.key
+import ink.pmc.advkt.sound.pitch
+import ink.pmc.advkt.sound.volume
+import ink.pmc.advkt.title.*
 import ink.pmc.framework.bridge.player.BridgePlayer
 import ink.pmc.framework.bridge.server.BridgeServer
 import ink.pmc.framework.bridge.world.BridgeLocation
 import ink.pmc.framework.bridge.world.BridgeWorld
 import ink.pmc.framework.utils.visual.*
+import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
-import org.incendo.cloud.annotations.Command
-import org.incendo.cloud.annotations.Permission
+import kotlin.time.Duration
 
 @Suppress("UNUSED")
 abstract class AbstractBridgeCommand<T> {
@@ -49,8 +53,6 @@ abstract class AbstractBridgeCommand<T> {
         }
     }
 
-    @Command("bridge list_servers")
-    @Permission("bridge.command")
     fun T.listServers() {
         send {
             text("» ") with mochaSubtext0
@@ -88,8 +90,6 @@ abstract class AbstractBridgeCommand<T> {
         return component
     }
 
-    @Command("bridge list_player")
-    @Permission("bridge.command")
     suspend fun T.listPlayers() {
         send {
             text("» ") with mochaSubtext0
@@ -101,8 +101,6 @@ abstract class AbstractBridgeCommand<T> {
         }
     }
 
-    @Command("bridge player <player> teleport <other>")
-    @Permission("bridge.command")
     suspend fun T.teleport(
         player: BridgePlayer,
         other: BridgePlayer
@@ -116,8 +114,6 @@ abstract class AbstractBridgeCommand<T> {
         }
     }
 
-    @Command("bridge player <player> send_message <message>")
-    @Permission("bridge.command")
     suspend fun T.sendMessage(
         player: BridgePlayer,
         message: Component
@@ -128,6 +124,61 @@ abstract class AbstractBridgeCommand<T> {
             text("${player.name} ") with mochaText
             text("发送 ") with mochaPink
             raw(message) with mochaSubtext0
+        }
+    }
+
+    suspend fun T.showTitle(
+        player: BridgePlayer,
+        mainTitle: Component,
+        subTitle: Component,
+        fadeIn: Duration,
+        stay: Duration,
+        fadeOut: Duration
+    ) {
+        player.showTitle {
+            times {
+                fadeIn(fadeIn)
+                stay(stay)
+                fadeOut(fadeOut)
+            }
+            mainTitle(mainTitle)
+            subTitle(subTitle)
+        }
+        send {
+            text("已向 ") with mochaPink
+            text("${player.name} ") with mochaText
+            text("发送标题") with mochaPink
+        }
+    }
+
+    suspend fun T.playSound(
+        player: BridgePlayer,
+        key: String,
+        volume: Float,
+        pitch: Float
+    ) {
+        player.playSound {
+            key(Key.key(key))
+            volume(volume)
+            pitch(pitch)
+        }
+        send {
+            text("已向 ") with mochaPink
+            text("${player.name} ") with mochaText
+            text("播放声音") with mochaPink
+        }
+    }
+
+    suspend fun T.performCommand(
+        player: BridgePlayer,
+        command: String,
+    ) {
+        player.performCommand(command)
+        send {
+            text("正在使 ") with mochaPink
+            text("${player.name} ") with mochaText
+            text("执行命令 ") with mochaPink
+            text(command) with mochaSubtext0
         }
     }
 
@@ -153,8 +204,6 @@ abstract class AbstractBridgeCommand<T> {
         }
     }
 
-    @Command("bridge list_worlds")
-    @Permission("bridge.command")
     fun T.listWorlds() {
         send {
             text("» ") with mochaSubtext0

@@ -4,9 +4,12 @@ import com.velocitypowered.api.command.CommandSource
 import ink.pmc.framework.bridge.AbstractBridgeCommand
 import ink.pmc.framework.bridge.player.BridgePlayer
 import net.kyori.adventure.text.Component
+import org.incendo.cloud.annotation.specifier.Quoted
 import org.incendo.cloud.annotations.Argument
 import org.incendo.cloud.annotations.Command
 import org.incendo.cloud.annotations.Permission
+import java.time.Duration
+import kotlin.time.toKotlinDuration
 
 @Suppress("UNUSED")
 object BridgeCommand : AbstractBridgeCommand<CommandSource>() {
@@ -42,6 +45,49 @@ object BridgeCommand : AbstractBridgeCommand<CommandSource>() {
         @Argument("message", parserName = "bridge-component") message: Component
     ) {
         sendMessage(player, message)
+    }
+
+    @Command("masterbridge player <player> show_title <mainTitle> [subTitle] [fadeIn] [stay] [fadeOut]")
+    @Permission("bridge.command")
+    suspend fun commandShowTitle(
+        sender: CommandSource,
+        player: BridgePlayer,
+        @Argument("mainTitle", parserName = "bridge-component") mainTitle: Component,
+        @Argument("subTitle", parserName = "bridge-component") subTitle: Component = Component.empty(),
+        fadeIn: Duration = Duration.ofMillis(500),
+        stay: Duration = Duration.ofMillis(3500),
+        fadeOut: Duration = Duration.ofMillis(1000),
+    ) {
+        sender.showTitle(
+            player,
+            mainTitle,
+            subTitle,
+            fadeIn.toKotlinDuration(),
+            stay.toKotlinDuration(),
+            fadeOut.toKotlinDuration()
+        )
+    }
+
+    @Command("masterbridge player <player> play_sound <key> [volume] [pitch]")
+    @Permission("bridge.command")
+    suspend fun commandPlaySound(
+        sender: CommandSource,
+        player: BridgePlayer,
+        @Quoted key: String,
+        volume: Float = 1F,
+        pitch: Float = 1F
+    ) {
+        sender.playSound(player, key, volume, pitch)
+    }
+
+    @Command("masterbridge player <player> perform_command <command>")
+    @Permission("bridge.command")
+    suspend fun commandPlaySound(
+        sender: CommandSource,
+        player: BridgePlayer,
+        command: String
+    ) {
+        sender.performCommand(player, command)
     }
 
     @Command("masterbridge list_worlds")

@@ -17,6 +17,7 @@ import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.PlayerOperationResult
 import ink.pmc.framework.bridge.server.BridgeServer
 import ink.pmc.framework.bridge.world.BridgeLocation
 import ink.pmc.framework.bridge.world.BridgeWorld
+import ink.pmc.framework.utils.concurrent.sync
 import ink.pmc.framework.utils.entity.teleportSuspend
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Deferred
@@ -78,7 +79,9 @@ class BackendLocalPlayer(private val actual: Player, server: BridgeServer) : Rem
     }
 
     override suspend fun performCommand(command: String) {
-        actual.performCommand(command)
+        actual.sync {
+            actual.performCommand(command)
+        }
     }
 
     override suspend fun operatePlayer(request: PlayerOperation): PlayerOperationResult {
