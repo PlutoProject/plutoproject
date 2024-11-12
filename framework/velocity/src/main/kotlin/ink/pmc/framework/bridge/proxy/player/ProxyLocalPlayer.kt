@@ -1,18 +1,13 @@
 package ink.pmc.framework.bridge.proxy.player
 
 import com.velocitypowered.api.proxy.Player
-import ink.pmc.advkt.component.RootComponentKt
-import ink.pmc.advkt.playSound
-import ink.pmc.advkt.send
-import ink.pmc.advkt.showTitle
-import ink.pmc.advkt.sound.SoundKt
-import ink.pmc.advkt.title.ComponentTitleKt
 import ink.pmc.framework.bridge.Bridge
 import ink.pmc.framework.bridge.player.InternalPlayer
 import ink.pmc.framework.bridge.server.BridgeGroup
 import ink.pmc.framework.bridge.server.BridgeServer
 import ink.pmc.framework.bridge.server.ServerState
 import ink.pmc.framework.bridge.server.ServerType
+import ink.pmc.framework.bridge.warn
 import ink.pmc.framework.bridge.world.BridgeLocation
 import ink.pmc.framework.bridge.world.BridgeWorld
 import kotlinx.coroutines.Deferred
@@ -30,48 +25,34 @@ class ProxyLocalPlayer(private val actual: Player, server: BridgeServer) : Inter
     override val uniqueId: UUID = actual.uniqueId
     override val name: String = actual.username
     override val location: Deferred<BridgeLocation>
-        get() = error("Unsupported")
+        get() = convertElement(ServerState.REMOTE, ServerType.BACKEND)?.location ?: error("Unsupported")
     override var world: BridgeWorld?
+        get() = convertElement(ServerState.REMOTE, ServerType.BACKEND)?.world ?: error("Unsupported")
         set(_) = error("Unsupported")
-        get() = error("Unsupported")
     override var isOnline: Boolean
         get() = actual.isActive
         set(_) {}
 
-
     override suspend fun teleport(location: BridgeLocation) {
-        error("Unsupported")
-    }
-
-    override suspend fun sendMessage(message: String) {
-        actual.sendMessage(Component.text(message))
+        convertElement(ServerState.REMOTE, ServerType.BACKEND)?.teleport(location)
+            ?: warn { error("Unsupported") }
     }
 
     override suspend fun sendMessage(message: Component) {
         actual.sendMessage(message)
     }
 
-    override suspend fun sendMessage(message: RootComponentKt.() -> Unit) {
-        actual.send(message)
-    }
-
     override suspend fun showTitle(title: Title) {
         actual.showTitle(title)
     }
 
-    override suspend fun showTitle(title: ComponentTitleKt.() -> Unit) {
-        actual.showTitle(title)
-    }
-
     override suspend fun playSound(sound: Sound) {
-        actual.playSound(sound)
-    }
-
-    override suspend fun playSound(sound: SoundKt.() -> Unit) {
-        actual.playSound(sound)
+        convertElement(ServerState.REMOTE, ServerType.BACKEND)?.playSound(sound)
+            ?: warn { error("Unsupported") }
     }
 
     override suspend fun performCommand(command: String) {
-        error("Unsupported")
+        convertElement(ServerState.REMOTE, ServerType.BACKEND)?.performCommand(command)
+            ?: warn { error("Unsupported") }
     }
 }

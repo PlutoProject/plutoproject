@@ -1,5 +1,9 @@
 package ink.pmc.framework.bridge.backend.handlers.player
 
+import ink.pmc.advkt.sound.key
+import ink.pmc.advkt.sound.pitch
+import ink.pmc.advkt.sound.source
+import ink.pmc.advkt.sound.volume
 import ink.pmc.framework.bridge.*
 import ink.pmc.framework.bridge.backend.bridgeStub
 import ink.pmc.framework.bridge.backend.handlers.NotificationHandler
@@ -12,6 +16,8 @@ import ink.pmc.framework.bridge.proto.playerOperationAck
 import ink.pmc.framework.bridge.world.createInfo
 import ink.pmc.framework.utils.currentUnixTimestamp
 import ink.pmc.framework.utils.player.uuid
+import net.kyori.adventure.key.Key
+import net.kyori.adventure.sound.Sound
 
 object PlayerOperationHandler : NotificationHandler {
     override suspend fun handle(request: Notification) {
@@ -36,7 +42,16 @@ object PlayerOperationHandler : NotificationHandler {
 
             SEND_MESSAGE -> error("Unexpected")
             SHOW_TITLE -> error("Unexpected")
-            PLAY_SOUND -> error("Unexpected")
+            PLAY_SOUND -> {
+                val info = request.playerOperation.playSound
+                localPlayer.playSound {
+                    key(Key.key(info.key))
+                    source(Sound.Source.valueOf(info.source))
+                    volume(info.volume)
+                    pitch(info.pitch)
+                }
+            }
+
             TELEPORT -> {
                 val location = localServer.getWorld(msg.teleport.world)?.getLocation(
                     msg.teleport.x,

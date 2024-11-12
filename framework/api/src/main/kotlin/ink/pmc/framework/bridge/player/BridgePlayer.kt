@@ -31,19 +31,27 @@ interface BridgePlayer : WorldElement<BridgePlayer> {
         teleport(player.location.await())
     }
 
-    suspend fun sendMessage(message: String)
+    suspend fun sendMessage(message: String) {
+        sendMessage(Component.text(message))
+    }
 
     suspend fun sendMessage(message: Component)
 
-    suspend fun sendMessage(message: RootComponentKt.() -> Unit)
+    suspend fun sendMessage(message: RootComponentKt.() -> Unit) {
+        sendMessage(RootComponentKt().apply(message).build())
+    }
 
     suspend fun showTitle(title: Title)
 
-    suspend fun showTitle(title: ComponentTitleKt.() -> Unit)
+    suspend fun showTitle(title: ComponentTitleKt.() -> Unit) {
+        showTitle(ComponentTitleKt().apply(title).build())
+    }
 
     suspend fun playSound(sound: Sound)
 
-    suspend fun playSound(sound: SoundKt.() -> Unit)
+    suspend fun playSound(sound: SoundKt.() -> Unit) {
+        playSound(SoundKt().apply(sound).build())
+    }
 
     suspend fun performCommand(command: String)
 

@@ -1,11 +1,5 @@
 package ink.pmc.framework.bridge.backend.player
 
-import ink.pmc.advkt.component.RootComponentKt
-import ink.pmc.advkt.playSound
-import ink.pmc.advkt.send
-import ink.pmc.advkt.showTitle
-import ink.pmc.advkt.sound.SoundKt
-import ink.pmc.advkt.title.ComponentTitleKt
 import ink.pmc.framework.bridge.backend.bridgeStub
 import ink.pmc.framework.bridge.backend.world.BackendLocalWorld
 import ink.pmc.framework.bridge.backend.world.createBridge
@@ -41,7 +35,6 @@ class BackendLocalPlayer(private val actual: Player, server: BridgeServer) : Rem
         get() = actual.isOnline
         set(_) {}
 
-    // 这个做特殊处理
     override suspend fun teleport(location: BridgeLocation) {
         if (location.server == internalBridge.local) {
             actual.teleportSuspend(location.createBukkit())
@@ -50,31 +43,15 @@ class BackendLocalPlayer(private val actual: Player, server: BridgeServer) : Rem
         super.teleport(location)
     }
 
-    override suspend fun sendMessage(message: String) {
-        actual.sendMessage(message)
-    }
-
     override suspend fun sendMessage(message: Component) {
         actual.sendMessage(message)
-    }
-
-    override suspend fun sendMessage(message: RootComponentKt.() -> Unit) {
-        actual.send(message)
     }
 
     override suspend fun showTitle(title: Title) {
         actual.showTitle(title)
     }
 
-    override suspend fun showTitle(title: ComponentTitleKt.() -> Unit) {
-        actual.showTitle(title)
-    }
-
     override suspend fun playSound(sound: Sound) {
-        actual.playSound(sound)
-    }
-
-    override suspend fun playSound(sound: SoundKt.() -> Unit) {
         actual.playSound(sound)
     }
 

@@ -1,10 +1,6 @@
 package ink.pmc.framework.bridge.proxy
 
 import com.google.protobuf.Empty
-import ink.pmc.advkt.sound.key
-import ink.pmc.advkt.sound.pitch
-import ink.pmc.advkt.sound.source
-import ink.pmc.advkt.sound.volume
 import ink.pmc.advkt.title.*
 import ink.pmc.framework.FrameworkConfig
 import ink.pmc.framework.bridge.*
@@ -29,8 +25,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.produceIn
 import kotlinx.coroutines.withTimeoutOrNull
-import net.kyori.adventure.key.Key
-import net.kyori.adventure.sound.Sound
 import net.kyori.adventure.text.minimessage.MiniMessage
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
@@ -215,23 +209,21 @@ object BridgeRpc : BridgeRpcCoroutineImplBase(), KoinComponent {
         return playerOperationResult { ok = true }
     }
 
-    private suspend fun handlePlaySound(request: PlayerOperation, player: InternalPlayer): PlayerOperationResult {
-        player.playSound {
-            val info = request.playSound
-            key(Key.key(info.key))
-            source(Sound.Source.valueOf(info.source))
-            volume(info.volume)
-            pitch(info.pitch)
+    private suspend fun handlePlaySound(request: PlayerOperation) = withTimeoutOrNull(config.operationTimeout) {
+        if (internalBridge.getInternalRemoteBackendPlayer(request.playerUuid.uuid) == null) {
+            return@withTimeoutOrNull playerOperationResult {
+                unsupported = true
+            }
         }
-        return playerOperationResult { ok = true }
-    }
-
-    private fun PlayerOperation.getRemotePlayer(): InternalPlayer? {
-        return internalBridge.getRemotePlayer(playerUuid.uuid) as InternalPlayer?
+        notify.emit(notification { playerOperation = request })
+        waitAck(request, ::handleNoReturnAck)
+    } ?: playerOperationResult {
+        timeout = true
     }
 
     private suspend fun handleTeleport(request: PlayerOperation) = withTimeoutOrNull(config.operationTimeout) {
-        val remotePlayer = request.getRemotePlayer() as ProxyRemoteBackendPlayer?
+        val remotePlayer = internalBridge.getInternalRemoteBackendPlayer(request.playerUuid.uuid)
+                as ProxyRemoteBackendPlayer?
             ?: return@withTimeoutOrNull playerOperationResult {
                 unsupported = true
             }
@@ -246,7 +238,8 @@ object BridgeRpc : BridgeRpcCoroutineImplBase(), KoinComponent {
     }
 
     private suspend fun handlePerformCommand(request: PlayerOperation) = withTimeoutOrNull(config.operationTimeout) {
-        request.getRemotePlayer() ?: return@withTimeoutOrNull playerOperationResult { unsupported = true }
+        internalBridge.getInternalRemoteBackendPlayer(request.playerUuid.uuid)
+            ?: return@withTimeoutOrNull playerOperationResult { unsupported = true }
         notify.emit(notification { playerOperation = request })
         waitAck(request, ::handleNoReturnAck)
     } ?: playerOperationResult {
@@ -275,7 +268,7 @@ object BridgeRpc : BridgeRpcCoroutineImplBase(), KoinComponent {
             INFO_LOOKUP -> handleInfoLookup(request)
             SEND_MESSAGE -> handleSendMessage(request, localPlayer)
             SHOW_TITLE -> handleSendTitle(request, localPlayer)
-            PLAY_SOUND -> handlePlaySound(request, localPlayer)
+            PLAY_SOUND -> handlePlaySound(request)
             TELEPORT -> handleTeleport(request)
             PERFORM_COMMAND -> handlePerformCommand(request)
             CONTENT_NOT_SET -> throwContentNotSet("PlayerOperation")

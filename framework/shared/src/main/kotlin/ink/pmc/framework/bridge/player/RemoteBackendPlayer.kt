@@ -16,9 +16,6 @@ import java.util.*
 abstract class RemoteBackendPlayer : RemotePlayer() {
     override val location: Deferred<BridgeLocation>
         get() = submitAsync<BridgeLocation> {
-            check(server.isOnline) { "Server offline" }
-            check(isOnline) { "Player offline" }
-            checkNotNull(world) { "Uninitialized" }
             val result = operatePlayer(playerOperation {
                 id = UUID.randomUUID().toString()
                 executor = server.id
@@ -52,8 +49,6 @@ abstract class RemoteBackendPlayer : RemotePlayer() {
     }
 
     override suspend fun teleport(location: BridgeLocation) {
-        check(server.isOnline) { "Server offline: ${server.id}" }
-        check(isOnline) { "Player offline: $name" }
         val result = operatePlayer(playerOperation {
             id = UUID.randomUUID().toString()
             executor = location.server.id
@@ -64,8 +59,6 @@ abstract class RemoteBackendPlayer : RemotePlayer() {
     }
 
     override suspend fun performCommand(command: String) {
-        check(server.isOnline) { "Server offline: ${server.id}" }
-        check(isOnline) { "Player offline: $name" }
         val result = operatePlayer(playerOperation {
             id = UUID.randomUUID().toString()
             executor = server.id
