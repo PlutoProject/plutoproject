@@ -3,6 +3,7 @@ package ink.pmc.framework
 import kotlin.time.Duration
 
 data class FrameworkConfig(
+    val preload: Boolean,
     val provider: ProviderConfig,
     val rpc: RpcConfig,
     val bridge: BridgeConfig,

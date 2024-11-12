@@ -20,15 +20,16 @@ import ink.pmc.framework.bridge.proxy.server.localServer
 import ink.pmc.framework.bridge.server.*
 import ink.pmc.framework.bridge.statusNotSet
 import ink.pmc.framework.frameworkLogger
+import ink.pmc.framework.utils.concurrent.frameworkIoScope
 import ink.pmc.framework.utils.concurrent.submitAsync
+import ink.pmc.framework.utils.data.NoReplayNotifyFlow
 import ink.pmc.framework.utils.player.switchServer
 import ink.pmc.framework.utils.player.uuid
 import ink.pmc.framework.utils.structure.checkMultiple
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.produceIn
 import kotlinx.coroutines.withTimeoutOrNull
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.minimessage.MiniMessage
@@ -46,17 +47,17 @@ object BridgeRpc : BridgeRpcCoroutineImplBase(), KoinComponent {
     private var isRunning = false
     private val heartbeatMap = ConcurrentHashMap<BridgeServer, Instant>()
     private val heartbeatCheckJob: Job
-    private val playerOperationAckNotify = Channel<PlayerOperationAck>()
-    private val notificationFlow = MutableSharedFlow<Notification>()
+    private val playerOperationAckNotify = NoReplayNotifyFlow<PlayerOperationAck>()
+    private val notify = NoReplayNotifyFlow<Notification>()
 
     override fun monitorNotification(request: Empty): Flow<Notification> {
         debugInfo("BridgeRpc - monitorNotification called")
-        notificationFlow
-        return notificationFlow
+        notify
+        return notify
     }
 
     suspend fun notify(notification: Notification) {
-        notificationFlow.emit(notification)
+        notify.emit(notification)
     }
 
     private suspend fun checkHeartbeat(server: BridgeServer) {
@@ -67,7 +68,7 @@ object BridgeRpc : BridgeRpcCoroutineImplBase(), KoinComponent {
         val requirement = Instant.now().minusSeconds(5)
         if (time == null || time.isBefore(requirement)) {
             remoteServer.isOnline = false
-            notificationFlow.emit(notification {
+            notify.emit(notification {
                 serverOffline = server.id
             })
             frameworkLogger.warning("Server ${remoteServer.id} heartbeat timeout")
@@ -102,7 +103,7 @@ object BridgeRpc : BridgeRpcCoroutineImplBase(), KoinComponent {
         }
         val server = internalBridge.registerRemoteServer(request)
         heartbeatMap[server] = Instant.now()
-        notificationFlow.emit(notification {
+        notify.emit(notification {
             serverRegistration = request
         })
         frameworkLogger.info("A server registered successfully: ${request.id} (${request.playersCount} players, ${request.worldsCount} worlds)")
@@ -123,7 +124,7 @@ object BridgeRpc : BridgeRpcCoroutineImplBase(), KoinComponent {
             }
         heartbeatMap[remoteServer] = Instant.now()
         remoteServer.isOnline = true
-        notificationFlow.emit(notification {
+        notify.emit(notification {
             serverOnline = request.server
         })
         return@rpcCatching heartbeatResult {
@@ -144,7 +145,7 @@ object BridgeRpc : BridgeRpcCoroutineImplBase(), KoinComponent {
         val remoteServer = internalBridge.syncData(request)
         heartbeatMap[remoteServer] = Instant.now()
         remoteServer.isOnline = true
-        notificationFlow.emit(notification {
+        notify.emit(notification {
             serverInfoUpdate = request
         })
         return@rpcCatching dataSyncResult {
@@ -166,7 +167,7 @@ object BridgeRpc : BridgeRpcCoroutineImplBase(), KoinComponent {
         request: PlayerOperation,
         then: (PlayerOperationAck) -> PlayerOperationResult
     ): PlayerOperationResult {
-        for (ack in playerOperationAckNotify) {
+        for (ack in playerOperationAckNotify.produceIn(frameworkIoScope)) {
             if (ack.id != request.id) continue
             return then(ack)
         }
@@ -175,7 +176,7 @@ object BridgeRpc : BridgeRpcCoroutineImplBase(), KoinComponent {
 
     private suspend fun handleInfoLookup(request: PlayerOperation): PlayerOperationResult =
         withTimeoutOrNull(config.operationTimeout) {
-            notificationFlow.emit(notification { playerOperation = request })
+            notify.emit(notification { playerOperation = request })
             waitAck(request) {
                 when (it.statusCase!!) {
                     OK -> playerOperationResult {
@@ -238,7 +239,7 @@ object BridgeRpc : BridgeRpcCoroutineImplBase(), KoinComponent {
             }
              */
         }
-        notificationFlow.emit(notification { playerOperation = request })
+        notify.emit(notification { playerOperation = request })
         waitAck(request, ::handleNoReturnAck)
     } ?: playerOperationResult {
         timeout = true
@@ -246,7 +247,7 @@ object BridgeRpc : BridgeRpcCoroutineImplBase(), KoinComponent {
 
     private suspend fun handlePerformCommand(request: PlayerOperation) = withTimeoutOrNull(config.operationTimeout) {
         request.getRemotePlayer() ?: return@withTimeoutOrNull playerOperationResult { unsupported = true }
-        notificationFlow.emit(notification { playerOperation = request })
+        notify.emit(notification { playerOperation = request })
         waitAck(request, ::handleNoReturnAck)
     } ?: playerOperationResult {
         timeout = true
@@ -293,7 +294,7 @@ object BridgeRpc : BridgeRpcCoroutineImplBase(), KoinComponent {
         ) {
             return@rpcCatching commonResult { missingFields = true }
         }
-        playerOperationAckNotify.send(request)
+        playerOperationAckNotify.emit(request)
         commonResult { ok = true }
     }
 
@@ -309,7 +310,7 @@ object BridgeRpc : BridgeRpcCoroutineImplBase(), KoinComponent {
             return@rpcCatching commonResult { missingFields = true }
         }
         internalBridge.updateRemotePlayerInfo(request)
-        notificationFlow.emit(notification { playerInfoUpdate = request })
+        notify.emit(notification { playerInfoUpdate = request })
         commonResult { ok = true }
     }
 
@@ -349,7 +350,7 @@ object BridgeRpc : BridgeRpcCoroutineImplBase(), KoinComponent {
             return@rpcCatching commonResult { missingFields = true }
         }
         internalBridge.addRemoteWorld(request)
-        notificationFlow.emit(notification {
+        notify.emit(notification {
             worldLoad = request
         })
         commonResult { ok = true }
@@ -361,7 +362,7 @@ object BridgeRpc : BridgeRpcCoroutineImplBase(), KoinComponent {
             return@rpcCatching commonResult { missingFields = true }
         }
         internalBridge.updateRemoteWorldInfo(request)
-        notificationFlow.emit(notification { worldInfoUpdate = request })
+        notify.emit(notification { worldInfoUpdate = request })
         commonResult { ok = true }
     }
 
@@ -371,7 +372,7 @@ object BridgeRpc : BridgeRpcCoroutineImplBase(), KoinComponent {
             return@rpcCatching commonResult { missingFields = true }
         }
         internalBridge.removeRemoteWorld(request)
-        notificationFlow.emit(notification { worldUnload = request })
+        notify.emit(notification { worldUnload = request })
         commonResult { ok = true }
     }
 }

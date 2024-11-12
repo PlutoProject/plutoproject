@@ -27,6 +27,7 @@ import ink.pmc.framework.provider.Provider
 import ink.pmc.framework.rpc.RpcClient
 import ink.pmc.framework.utils.command.annotationParser
 import ink.pmc.framework.utils.command.commandManager
+import ink.pmc.framework.utils.concurrent.cancelFrameworkScopes
 import ink.pmc.framework.utils.currentUnixTimestamp
 import ink.pmc.framework.utils.hook.initPaperHooks
 import ink.pmc.framework.utils.inject.startKoinIfNotPresent
@@ -38,8 +39,6 @@ import ink.pmc.framework.visual.display.text.*
 import ink.pmc.framework.visual.display.text.renderers.NmsTextDisplayRenderer
 import ink.pmc.framework.visual.toast.ToastRenderer
 import ink.pmc.framework.visual.toast.renderers.NmsToastRenderer
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.entity.Player
 import org.incendo.cloud.minecraft.extras.parser.ComponentParser
@@ -73,7 +72,7 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
         startKoinIfNotPresent {
             modules(commonModule, bukkitModule)
         }
-        preload()
+        if (config.preload) preload()
         RpcClient.start()
         Provider
     }
@@ -103,20 +102,19 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
         initPaperHooks()
     }
 
-    override suspend fun onDisableAsync() {
+    override fun onDisable() {
         GuiManager.disposeAll()
         stopPlayerDbMonitor()
         stopOptionsMonitor()
         stopBridgeBackgroundTask()
-        withContext(Dispatchers.IO) {
-            Provider.close()
-        }
+        Provider.close()
         RpcClient.stop()
         // gRPC 和数据库相关 IO 连接不会立马关闭
         // 可能导致在插件卸载之后，后台还有正在运行的 IO 操作
         // 若对应操作中加载了没有加载的类，而 framework 已经卸载，就会找不到类
         logger.info("Waiting 1s for finalizing...")
         Thread.sleep(1000)
+        cancelFrameworkScopes()
     }
 
     private fun preload() {
