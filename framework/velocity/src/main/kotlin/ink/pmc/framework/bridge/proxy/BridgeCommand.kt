@@ -17,19 +17,19 @@ object BridgeCommand : AbstractBridgeCommand<CommandSource>() {
         sendMessage(component)
     }
 
-    @Command("masterbridge list_servers")
+    @Command("bridgeproxy list_servers")
     @Permission("bridge.command")
     fun CommandSource.commandListServers() {
         listServers()
     }
 
-    @Command("masterbridge list_players")
+    @Command("bridgeproxy list_players")
     @Permission("bridge.command")
     suspend fun CommandSource.commandListPlayers() {
         listPlayers()
     }
 
-    @Command("masterbridge player <player> teleport <other>")
+    @Command("bridgeproxy player <player> teleport <other>")
     @Permission("bridge.command")
     suspend fun CommandSource.commandTeleport(
         player: BridgePlayer,
@@ -38,7 +38,7 @@ object BridgeCommand : AbstractBridgeCommand<CommandSource>() {
         teleport(player, other)
     }
 
-    @Command("masterbridge player <player> send_message <message>")
+    @Command("bridgeproxy player <player> send_message <message>")
     @Permission("bridge.command")
     suspend fun CommandSource.commandSendMessage(
         player: BridgePlayer,
@@ -47,7 +47,7 @@ object BridgeCommand : AbstractBridgeCommand<CommandSource>() {
         sendMessage(player, message)
     }
 
-    @Command("masterbridge player <player> show_title <mainTitle> [subTitle] [fadeIn] [stay] [fadeOut]")
+    @Command("bridgeproxy player <player> show_title <mainTitle> [subTitle] [fadeIn] [stay] [fadeOut]")
     @Permission("bridge.command")
     suspend fun commandShowTitle(
         sender: CommandSource,
@@ -68,7 +68,7 @@ object BridgeCommand : AbstractBridgeCommand<CommandSource>() {
         )
     }
 
-    @Command("masterbridge player <player> play_sound <key> [volume] [pitch]")
+    @Command("bridgeproxy player <player> play_sound <key> [volume] [pitch]")
     @Permission("bridge.command")
     suspend fun commandPlaySound(
         sender: CommandSource,
@@ -80,7 +80,7 @@ object BridgeCommand : AbstractBridgeCommand<CommandSource>() {
         sender.playSound(player, key, volume, pitch)
     }
 
-    @Command("masterbridge player <player> perform_command <command>")
+    @Command("bridgeproxy player <player> perform_command <command>")
     @Permission("bridge.command")
     suspend fun commandPlaySound(
         sender: CommandSource,
@@ -90,7 +90,7 @@ object BridgeCommand : AbstractBridgeCommand<CommandSource>() {
         sender.performCommand(player, command)
     }
 
-    @Command("masterbridge list_worlds")
+    @Command("bridgeproxy list_worlds")
     @Permission("bridge.command")
     fun CommandSource.commandListWorlds() {
         listWorlds()

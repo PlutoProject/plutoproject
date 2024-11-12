@@ -17,19 +17,19 @@ object BridgeCommand : AbstractBridgeCommand<CommandSender>() {
         sendMessage(component)
     }
 
-    @Command("backendbridge list_servers")
+    @Command("bridgebackend list_servers")
     @Permission("bridge.command")
     fun CommandSender.commandListServers() {
         listServers()
     }
 
-    @Command("backendbridge list_players")
+    @Command("bridgebackend list_players")
     @Permission("bridge.command")
     suspend fun CommandSender.commandListPlayers() {
         listPlayers()
     }
 
-    @Command("backendbridge player <player> teleport <other>")
+    @Command("bridgebackend player <player> teleport <other>")
     @Permission("bridge.command")
     suspend fun CommandSender.commandTeleport(
         player: BridgePlayer,
@@ -38,7 +38,7 @@ object BridgeCommand : AbstractBridgeCommand<CommandSender>() {
         teleport(player, other)
     }
 
-    @Command("backendbridge player <player> send_message <message>")
+    @Command("bridgebackend player <player> send_message <message>")
     @Permission("bridge.command")
     suspend fun CommandSender.commandSendMessage(
         player: BridgePlayer,
@@ -47,7 +47,7 @@ object BridgeCommand : AbstractBridgeCommand<CommandSender>() {
         sendMessage(player, message)
     }
 
-    @Command("backendbridge player <player> show_title <mainTitle> [subTitle] [fadeIn] [stay] [fadeOut]")
+    @Command("bridgebackend player <player> show_title <mainTitle> [subTitle] [fadeIn] [stay] [fadeOut]")
     @Permission("bridge.command")
     suspend fun commandShowTitle(
         sender: CommandSender,
@@ -68,7 +68,7 @@ object BridgeCommand : AbstractBridgeCommand<CommandSender>() {
         )
     }
 
-    @Command("backendbridge player <player> play_sound <key> [volume] [pitch]")
+    @Command("bridgebackend player <player> play_sound <key> [volume] [pitch]")
     @Permission("bridge.command")
     suspend fun commandPlaySound(
         sender: CommandSender,
@@ -80,7 +80,7 @@ object BridgeCommand : AbstractBridgeCommand<CommandSender>() {
         sender.playSound(player, key, volume, pitch)
     }
 
-    @Command("backendbridge player <player> perform_command <command>")
+    @Command("bridgebackend player <player> perform_command <command>")
     @Permission("bridge.command")
     suspend fun commandPlaySound(
         sender: CommandSender,
@@ -90,7 +90,7 @@ object BridgeCommand : AbstractBridgeCommand<CommandSender>() {
         sender.performCommand(player, command)
     }
 
-    @Command("backendbridge list_worlds")
+    @Command("bridgebackend list_worlds")
     @Permission("bridge.command")
     fun CommandSender.commandListWorlds() {
         listWorlds()
