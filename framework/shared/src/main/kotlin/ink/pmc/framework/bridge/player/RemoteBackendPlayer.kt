@@ -22,7 +22,6 @@ abstract class RemoteBackendPlayer : RemotePlayer() {
                 id = UUID.randomUUID().toString()
                 executor = server.id
                 playerUuid = uniqueId.toString()
-                backend = true
                 infoLookup = empty
             })
             val info = result.infoLookup
@@ -58,7 +57,6 @@ abstract class RemoteBackendPlayer : RemotePlayer() {
             id = UUID.randomUUID().toString()
             executor = location.server.id
             playerUuid = uniqueId.toString()
-            backend = true
             teleport = location.createInfo()
         })
         checkNoReturnResult(result)?.let { throw it }
@@ -71,7 +69,6 @@ abstract class RemoteBackendPlayer : RemotePlayer() {
             id = UUID.randomUUID().toString()
             executor = server.id
             playerUuid = uniqueId.toString()
-            backend = true
             performCommand = command
         })
         checkNoReturnResult(result)?.let { throw it }

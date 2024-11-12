@@ -146,10 +146,6 @@ message PlayerOperation {
   string id = 1;
   string executor = 2;
   string player_uuid = 3;
-  oneof type {
-    bool proxy = 4;
-    bool backend = 5;
-  }
   oneof content {
     google.protobuf.Empty info_lookup = 6;
     string send_message = 7;

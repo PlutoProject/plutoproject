@@ -262,7 +262,6 @@ object BridgeRpc : BridgeRpcCoroutineImplBase(), KoinComponent {
                 request.id != "",
                 request.executor != "",
                 request.playerUuid != "",
-                (request.hasProxy() || request.hasBackend()),
                 (request.hasInfoLookup()
                         || request.hasSendMessage()
                         || request.hasShowTitle()

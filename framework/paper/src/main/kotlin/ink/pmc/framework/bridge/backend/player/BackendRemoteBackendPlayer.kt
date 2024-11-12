@@ -11,7 +11,7 @@ import ink.pmc.framework.bridge.world.BridgeWorld
 import ink.pmc.framework.utils.player.uuid
 import java.util.*
 
-class BackendRemoteBackendPlayer(
+open class BackendRemoteBackendPlayer(
     override val uniqueId: UUID,
     override val name: String,
     override var server: BridgeServer,
