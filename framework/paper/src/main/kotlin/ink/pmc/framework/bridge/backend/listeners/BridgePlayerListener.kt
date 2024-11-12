@@ -1,12 +1,9 @@
 package ink.pmc.framework.bridge.backend.listeners
 
+import ink.pmc.framework.bridge.*
 import ink.pmc.framework.bridge.backend.bridgeStub
 import ink.pmc.framework.bridge.backend.player.BackendLocalPlayer
 import ink.pmc.framework.bridge.backend.server.localServer
-import ink.pmc.framework.bridge.checkCommonResult
-import ink.pmc.framework.bridge.internalBridge
-import ink.pmc.framework.bridge.throwLocalPlayerNotFound
-import ink.pmc.framework.bridge.throwLocalWorldNotFound
 import ink.pmc.framework.bridge.player.createInfoWithoutLocation
 import ink.pmc.framework.bridge.server.ServerState
 import ink.pmc.framework.bridge.server.ServerType
@@ -38,7 +35,7 @@ object BridgePlayerListener : Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     suspend fun PlayerChangedWorldEvent.e() {
         val localPlayer = internalBridge.getInternalLocalPlayer(player.uniqueId)
-            ?: throwLocalWorldNotFound(player.world.name)
+            ?: return warn { throwLocalWorldNotFound(player.world.name) }
         val result = bridgeStub.updatePlayerInfo(localPlayer.createInfoWithoutLocation())
         checkCommonResult(result)
     }
@@ -46,7 +43,7 @@ object BridgePlayerListener : Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     fun PlayerQuitEvent.e() {
         val localPlayer = internalBridge.getInternalLocalPlayer(player.uniqueId)
-            ?: throwLocalPlayerNotFound(player.name)
+            ?: return warn { throwLocalPlayerNotFound(player.name) }
         localServer.players.remove(localPlayer)
     }
 }

@@ -19,7 +19,7 @@ object PlayerOperationHandler : NotificationHandler {
         val playerUuid = request.playerOperation.playerUuid.uuid
         if (msg.executor != internalBridge.local.id) return
         val localPlayer = internalBridge.getInternalLocalPlayer(playerUuid)
-            ?: throwLocalPlayerNotFound(playerUuid.toString())
+            ?: return warn { throwLocalPlayerNotFound(playerUuid.toString()) }
         debugInfo("PlayerOperationHandler: $request, $currentUnixTimestamp")
         when (msg.contentCase!!) {
             INFO_LOOKUP -> {
@@ -44,12 +44,12 @@ object PlayerOperationHandler : NotificationHandler {
                     msg.teleport.z,
                     msg.teleport.yaw,
                     msg.teleport.pitch,
-                ) ?: throwLocalWorldNotFound(msg.teleport.world)
+                ) ?: return warn { throwLocalWorldNotFound(msg.teleport.world) }
                 localPlayer.teleport(location)
             }
 
             PERFORM_COMMAND -> localPlayer.performCommand(msg.performCommand)
-            PlayerOperation.ContentCase.CONTENT_NOT_SET -> throwContentNotSet("PlayerOperation")
+            PlayerOperation.ContentCase.CONTENT_NOT_SET -> warn { throwContentNotSet("PlayerOperation") }
         }
         val result = bridgeStub.ackPlayerOperation(playerOperationAck {
             id = request.playerOperation.id

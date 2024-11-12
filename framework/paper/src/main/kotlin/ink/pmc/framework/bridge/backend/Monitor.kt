@@ -47,8 +47,8 @@ private suspend fun registerServer() {
     val result = bridgeStub.registerServer(getCurrentServerInfo())
     when (result.statusCase!!) {
         ServerRegistrationResult.StatusCase.OK -> {}
-        ServerRegistrationResult.StatusCase.MISSING_FIELDS -> throwMissingFields()
-        ServerRegistrationResult.StatusCase.STATUS_NOT_SET -> throwStatusNotSet("ServerRegistrationResult")
+        ServerRegistrationResult.StatusCase.MISSING_FIELDS -> warn { throwMissingFields() }
+        ServerRegistrationResult.StatusCase.STATUS_NOT_SET -> warn { throwStatusNotSet("ServerRegistrationResult") }
     }
     result.serversList.forEach {
         if (it.id == internalBridge.local.id) return@forEach
@@ -87,8 +87,8 @@ private suspend fun monitor() = runCatching {
                     return@also
                 }
 
-                MISSING_FIELDS -> throwMissingFields()
-                STATUS_NOT_SET -> throwStatusNotSet("DataSyncResult")
+                MISSING_FIELDS -> warn { throwMissingFields() }
+                STATUS_NOT_SET -> warn { throwStatusNotSet("DataSyncResult") }
             }
             result.serversList.forEach {
                 if (it.id == internalBridge.local.id) return@forEach
@@ -137,8 +137,8 @@ private suspend fun heartbeat() = runCatching {
             markDisconnect()
         }
 
-        HeartbeatResult.StatusCase.MISSING_FIELDS -> throwMissingFields()
-        HeartbeatResult.StatusCase.STATUS_NOT_SET -> throwStatusNotSet("HeartbeatResult")
+        HeartbeatResult.StatusCase.MISSING_FIELDS -> warn { throwMissingFields() }
+        HeartbeatResult.StatusCase.STATUS_NOT_SET -> warn { throwStatusNotSet("HeartbeatResult") }
     }
 }
 

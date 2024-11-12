@@ -5,8 +5,9 @@ import ink.pmc.framework.bridge.backend.server.localServer
 import ink.pmc.framework.bridge.backend.world.BackendLocalWorld
 import ink.pmc.framework.bridge.backend.world.getBridge
 import ink.pmc.framework.bridge.checkCommonResult
-import ink.pmc.framework.bridge.throwLocalWorldNotFound
 import ink.pmc.framework.bridge.proto.worldLoad
+import ink.pmc.framework.bridge.throwLocalWorldNotFound
+import ink.pmc.framework.bridge.warn
 import ink.pmc.framework.bridge.world.createInfo
 import org.bukkit.event.Listener
 import org.bukkit.event.world.SpawnChangeEvent
@@ -23,13 +24,15 @@ object BridgeWorldListener : Listener {
     }
 
     suspend fun SpawnChangeEvent.e() {
-        val localWorld = world.getBridge() ?: throwLocalWorldNotFound(world.name)
+        val localWorld = world.getBridge()
+            ?: return warn { throwLocalWorldNotFound(world.name) }
         val result = bridgeStub.updateWorldInfo(localWorld.createInfo())
         checkCommonResult(result)
     }
 
     suspend fun WorldUnloadEvent.e() {
-        val localWorld = localServer.getWorld(world.name) ?: throwLocalWorldNotFound(world.name)
+        val localWorld = localServer.getWorld(world.name)
+            ?: return warn { throwLocalWorldNotFound(world.name) }
         localServer.worlds.remove(localWorld)
         val result = bridgeStub.unloadWorld(worldLoad {
             server = localServer.id

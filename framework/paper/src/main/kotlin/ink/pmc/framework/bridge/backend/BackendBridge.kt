@@ -8,16 +8,21 @@ import ink.pmc.framework.bridge.backend.server.BackendRemoteProxyServer
 import ink.pmc.framework.bridge.player.InternalPlayer
 import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.PlayerInfo
 import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.ServerInfo
-import ink.pmc.framework.bridge.throwRemoteServerNotFound
 import ink.pmc.framework.bridge.server.BridgeServer
 import ink.pmc.framework.bridge.server.InternalServer
+import ink.pmc.framework.bridge.throwRemoteServerNotFound
+import ink.pmc.framework.bridge.warn
 import ink.pmc.framework.utils.player.uuid
 
 class BackendBridge : InternalBridge() {
     override val local: BridgeServer = BackendLocalServer()
 
-    override fun createRemotePlayer(info: PlayerInfo, server: InternalServer?): InternalPlayer {
-        val remoteServer = server ?: getInternalRemoteServer(info.server) ?: throwRemoteServerNotFound(info.server)
+    override fun createRemotePlayer(info: PlayerInfo, server: InternalServer?): InternalPlayer? {
+        val remoteServer = server ?: getInternalRemoteServer(info.server)
+        if (remoteServer == null) {
+            warn { throwRemoteServerNotFound(info.server) }
+            return null
+        }
         val remoteWorld = if (!remoteServer.type.isProxy) {
             getInternalRemoteWorld(remoteServer, info.world.name)
         } else {

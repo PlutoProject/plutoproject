@@ -4,6 +4,7 @@ import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.PlayerOperationResult
 import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.PlayerOperationResult.StatusCase.*
 import ink.pmc.framework.bridge.proto.playerOperation
 import ink.pmc.framework.bridge.throwRemoteWorldNotFound
+import ink.pmc.framework.bridge.warn
 import ink.pmc.framework.bridge.world.BridgeLocation
 import ink.pmc.framework.bridge.world.BridgeLocationImpl
 import ink.pmc.framework.bridge.world.createInfo
@@ -59,7 +60,7 @@ abstract class RemoteBackendPlayer : RemotePlayer() {
             playerUuid = uniqueId.toString()
             teleport = location.createInfo()
         })
-        checkNoReturnResult(result)?.let { throw it }
+        checkNoReturnResult(result)?.let { warn { throw it } }
     }
 
     override suspend fun performCommand(command: String) {
@@ -71,6 +72,6 @@ abstract class RemoteBackendPlayer : RemotePlayer() {
             playerUuid = uniqueId.toString()
             performCommand = command
         })
-        checkNoReturnResult(result)?.let { throw it }
+        checkNoReturnResult(result)?.let { warn { throw it } }
     }
 }

@@ -1,6 +1,16 @@
 package ink.pmc.framework.bridge
 
 import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.*
+import ink.pmc.framework.frameworkLogger
+import java.util.logging.Level
+
+fun warn(block: () -> Nothing) {
+    runCatching {
+        block()
+    }.onFailure {
+        frameworkLogger.log(Level.WARNING, "", it)
+    }
+}
 
 fun throwServerNotFound(id: String): Nothing {
     error("Server not found: $id")
@@ -73,20 +83,20 @@ fun throwContentNotSet(name: String): Nothing {
 fun checkCommonResult(result: CommonResult) {
     when (result.statusCase!!) {
         CommonResult.StatusCase.OK -> {}
-        CommonResult.StatusCase.MISSING_FIELDS -> throwMissingFields()
-        CommonResult.StatusCase.STATUS_NOT_SET -> throwStatusNotSet("CommonResult")
+        CommonResult.StatusCase.MISSING_FIELDS -> warn { throwMissingFields() }
+        CommonResult.StatusCase.STATUS_NOT_SET -> warn { throwStatusNotSet("CommonResult") }
     }
 }
 
 fun checkPlayerOperationResult(request: PlayerOperation, result: PlayerOperationResult) {
     when (result.statusCase!!) {
         PlayerOperationResult.StatusCase.OK -> {}
-        PlayerOperationResult.StatusCase.PLAYER_OFFLINE -> throwPlayerNotFound(request.playerUuid)
-        PlayerOperationResult.StatusCase.SERVER_OFFLINE -> throwServerNotFound(request.executor)
-        PlayerOperationResult.StatusCase.WORLD_NOT_FOUND -> throwWorldNotFound()
-        PlayerOperationResult.StatusCase.TIMEOUT -> throwPlayerOperationTimeout(request.playerUuid)
-        PlayerOperationResult.StatusCase.UNSUPPORTED -> error("Unsupported")
-        PlayerOperationResult.StatusCase.MISSING_FIELDS -> throwMissingFields()
-        PlayerOperationResult.StatusCase.STATUS_NOT_SET -> throwStatusNotSet("PlayerOperationResult")
+        PlayerOperationResult.StatusCase.PLAYER_OFFLINE -> warn { throwPlayerNotFound(request.playerUuid) }
+        PlayerOperationResult.StatusCase.SERVER_OFFLINE -> warn { throwServerNotFound(request.executor) }
+        PlayerOperationResult.StatusCase.WORLD_NOT_FOUND -> warn { throwWorldNotFound() }
+        PlayerOperationResult.StatusCase.TIMEOUT -> warn { throwPlayerOperationTimeout(request.playerUuid) }
+        PlayerOperationResult.StatusCase.UNSUPPORTED -> warn { error("Unsupported") }
+        PlayerOperationResult.StatusCase.MISSING_FIELDS -> warn { throwMissingFields() }
+        PlayerOperationResult.StatusCase.STATUS_NOT_SET -> warn { throwStatusNotSet("PlayerOperationResult") }
     }
 }
