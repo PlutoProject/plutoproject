@@ -46,7 +46,7 @@ fun Item(
     material: Material,
     name: Component = Component.empty(),
     amount: Int = 1,
-    lore: List<Component> = listOf(),
+    lore: List<Component> = emptyList(),
     isHideTooltip: Boolean = false,
     enchantmentGlint: Boolean = false,
     modifier: Modifier = Modifier,

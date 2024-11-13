@@ -158,23 +158,23 @@ class HomeEditorScreen(private val home: Home) : Screen {
                     when (s) {
                         INPUT_LEFT -> {
                             navigator.pop()
-                            listOf()
+                            emptyList()
                         }
 
                         OUTPUT -> {
-                            if (state != EDITING) return@Anvil listOf()
+                            if (state != EDITING) return@Anvil emptyList()
                             val input = r.text
 
                             if (!input.isValidIdentifier) {
                                 player.playSound(UI_HOME_EDITOR_RENAME_INVALID_SOUND)
                                 stateTransition(INVALID)
-                                return@Anvil listOf()
+                                return@Anvil emptyList()
                             }
 
                             if (input.length > manager.nameLengthLimit) {
                                 player.playSound(UI_HOME_EDITOR_RENAME_INVALID_SOUND)
                                 stateTransition(TOO_LONG)
-                                return@Anvil listOf()
+                                return@Anvil emptyList()
                             }
 
                             coroutineScope.launch {
@@ -193,10 +193,10 @@ class HomeEditorScreen(private val home: Home) : Screen {
                                 player.playSound(UI_HOME_EDIT_SUCCEED_SOUND)
                             }
 
-                            listOf()
+                            emptyList()
                         }
 
-                        else -> listOf()
+                        else -> emptyList()
                     }
                 }
             )
@@ -235,7 +235,7 @@ class HomeEditorScreen(private val home: Home) : Screen {
             lore = when (state) {
                 NOT_PREFERRED -> UI_HOME_PREFER_LORE
                 PRRFERRED -> UI_HOME_PREFER_UNSET_LORE
-                PreferState.SUCCEED -> listOf()
+                PreferState.SUCCEED -> emptyList()
             },
             enchantmentGlint = state == PreferState.SUCCEED || state == PRRFERRED,
             modifier = Modifier.clickable {
@@ -287,7 +287,7 @@ class HomeEditorScreen(private val home: Home) : Screen {
             lore = when (state) {
                 NOT_STARRED -> UI_HOME_STAR_LORE
                 STARRED -> UI_HOME_STAR_UNSET_LORE
-                StarState.SUCCEED -> listOf()
+                StarState.SUCCEED -> emptyList()
             },
             enchantmentGlint = state == StarState.SUCCEED || state == STARRED,
             modifier = Modifier.clickable {
@@ -321,7 +321,7 @@ class HomeEditorScreen(private val home: Home) : Screen {
         Item(
             material = Material.NAME_TAG,
             name = if (!succeed) UI_HOME_RENAME else UI_HOME_EDIT_SUCCEED,
-            lore = if (!succeed) UI_HOME_RENAME_LORE else listOf(),
+            lore = if (!succeed) UI_HOME_RENAME_LORE else emptyList(),
             enchantmentGlint = succeed,
             modifier = Modifier.clickable {
                 if (!home.isLoaded) return@clickable
@@ -341,7 +341,7 @@ class HomeEditorScreen(private val home: Home) : Screen {
         Item(
             material = Material.COMPASS,
             name = if (!succeed) UI_HOME_CHANGE_LOCATION else UI_HOME_EDIT_SUCCEED,
-            lore = if (!succeed) UI_HOME_CHANGE_LOCATION_LORE else listOf(),
+            lore = if (!succeed) UI_HOME_CHANGE_LOCATION_LORE else emptyList(),
             enchantmentGlint = succeed,
             modifier = Modifier.clickable {
                 if (!home.isLoaded) return@clickable

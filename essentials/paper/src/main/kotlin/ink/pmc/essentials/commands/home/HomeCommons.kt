@@ -19,7 +19,7 @@ object HomeCommons {
     @Suggestions("homes")
     suspend fun homes(context: CommandContext<CommandSender>, input: CommandInput): List<String> {
         val sender = context.sender()
-        if (sender !is Player) return listOf()
+        if (sender !is Player) return emptyList()
         return HomeManager.list(sender).map { it.name }
     }
 

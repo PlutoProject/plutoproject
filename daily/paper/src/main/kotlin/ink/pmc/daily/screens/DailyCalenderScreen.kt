@@ -186,7 +186,7 @@ class DailyCalenderScreen : Screen {
                             state == 0 && date.isBefore(now) -> DAY_LORE_PAST
                             state == 1 -> history?.let { h ->
                                 DAY_LORE_CHECKED_IN.replace("<time>", Component.text(h.createdAt.format()))
-                            }?.toList() ?: listOf()
+                            }?.toList() ?: emptyList()
 
                             date.isAfter(now) -> DAY_LORE_FUTURE
                             else -> error("Unreachable")

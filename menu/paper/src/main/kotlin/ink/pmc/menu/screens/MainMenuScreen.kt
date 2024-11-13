@@ -108,14 +108,14 @@ class MainMenuScreen : Screen, KoinComponent {
             TabSwitcher(
                 icon = Material.CAMPFIRE,
                 name = MAIN_MENU_TAB_HOME,
-                lore = listOf(),
+                lore = emptyList(),
                 tab = HOME
             )
             Spacer(modifier = Modifier.width(1).height(1))
             TabSwitcher(
                 icon = Material.TRIPWIRE_HOOK,
                 name = MAIN_MENU_TAB_ASSIST,
-                lore = listOf(),
+                lore = emptyList(),
                 tab = ASSIST
             )
         }

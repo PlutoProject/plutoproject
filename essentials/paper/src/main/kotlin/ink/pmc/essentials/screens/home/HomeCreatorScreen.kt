@@ -74,24 +74,24 @@ class HomeCreatorScreen : Screen {
                 when (s) {
                     INPUT_LEFT -> {
                         navigator.pop()
-                        listOf()
+                        emptyList()
                     }
 
-                    INPUT_RIGHT -> listOf()
+                    INPUT_RIGHT -> emptyList()
                     OUTPUT -> {
-                        if (state != 0) return@Anvil listOf()
+                        if (state != 0) return@Anvil emptyList()
                         val input = r.text
 
                         if (!input.isValidIdentifier) {
                             player.playSound(UI_HOME_EDITOR_RENAME_INVALID_SOUND)
                             stateTransition(1)
-                            return@Anvil listOf()
+                            return@Anvil emptyList()
                         }
 
                         if (input.length > manager.nameLengthLimit) {
                             player.playSound(UI_HOME_EDITOR_RENAME_INVALID_SOUND)
                             stateTransition(2)
-                            return@Anvil listOf()
+                            return@Anvil emptyList()
                         }
 
                         coroutineScope.launch {
@@ -109,7 +109,7 @@ class HomeCreatorScreen : Screen {
                             player.playSound(UI_HOME_EDIT_SUCCEED_SOUND)
                         }
 
-                        listOf()
+                        emptyList()
                     }
 
                     else -> error("Unsupported slot")

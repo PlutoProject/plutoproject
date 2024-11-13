@@ -119,7 +119,7 @@ class WarpManagerImpl : WarpManager, KoinComponent {
     override suspend fun getCollection(player: OfflinePlayer): Collection<Warp> {
         return PlayerDb.getOrCreate(player.uniqueId).getList<String>(COLLECTION_KEY)
             ?.mapNotNull { get(it.uuid) }
-            ?: listOf()
+            ?: emptyList()
     }
 
     override suspend fun getCollectionPageCount(player: OfflinePlayer, pageSize: Int): Int {

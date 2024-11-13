@@ -230,7 +230,7 @@ class DefaultSpawnPickerMenu : Screen, KoinComponent {
                             }
                         )
 
-                        1 -> listOf()
+                        1 -> emptyList()
                         else -> error("Unreachable")
                     }
                 )

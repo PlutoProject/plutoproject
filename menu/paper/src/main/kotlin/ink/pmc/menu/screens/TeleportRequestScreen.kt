@@ -202,7 +202,7 @@ class TeleportRequestScreen : Screen {
                 lore(
                     when (state.value) {
                         0 -> TR_PLAYER_LORE(player)
-                        else -> listOf()
+                        else -> emptyList()
                     }
                 )
                 meta {

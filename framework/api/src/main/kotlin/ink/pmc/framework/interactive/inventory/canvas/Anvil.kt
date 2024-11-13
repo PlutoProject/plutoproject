@@ -25,7 +25,7 @@ fun Anvil(
     output: ItemStack? = null,
     text: String = "",
     onClose: CloseListener = {},
-    onClick: ClickListener = { _, _ -> listOf() },
+    onClick: ClickListener = { _, _ -> emptyList() },
 ) {
     val player = LocalPlayer.current
     val scope = LocalGuiScope.current

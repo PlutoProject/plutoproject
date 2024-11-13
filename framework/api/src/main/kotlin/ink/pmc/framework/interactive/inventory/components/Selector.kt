@@ -23,7 +23,7 @@ import org.bukkit.event.inventory.ClickType
 fun Selector(
     title: Component,
     icon: Material = Material.STICK,
-    description: List<Component> = listOf(),
+    description: List<Component> = emptyList(),
     options: List<String>,
     default: Int = 0,
     highlightColor: TextColor = mochaYellow,

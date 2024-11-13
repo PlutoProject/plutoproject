@@ -64,7 +64,7 @@ data class RandomTeleportOptions(
     val noCover: Boolean = true,
     val maxAttempts: Int = 5,
     val cost: Double = 0.0,
-    val blacklistedBiomes: List<Biome> = listOf(),
+    val blacklistedBiomes: List<Biome> = emptyList(),
 )
 
 data class Center(

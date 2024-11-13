@@ -57,13 +57,13 @@ open class NmsToastRenderer : ToastRenderer<Player> {
 
         val advancement = Advancement(emptyOptional(), display, AdvancementRewards.EMPTY, criteria, requirements, false)
         val holder = AdvancementHolder(location.get(), advancement)
-        val displayPacket = ClientboundUpdateAdvancementsPacket(false, listOf(holder), setOf(), progress)
+        val displayPacket = ClientboundUpdateAdvancementsPacket(false, listOf(holder), emptySet(), progress)
         player.sendPacket(displayPacket)
 
         val removed = setOf(location.get())
         val removePacket = ClientboundUpdateAdvancementsPacket(
             false,
-            listOf(),
+            emptyList(),
             removed,
             mapOf<ResourceLocation, AdvancementProgress>()
         )

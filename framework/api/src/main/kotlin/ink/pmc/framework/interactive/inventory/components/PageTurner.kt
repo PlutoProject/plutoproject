@@ -25,7 +25,7 @@ enum class SeparatePageTunerMode {
 @Composable
 fun SeparatePageTuner(
     icon: Material = Material.ARROW,
-    description: Collection<Component> = listOf(),
+    description: Collection<Component> = emptyList(),
     mode: SeparatePageTunerMode,
     current: Int,
     total: Int,
