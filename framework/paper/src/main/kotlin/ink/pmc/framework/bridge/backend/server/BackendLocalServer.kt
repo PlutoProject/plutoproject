@@ -2,6 +2,7 @@ package ink.pmc.framework.bridge.backend.server
 
 import ink.pmc.framework.FrameworkConfig
 import ink.pmc.framework.bridge.Bridge
+import ink.pmc.framework.bridge.RESERVED_MASTER_ID
 import ink.pmc.framework.bridge.backend.player.BackendLocalPlayer
 import ink.pmc.framework.bridge.backend.world.BackendLocalWorld
 import ink.pmc.framework.bridge.server.*
@@ -22,7 +23,7 @@ class BackendLocalServer : InternalServer(), KoinComponent {
         set(_) = error("Unsupported")
 
     init {
-        require(id != "_master") { "\"_master\" is an internal reserved ID" }
+        require(id != RESERVED_MASTER_ID) { "$RESERVED_MASTER_ID is an internal reserved ID" }
         worlds.addAll(paper.worlds.map { BackendLocalWorld(it, this) })
         players.addAll(paper.onlinePlayers.map { BackendLocalPlayer(it, this) })
     }

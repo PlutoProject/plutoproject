@@ -7,12 +7,14 @@ import ink.pmc.framework.bridge.world.BridgeWorld
 import ink.pmc.framework.utils.inject.inlinedGet
 import java.util.*
 
+const val RESERVED_MASTER_ID = "_master"
+
 interface Bridge : PlayerLookup, ServerLookup {
     companion object : Bridge by inlinedGet()
 
     val local: BridgeServer
     val master: BridgeServer
-        get() = servers.first { it.id == "_master" }
+        get() = servers.first { it.id == RESERVED_MASTER_ID }
     val groups: Collection<BridgeGroup>
         get() = servers.filter { it.group != null }.map { it.group!! }
     val worlds: Collection<BridgeWorld>

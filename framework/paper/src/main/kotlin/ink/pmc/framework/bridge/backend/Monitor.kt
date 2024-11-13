@@ -60,15 +60,15 @@ private suspend fun registerServer() {
 
 private fun markConnect() {
     isConnected = true
-    if (internalBridge.getInternalRemoteServer("_master") != null) {
-        internalBridge.markRemoteServerOnline("_master")
+    if (internalBridge.getInternalRemoteServer(RESERVED_MASTER_ID) != null) {
+        internalBridge.markRemoteServerOnline(RESERVED_MASTER_ID)
     }
 }
 
 private fun markDisconnect() {
     isConnected = false
-    if (internalBridge.getInternalRemoteServer("_master") != null) {
-        internalBridge.markRemoteServerOffline("_master")
+    if (internalBridge.getInternalRemoteServer(RESERVED_MASTER_ID) != null) {
+        internalBridge.markRemoteServerOffline(RESERVED_MASTER_ID)
     }
 }
 

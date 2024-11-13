@@ -1,6 +1,7 @@
 package ink.pmc.framework.bridge.proxy.server
 
 import ink.pmc.framework.bridge.Bridge
+import ink.pmc.framework.bridge.RESERVED_MASTER_ID
 import ink.pmc.framework.bridge.server.BridgeGroup
 import ink.pmc.framework.bridge.server.InternalServer
 import ink.pmc.framework.bridge.server.ServerState
@@ -14,7 +15,7 @@ internal inline val localServer: ProxyLocalServer
 
 class ProxyLocalServer : InternalServer() {
     override val group: BridgeGroup? = null
-    override val id: String = "_master"
+    override val id: String = RESERVED_MASTER_ID
     override val type: ServerType = ServerType.PROXY
     override val state: ServerState = ServerState.LOCAL
     override val worlds: MutableSet<BridgeWorld>

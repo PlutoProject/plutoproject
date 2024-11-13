@@ -1,6 +1,7 @@
 package ink.pmc.framework.bridge.backend
 
 import ink.pmc.framework.bridge.InternalBridge
+import ink.pmc.framework.bridge.RESERVED_MASTER_ID
 import ink.pmc.framework.bridge.backend.player.BackendRemoteBackendPlayer
 import ink.pmc.framework.bridge.backend.player.BackendRemoteProxyPlayer
 import ink.pmc.framework.bridge.backend.server.BackendLocalServer
@@ -36,7 +37,7 @@ class BackendBridge : InternalBridge() {
     }
 
     override fun createRemoteServer(info: ServerInfo): InternalServer {
-        if (info.id == "_master") {
+        if (info.id == RESERVED_MASTER_ID) {
             val server = BackendRemoteProxyServer().apply {
                 setInitialPlayers(info, this)
             }
