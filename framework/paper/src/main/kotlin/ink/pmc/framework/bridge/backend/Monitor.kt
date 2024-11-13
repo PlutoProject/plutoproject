@@ -14,13 +14,11 @@ import ink.pmc.framework.rpc.RpcClient
 import ink.pmc.framework.utils.concurrent.submitAsync
 import ink.pmc.framework.utils.currentUnixTimestamp
 import ink.pmc.framework.utils.data.getValue
-import ink.pmc.framework.utils.data.mutableConcurrentSetOf
 import ink.pmc.framework.utils.data.setValue
 import ink.pmc.framework.utils.proto.empty
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
-import java.util.*
 import java.util.logging.Level
 import kotlin.time.Duration.Companion.seconds
 
@@ -28,7 +26,6 @@ private var isInitialized by MutableStateFlow(false)
 private var isConnected by MutableStateFlow(false)
 private var monitorJob: Job? = null
 private var heartbeatJob: Job? = null
-internal val operationsSent = mutableConcurrentSetOf<UUID>()
 val bridgeStub = BridgeRpcCoroutineStub(RpcClient.channel)
 
 private fun getCurrentServerInfo(): ServerInfo {

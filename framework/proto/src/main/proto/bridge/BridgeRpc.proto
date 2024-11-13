@@ -159,10 +159,11 @@ message PlayerOperation {
 
 message WorldOperation {
   string id = 1;
-  string server = 2;
-  string world = 3;
+  string executor = 2;
+  string server = 3;
+  string world = 4;
   oneof content {
-    bool placeholder = 4;
+    bool placeholder = 5;
   }
 }
 
