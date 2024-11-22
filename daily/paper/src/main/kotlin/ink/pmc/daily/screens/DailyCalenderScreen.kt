@@ -39,7 +39,6 @@ import java.time.YearMonth
 import java.time.ZonedDateTime
 
 class DailyCalenderScreen : Screen {
-
     override val key: ScreenKey = "daily_screen"
 
     private val localYearMonth: ProvidableCompositionLocal<MutableState<YearMonth>> =
@@ -320,5 +319,4 @@ class DailyCalenderScreen : Screen {
             }
         )
     }
-
 }
