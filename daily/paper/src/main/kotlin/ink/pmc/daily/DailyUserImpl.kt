@@ -37,21 +37,19 @@ class DailyUserImpl(model: DailyUserModel) : DailyUser, KoinComponent {
 
     override suspend fun checkIn(): DailyHistory {
         require(!isCheckedInToday()) { "User $id already checked-in today" }
-        val history = DailyHistoryModel(
-            owner = id.toString(),
-            createdAt = currentUnixTimestamp,
-        )
-
         checkCheckInDate()
         if (lastCheckInDate?.month != LocalDate.now().month || !isCheckedInYesterday()) {
             accumulatedDays = 0
         }
-
+        val history = DailyHistoryModel(
+            owner = id.toString(),
+            createdAt = currentUnixTimestamp,
+            rewarded = getReward(),
+        )
         lastCheckIn = Instant.now()
         accumulatedDays++
         historyRepo.saveOrUpdate(history)
         update()
-
         player.player?.sendMessage(CHECK_IN.replace("<acc>", accumulatedDays))
         performReward()
         return DailyHistoryImpl(history).also { Daily.loadHistory(it) }

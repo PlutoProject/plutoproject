@@ -170,10 +170,7 @@ class DailyCalenderScreen : Screen {
             itemStack = head.clone().apply {
                 amount = date.dayOfMonth
                 editMeta {
-                    it.itemName(
-                        DAY
-                            .replace("<time>", date.formatDate())
-                    )
+                    it.itemName(DAY.replace("<time>", date.formatDate()))
                     it.lore(
                         when {
                             state == 0 && date == now -> DAY_LORE
