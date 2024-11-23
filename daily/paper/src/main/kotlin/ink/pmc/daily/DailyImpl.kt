@@ -4,13 +4,11 @@ import com.github.benmanes.caffeine.cache.Caffeine
 import ink.pmc.daily.api.Daily
 import ink.pmc.daily.api.DailyHistory
 import ink.pmc.daily.api.DailyUser
-import ink.pmc.daily.api.PostCheckInCallback
 import ink.pmc.daily.models.DailyUserModel
 import ink.pmc.daily.repositories.DailyHistoryRepository
 import ink.pmc.daily.repositories.DailyUserRepository
 import ink.pmc.framework.utils.concurrent.submitAsync
 import ink.pmc.framework.utils.concurrent.submitAsyncIO
-import ink.pmc.framework.utils.platform.paper
 import ink.pmc.framework.utils.player.uuid
 import ink.pmc.framework.utils.time.atEndOfDay
 import ink.pmc.framework.utils.time.currentZoneId
@@ -31,14 +29,9 @@ import java.util.concurrent.TimeUnit
 import kotlin.time.Duration.Companion.minutes
 
 class DailyImpl : Daily, KoinComponent {
-
     private var isShutdown = false
-
-    private val conf by inject<DailyConfig>()
     private val userRepo by inject<DailyUserRepository>()
     private val historyRepo by inject<DailyHistoryRepository>()
-
-    private val postCheckInCallbacks = mutableMapOf<String, PostCheckInCallback>()
     private val loadedUsers = ConcurrentHashMap<UUID, DailyUser>()
     private val historyCaches = Caffeine.newBuilder()
         .expireAfterAccess(10, TimeUnit.MINUTES)
@@ -47,17 +40,6 @@ class DailyImpl : Daily, KoinComponent {
         }
 
     init {
-        registerPostCallback("commands") { user ->
-            conf.postCheckInCommands.forEach {
-                val console = paper.consoleSender
-                val player = user.player.player ?: return@forEach
-                paper.dispatchCommand(
-                    console,
-                    it.replace("%player%", player.name).replace("%acc%", user.accumulatedDays.toString())
-                )
-            }
-        }
-
         submitAsync {
             while (!isShutdown) {
                 delay(10.minutes)
@@ -151,7 +133,49 @@ class DailyImpl : Daily, KoinComponent {
         return getHistoryByTime(user, start, end).firstOrNull()
     }
 
-    override suspend fun getLastCheckIn(user: UUID): LocalDateTime? {
+    override suspend fun getAccumulationBetween(
+        user: UUID,
+        start: LocalDateTime,
+        end: LocalDateTime
+    ): Int {
+        return getAccumulationBetween(
+            user,
+            start.toInstant(currentZoneId.toOffset()),
+            end.toInstant(currentZoneId.toOffset())
+        )
+    }
+
+    override suspend fun getAccumulationBetween(
+        user: UUID,
+        start: Instant,
+        end: Instant
+    ): Int {
+        return getAccumulationBetween(user, start.toEpochMilli(), end.toEpochMilli())
+    }
+
+    override suspend fun getAccumulationBetween(
+        user: UUID,
+        start: Long,
+        end: Long
+    ): Int {
+        val histories = getHistoryByTime(user, start, end).sortedBy { it.createdDate }
+        if (histories.isEmpty()) return 0
+        var acc = 1
+        var previousDate = histories[0].createdDate
+        histories.forEachIndexed { i, e ->
+            if (i == 0) return@forEachIndexed
+            val curr = e.createdDate
+            if (curr.minusDays(1) == previousDate) {
+                acc++
+            } else {
+                acc = 1
+            }
+            previousDate = curr
+        }
+        return acc
+    }
+
+    override suspend fun getLastCheckIn(user: UUID): Instant? {
         return getUser(user)?.lastCheckIn
     }
 
@@ -161,14 +185,6 @@ class DailyImpl : Daily, KoinComponent {
 
     override suspend fun getAccumulatedDays(user: UUID): Int {
         return getUser(user)?.accumulatedDays ?: 0
-    }
-
-    override fun registerPostCallback(id: String, block: PostCheckInCallback) {
-        postCheckInCallbacks[id] = block
-    }
-
-    override fun triggerPostCallback(user: DailyUser) {
-        postCheckInCallbacks.values.forEach { it(user) }
     }
 
     override fun loadHistory(history: DailyHistory) {
@@ -183,5 +199,4 @@ class DailyImpl : Daily, KoinComponent {
         require(!isShutdown) { "Daily API already shutdown" }
         isShutdown = true
     }
-
 }

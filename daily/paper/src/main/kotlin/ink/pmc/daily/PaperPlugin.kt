@@ -3,6 +3,7 @@ package ink.pmc.daily
 import com.electronwill.nightconfig.core.file.FileConfig
 import com.github.shynixn.mccoroutine.bukkit.SuspendingJavaPlugin
 import com.mongodb.kotlin.client.coroutine.MongoCollection
+import com.sksamuel.hoplite.PropertySource
 import ink.pmc.daily.api.Daily
 import ink.pmc.daily.commands.CheckInCommand
 import ink.pmc.daily.commands.DailyCommand
@@ -12,11 +13,11 @@ import ink.pmc.daily.repositories.DailyUserRepository
 import ink.pmc.framework.provider.Provider
 import ink.pmc.framework.utils.command.annotationParser
 import ink.pmc.framework.utils.command.commandManager
+import ink.pmc.framework.utils.config.preconfiguredConfigLoaderBuilder
 import ink.pmc.framework.utils.inject.startKoinIfNotPresent
 import ink.pmc.framework.utils.storage.saveResourceIfNotExisted
 import net.milkbowl.vault.economy.Economy
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 import org.koin.dsl.module
 import java.io.File
 
@@ -26,21 +27,23 @@ private inline fun <reified T : Any> getCollection(name: String): MongoCollectio
     return Provider.defaultMongoDatabase.getCollection("${COLLECTION_PREFIX}$name")
 }
 
-private val bukkitModule = module {
-    single<DailyConfig> { DailyConfig(fileConfig) }
-    single<DailyUserRepository> { DailyUserRepository(getCollection("users")) }
-    single<DailyHistoryRepository> { DailyHistoryRepository(getCollection("history")) }
-    single<Daily> { DailyImpl() }
-}
-
 internal lateinit var plugin: PaperPlugin
 internal lateinit var fileConfig: FileConfig
 internal lateinit var economy: Economy
 
 @Suppress("UNUSED")
 class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
-
-    private val daily by inject<Daily>()
+    private val bukkitModule = module {
+        single<DailyConfig> {
+            preconfiguredConfigLoaderBuilder()
+                .addPropertySource(PropertySource.file(saveResourceIfNotExisted("config.conf")))
+                .build()
+                .loadConfigOrThrow()
+        }
+        single<DailyUserRepository> { DailyUserRepository(getCollection("users")) }
+        single<DailyHistoryRepository> { DailyHistoryRepository(getCollection("history")) }
+        single<Daily> { DailyImpl() }
+    }
 
     override fun onEnable() {
         plugin = this
@@ -58,15 +61,11 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
         server.pluginManager.registerEvents(DailyListener, this)
         server.servicesManager.getRegistration(Economy::class.java)?.provider?.also { economy = it }
 
-        if (::economy.isInitialized) {
-            daily.registerPostCallback("coin_claim", coinReward)
-        }
-
         redCrossHead // 初始化头颅
     }
 
     override suspend fun onDisableAsync() {
-        daily.shutdown()
+        Daily.shutdown()
     }
 
     private fun File.loadConfig(): FileConfig {
@@ -80,5 +79,4 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
     internal fun reload() {
         fileConfig.load()
     }
-
 }

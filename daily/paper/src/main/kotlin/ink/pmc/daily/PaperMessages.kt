@@ -21,7 +21,7 @@ val COIN_CLAIM = component {
 }
 
 val UI_TITLE = component {
-    text("礼记日历 | <year>/<month>/<day>")
+    text("礼记日历 | <time>")
 }
 
 val NAVIGATE = component {
@@ -43,11 +43,17 @@ private val NAVIGATE_LORE_RESET = component {
     text("回到现在") with mochaText without italic()
 }
 
-val NAVIGATE_LORE = listOf(
+val NAVIGATE_LORE_CAN_RESET = listOf(
     Component.empty(),
     NAVIGATE_LORE_PREV,
     NAVIGATE_LORE_NEXT,
     NAVIGATE_LORE_RESET
+)
+
+val NAVIGATE_LORE = listOf(
+    Component.empty(),
+    NAVIGATE_LORE_PREV,
+    NAVIGATE_LORE_NEXT,
 )
 
 val NAVIGATE_PREV_REACHED = component {
@@ -64,7 +70,7 @@ val NAVIGATE_LORE_PREV_REACHED = listOf(
 )
 
 val DAY = component {
-    text("<year>/<month>/<day>") with mochaText without italic()
+    text("<time>") with mochaText without italic()
 }
 
 private val DAY_UNCHECKED_IN = component {
@@ -86,14 +92,30 @@ private val DAY_CHECK_IN_OPREATION = component {
 
 val DAY_LORE = listOf(
     DAY_UNCHECKED_IN_TODAY,
+    component {
+        text("可获得奖励 ") with mochaSubtext0 without italic()
+        text("<reward>\uD83C\uDF1F") with mochaText without italic()
+    },
     Component.empty(),
     DAY_CHECK_IN_OPREATION
 )
 
+private val DAY_LORE_TIME = component {
+    text("<time>") with mochaSubtext0 without italic()
+}
+
 val DAY_LORE_CHECKED_IN = listOf(
+    DAY_LORE_TIME,
+    DAY_CHECKED_IN
+)
+
+val DAY_LORE_CHECKED_IN_REWARDED = listOf(
+    DAY_LORE_TIME,
     component {
-        text("<time>") with mochaSubtext0 without italic()
+        text("已获得奖励 ") with mochaSubtext0 without italic()
+        text("<reward>\uD83C\uDF1F") with mochaText without italic()
     },
+    Component.empty(),
     DAY_CHECKED_IN
 )
 

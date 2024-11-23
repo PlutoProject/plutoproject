@@ -9,4 +9,5 @@ data class DailyHistoryModel(
     @SerialName("_id") val id: String = UUID.randomUUID().toString(),
     val owner: String,
     val createdAt: Long,
+    val rewarded: Double = -1.0
 )
