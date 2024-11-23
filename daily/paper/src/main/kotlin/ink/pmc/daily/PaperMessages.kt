@@ -2,6 +2,7 @@ package ink.pmc.daily
 
 import ink.pmc.advkt.component.*
 import ink.pmc.framework.utils.chat.ECONOMY_SYMBOL
+import ink.pmc.framework.utils.proto.empty
 import ink.pmc.framework.utils.visual.*
 import net.kyori.adventure.text.Component
 
@@ -86,6 +87,10 @@ private val DAY_CHECK_IN_OPREATION = component {
 
 val DAY_LORE = listOf(
     DAY_UNCHECKED_IN_TODAY,
+    component {
+        text("可获得奖励 ") with mochaSubtext0 without italic()
+        text("<reward>\uD83C\uDF1F") with mochaText without italic()
+    },
     Component.empty(),
     DAY_CHECK_IN_OPREATION
 )
@@ -102,9 +107,10 @@ val DAY_LORE_CHECKED_IN = listOf(
 val DAY_LORE_CHECKED_IN_REWARDED = listOf(
     DAY_LORE_TIME,
     component {
-        text("到访奖励 ") with mochaSubtext0 without italic()
+        text("已获得奖励 ") with mochaSubtext0 without italic()
         text("<reward>\uD83C\uDF1F") with mochaText without italic()
     },
+    Component.empty(),
     DAY_CHECKED_IN
 )
 

@@ -32,7 +32,6 @@ import net.kyori.adventure.text.Component
 import org.bukkit.Material
 import org.bukkit.event.inventory.ClickType
 import org.bukkit.inventory.meta.SkullMeta
-import org.koin.compose.koinInject
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.YearMonth
@@ -71,7 +70,6 @@ class DailyCalenderScreen : Screen {
     @Composable
     @Suppress("FunctionName")
     private fun InnerContents() {
-        val daily = koinInject<Daily>()
         val player = LocalPlayer.current
         val yearMonth = remember { mutableStateOf(YearMonth.now(player.zoneId)) }
         val loadedHistory = remember { mutableStateMapOf<YearMonth, MutableList<DailyHistory>>() }
@@ -79,7 +77,7 @@ class DailyCalenderScreen : Screen {
         val accumulatedDays = remember { mutableStateOf(0) } // 子组件需要修改这个 state
 
         LaunchedEffect(Unit) {
-            accumulatedDays.value = daily.getAccumulatedDays(player.uniqueId)
+            accumulatedDays.value = Daily.getAccumulatedDays(player.uniqueId)
         }
 
         CompositionLocalProvider(
@@ -120,7 +118,6 @@ class DailyCalenderScreen : Screen {
     @Composable
     @Suppress("FunctionName")
     private fun CalenderSection() {
-        val daily = koinInject<Daily>()
         val player = LocalPlayer.current
         val yearMonth by localYearMonth.current
         val loadedHistory = localLoadedHistory.current
@@ -131,7 +128,7 @@ class DailyCalenderScreen : Screen {
 
         LaunchedEffect(yearMonth) {
             if (loadedHistory.containsKey(yearMonth)) return@LaunchedEffect // 如果有缓存（即上面已经读入数据）就不查数据库
-            loadedHistory[yearMonth] = daily.getHistoryByTime(player.uniqueId, start, end).toMutableStateList()
+            loadedHistory[yearMonth] = Daily.getHistoryByTime(player.uniqueId, start, end).toMutableStateList()
         }
 
         VerticalGrid(modifier = Modifier.fillMaxSize()) {
@@ -147,7 +144,6 @@ class DailyCalenderScreen : Screen {
     @Composable
     @Suppress("FunctionName")
     private fun Day(date: LocalDate, history: DailyHistory?) {
-        val daily = koinInject<Daily>()
         val player = LocalPlayer.current
         val loadedHistory = localLoadedHistory.current
         val yearMonth by localYearMonth.current
@@ -205,8 +201,8 @@ class DailyCalenderScreen : Screen {
                     ClickType.LEFT -> {
                         if (state == 0 && date == now) {
                             coroutineScope.launch {
-                                if (daily.isCheckedInToday(player.uniqueId)) return@launch
-                                daily.checkIn(player.uniqueId).also {
+                                if (Daily.isCheckedInToday(player.uniqueId)) return@launch
+                                Daily.checkIn(player.uniqueId).also {
                                     loadedHistory[yearMonth]?.add(it)
                                     accumulatedDays++
                                 }
