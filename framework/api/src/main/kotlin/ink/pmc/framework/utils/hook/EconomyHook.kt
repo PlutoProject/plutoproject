@@ -1,8 +1,8 @@
 package ink.pmc.framework.utils.hook
 
+import ink.pmc.framework.utils.platform.paper
 import net.milkbowl.vault.economy.Economy
-import org.bukkit.Bukkit
 
 class EconomyHook {
-    val instance = Bukkit.getServicesManager().getRegistration(Economy::class.java)!!.provider
+    val provider = paper.servicesManager.getRegistration(Economy::class.java)?.provider
 }

@@ -13,17 +13,18 @@ import ink.pmc.framework.utils.currentUnixTimestamp
 import ink.pmc.framework.utils.player.uuid
 import ink.pmc.framework.utils.time.currentZoneId
 import ink.pmc.framework.utils.time.instant
+import ink.pmc.framework.utils.trimmed
 import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
 import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
 import org.koin.core.component.inject
 import java.time.Instant
 import java.time.LocalDate
 import java.util.*
 
 class DailyUserImpl(model: DailyUserModel) : DailyUser, KoinComponent {
-
-    private val daily by inject<Daily>()
+    private val rewardConfig by lazy { get<DailyConfig>().rewards }
     private val historyRepo by inject<DailyHistoryRepository>()
     private val userRepo by inject<DailyUserRepository>()
 
@@ -52,8 +53,17 @@ class DailyUserImpl(model: DailyUserModel) : DailyUser, KoinComponent {
         update()
 
         player.player?.sendMessage(CHECK_IN.replace("<acc>", accumulatedDays))
-        daily.triggerPostCallback(this)
-        return DailyHistoryImpl(history).also { daily.loadHistory(it) }
+        Daily.triggerPostCallback(this)
+        return DailyHistoryImpl(history).also { Daily.loadHistory(it) }
+    }
+
+    private fun performReward() {
+        val date = LocalDate.now()
+        val base = if (date.dayOfWeek.value in 1..5) rewardConfig.weekday else rewardConfig.weekend
+        val accumulate = if (accumulatedDays % rewardConfig.accumulateRequirement == 0) rewardConfig.accumulate else 0.0
+        val amount = base + accumulate
+        economy.depositPlayer(player, amount)
+        player.player?.sendMessage(COIN_CLAIM.replace("<amount>", amount.trimmed()))
     }
 
     override suspend fun clearAccumulation() {
@@ -67,16 +77,15 @@ class DailyUserImpl(model: DailyUserModel) : DailyUser, KoinComponent {
     }
 
     override suspend fun isCheckedInToday(): Boolean {
-        return daily.getHistoryByTime(id, LocalDate.now()) != null
+        return Daily.getHistoryByTime(id, LocalDate.now()) != null
     }
 
     override suspend fun isCheckedInYesterday(): Boolean {
         val yesterday = LocalDate.now().minusDays(1)
-        return daily.getHistoryByTime(id, yesterday) != null
+        return Daily.getHistoryByTime(id, yesterday) != null
     }
 
     override suspend fun update() {
         userRepo.saveOrUpdate(toModel())
     }
-
 }

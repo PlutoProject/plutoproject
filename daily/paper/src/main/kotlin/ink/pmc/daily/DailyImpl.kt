@@ -4,7 +4,6 @@ import com.github.benmanes.caffeine.cache.Caffeine
 import ink.pmc.daily.api.Daily
 import ink.pmc.daily.api.DailyHistory
 import ink.pmc.daily.api.DailyUser
-import ink.pmc.daily.api.PostCheckInCallback
 import ink.pmc.daily.models.DailyUserModel
 import ink.pmc.daily.repositories.DailyHistoryRepository
 import ink.pmc.daily.repositories.DailyUserRepository
@@ -31,14 +30,9 @@ import java.util.concurrent.TimeUnit
 import kotlin.time.Duration.Companion.minutes
 
 class DailyImpl : Daily, KoinComponent {
-
     private var isShutdown = false
-
-    private val conf by inject<DailyConfig>()
     private val userRepo by inject<DailyUserRepository>()
     private val historyRepo by inject<DailyHistoryRepository>()
-
-    private val postCheckInCallbacks = mutableMapOf<String, PostCheckInCallback>()
     private val loadedUsers = ConcurrentHashMap<UUID, DailyUser>()
     private val historyCaches = Caffeine.newBuilder()
         .expireAfterAccess(10, TimeUnit.MINUTES)
@@ -47,17 +41,6 @@ class DailyImpl : Daily, KoinComponent {
         }
 
     init {
-        registerPostCallback("commands") { user ->
-            conf.postCheckInCommands.forEach {
-                val console = paper.consoleSender
-                val player = user.player.player ?: return@forEach
-                paper.dispatchCommand(
-                    console,
-                    it.replace("%player%", player.name).replace("%acc%", user.accumulatedDays.toString())
-                )
-            }
-        }
-
         submitAsync {
             while (!isShutdown) {
                 delay(10.minutes)
@@ -163,14 +146,6 @@ class DailyImpl : Daily, KoinComponent {
         return getUser(user)?.accumulatedDays ?: 0
     }
 
-    override fun registerPostCallback(id: String, block: PostCheckInCallback) {
-        postCheckInCallbacks[id] = block
-    }
-
-    override fun triggerPostCallback(user: DailyUser) {
-        postCheckInCallbacks.values.forEach { it(user) }
-    }
-
     override fun loadHistory(history: DailyHistory) {
         historyCaches.put(history.id, CompletableFuture.completedFuture(history))
     }
@@ -183,5 +158,4 @@ class DailyImpl : Daily, KoinComponent {
         require(!isShutdown) { "Daily API already shutdown" }
         isShutdown = true
     }
-
 }

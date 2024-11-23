@@ -1,14 +1,13 @@
 package ink.pmc.daily
 
-import com.electronwill.nightconfig.core.Config
+data class DailyConfig(
+    val rewards: Rewards,
+)
 
-@Suppress("UNUSED")
-class DailyConfig(config: Config) : Config by config {
-
-    val postCheckInCommands: List<String> get() = get("post-check-in-commands")
-    val weekdayReward: Double get() = get("coin-reward.weekday")
-    val weekendReward: Double get() = get("coin-reward.weekend")
-    val accumulateReward: Double get() = get("coin-reward.accumulate")
-    val accRequirements: Int get() = get("coin-reward.accumulate-requirements")
-
-}
+data class Rewards(
+    val weekday: Double = 5.0,
+    val weekend: Double = 10.0,
+    val accumulate: Double = 10.0,
+    val accumulateRequirement: Int = 7,
+    val holiday: Double = 20.0,
+)

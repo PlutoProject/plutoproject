@@ -7,11 +7,8 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.*
 
-typealias PostCheckInCallback = (DailyUser) -> Unit
-
 @Suppress("UNUSED")
 interface Daily {
-
     companion object : Daily by inlinedGet()
 
     suspend fun checkIn(user: UUID): DailyHistory
@@ -44,14 +41,9 @@ interface Daily {
 
     suspend fun getAccumulatedDays(user: UUID): Int
 
-    fun registerPostCallback(id: String, block: PostCheckInCallback)
-
-    fun triggerPostCallback(user: DailyUser)
-
     fun loadHistory(history: DailyHistory)
 
     fun unloadUser(id: UUID)
 
     fun shutdown()
-
 }
