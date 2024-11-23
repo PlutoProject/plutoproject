@@ -23,6 +23,8 @@ interface DailyUser {
 
     suspend fun isCheckedInYesterday(): Boolean
 
+    fun getReward(): Double
+
     suspend fun update()
 
 }
