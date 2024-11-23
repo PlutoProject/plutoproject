@@ -41,22 +41,22 @@ class DailyUserImpl(model: DailyUserModel) : DailyUser, KoinComponent {
         if (lastCheckInDate?.month != LocalDate.now().month || !isCheckedInYesterday()) {
             accumulatedDays = 0
         }
+        val reward = getReward()
         val history = DailyHistoryModel(
             owner = id.toString(),
             createdAt = currentUnixTimestamp,
-            rewarded = getReward(),
+            rewarded = reward,
         )
         lastCheckIn = Instant.now()
         accumulatedDays++
         historyRepo.saveOrUpdate(history)
         update()
         player.player?.sendMessage(CHECK_IN.replace("<acc>", accumulatedDays))
-        performReward()
+        performReward(reward)
         return DailyHistoryImpl(history).also { Daily.loadHistory(it) }
     }
 
-    private fun performReward() {
-        val reward = getReward()
+    private fun performReward(reward: Double) {
         economy.depositPlayer(player, reward)
         player.player?.sendMessage(COIN_CLAIM.replace("<amount>", reward.trimmed()))
     }
@@ -83,7 +83,8 @@ class DailyUserImpl(model: DailyUserModel) : DailyUser, KoinComponent {
     override fun getReward(): Double {
         val date = LocalDate.now()
         val base = if (date.dayOfWeek.value in 1..5) rewardConfig.weekday else rewardConfig.weekend
-        val accumulate = if (accumulatedDays % rewardConfig.accumulateRequirement == 0) rewardConfig.accumulate else 0.0
+        val accumulate = if (accumulatedDays > 0 && accumulatedDays % rewardConfig.accumulateRequirement == 0)
+            rewardConfig.accumulate else 0.0
         return base + accumulate
     }
 

@@ -9,7 +9,6 @@ import ink.pmc.daily.repositories.DailyHistoryRepository
 import ink.pmc.daily.repositories.DailyUserRepository
 import ink.pmc.framework.utils.concurrent.submitAsync
 import ink.pmc.framework.utils.concurrent.submitAsyncIO
-import ink.pmc.framework.utils.platform.paper
 import ink.pmc.framework.utils.player.uuid
 import ink.pmc.framework.utils.time.atEndOfDay
 import ink.pmc.framework.utils.time.currentZoneId
@@ -132,6 +131,48 @@ class DailyImpl : Daily, KoinComponent {
         val start = date.atStartOfDay().toInstant(currentZoneId.toOffset())
         val end = date.atEndOfDay().toInstant(currentZoneId.toOffset())
         return getHistoryByTime(user, start, end).firstOrNull()
+    }
+
+    override suspend fun getAccumulationBetween(
+        user: UUID,
+        start: LocalDateTime,
+        end: LocalDateTime
+    ): Int {
+        return getAccumulationBetween(
+            user,
+            start.toInstant(currentZoneId.toOffset()),
+            end.toInstant(currentZoneId.toOffset())
+        )
+    }
+
+    override suspend fun getAccumulationBetween(
+        user: UUID,
+        start: Instant,
+        end: Instant
+    ): Int {
+        return getAccumulationBetween(user, start.toEpochMilli(), end.toEpochMilli())
+    }
+
+    override suspend fun getAccumulationBetween(
+        user: UUID,
+        start: Long,
+        end: Long
+    ): Int {
+        val histories = getHistoryByTime(user, start, end).sortedBy { it.createdDate }
+        if (histories.isEmpty()) return 0
+        var acc = 1
+        var previousDate = histories[0].createdDate
+        histories.forEachIndexed { i, e ->
+            if (i == 0) return@forEachIndexed
+            val curr = e.createdDate
+            if (curr.minusDays(1) == previousDate) {
+                acc++
+            } else {
+                acc = 1
+            }
+            previousDate = curr
+        }
+        return acc
     }
 
     override suspend fun getLastCheckIn(user: UUID): Instant? {

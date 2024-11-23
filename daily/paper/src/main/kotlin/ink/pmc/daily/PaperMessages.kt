@@ -2,7 +2,6 @@ package ink.pmc.daily
 
 import ink.pmc.advkt.component.*
 import ink.pmc.framework.utils.chat.ECONOMY_SYMBOL
-import ink.pmc.framework.utils.proto.empty
 import ink.pmc.framework.utils.visual.*
 import net.kyori.adventure.text.Component
 
@@ -44,11 +43,17 @@ private val NAVIGATE_LORE_RESET = component {
     text("回到现在") with mochaText without italic()
 }
 
-val NAVIGATE_LORE = listOf(
+val NAVIGATE_LORE_CAN_RESET = listOf(
     Component.empty(),
     NAVIGATE_LORE_PREV,
     NAVIGATE_LORE_NEXT,
     NAVIGATE_LORE_RESET
+)
+
+val NAVIGATE_LORE = listOf(
+    Component.empty(),
+    NAVIGATE_LORE_PREV,
+    NAVIGATE_LORE_NEXT,
 )
 
 val NAVIGATE_PREV_REACHED = component {

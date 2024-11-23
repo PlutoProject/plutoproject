@@ -35,6 +35,12 @@ interface Daily {
 
     suspend fun getHistoryByTime(user: UUID, date: LocalDate): DailyHistory?
 
+    suspend fun getAccumulationBetween(user: UUID, start: LocalDateTime, end: LocalDateTime): Int
+
+    suspend fun getAccumulationBetween(user: UUID, start: Instant, end: Instant): Int
+
+    suspend fun getAccumulationBetween(user: UUID, start: Long, end: Long): Int
+
     suspend fun getLastCheckIn(user: UUID): Instant?
 
     suspend fun getLastCheckInDate(user: UUID): LocalDate?
