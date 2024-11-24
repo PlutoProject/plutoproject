@@ -15,7 +15,7 @@ import java.time.YearMonth
 
 class DailyCalenderScreenModel(private val player: Player) : ScreenModel {
     val realTime: YearMonth = YearMonth.now()
-    var isLoading = true
+    var isLoading by mutableStateOf(true)
     var user by mutableStateOf<DailyUser?>(null)
     var yearMonth by mutableStateOf(realTime)
     var accumulatedDays by mutableStateOf(0)
