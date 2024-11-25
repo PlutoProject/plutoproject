@@ -132,7 +132,7 @@ class HomeManagerImpl : HomeManager, KoinComponent {
 
     override suspend fun create(owner: OfflinePlayer, name: String, location: Location): Home {
         require(!has(owner, name)) { "Home of player ${owner.name} named $name already existed" }
-        require(name.isValidIdentifier && name.length <= nameLengthLimit) { "Name $name doesn't match the requirement" }
+        require(name.length <= nameLengthLimit) { "Name $name doesn't match the requirement" }
         val model = HomeModel(
             ObjectId(),
             UUID.randomUUID(),

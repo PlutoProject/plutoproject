@@ -25,10 +25,6 @@ object SetWarpCommand {
             sendMessage(COMMAND_SETWARP_FAILED_EXISTED.replace("<name>", name))
             return
         }
-        if (!name.isValidIdentifier) {
-            sendMessage(COMMAND_SETWARP_FAILED_NOT_VALID)
-            return
-        }
         if (name.length > WarpManager.nameLengthLimit) {
             sendMessage(COMMAND_SETWARP_FAILED_LENGTN_LIMIT)
             return

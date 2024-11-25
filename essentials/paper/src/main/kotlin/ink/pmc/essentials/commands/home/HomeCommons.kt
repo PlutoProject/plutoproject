@@ -25,7 +25,7 @@ object HomeCommons {
 
     @Parser(name = "home", suggestions = "homes")
     suspend fun home(context: CommandContext<CommandSender>, input: CommandInput): Home {
-        val parser = StringParser.quotedStringParser<CommandSender>().parser()
+        val parser = StringParser.greedyStringParser<CommandSender>().parser()
         val name = parser.parse(context, input).parsedValue().getOrNull()
             ?: error("Unable to parse home name")
         return HomeManager.get(context.sender() as Player, name) ?: throw HomeNotExistedException(name)

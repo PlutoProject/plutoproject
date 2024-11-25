@@ -82,12 +82,6 @@ class HomeCreatorScreen : Screen {
                         if (state != 0) return@Anvil emptyList()
                         val input = r.text
 
-                        if (!input.isValidIdentifier) {
-                            player.playSound(UI_HOME_EDITOR_RENAME_INVALID_SOUND)
-                            stateTransition(1)
-                            return@Anvil emptyList()
-                        }
-
                         if (input.length > manager.nameLengthLimit) {
                             player.playSound(UI_HOME_EDITOR_RENAME_INVALID_SOUND)
                             stateTransition(2)

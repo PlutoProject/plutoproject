@@ -7,6 +7,7 @@ import com.sksamuel.hoplite.PropertySource
 import ink.pmc.essentials.afk.AfkManagerImpl
 import ink.pmc.essentials.api.afk.AfkManager
 import ink.pmc.essentials.api.back.BackManager
+import ink.pmc.essentials.api.home.Home
 import ink.pmc.essentials.api.home.HomeManager
 import ink.pmc.essentials.api.teleport.TeleportManager
 import ink.pmc.essentials.api.teleport.random.RandomTeleportManager
@@ -37,6 +38,7 @@ import ink.pmc.essentials.teleport.random.RandomTeleportManagerImpl
 import ink.pmc.essentials.warp.WarpManagerImpl
 import ink.pmc.framework.utils.command.annotationParser
 import ink.pmc.framework.utils.command.commandManager
+import ink.pmc.framework.utils.command.getKotlinMethodArgumentParser
 import ink.pmc.framework.utils.command.suggestion.PaperPrivilegedSuggestion
 import ink.pmc.framework.utils.config.preconfiguredConfigLoaderBuilder
 import ink.pmc.framework.utils.inject.startKoinIfNotPresent
@@ -46,6 +48,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import net.kyori.adventure.text.minimessage.MiniMessage
+import org.bukkit.command.CommandSender
 import org.bukkit.plugin.Plugin
 import org.incendo.cloud.bukkit.parser.OfflinePlayerParser
 import org.incendo.cloud.bukkit.parser.WorldParser
@@ -154,6 +157,9 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
                 registerMapping(TypeToken.get(SpawnParser::class.java)) {
                     it.cloudSuggestions().to { StringArgumentType.greedyString() }
                 }
+                registerMapping(TypeToken.get(getKotlinMethodArgumentParser<CommandSender, Home>())) {
+                    it.cloudSuggestions().to { StringArgumentType.greedyString() }
+                }
             }
         }.annotationParser().apply {
             parse(
@@ -178,7 +184,7 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
                 TpcancelCommand,
                 HomeCommons,
                 DelHomeCommand,
-                EditHomeCommand,
+                // EditHomeCommand,
                 HomeCommand,
                 HomesCommand,
                 SetHomeCommand,

@@ -165,12 +165,6 @@ class HomeEditorScreen(private val home: Home) : Screen {
                             if (state != EDITING) return@Anvil emptyList()
                             val input = r.text
 
-                            if (!input.isValidIdentifier) {
-                                player.playSound(UI_HOME_EDITOR_RENAME_INVALID_SOUND)
-                                stateTransition(INVALID)
-                                return@Anvil emptyList()
-                            }
-
                             if (input.length > manager.nameLengthLimit) {
                                 player.playSound(UI_HOME_EDITOR_RENAME_INVALID_SOUND)
                                 stateTransition(TOO_LONG)

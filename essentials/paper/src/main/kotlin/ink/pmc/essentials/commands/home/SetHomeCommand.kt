@@ -26,10 +26,6 @@ object SetHomeCommand {
             sendMessage(COMMAND_SETHOME_FAILED_EXISTED.replace("<name>", actualName))
             return
         }
-        if (!actualName.isValidIdentifier) {
-            sendMessage(COMMAND_SETHOME_FAILED_NOT_VALID)
-            return
-        }
         if (actualName.length > HomeManager.nameLengthLimit) {
             sendMessage(COMMAND_SETHOME_FAILED_LENGTN_LIMIT)
             return

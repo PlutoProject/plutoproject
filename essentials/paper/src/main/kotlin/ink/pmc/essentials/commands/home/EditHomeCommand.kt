@@ -48,10 +48,6 @@ object EditHomeCommand {
         @Argument("home", parserName = "home") home: Home,
         @Argument("name") @Greedy name: String
     ) = ensurePlayer {
-        if (!name.isValidIdentifier) {
-            sendMessage(COMMAND_SETHOME_FAILED_NOT_VALID)
-            return
-        }
         if (name.length > HomeManager.nameLengthLimit) {
             sendMessage(COMMAND_SETHOME_FAILED_LENGTN_LIMIT)
             return
