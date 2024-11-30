@@ -3,20 +3,18 @@ package ink.pmc.menu.messages
 import ink.pmc.advkt.component.component
 import ink.pmc.advkt.component.italic
 import ink.pmc.advkt.component.text
-import ink.pmc.essentials.config.EssentialsConfig
 import ink.pmc.framework.utils.chat.replace
 import ink.pmc.framework.utils.visual.*
 import ink.pmc.framework.utils.world.aliasOrName
 import net.kyori.adventure.text.Component
 import org.bukkit.entity.Player
-import org.koin.java.KoinJavaComponent.getKoin
 
 val TR_TITLE = component {
     text("选择玩家")
 }
 
 val TR_EMPTY = component {
-    text("暂时没有其他玩家...") with mochaText without italic()
+    text("暂时没有其他玩家 :(") with mochaSubtext0 without italic()
 }
 
 val TR_LOADING = component {
