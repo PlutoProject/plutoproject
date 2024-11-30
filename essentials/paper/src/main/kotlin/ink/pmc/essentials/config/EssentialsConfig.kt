@@ -17,6 +17,7 @@ data class EssentialsConfig(
     val item: Item,
     val recipe: Recipe,
     val join: Join,
+    val disableJoinQuitMessage: DisableJoinQuitMessage = DisableJoinQuitMessage(),
     val demoWorld: DemoWorld
 )
 
@@ -123,6 +124,10 @@ data class Join(
     val enabled: Boolean,
     val menuItem: Boolean,
     val serverSelectorItem: Boolean
+)
+
+data class DisableJoinQuitMessage(
+    val enabled: Boolean = true,
 )
 
 data class DemoWorld(

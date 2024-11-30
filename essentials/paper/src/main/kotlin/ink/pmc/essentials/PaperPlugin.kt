@@ -253,6 +253,10 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
             server.pluginManager.registerSuspendingEvents(JoinListener, this)
         }
 
+        if (config.disableJoinQuitMessage.enabled) {
+            server.pluginManager.registerSuspendingEvents(DisableJoinQuitMessageListener, this)
+        }
+
         if (config.demoWorld.enabled) {
             server.pluginManager.registerSuspendingEvents(DemoWorldListener, this)
         }

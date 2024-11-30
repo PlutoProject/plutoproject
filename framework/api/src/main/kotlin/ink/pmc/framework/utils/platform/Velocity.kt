@@ -13,6 +13,10 @@ fun saveResourceIfNotExisted(clazz: Class<*>, name: String, output: File): File 
     if (output.exists()) return output
     val input: InputStream = clazz.getResourceAsStream("/$name")
         ?: throw IllegalArgumentException("Resource not found")
+    if (!output.exists()) {
+        output.parentFile?.mkdirs()
+        output.createNewFile()
+    }
     Files.copy(input, output.toPath(), StandardCopyOption.REPLACE_EXISTING)
     input.close()
     return output

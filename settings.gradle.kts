@@ -34,6 +34,7 @@ include("protocol-checker:velocity")
 
 include("essentials")
 include("essentials:paper")
+include("essentials:velocity")
 include("essentials:api")
 
 include("menu")
