@@ -292,7 +292,7 @@ fun MAIN_MENU_ITEM_COINS_LORE(player: Player): List<Component> {
             text("$balance$DEFAULT_ECONOMY_SYMBOL") with mochaText without italic()
         },
         component {
-            text("可以在「礼记」中到访来获取货币") with mochaSubtext0 without italic()
+            text("可在「礼记」中到访来获取货币") with mochaSubtext0 without italic()
         }
     )
 }
@@ -338,7 +338,7 @@ private val MAIN_MENU_ITEM_VIEW_BOOST_LORE_COMMON = listOf(
         text("视距") with mochaSubtext0 without italic()
     },
     component {
-        text("使观景体验大幅提升") with mochaSubtext0 without italic()
+        text("以提升观景体验") with mochaSubtext0 without italic()
     }
 )
 
@@ -355,7 +355,7 @@ val MAIN_MENU_ITEM_VIEW_BOOST_LORE_ENABLED = buildList {
     addAll(MAIN_MENU_ITEM_VIEW_BOOST_LORE_COMMON)
     add(Component.empty())
     add(component {
-        text("请将渲染距离调整至 ") with mochaSubtext0 without italic()
+        text("将渲染距离调至 ") with mochaSubtext0 without italic()
         text("16 ") with mochaText without italic()
         text("或更高") with mochaSubtext0 without italic()
     })
