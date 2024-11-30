@@ -134,7 +134,7 @@ val MAIN_MENU_ITEM_SPAWN_LORE_NO_PREFERRED = listOf(
     }
 )
 
-val MAIN_MENU_ITEM_TP = component {
+val MAIN_MENU_ITEM_WARP = component {
     text("巡回列车") with mochaSapphire without italic()
 }
 

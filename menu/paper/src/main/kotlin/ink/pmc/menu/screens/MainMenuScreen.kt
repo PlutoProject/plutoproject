@@ -15,10 +15,11 @@ import ink.pmc.essentials.api.teleport.TeleportManager
 import ink.pmc.essentials.api.teleport.random.RandomTeleportManager
 import ink.pmc.essentials.screens.home.HomeViewerScreen
 import ink.pmc.essentials.screens.warp.DefaultSpawnPickerMenu
+import ink.pmc.essentials.screens.warp.WarpMenu
 import ink.pmc.framework.interactive.LocalPlayer
 import ink.pmc.framework.interactive.inventory.*
-import ink.pmc.framework.interactive.inventory.click.clickable
 import ink.pmc.framework.interactive.inventory.canvas.Chest
+import ink.pmc.framework.interactive.inventory.click.clickable
 import ink.pmc.framework.interactive.inventory.jetpack.Arrangement
 import ink.pmc.framework.interactive.inventory.layout.Box
 import ink.pmc.framework.interactive.inventory.layout.Column
@@ -28,6 +29,8 @@ import ink.pmc.framework.utils.chat.UI_SUCCEED_SOUND
 import ink.pmc.framework.utils.chat.replace
 import ink.pmc.framework.utils.concurrent.sync
 import ink.pmc.framework.utils.time.formatDuration
+import ink.pmc.framework.utils.visual.mochaGreen
+import ink.pmc.framework.utils.visual.mochaLavender
 import ink.pmc.framework.utils.visual.mochaSubtext0
 import ink.pmc.framework.utils.visual.mochaText
 import ink.pmc.framework.utils.world.aliasOrName
@@ -177,13 +180,13 @@ class MainMenuScreen : Screen, KoinComponent {
         Row(modifier = Modifier.fillMaxWidth().height(1), horizontalArrangement = Arrangement.Center) {
             Home()
             Spawn()
+            Warp()
             Teleport()
             RandomTeleport()
-            Daily()
         }
         Row(modifier = Modifier.fillMaxWidth().height(1), horizontalArrangement = Arrangement.Center) {
+            Daily()
             Coin()
-            Space()
             Wiki()
         }
     }
@@ -194,13 +197,15 @@ class MainMenuScreen : Screen, KoinComponent {
     private fun AssistTab() {
         Row(modifier = Modifier.fillMaxWidth().height(1), horizontalArrangement = Arrangement.Center) {
             Lookup()
-            ViewBoost()
-            repeat(3) {
+            repeat(4) {
                 Space()
             }
         }
         Row(modifier = Modifier.fillMaxWidth().height(1), horizontalArrangement = Arrangement.Center) {
-
+            ViewBoost()
+            repeat(4) {
+                Space()
+            }
         }
     }
 
@@ -297,10 +302,11 @@ class MainMenuScreen : Screen, KoinComponent {
         val player = LocalPlayer.current
         val navigator = LocalNavigator.currentOrThrow
         val hasUnfinishedTpRequest = TeleportManager.hasUnfinishedRequest(player)
-
         Item(
-            material = Material.MINECART,
-            name = MAIN_MENU_ITEM_TP,
+            material = Material.ENDER_PEARL,
+            name = component {
+                text("定向传送") with mochaGreen without italic()
+            },
             lore = if (!hasUnfinishedTpRequest) MAIN_MENU_ITEM_TP_LORE else MAIN_MENU_ITEM_TP_EXISTED_LORE,
             enchantmentGlint = hasUnfinishedTpRequest,
             modifier = Modifier.clickable {
@@ -314,6 +320,33 @@ class MainMenuScreen : Screen, KoinComponent {
     // 可用，货币不足，该世界不可用，冷却中
     private enum class RandomTeleportState {
         AVAILABLE, COIN_NOT_ENOUGH, NOT_AVAILABLE, IN_COOLDOWN
+    }
+
+    /*
+    * 随机传送
+    */
+    @Composable
+    @Suppress("FunctionName")
+    private fun Warp() {
+        val navigator = LocalNavigator.currentOrThrow
+        Item(
+            material = Material.MINECART,
+            name = MAIN_MENU_ITEM_WARP,
+            lore = buildList {
+                add(component {
+                    text("参观其他玩家的机械、建筑与城镇") with mochaSubtext0 without italic()
+                })
+                add(Component.empty())
+                add(component {
+                    text("左键 ") with mochaLavender without italic()
+                    text("打开地标列表") with mochaText without italic()
+                })
+            },
+            modifier = Modifier.clickable {
+                if (clickType != ClickType.LEFT) return@clickable
+                navigator.push(WarpMenu())
+            }
+        )
     }
 
     /*
