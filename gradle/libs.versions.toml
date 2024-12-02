@@ -13,7 +13,7 @@ resource-factory = "1.2.0"
 cloud = "2.0.0"
 cloud-minecraft = "2.0.0-SNAPSHOT"
 koin = "3.6.0-Beta5"
-compose = "1.7.0-alpha02"
+compose = "1.8.0-dev1905"
 voyager = "1.1.0-beta03"
 hoplite = "2.8.2"
 
