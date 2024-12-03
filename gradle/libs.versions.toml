@@ -15,7 +15,7 @@ cloud-minecraft = "2.0.0-SNAPSHOT"
 koin = "3.6.0-Beta5"
 compose = "1.7.0-alpha02"
 voyager = "1.1.0-beta03"
-hoplite = "2.8.2"
+hoplite = "2.9.0"
 
 [libraries]
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
