@@ -236,6 +236,10 @@ val MAIN_MENU_ITEM_HOME_LOOKUP_LORE = listOf(
 
 val MAIN_MENU_ITEM_HOME_LOOKUP_ENABLED_LORE = listOf(
     component {
+        text("将周围的变化一览无余") with mochaSubtext0 without italic()
+    },
+    Component.empty(),
+    component {
         text("观察模式已开启") with mochaSubtext0 without italic()
     },
     component {
