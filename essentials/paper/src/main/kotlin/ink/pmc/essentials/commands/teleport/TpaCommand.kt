@@ -7,6 +7,8 @@ import ink.pmc.essentials.api.teleport.TeleportDirection.COME
 import ink.pmc.essentials.api.teleport.TeleportDirection.GO
 import ink.pmc.essentials.api.teleport.TeleportManager
 import ink.pmc.essentials.config.EssentialsConfig
+import ink.pmc.essentials.screens.teleport.TeleportRequestScreen
+import ink.pmc.framework.interactive.GuiManager
 import ink.pmc.framework.utils.chat.DURATION
 import ink.pmc.framework.utils.chat.replace
 import ink.pmc.framework.utils.command.ensurePlayer
@@ -19,20 +21,25 @@ import org.koin.java.KoinJavaComponent.getKoin
 
 @Suppress("UNUSED")
 object TpaCommand {
-    @Command("tpa <player>")
+    @Command("tpa [player]")
     @Permission("essentials.tpa")
-    fun CommandSender.tpa(@Argument("player") player: Player) = ensurePlayer {
+    fun tpa(sender: CommandSender, @Argument("player") player: Player? = null) = sender.ensurePlayer {
         handleTpa(this, player, GO)
     }
 
-    @Command("tpahere <player>")
+    @Command("tpahere [player]")
     @Permission("essentials.tpahere")
-    fun CommandSender.tpahere(@Argument("player") player: Player) = ensurePlayer {
+    fun tpahere(sender: CommandSender, @Argument("player") player: Player? = null) = sender.ensurePlayer {
         handleTpa(this, player, COME)
     }
 }
 
-private fun handleTpa(source: Player, destination: Player, direction: TeleportDirection) {
+private fun handleTpa(source: Player, destination: Player?, direction: TeleportDirection) {
+    if (destination == null) {
+        GuiManager.startScreen(source, TeleportRequestScreen())
+        return
+    }
+
     if (destination == source) {
         source.sendMessage(COMMAND_TPA_FAILED_SELF)
         return
