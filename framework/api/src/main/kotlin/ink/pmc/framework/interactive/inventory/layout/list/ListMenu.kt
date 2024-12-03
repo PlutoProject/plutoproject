@@ -128,7 +128,7 @@ abstract class ListMenu<E, M : ListMenuModel<E>>(val options: ListMenuOptions = 
             icon = options.previousTurnerIcon,
             mode = SeparatePageTunerMode.PREVIOUS,
             current = model.page + 1,
-            total = model.page,
+            total = model.pageCount,
             turn = model::previousPage
         )
     }
@@ -142,6 +142,7 @@ abstract class ListMenu<E, M : ListMenuModel<E>>(val options: ListMenuOptions = 
             return
         }
         SeparatePageTuner(
+            icon = options.nextTurnerIcon,
             mode = SeparatePageTunerMode.NEXT,
             current = model.page + 1,
             total = model.pageCount,
