@@ -2,8 +2,6 @@ package ink.pmc.essentials.screens.warp
 
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import cafe.adriel.voyager.core.model.rememberScreenModel
-import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.core.screen.ScreenKey
 import ink.pmc.advkt.component.component
 import ink.pmc.advkt.component.italic
@@ -12,15 +10,11 @@ import ink.pmc.essentials.api.warp.Warp
 import ink.pmc.essentials.api.warp.WarpCategory.*
 import ink.pmc.essentials.api.warp.WarpManager
 import ink.pmc.framework.interactive.LocalPlayer
-import ink.pmc.framework.interactive.inventory.*
+import ink.pmc.framework.interactive.inventory.Item
+import ink.pmc.framework.interactive.inventory.Modifier
 import ink.pmc.framework.interactive.inventory.click.clickable
-import ink.pmc.framework.interactive.inventory.components.Selector
-import ink.pmc.framework.interactive.inventory.components.SeparatePageTuner
-import ink.pmc.framework.interactive.inventory.components.SeparatePageTunerMode
-import ink.pmc.framework.interactive.inventory.jetpack.Arrangement
-import ink.pmc.framework.interactive.inventory.layout.Column
-import ink.pmc.framework.interactive.inventory.layout.Menu
-import ink.pmc.framework.interactive.inventory.layout.Row
+import ink.pmc.framework.interactive.inventory.layout.list.FilterListMenu
+import ink.pmc.framework.interactive.inventory.layout.list.ListMenuOptions
 import ink.pmc.framework.utils.chat.UI_SUCCEED_SOUND
 import ink.pmc.framework.utils.chat.splitLines
 import ink.pmc.framework.utils.concurrent.sync
@@ -34,121 +28,40 @@ import org.bukkit.Material
 import org.bukkit.event.inventory.ClickType
 import java.time.ZonedDateTime
 
-class WarpMenu : Screen {
+class WarpMenu : FilterListMenu<Warp, WarpFilter, WarpMenuModel>(
+    options = ListMenuOptions(title = Component.text("地标"), rows = 6),
+    filters = WarpFilter.entries.associateWith { it.filterName }
+) {
     override val key: ScreenKey = "essentials_warp_menu"
-    private val model: ProvidableCompositionLocal<WarpMenuModel> = staticCompositionLocalOf { error("Uninitialized") }
 
     @Composable
-    override fun Content() {
+    override fun modelProvider(): WarpMenuModel {
         val player = LocalPlayer.current
-        val model = rememberScreenModel { WarpMenuModel(player) }
-        CompositionLocalProvider(
-            this.model provides model
-        ) {
-            Menu(
-                title = Component.text("地标"),
-                rows = 6,
-                bottomBorderAttachment = {
-                    if (model.isLoading) return@Menu
-                    Row(modifier = Modifier.fillMaxSize(), horizontalArrangement = Arrangement.Center) {
-                        if (model.pageCount > 1) {
-                            SeparatePageTuner(
-                                mode = SeparatePageTunerMode.PREVIOUS,
-                                current = model.page + 1,
-                                total = model.pageCount,
-                                turn = {
-                                    if (model.page > 0) {
-                                        model.page--
-                                        true
-                                    } else false
-                                }
-                            )
-                        }
-                        Selector(
-                            title = component {
-                                text("筛选") with mochaText without italic()
-                            },
-                            options = listOf("全部", "已收藏", "仅看机械类", "仅看建筑类", "仅看城镇类"),
-                            goNext = model::nextFilter,
-                            goPrevious = model::previousFilter
-                        )
-                        if (model.pageCount > 1) {
-                            SeparatePageTuner(
-                                mode = SeparatePageTunerMode.NEXT,
-                                current = model.page + 1,
-                                total = model.pageCount,
-                                turn = {
-                                    if (model.page < model.pageCount - 1) {
-                                        model.page++
-                                        true
-                                    } else false
-                                }
-                            )
-                        }
-                    }
-                }
-            ) {
-                LaunchedEffect(model.page, model.filter) {
-                    model.loadPage()
-                }
-                if (model.isLoading) {
-                    Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center) {
-                        Row(modifier = Modifier.fillMaxWidth().height(2), horizontalArrangement = Arrangement.Center) {
-                            Item(
-                                material = Material.CHEST_MINECART,
-                                name = component {
-                                    text("正在加载...") with mochaSubtext0 without italic()
-                                }
-                            )
-                        }
-                    }
-                    return@Menu
-                }
-                if (model.contents.isEmpty()) {
-                    Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center) {
-                        Row(modifier = Modifier.fillMaxWidth().height(2), horizontalArrangement = Arrangement.Center) {
-                            Item(
-                                material = Material.MINECART,
-                                name = component {
-                                    text("这里没有内容 :(") with mochaSubtext0 without italic()
-                                }
-                            )
-                        }
-                    }
-                    return@Menu
-                }
-                VerticalGrid(modifier = Modifier.fillMaxSize()) {
-                    model.contents.forEach {
-                        Warp(it)
-                    }
-                }
-            }
-        }
+        return WarpMenuModel(player)
     }
 
-    @Suppress("FunctionName")
     @Composable
-    fun Warp(warp: Warp) {
+    override fun Element(obj: Warp) {
         val model = model.current
         val player = LocalPlayer.current
-        var founderName by rememberSaveable(warp) { mutableStateOf<String?>(null) }
-        val isInCollection = model.collected.contains(warp)
-        if (warp.founder != null) {
-            LaunchedEffect(warp) {
-                founderName = warp.founder?.let {
+        var founderName by rememberSaveable(obj) { mutableStateOf<String?>(null) }
+        val isInCollection = model.collected.contains(obj)
+        if (obj.founder != null) {
+            LaunchedEffect(obj) {
+                founderName = obj.founder?.let {
                     val founder = it.await()
                     founder.name
                 }
             }
         }
         Item(
-            material = warp.icon ?: Material.PAPER,
+            material = obj.icon ?: Material.PAPER,
             name = component {
-                if (warp.alias != null) {
-                    text("${warp.alias} ") with mochaYellow without italic()
-                    text("(${warp.name})") with mochaSubtext0 without italic()
+                if (obj.alias != null) {
+                    text("${obj.alias} ") with mochaYellow without italic()
+                    text("(${obj.name})") with mochaSubtext0 without italic()
                 } else {
-                    text(warp.name) with mochaYellow without italic()
+                    text(obj.name) with mochaYellow without italic()
                 }
             },
             enchantmentGlint = isInCollection,
@@ -158,7 +71,7 @@ class WarpMenu : Screen {
                         text("✨ 已收藏") with mochaYellow without italic()
                     })
                 }
-                when (warp.category) {
+                when (obj.category) {
                     MACHINE -> add(component {
                         text("\uD83D\uDD27 机械类") with mochaTeal without italic()
                     })
@@ -179,17 +92,17 @@ class WarpMenu : Screen {
                     })
                 }
                 add(component {
-                    val time = ZonedDateTime.ofInstant(warp.createdAt, player.zoneId).formatDate()
+                    val time = ZonedDateTime.ofInstant(obj.createdAt, player.zoneId).formatDate()
                     text("设于 $time") with mochaSubtext0 without italic()
                 })
                 add(component {
-                    val world = warp.location.world.aliasOrName
-                    val x = warp.location.blockX
-                    val y = warp.location.blockY
-                    val z = warp.location.blockZ
+                    val world = obj.location.world.aliasOrName
+                    val x = obj.location.blockX
+                    val y = obj.location.blockY
+                    val z = obj.location.blockZ
                     text("$world $x, $y, $z") with mochaSubtext0 without italic()
                 })
-                warp.description?.let {
+                obj.description?.let {
                     add(Component.empty())
                     addAll(it.splitLines().map { line ->
                         line.colorIfAbsent(mochaSubtext0)
@@ -213,22 +126,22 @@ class WarpMenu : Screen {
             modifier = Modifier.clickable {
                 when (clickType) {
                     ClickType.LEFT -> {
-                        warp.teleport(player)
+                        obj.teleport(player)
                         sync {
                             player.closeInventory()
                         }
                     }
 
                     ClickType.RIGHT -> {
-                        if (WarpManager.getCollection(player).contains(warp)) {
-                            WarpManager.removeFromCollection(player, warp)
-                            model.collected.remove(warp)
-                            if (model.filter == WarpMenuModel.Filter.COLLECTED) {
-                                model.contents.remove(warp)
+                        if (WarpManager.getCollection(player).contains(obj)) {
+                            WarpManager.removeFromCollection(player, obj)
+                            model.collected.remove(obj)
+                            if (model.filter == WarpFilter.COLLECTED) {
+                                model.contents.remove(obj)
                             }
                         } else {
-                            WarpManager.addToCollection(player, warp)
-                            model.collected.add(warp)
+                            WarpManager.addToCollection(player, obj)
+                            model.collected.add(obj)
                         }
                         player.playSound(UI_SUCCEED_SOUND)
                     }

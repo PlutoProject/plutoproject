@@ -4,7 +4,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 
-abstract class FilterListMenuModel<E, F>(pageSize: Int, filters: List<F>) : ListMenuModel<E>(pageSize) {
+abstract class FilterListMenuModel<E, F>(filters: List<F>) : ListMenuModel<E>() {
     init {
         require(filters.isNotEmpty()) { "No filter provided" }
     }
@@ -12,7 +12,17 @@ abstract class FilterListMenuModel<E, F>(pageSize: Int, filters: List<F>) : List
     private var filters = filters.distinct()
     var filter by mutableStateOf(filters.first())
 
-    fun nextFilter() {
+    internal fun internalNextFilter() {
+        nextFilter()
+        page = 0
+    }
+
+    internal fun internalPreviousFilter() {
+        previousFilter()
+        page = 0
+    }
+
+    open fun nextFilter() {
         val index = filters.indexOf(filter)
         val nextIndex = index + 1
         val next = if (nextIndex > filters.lastIndex) {
@@ -23,7 +33,7 @@ abstract class FilterListMenuModel<E, F>(pageSize: Int, filters: List<F>) : List
         filter = next
     }
 
-    fun previousFilter() {
+    open fun previousFilter() {
         val index = filters.indexOf(filter)
         val previousIndex = index - 1
         val previous = if (previousIndex < 0) {
