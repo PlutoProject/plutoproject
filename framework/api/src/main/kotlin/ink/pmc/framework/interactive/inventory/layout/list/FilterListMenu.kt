@@ -11,7 +11,7 @@ import ink.pmc.framework.interactive.inventory.jetpack.Arrangement
 import ink.pmc.framework.interactive.inventory.layout.Row
 import ink.pmc.framework.utils.visual.mochaText
 
-abstract class FilterListMenu<E, F, M : FilterListMenuModel<E, F>>(
+abstract class FilterListMenu<E, F : Any, M : FilterListMenuModel<E, F>>(
     options: ListMenuOptions = ListMenuOptions(),
     private val filters: Map<F, String>
 ) : ListMenu<E, M>(options) {
@@ -23,6 +23,11 @@ abstract class FilterListMenu<E, F, M : FilterListMenuModel<E, F>>(
             FilterSelector()
             NextTurner()
         }
+    }
+
+    override fun reloadConditionProvider(): Array<Any> {
+        val model = model.current
+        return arrayOf(model.page, model.filter)
     }
 
     @Composable

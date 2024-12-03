@@ -29,7 +29,7 @@ abstract class ListMenu<E, M : ListMenuModel<E>>(val options: ListMenuOptions = 
     abstract fun modelProvider(): M
 
     @Composable
-    open fun reloadCondition(): Array<Any> {
+    open fun reloadConditionProvider(): Array<Any> {
         val model = model.current
         return arrayOf(model.page)
     }
@@ -69,7 +69,7 @@ abstract class ListMenu<E, M : ListMenuModel<E>>(val options: ListMenuOptions = 
     @Suppress("FunctionName")
     open fun MenuContent() {
         val model = model.current
-        LaunchedEffect(reloadCondition()) {
+        LaunchedEffect(reloadConditionProvider()) {
             model.internalLoadPageContents()
         }
         if (model.isLoading) {
