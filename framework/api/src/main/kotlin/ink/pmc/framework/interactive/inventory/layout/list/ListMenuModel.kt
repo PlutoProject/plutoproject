@@ -1,4 +1,4 @@
-package ink.pmc.framework.interactive.inventory.layout.list_menu
+package ink.pmc.framework.interactive.inventory.layout.list
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf

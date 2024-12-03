@@ -1,4 +1,4 @@
-package ink.pmc.framework.interactive.inventory.layout.list_menu
+package ink.pmc.framework.interactive.inventory.layout.list
 
 import androidx.compose.runtime.*
 import cafe.adriel.voyager.core.model.rememberScreenModel

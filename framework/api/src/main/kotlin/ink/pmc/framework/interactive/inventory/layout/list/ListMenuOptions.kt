@@ -1,4 +1,4 @@
-package ink.pmc.framework.interactive.inventory.layout.list_menu
+package ink.pmc.framework.interactive.inventory.layout.list
 
 import net.kyori.adventure.text.Component
 import org.bukkit.Material
