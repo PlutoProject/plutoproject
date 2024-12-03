@@ -4,7 +4,10 @@ import ink.pmc.advkt.component.component
 import ink.pmc.advkt.component.italic
 import ink.pmc.advkt.component.text
 import ink.pmc.framework.utils.chat.replace
-import ink.pmc.framework.utils.visual.*
+import ink.pmc.framework.utils.visual.mochaFlamingo
+import ink.pmc.framework.utils.visual.mochaLavender
+import ink.pmc.framework.utils.visual.mochaSubtext0
+import ink.pmc.framework.utils.visual.mochaText
 import ink.pmc.framework.utils.world.aliasOrName
 import net.kyori.adventure.text.Component
 import org.bukkit.entity.Player
@@ -23,10 +26,6 @@ val TR_LOADING = component {
 
 val TR_PLAYER = component {
     text("<player>") with mochaFlamingo without italic()
-}
-
-val TR_PLAYER_SENT = component {
-    text("√ 已发送") with mochaGreen without italic()
 }
 
 private val TR_PLAYER_INFO = component {

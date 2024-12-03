@@ -28,25 +28,28 @@ private const val PAGE_SIZE = 28
 class WarpMenuModel(private val player: Player) : FilterListMenuModel<Warp, WarpFilter>(WarpFilter.entries) {
     val collected = mutableStateListOf<Warp>()
 
-    override suspend fun loadPageContents() {
+    override suspend fun fetchPageContents(): List<Warp> {
         collected.clear()
-        when (filter) {
+        return when (filter) {
             WarpFilter.ALL -> {
                 pageCount = WarpManager.getPageCount(PAGE_SIZE)
-                contents.addAll(WarpManager.listByPage(PAGE_SIZE, page))
+                val contents = WarpManager.listByPage(PAGE_SIZE, page).toList()
                 collected.addAll(contents.filter { WarpManager.getCollection(player).contains(it) })
+                contents
             }
 
             WarpFilter.COLLECTED -> {
                 pageCount = WarpManager.getCollectionPageCount(player, PAGE_SIZE)
-                contents.addAll(WarpManager.getCollectionByPage(player, PAGE_SIZE, page))
+                val contents = WarpManager.getCollectionByPage(player, PAGE_SIZE, page).toList()
                 collected.addAll(contents)
+                return contents
             }
 
             else -> {
                 pageCount = WarpManager.getPageCount(PAGE_SIZE, filter.category)
-                contents.addAll(WarpManager.listByPage(PAGE_SIZE, page, filter.category))
+                val contents = WarpManager.listByPage(PAGE_SIZE, page, filter.category).toList()
                 collected.addAll(contents.filter { WarpManager.getCollection(player).contains(it) })
+                return contents
             }
         }
     }

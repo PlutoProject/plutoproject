@@ -70,7 +70,7 @@ abstract class ListMenu<E, M : ListMenuModel<E>>(val options: ListMenuOptions = 
     open fun MenuContent() {
         val model = model.current
         LaunchedEffect(reloadConditionProvider()) {
-            model.internalLoadPageContents()
+            model.loadPageContents()
         }
         if (model.isLoading) {
             Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center) {

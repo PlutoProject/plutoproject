@@ -29,7 +29,7 @@ import org.bukkit.event.inventory.ClickType
 import java.time.ZonedDateTime
 
 class WarpMenu : FilterListMenu<Warp, WarpFilter, WarpMenuModel>(
-    options = ListMenuOptions(title = Component.text("地标"), rows = 6),
+    options = ListMenuOptions(title = Component.text("地标")),
     filters = WarpFilter.entries.associateWith { it.filterName }
 ) {
     override val key: ScreenKey = "essentials_warp_menu"

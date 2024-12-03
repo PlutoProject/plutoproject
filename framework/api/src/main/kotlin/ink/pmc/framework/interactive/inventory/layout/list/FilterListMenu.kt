@@ -25,6 +25,7 @@ abstract class FilterListMenu<E, F : Any, M : FilterListMenuModel<E, F>>(
         }
     }
 
+    @Composable
     override fun reloadConditionProvider(): Array<Any> {
         val model = model.current
         return arrayOf(model.page, model.filter)

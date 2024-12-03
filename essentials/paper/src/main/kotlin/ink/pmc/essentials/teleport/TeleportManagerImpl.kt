@@ -293,6 +293,7 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
         direction: TeleportDirection,
         options: RequestOptions
     ): TeleportRequest? {
+        require(source != destination) { "Source cannot equals to destination" }
         if (hasUnfinishedRequest(source) || hasPendingRequest(destination)) {
             return null
         }

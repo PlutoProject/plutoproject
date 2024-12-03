@@ -125,7 +125,6 @@ val MAIN_MENU_ITEM_SPAWN_LORE_UNPICKED = listOf(
 )
 
 val MAIN_MENU_ITEM_SPAWN_LORE_NO_PREFERRED = listOf(
-    Component.empty(),
     component {
         text("你还没有首选的主城") with mochaSubtext0 without italic()
     },
@@ -150,7 +149,6 @@ val MAIN_MENU_ITEM_TP_LORE = listOf(
 )
 
 val MAIN_MENU_ITEM_TP_EXISTED_LORE = listOf(
-    Component.empty(),
     component {
         text("你还有未完成的传送请求") with mochaSubtext0 without italic()
     },

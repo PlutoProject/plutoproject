@@ -1,9 +1,12 @@
 package ink.pmc.framework.utils.data
 
-fun <T> List<T>.safeSubList(fromIndex: Int, toIndex: Int): List<T> {
+fun <T> Iterable<T>.safeSubList(fromIndex: Int, toIndex: Int): List<T> {
     require(fromIndex in 0..toIndex) { "Invalid indices" }
+    require(fromIndex <= toIndex) { "fromIndex must less than toIndex" }
+    val list = toList()
+    val size = list.size
     if (fromIndex > size) return emptyList()
-    val size = this.size
+    if (fromIndex == toIndex) return emptyList()
     val endIndex = if (toIndex > size) size else toIndex
-    return subList(fromIndex, endIndex)
+    return list.subList(fromIndex, endIndex)
 }

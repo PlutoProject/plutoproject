@@ -1,4 +1,4 @@
-package ink.pmc.menu.screens.models
+package ink.pmc.menu.screens
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf

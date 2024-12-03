@@ -5,7 +5,7 @@ import org.bukkit.Material
 
 data class ListMenuOptions(
     val title: Component = Component.empty(),
-    val rows: Int = 5,
+    val rows: Int = 6,
     val topBorder: Boolean = true,
     val bottomBorder: Boolean = true,
     val leftBorder: Boolean = true,
