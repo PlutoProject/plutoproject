@@ -73,6 +73,7 @@ class WarpImpl(private val model: WarpModel) : Warp, KoinComponent {
             // 必须异步触发
             val event = WarpTeleportEvent(player, player.location, this@WarpImpl).apply { callEvent() }
             if (event.isCancelled) return@async
+            teleport.teleportSuspend(player, location, options, false)
             if (prompt) {
                 val founderName = founder?.await()?.name
                 player.showTitle {
@@ -94,7 +95,6 @@ class WarpImpl(private val model: WarpModel) : Warp, KoinComponent {
                 }
                 player.playSound(TELEPORT_SUCCEED_SOUND)
             }
-            teleport.teleportSuspend(player, location, options, false)
         }
     }
 

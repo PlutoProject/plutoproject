@@ -237,7 +237,7 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
                 if (prompt) {
                     val reason = event.deniedReason ?: TELEPORT_DENIED_REASON_DEFAULT
                     player.showTitle(TELEPORT_FAILED_DEINED_TITLE(reason))
-                    player.playSound(TELEPORT_SUCCEED_SOUND)
+                    player.playSound(TELEPORT_FAILED_SOUND)
                 }
                 return@async
             }
