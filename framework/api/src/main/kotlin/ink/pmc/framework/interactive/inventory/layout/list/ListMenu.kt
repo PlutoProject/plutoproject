@@ -17,20 +17,18 @@ import ink.pmc.framework.interactive.inventory.layout.Row
 import ink.pmc.framework.utils.visual.mochaSubtext0
 import org.bukkit.Material
 
-abstract class ListMenu<E, M : ListMenuModel<E>>(val options: ListMenuOptions = ListMenuOptions()) : Screen {
-    val model: ProvidableCompositionLocal<M> =
+abstract class ListMenu<E, M : ListMenuModel<E>> : Screen {
+    val LocalListMenuModel: ProvidableCompositionLocal<M> =
         staticCompositionLocalOf { error("Uninitialized") }
-
-    init {
-        require(options.rows >= 3) { "Menu must have at least 3 rows" }
-    }
+    val LocalListMenuOptions: ProvidableCompositionLocal<ListMenuOptions> =
+        staticCompositionLocalOf { error("Uninitialized") }
 
     @Composable
     abstract fun modelProvider(): M
 
     @Composable
     open fun reloadConditionProvider(): Array<Any> {
-        val model = model.current
+        val model = LocalListMenuModel.current
         return arrayOf(model.page)
     }
 
@@ -39,7 +37,11 @@ abstract class ListMenu<E, M : ListMenuModel<E>>(val options: ListMenuOptions = 
     override fun Content() {
         val modelInstance = modelProvider() as ScreenModel
         val model = rememberScreenModel { modelInstance }
-        CompositionLocalProvider(this.model provides model as M) {
+        val options = remember { ListMenuOptions() }
+        CompositionLocalProvider(
+            LocalListMenuModel provides model as M,
+            LocalListMenuOptions provides options
+        ) {
             MenuLayout()
         }
     }
@@ -51,6 +53,8 @@ abstract class ListMenu<E, M : ListMenuModel<E>>(val options: ListMenuOptions = 
     @Composable
     @Suppress("FunctionName")
     open fun MenuLayout() {
+        val options = LocalListMenuOptions.current
+        require(options.rows >= 3) { "Menu must have at least 3 rows" }
         Menu(
             title = options.title,
             rows = options.rows,
@@ -58,8 +62,9 @@ abstract class ListMenu<E, M : ListMenuModel<E>>(val options: ListMenuOptions = 
             bottomBorder = options.bottomBorder,
             leftBorder = options.leftBorder,
             rightBorder = options.rightBorder,
-            navigatorWarn = options.navigatorWarn,
-            bottomBorderAttachment = { BottomBorderAttachment() }
+            bottomBorderAttachment = { BottomBorderAttachment() },
+            background = options.background,
+            centerBackground = options.centerBackground
         ) {
             MenuContent()
         }
@@ -68,7 +73,7 @@ abstract class ListMenu<E, M : ListMenuModel<E>>(val options: ListMenuOptions = 
     @Composable
     @Suppress("FunctionName")
     open fun MenuContent() {
-        val model = model.current
+        val model = LocalListMenuModel.current
         LaunchedEffect(*reloadConditionProvider()) {
             model.loadPageContents()
         }
@@ -108,7 +113,7 @@ abstract class ListMenu<E, M : ListMenuModel<E>>(val options: ListMenuOptions = 
     @Composable
     @Suppress("FunctionName")
     open fun BottomBorderAttachment() {
-        if (model.current.isLoading) return
+        if (LocalListMenuModel.current.isLoading) return
         Row(modifier = Modifier.fillMaxSize(), horizontalArrangement = Arrangement.Center) {
             PreviousTurner()
             Spacer(modifier = Modifier.height(1).width(1))
@@ -119,7 +124,8 @@ abstract class ListMenu<E, M : ListMenuModel<E>>(val options: ListMenuOptions = 
     @Composable
     @Suppress("FunctionName")
     open fun PreviousTurner() {
-        val model = model.current
+        val model = LocalListMenuModel.current
+        val options = LocalListMenuOptions.current
         if (model.pageCount <= 1) {
             Spacer(modifier = Modifier.height(1).width(1))
             return
@@ -136,7 +142,8 @@ abstract class ListMenu<E, M : ListMenuModel<E>>(val options: ListMenuOptions = 
     @Composable
     @Suppress("FunctionName")
     open fun NextTurner() {
-        val model = model.current
+        val model = LocalListMenuModel.current
+        val options = LocalListMenuOptions.current
         if (model.pageCount <= 1) {
             Spacer(modifier = Modifier.height(1).width(1))
             return

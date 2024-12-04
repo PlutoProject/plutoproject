@@ -26,6 +26,7 @@ import ink.pmc.framework.interactive.inventory.layout.Box
 import ink.pmc.framework.interactive.inventory.layout.Column
 import ink.pmc.framework.interactive.inventory.layout.Row
 import ink.pmc.framework.playerdb.PlayerDb
+import ink.pmc.framework.utils.chat.UI_PAGING_SOUND
 import ink.pmc.framework.utils.chat.UI_SUCCEED_SOUND
 import ink.pmc.framework.utils.chat.replace
 import ink.pmc.framework.utils.concurrent.sync
@@ -133,15 +134,16 @@ class MainMenuScreen : Screen, KoinComponent {
         tab: MainMenuModel.Tab
     ) {
         val model = localScreenModel.current
+        val player = LocalPlayer.current
         Item(
             material = icon,
             name = name,
             lore = lore,
-            enchantmentGlint = model.tab == tab,
             modifier = Modifier.clickable {
                 if (clickType != ClickType.LEFT) return@clickable
                 if (model.tab == tab) return@clickable
                 model.tab = tab
+                player.playSound(UI_PAGING_SOUND)
             }
         )
     }
@@ -157,7 +159,7 @@ class MainMenuScreen : Screen, KoinComponent {
             Box(modifier = Modifier.fillMaxHeight().width(PANE_COLUMN_WIDTH)) {
                 VerticalGrid(modifier = Modifier.fillMaxSize()) {
                     repeat(PANE_GRIDS) {
-                        Space()
+                        ItemEmpty()
                     }
                 }
                 Column(
@@ -197,15 +199,11 @@ class MainMenuScreen : Screen, KoinComponent {
     private fun AssistTab() {
         Row(modifier = Modifier.fillMaxWidth().height(1), horizontalArrangement = Arrangement.Center) {
             Lookup()
-            repeat(4) {
-                Space()
-            }
+            ItemEmpty()
+            ViewBoost()
         }
         Row(modifier = Modifier.fillMaxWidth().height(1), horizontalArrangement = Arrangement.Center) {
-            ViewBoost()
-            repeat(4) {
-                Space()
-            }
+            Empty(modifier = Modifier.fillMaxSize())
         }
     }
 

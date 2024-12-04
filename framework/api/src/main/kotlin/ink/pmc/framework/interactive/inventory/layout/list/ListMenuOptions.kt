@@ -1,16 +1,20 @@
 package ink.pmc.framework.interactive.inventory.layout.list
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import net.kyori.adventure.text.Component
 import org.bukkit.Material
 
-data class ListMenuOptions(
-    val title: Component = Component.empty(),
-    val rows: Int = 6,
-    val topBorder: Boolean = true,
-    val bottomBorder: Boolean = true,
-    val leftBorder: Boolean = true,
-    val rightBorder: Boolean = true,
-    val navigatorWarn: Boolean = true,
-    val previousTurnerIcon: Material = Material.ARROW,
-    val nextTurnerIcon: Material = Material.ARROW,
-)
+class ListMenuOptions {
+    var title by mutableStateOf(Component.empty())
+    var rows by mutableStateOf(6)
+    var topBorder by mutableStateOf(true)
+    var bottomBorder by mutableStateOf(true)
+    var leftBorder by mutableStateOf(true)
+    var rightBorder by mutableStateOf(true)
+    var background by mutableStateOf(true)
+    var centerBackground by mutableStateOf(false)
+    var previousTurnerIcon by mutableStateOf(Material.ARROW)
+    var nextTurnerIcon by mutableStateOf(Material.ARROW)
+}

@@ -14,7 +14,6 @@ import ink.pmc.framework.interactive.inventory.Item
 import ink.pmc.framework.interactive.inventory.Modifier
 import ink.pmc.framework.interactive.inventory.click.clickable
 import ink.pmc.framework.interactive.inventory.layout.list.FilterListMenu
-import ink.pmc.framework.interactive.inventory.layout.list.ListMenuOptions
 import ink.pmc.framework.utils.chat.UI_SUCCEED_SOUND
 import ink.pmc.framework.utils.chat.splitLines
 import ink.pmc.framework.utils.concurrent.sync
@@ -29,10 +28,15 @@ import org.bukkit.event.inventory.ClickType
 import java.time.ZonedDateTime
 
 class WarpListScreen : FilterListMenu<Warp, WarpFilter, WarpListScreenModel>(
-    options = ListMenuOptions(title = Component.text("地标")),
     filters = WarpFilter.entries.associateWith { it.filterName }
 ) {
     override val key: ScreenKey = "essentials_warp_list"
+
+    @Composable
+    override fun MenuLayout() {
+        LocalListMenuOptions.current.title = Component.text("地标")
+        super.MenuLayout()
+    }
 
     @Composable
     override fun modelProvider(): WarpListScreenModel {
@@ -42,7 +46,7 @@ class WarpListScreen : FilterListMenu<Warp, WarpFilter, WarpListScreenModel>(
 
     @Composable
     override fun Element(obj: Warp) {
-        val model = model.current
+        val model = LocalListMenuModel.current
         val player = LocalPlayer.current
         var founderName by rememberSaveable(obj) { mutableStateOf<String?>(null) }
         val isInCollection = model.collected.contains(obj)

@@ -14,7 +14,6 @@ import ink.pmc.framework.interactive.inventory.click.clickable
 import ink.pmc.framework.interactive.inventory.jetpack.Arrangement
 import ink.pmc.framework.interactive.inventory.layout.Row
 import ink.pmc.framework.interactive.inventory.layout.list.ListMenu
-import ink.pmc.framework.interactive.inventory.layout.list.ListMenuOptions
 import ink.pmc.framework.utils.concurrent.sync
 import ink.pmc.framework.utils.time.formatDate
 import ink.pmc.framework.utils.time.zoneId
@@ -26,14 +25,18 @@ import org.bukkit.OfflinePlayer
 import org.bukkit.event.inventory.ClickType
 import java.time.ZonedDateTime
 
-class HomeListScreen(private val viewing: OfflinePlayer) : ListMenu<Home, HomeListScreenModel>(
-    options = ListMenuOptions(title = Component.text("家"))
-) {
+class HomeListScreen(private val viewing: OfflinePlayer) : ListMenu<Home, HomeListScreenModel>() {
     override val key: ScreenKey = "essentials_home_list"
 
     @Composable
+    override fun MenuLayout() {
+        LocalListMenuOptions.current.title = Component.text("家")
+        super.MenuLayout()
+    }
+
+    @Composable
     override fun BottomBorderAttachment() {
-        if (model.current.isLoading) return
+        if (LocalListMenuModel.current.isLoading) return
         Row(modifier = Modifier.fillMaxSize(), horizontalArrangement = Arrangement.Center) {
             PreviousTurner()
             Create()

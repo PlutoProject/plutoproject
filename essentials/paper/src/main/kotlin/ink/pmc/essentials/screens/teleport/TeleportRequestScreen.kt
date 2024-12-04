@@ -14,10 +14,11 @@ import ink.pmc.essentials.COMMAND_TPA_SUCCEED
 import ink.pmc.essentials.api.teleport.TeleportDirection
 import ink.pmc.essentials.api.teleport.TeleportManager
 import ink.pmc.framework.interactive.LocalPlayer
-import ink.pmc.framework.interactive.inventory.*
+import ink.pmc.framework.interactive.inventory.Item
+import ink.pmc.framework.interactive.inventory.ItemSpacer
+import ink.pmc.framework.interactive.inventory.Modifier
 import ink.pmc.framework.interactive.inventory.click.clickable
 import ink.pmc.framework.interactive.inventory.layout.list.ListMenu
-import ink.pmc.framework.interactive.inventory.layout.list.ListMenuOptions
 import ink.pmc.framework.utils.chat.DURATION
 import ink.pmc.framework.utils.chat.UI_SUCCEED_SOUND
 import ink.pmc.framework.utils.chat.replace
@@ -34,9 +35,7 @@ import org.bukkit.inventory.meta.SkullMeta
 import org.koin.compose.koinInject
 import kotlin.time.Duration.Companion.seconds
 
-class TeleportRequestScreen : ListMenu<Player, TeleportRequestScreenModel>(
-    options = ListMenuOptions(title = Component.text("选择玩家"))
-) {
+class TeleportRequestScreen : ListMenu<Player, TeleportRequestScreenModel>() {
     override val key: ScreenKey = "essentials_teleport_request"
 
     @Composable
@@ -47,7 +46,8 @@ class TeleportRequestScreen : ListMenu<Player, TeleportRequestScreenModel>(
 
     @Composable
     override fun MenuLayout() {
-        val model = model.current
+        LocalListMenuOptions.current.title = Component.text("选择玩家")
+        val model = LocalListMenuModel.current
         LaunchedEffect(model.onlinePlayers.size) {
             model.loadPageContents()
         }
@@ -56,13 +56,14 @@ class TeleportRequestScreen : ListMenu<Player, TeleportRequestScreenModel>(
 
     @Composable
     override fun Element(obj: Player) {
-        val model = model.current
+        val model = LocalListMenuModel.current
+        val options = LocalListMenuOptions.current
         val coroutineScope = rememberCoroutineScope()
         val player = LocalPlayer.current
         val navigator = LocalNavigator.currentOrThrow
         val manager = koinInject<TeleportManager>()
         if (model.isRequestSent && model.requestSentTo != obj) {
-            Spacer(modifier = Modifier.height(1).width(1))
+            ItemSpacer()
             return
         }
         Item(
@@ -115,6 +116,7 @@ class TeleportRequestScreen : ListMenu<Player, TeleportRequestScreenModel>(
                 TeleportManager.createRequest(player, obj, direction)
                 model.isRequestSent = true
                 model.requestSentTo = obj
+                options.centerBackground = true
                 coroutineScope.launch {
                     delay(1.seconds)
                     navigator.pop()

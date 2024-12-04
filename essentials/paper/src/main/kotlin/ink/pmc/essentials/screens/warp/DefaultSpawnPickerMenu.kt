@@ -155,7 +155,7 @@ class DefaultSpawnPickerMenu : Screen, KoinComponent {
                 if (localState.current.value != 3) {
                     VerticalGrid(modifier = Modifier.fillMaxSize()) {
                         repeat(WARPS_PRE_PAGE) {
-                            Space()
+                            ItemEmpty()
                         }
                     }
                 }

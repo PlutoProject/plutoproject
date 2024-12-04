@@ -12,12 +12,11 @@ import ink.pmc.framework.interactive.inventory.layout.Row
 import ink.pmc.framework.utils.visual.mochaText
 
 abstract class FilterListMenu<E, F : Any, M : FilterListMenuModel<E, F>>(
-    options: ListMenuOptions = ListMenuOptions(),
     private val filters: Map<F, String>
-) : ListMenu<E, M>(options) {
+) : ListMenu<E, M>() {
     @Composable
     override fun BottomBorderAttachment() {
-        if (model.current.isLoading) return
+        if (LocalListMenuModel.current.isLoading) return
         Row(modifier = Modifier.fillMaxSize(), horizontalArrangement = Arrangement.Center) {
             PreviousTurner()
             FilterSelector()
@@ -27,14 +26,14 @@ abstract class FilterListMenu<E, F : Any, M : FilterListMenuModel<E, F>>(
 
     @Composable
     override fun reloadConditionProvider(): Array<Any> {
-        val model = model.current
+        val model = LocalListMenuModel.current
         return arrayOf(model.page, model.filter)
     }
 
     @Composable
     @Suppress("FunctionName")
     open fun FilterSelector() {
-        val model = model.current
+        val model = LocalListMenuModel.current
         Selector(
             title = component {
                 text("筛选") with mochaText without italic()

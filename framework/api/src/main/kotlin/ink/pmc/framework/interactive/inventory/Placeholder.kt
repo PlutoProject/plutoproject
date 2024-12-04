@@ -5,9 +5,10 @@ import org.bukkit.Material
 
 @Composable
 @Suppress("FunctionName")
-fun Placeholder() {
+fun Placeholder(modifier: Modifier = Modifier) {
     Item(
         material = Material.GRAY_STAINED_GLASS_PANE,
-        isHideTooltip = true
+        isHideTooltip = true,
+        modifier = modifier
     )
 }

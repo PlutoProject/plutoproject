@@ -18,6 +18,12 @@ fun Spacer(modifier: Modifier = Modifier) {
     )
 }
 
+@Composable
+@Suppress("FunctionName")
+fun ItemSpacer() {
+    Spacer(modifier = Modifier.width(1).height(1))
+}
+
 /**
  * A layout element that takes up space without drawing anything.
  *
@@ -27,8 +33,9 @@ fun Spacer(modifier: Modifier = Modifier) {
 @Composable
 @Suppress("FunctionName")
 fun Spacer(width: Int? = null, height: Int? = null, modifier: Modifier = Modifier) {
-    Spacer(modifier
-        .run { if (width != null) width(width) else this }
-        .run { if (height != null) height(height) else this }
+    Spacer(
+        modifier
+            .run { if (width != null) width(width) else this }
+            .run { if (height != null) height(height) else this }
     )
 }

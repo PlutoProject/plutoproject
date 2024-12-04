@@ -30,11 +30,17 @@ fun Menu(
     leftBorderAttachment: ComposableFunction = {},
     rightBorderAttachment: ComposableFunction = {},
     navigatorWarn: Boolean = true,
+    background: Boolean = true,
+    centerBackground: Boolean = false,
     contents: ComposableFunction
 ) {
     require(rows in 2..6) { "Row count must be in range: [2, 6]" }
     if (LocalNavigator.current == null && navigatorWarn) {
-        frameworkLogger.log(Level.WARNING, "A menu layout was opened without Navigator context", IllegalStateException())
+        frameworkLogger.log(
+            Level.WARNING,
+            "A menu layout was opened without Navigator context",
+            IllegalStateException()
+        )
         LocalPlayer.current.send {
             text("你打开了一个没有 Navigator 上下文的菜单布局") with mochaMaroon
             newline()
@@ -42,10 +48,14 @@ fun Menu(
         }
     }
     Chest(title = title, modifier = Modifier.size(width = 9, height = rows)) {
+        // Background
+        if (background) {
+            Placeholder(modifier = Modifier.fillMaxSize())
+        }
         Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Top) {
             // Top
             if (topBorder) Box(modifier = Modifier.fillMaxWidth().height(1)) {
-                HorizontalBorder()
+                Spacer(modifier = Modifier.fillMaxSize())
                 Row(modifier = Modifier.fillMaxSize()) {
                     topBorderAttachment()
                 }
@@ -58,24 +68,29 @@ fun Menu(
             ) {
                 // Left
                 if (leftBorder) Box(modifier = Modifier.fillMaxHeight().width(1)) {
-                    VerticalBorder(height)
+                    Spacer(modifier = Modifier.fillMaxSize())
                     Column(modifier = Modifier.fillMaxSize()) {
                         leftBorderAttachment()
                     }
                 }
                 // Contents
-                VerticalGrid(
+                Box(
                     modifier = Modifier.fillMaxHeight().width(
                         if (leftBorder && rightBorder) 7
                         else if (!leftBorder && !rightBorder) 9
                         else 8
                     )
                 ) {
-                    contents()
+                    if (!centerBackground) {
+                        Empty(modifier = Modifier.fillMaxSize())
+                    }
+                    VerticalGrid(modifier = Modifier.fillMaxSize()) {
+                        contents()
+                    }
                 }
                 // Right
                 if (rightBorder) Box(modifier = Modifier.fillMaxHeight().width(1)) {
-                    VerticalBorder(height)
+                    Spacer(modifier = Modifier.fillMaxSize())
                     Column(modifier = Modifier.fillMaxSize()) {
                         rightBorderAttachment()
                     }
@@ -83,31 +98,11 @@ fun Menu(
             }
             // Bottom
             if (bottomBorder) Box(modifier = Modifier.fillMaxWidth().height(1)) {
-                HorizontalBorder()
+                Spacer(modifier = Modifier.fillMaxSize())
                 Row(modifier = Modifier.fillMaxSize()) {
                     bottomBorderAttachment()
                 }
             }
-        }
-    }
-}
-
-@Suppress("FunctionName")
-@Composable
-private fun HorizontalBorder() {
-    Row(modifier = Modifier.fillMaxSize()) {
-        repeat(9) {
-            Placeholder()
-        }
-    }
-}
-
-@Suppress("FunctionName")
-@Composable
-private fun VerticalBorder(height: Int) {
-    Column(modifier = Modifier.fillMaxSize()) {
-        repeat(height) {
-            Placeholder()
         }
     }
 }
