@@ -69,7 +69,7 @@ abstract class ListMenu<E, M : ListMenuModel<E>>(val options: ListMenuOptions = 
     @Suppress("FunctionName")
     open fun MenuContent() {
         val model = model.current
-        LaunchedEffect(reloadConditionProvider()) {
+        LaunchedEffect(*reloadConditionProvider()) {
             model.loadPageContents()
         }
         if (model.isLoading) {
