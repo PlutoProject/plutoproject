@@ -105,7 +105,7 @@ private val SPAWN_OPERATION_2 = component {
 }
 
 private val SPAWN_DESC = component {
-    text("行向云海之志") with mochaSubtext0 without italic()
+    text("旅途的起始地") with mochaSubtext0 without italic()
 }
 
 val MAIN_MENU_ITEM_SPAWN_LORE = listOf(
