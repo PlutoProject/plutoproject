@@ -44,14 +44,6 @@ class TeleportRequestScreenModel(private val player: Player) : ListMenuModel<Pla
     override suspend fun fetchPageContents(): List<Player> {
         pageCount = ceil(onlinePlayers.size.toDouble() / PAGE_SIZE).toInt()
         val skip = page * PAGE_SIZE
-        val contents = onlinePlayers.drop(skip).take(PAGE_SIZE)
-        if (contents.isEmpty()) {
-            page = 0
-        }
-        val maxIndex = pageCount - 1
-        if (maxIndex in 0..<page) {
-            page--
-        }
-        return contents
+        return onlinePlayers.drop(skip).take(PAGE_SIZE)
     }
 }

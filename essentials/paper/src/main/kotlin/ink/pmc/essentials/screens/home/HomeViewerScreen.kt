@@ -15,12 +15,15 @@ import ink.pmc.framework.interactive.inventory.layout.Row
 import ink.pmc.framework.interactive.inventory.layout.list.ListMenu
 import ink.pmc.framework.interactive.inventory.layout.list.ListMenuOptions
 import ink.pmc.framework.utils.concurrent.sync
+import ink.pmc.framework.utils.time.formatDate
+import ink.pmc.framework.utils.time.zoneId
 import ink.pmc.framework.utils.visual.*
 import ink.pmc.framework.utils.world.aliasOrName
 import net.kyori.adventure.text.Component
 import org.bukkit.Material
 import org.bukkit.OfflinePlayer
 import org.bukkit.event.inventory.ClickType
+import java.time.ZonedDateTime
 
 class HomeViewerScreen(private val viewing: OfflinePlayer) : ListMenu<Home, HomeViewerScreenModel>(
     options = ListMenuOptions(title = Component.text("家"))
@@ -78,6 +81,10 @@ class HomeViewerScreen(private val viewing: OfflinePlayer) : ListMenu<Home, Home
                 text(obj.name) with mochaYellow without italic()
             },
             lore = buildList {
+                add(component {
+                    val time = ZonedDateTime.ofInstant(obj.createdAt, player.zoneId).formatDate()
+                    text("设于 $time") with mochaSubtext0 without italic()
+                })
                 add(component {
                     val world = obj.location.world.aliasOrName
                     val x = obj.location.blockX

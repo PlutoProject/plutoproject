@@ -17,6 +17,9 @@ abstract class ListMenuModel<E>() : ScreenModel {
         pageCount = 0
         contents.clear()
         contents.addAll(fetchPageContents())
+        check(pageCount >= 0) { "Page count must be greater than or equal to 0" }
+        if (contents.isEmpty()) page = 0
+        if (pageCount - 1 in 0..<page) page--
         val range = 0 until pageCount
         check(page in range || range.isEmpty()) { "Page $page must be in range: $range" }
         isLoading = false
