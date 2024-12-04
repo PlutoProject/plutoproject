@@ -45,14 +45,14 @@ class DailyCalenderScreen : Screen {
     @Composable
     override fun Content() {
         val player = LocalPlayer.current
-        val date by remember { mutableStateOf(ZonedDateTime.now(player.zoneId)) }
+        val currentDate by remember { mutableStateOf(ZonedDateTime.now(player.zoneId)) }
         val model = rememberScreenModel { DailyCalenderScreenModel(player) }
         LaunchedEffect(Unit) {
             model.init()
         }
         CompositionLocalProvider(localModel provides model) {
             Menu(
-                title = UI_TITLE.replace("<time>", date.formatDate()),
+                title = UI_TITLE.replace("<time>", currentDate.formatDate()),
                 rows = 6,
                 leftBorder = false,
                 rightBorder = false,
@@ -65,7 +65,6 @@ class DailyCalenderScreen : Screen {
                     }
                 }
             ) {
-                val model = localModel.current
                 val yearMonth = model.yearMonth
                 val days = yearMonth.lengthOfMonth()
                 if (model.isLoading) {
