@@ -1,8 +1,6 @@
 package ink.pmc.essentials.screens.teleport
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
@@ -23,6 +21,7 @@ import ink.pmc.framework.utils.chat.DURATION
 import ink.pmc.framework.utils.chat.UI_SUCCEED_SOUND
 import ink.pmc.framework.utils.chat.replace
 import ink.pmc.framework.utils.dsl.itemStack
+import ink.pmc.framework.utils.time.ticks
 import ink.pmc.framework.utils.visual.*
 import ink.pmc.framework.utils.world.aliasOrName
 import kotlinx.coroutines.delay
@@ -32,7 +31,6 @@ import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.ClickType
 import org.bukkit.inventory.meta.SkullMeta
-import org.koin.compose.koinInject
 import kotlin.time.Duration.Companion.seconds
 
 class TeleportRequestScreen : ListMenu<Player, TeleportRequestScreenModel>() {
@@ -61,11 +59,27 @@ class TeleportRequestScreen : ListMenu<Player, TeleportRequestScreenModel>() {
         val coroutineScope = rememberCoroutineScope()
         val player = LocalPlayer.current
         val navigator = LocalNavigator.currentOrThrow
-        val manager = koinInject<TeleportManager>()
+
+        var world by remember(obj) { mutableStateOf(obj.location.world.aliasOrName) }
+        var x by remember(obj) { mutableStateOf(obj.location.blockX) }
+        var y by remember(obj) { mutableStateOf(obj.location.blockY) }
+        var z by remember(obj) { mutableStateOf(obj.location.blockZ) }
+
+        LaunchedEffect(obj) {
+            while (true) {
+                world = obj.location.world.aliasOrName
+                x = obj.location.blockX
+                y = obj.location.blockY
+                z = obj.location.blockZ
+                delay(5.ticks)
+            }
+        }
+
         if (model.isRequestSent && model.requestSentTo != obj) {
             ItemSpacer()
             return
         }
+
         Item(
             itemStack = itemStack(Material.PLAYER_HEAD) {
                 displayName = if (model.isRequestSent) component {
@@ -78,10 +92,6 @@ class TeleportRequestScreen : ListMenu<Player, TeleportRequestScreenModel>() {
                         emptyList()
                     } else buildList {
                         add(component {
-                            val world = obj.world.aliasOrName
-                            val x = obj.location.blockX
-                            val y = obj.location.blockY
-                            val z = obj.location.blockZ
                             text("$world $x, $y, $z") with mochaSubtext0 without italic()
                         })
                         add(Component.empty())
@@ -125,7 +135,7 @@ class TeleportRequestScreen : ListMenu<Player, TeleportRequestScreenModel>() {
                 player.sendMessage(
                     message
                         .replace("<player>", obj.name)
-                        .replace("<expire>", DURATION(manager.defaultRequestOptions.expireAfter))
+                        .replace("<expire>", DURATION(TeleportManager.defaultRequestOptions.expireAfter))
                 )
             }
         )
