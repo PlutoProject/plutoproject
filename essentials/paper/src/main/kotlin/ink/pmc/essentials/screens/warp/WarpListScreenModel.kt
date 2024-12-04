@@ -25,7 +25,7 @@ enum class WarpFilter(val filterName: String) {
 
 private const val PAGE_SIZE = 28
 
-class WarpMenuModel(private val player: Player) : FilterListMenuModel<Warp, WarpFilter>(WarpFilter.entries) {
+class WarpListScreenModel(private val player: Player) : FilterListMenuModel<Warp, WarpFilter>(WarpFilter.entries) {
     val collected = mutableStateListOf<Warp>()
 
     override suspend fun fetchPageContents(): List<Warp> {

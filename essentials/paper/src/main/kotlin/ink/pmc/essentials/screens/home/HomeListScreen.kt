@@ -1,6 +1,7 @@
 package ink.pmc.essentials.screens.home
 
 import androidx.compose.runtime.Composable
+import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import ink.pmc.advkt.component.component
@@ -25,9 +26,11 @@ import org.bukkit.OfflinePlayer
 import org.bukkit.event.inventory.ClickType
 import java.time.ZonedDateTime
 
-class HomeViewerScreen(private val viewing: OfflinePlayer) : ListMenu<Home, HomeViewerScreenModel>(
+class HomeListScreen(private val viewing: OfflinePlayer) : ListMenu<Home, HomeListScreenModel>(
     options = ListMenuOptions(title = Component.text("家"))
 ) {
+    override val key: ScreenKey = "essentials_home_list"
+
     @Composable
     override fun BottomBorderAttachment() {
         if (model.current.isLoading) return
@@ -67,8 +70,8 @@ class HomeViewerScreen(private val viewing: OfflinePlayer) : ListMenu<Home, Home
     }
 
     @Composable
-    override fun modelProvider(): HomeViewerScreenModel {
-        return HomeViewerScreenModel(viewing)
+    override fun modelProvider(): HomeListScreenModel {
+        return HomeListScreenModel(viewing)
     }
 
     @Composable

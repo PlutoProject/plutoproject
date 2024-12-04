@@ -38,7 +38,7 @@ import java.time.LocalDateTime
 import java.time.ZonedDateTime
 
 class DailyCalenderScreen : Screen {
-    override val key: ScreenKey = "daily_screen"
+    override val key: ScreenKey = "daily_calendar"
     private val localModel: ProvidableCompositionLocal<DailyCalenderScreenModel> =
         staticCompositionLocalOf { error("Unexpected") }
 

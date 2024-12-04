@@ -2,7 +2,7 @@ package ink.pmc.essentials.commands.home
 
 import ink.pmc.essentials.HOMES_OTHER
 import ink.pmc.essentials.api.home.HomeManager
-import ink.pmc.essentials.screens.home.HomeViewerScreen
+import ink.pmc.essentials.screens.home.HomeListScreen
 import ink.pmc.framework.interactive.GuiManager
 import ink.pmc.framework.utils.chat.NO_PERMISSON
 import ink.pmc.framework.utils.chat.PLAYER_HAS_NO_HOME
@@ -38,6 +38,6 @@ object HomesCommand {
                 return
             }
         }
-        GuiManager.startScreen(this, HomeViewerScreen(actualPlayer))
+        GuiManager.startScreen(this, HomeListScreen(actualPlayer))
     }
 }

@@ -269,7 +269,7 @@ class DefaultSpawnPickerMenu : Screen, KoinComponent {
 
     inner class PickerSection(private val index: Int) : Screen {
 
-        override val key: ScreenKey = "menu_teleport_player_picker_section"
+        override val key: ScreenKey = "essentials_default_spawn_picker_picker_section"
 
         @Composable
         override fun Content() {

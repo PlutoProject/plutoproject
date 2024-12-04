@@ -13,10 +13,10 @@ import ink.pmc.daily.screens.DailyCalenderScreen
 import ink.pmc.essentials.RANDOM_TELEPORT_COST_BYPASS
 import ink.pmc.essentials.api.teleport.TeleportManager
 import ink.pmc.essentials.api.teleport.random.RandomTeleportManager
-import ink.pmc.essentials.screens.home.HomeViewerScreen
+import ink.pmc.essentials.screens.home.HomeListScreen
 import ink.pmc.essentials.screens.teleport.TeleportRequestScreen
 import ink.pmc.essentials.screens.warp.DefaultSpawnPickerMenu
-import ink.pmc.essentials.screens.warp.WarpMenu
+import ink.pmc.essentials.screens.warp.WarpListScreen
 import ink.pmc.framework.interactive.LocalPlayer
 import ink.pmc.framework.interactive.inventory.*
 import ink.pmc.framework.interactive.inventory.canvas.Chest
@@ -63,7 +63,7 @@ class MainMenuScreen : Screen, KoinComponent {
     private val localScreenModel: ProvidableCompositionLocal<MainMenuModel> =
         staticCompositionLocalOf { error("Unexpected") }
 
-    override val key: ScreenKey = "main_menu"
+    override val key: ScreenKey = "menu_main"
 
     @Composable
     override fun Content() {
@@ -236,7 +236,7 @@ class MainMenuScreen : Screen, KoinComponent {
                     }
 
                     ClickType.RIGHT -> {
-                        navigator.push(HomeViewerScreen(player))
+                        navigator.push(HomeListScreen(player))
                     }
 
                     else -> {}
@@ -344,7 +344,7 @@ class MainMenuScreen : Screen, KoinComponent {
             },
             modifier = Modifier.clickable {
                 if (clickType != ClickType.LEFT) return@clickable
-                navigator.push(WarpMenu())
+                navigator.push(WarpListScreen())
             }
         )
     }

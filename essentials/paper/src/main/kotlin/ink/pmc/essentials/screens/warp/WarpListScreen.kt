@@ -28,16 +28,16 @@ import org.bukkit.Material
 import org.bukkit.event.inventory.ClickType
 import java.time.ZonedDateTime
 
-class WarpMenu : FilterListMenu<Warp, WarpFilter, WarpMenuModel>(
+class WarpListScreen : FilterListMenu<Warp, WarpFilter, WarpListScreenModel>(
     options = ListMenuOptions(title = Component.text("地标")),
     filters = WarpFilter.entries.associateWith { it.filterName }
 ) {
-    override val key: ScreenKey = "essentials_warp_menu"
+    override val key: ScreenKey = "essentials_warp_list"
 
     @Composable
-    override fun modelProvider(): WarpMenuModel {
+    override fun modelProvider(): WarpListScreenModel {
         val player = LocalPlayer.current
-        return WarpMenuModel(player)
+        return WarpListScreenModel(player)
     }
 
     @Composable

@@ -8,7 +8,7 @@ import kotlin.math.ceil
 
 private const val PAGE_SIZE = 28
 
-class HomeViewerScreenModel(private val viewing: OfflinePlayer) : ListMenuModel<Home>() {
+class HomeListScreenModel(private val viewing: OfflinePlayer) : ListMenuModel<Home>() {
     override suspend fun fetchPageContents(): List<Home> {
         val homes = HomeManager.list(viewing).toList()
             .sortedByDescending { it.createdAt }

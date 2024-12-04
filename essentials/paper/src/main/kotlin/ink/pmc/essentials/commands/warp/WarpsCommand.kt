@@ -2,7 +2,7 @@ package ink.pmc.essentials.commands.warp
 
 import cafe.adriel.voyager.navigator.Navigator
 import ink.pmc.essentials.VIEWER_PAGING_SOUND
-import ink.pmc.essentials.screens.warp.WarpMenu
+import ink.pmc.essentials.screens.warp.WarpListScreen
 import ink.pmc.framework.interactive.GuiManager
 import ink.pmc.framework.utils.command.ensurePlayer
 import org.bukkit.command.CommandSender
@@ -15,7 +15,7 @@ object WarpsCommand {
     @Permission("essentials.warps")
     fun CommandSender.warps() = ensurePlayer {
         GuiManager.startInventory(this) {
-            Navigator(WarpMenu())
+            Navigator(WarpListScreen())
         }
         playSound(VIEWER_PAGING_SOUND)
     }

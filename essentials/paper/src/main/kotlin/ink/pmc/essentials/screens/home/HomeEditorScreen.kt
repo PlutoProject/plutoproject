@@ -21,7 +21,6 @@ import ink.pmc.framework.interactive.inventory.click.clickable
 import ink.pmc.framework.interactive.inventory.layout.Box
 import ink.pmc.framework.interactive.inventory.layout.Column
 import ink.pmc.framework.interactive.inventory.layout.Row
-import ink.pmc.framework.utils.chat.isValidIdentifier
 import ink.pmc.framework.utils.chat.replace
 import ink.pmc.framework.utils.concurrent.submitAsync
 import ink.pmc.framework.utils.dsl.itemStack
@@ -35,7 +34,7 @@ import org.koin.compose.koinInject
 import kotlin.time.Duration.Companion.seconds
 
 class HomeEditorScreen(private val home: Home) : Screen {
-    override val key: ScreenKey = "essentials_home_editor_${home.id}"
+    override val key: ScreenKey = "essentials_home_editor"
 
     @Composable
     override fun Content() {
@@ -104,7 +103,7 @@ class HomeEditorScreen(private val home: Home) : Screen {
     }
 
     inner class RenameScreen : Screen {
-        override val key: ScreenKey = "essentials_home_editor_rename_${home.id}"
+        override val key: ScreenKey = "essentials_home_editor_rename"
 
         @Composable
         override fun Content() {
