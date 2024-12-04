@@ -1,10 +1,11 @@
 package ink.pmc.framework.utils.concurrent
 
-import com.github.shynixn.mccoroutine.bukkit.minecraftDispatcher
 import ink.pmc.framework.frameworkPaper
+import ink.pmc.framework.utils.platform.internal
 import ink.pmc.framework.utils.platform.isFolia
 import ink.pmc.framework.utils.platform.paper
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.asCoroutineDispatcher
 import org.bukkit.Chunk
 import org.bukkit.Location
 import org.bukkit.entity.Entity
@@ -16,11 +17,10 @@ private val globalRegionDispatcher = object : CoroutineDispatcher() {
     }
 }
 
-val paperDispatcher: CoroutineContext
-    get() {
-        if (isFolia) return globalRegionDispatcher
-        return frameworkPaper.minecraftDispatcher
-    }
+val paperDispatcher: CoroutineContext = run {
+    if (isFolia) return@run globalRegionDispatcher
+    return@run paper.internal.asCoroutineDispatcher()
+}
 
 val Entity.dispatcher: CoroutineContext
     get() {
