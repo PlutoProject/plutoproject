@@ -1,403 +1,125 @@
 package ink.pmc.essentials.screens.home
 
-import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
-import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.core.screen.ScreenKey
+import androidx.compose.runtime.Composable
 import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import com.google.common.collect.ArrayListMultimap
-import com.google.common.collect.Multimap
-import ink.pmc.essentials.*
+import ink.pmc.advkt.component.component
+import ink.pmc.advkt.component.italic
+import ink.pmc.advkt.component.text
 import ink.pmc.essentials.api.home.Home
-import ink.pmc.essentials.api.home.HomeManager
-import ink.pmc.essentials.screens.home.HomeViewerScreen.State.*
 import ink.pmc.framework.interactive.LocalPlayer
 import ink.pmc.framework.interactive.inventory.*
-import ink.pmc.framework.interactive.inventory.canvas.Chest
 import ink.pmc.framework.interactive.inventory.click.clickable
 import ink.pmc.framework.interactive.inventory.jetpack.Arrangement
-import ink.pmc.framework.interactive.inventory.layout.Box
-import ink.pmc.framework.interactive.inventory.layout.Column
 import ink.pmc.framework.interactive.inventory.layout.Row
-import ink.pmc.framework.utils.chat.UI_BACK
-import ink.pmc.framework.utils.chat.replace
+import ink.pmc.framework.interactive.inventory.layout.list.ListMenu
+import ink.pmc.framework.interactive.inventory.layout.list.ListMenuOptions
 import ink.pmc.framework.utils.concurrent.sync
+import ink.pmc.framework.utils.visual.*
+import ink.pmc.framework.utils.world.aliasOrName
+import net.kyori.adventure.text.Component
 import org.bukkit.Material
 import org.bukkit.OfflinePlayer
 import org.bukkit.event.inventory.ClickType
-import org.koin.compose.koinInject
-import java.util.*
 
-class HomeViewerScreen(private val viewing: OfflinePlayer) : Screen {
-    private val localState: ProvidableCompositionLocal<State> = staticCompositionLocalOf { error("") }
-    private val localCurrIndex: ProvidableCompositionLocal<MutableState<Int>> = staticCompositionLocalOf { error("") }
-    private val localMaxIndex: ProvidableCompositionLocal<Int> = staticCompositionLocalOf { error("") }
-    private val localPages: ProvidableCompositionLocal<ArrayListMultimap<Int, Home>> =
-        staticCompositionLocalOf { error("") }
-
-    override val key: ScreenKey = "essentials_home_viewer_${viewing.uniqueId}"
-
-    private enum class State {
-        LOADING, VIEWING, VIEWING_EMPTY
-    }
-
-    private suspend fun getPages(manager: HomeManager): Multimap<Int, Home> {
-        return ArrayListMultimap.create<Int, Home>().apply {
-            val homes = manager.list(viewing).toMutableList()
-            val orderedHomes = LinkedList<Home>().apply {
-                homes.filter { it.isPreferred || it.isStarred }.forEach {
-                    if (it.isPreferred) addFirst(it) else add(it)
-                    homes.remove(it)
-                }
-                addAll(homes)
-            }
-
-            var currentPage = 0
-            var currentPageCount = 0
-
-            orderedHomes.forEach {
-                put(currentPage, it)
-                currentPageCount++
-                if (currentPageCount >= VIEWER_SINGLE_PAGE) {
-                    currentPage++
-                    currentPageCount = 0
-                }
-            }
+class HomeViewerScreen(private val viewing: OfflinePlayer) : ListMenu<Home, HomeViewerScreenModel>(
+    options = ListMenuOptions(title = Component.text("家"))
+) {
+    @Composable
+    override fun BottomBorderAttachment() {
+        if (model.current.isLoading) return
+        Row(modifier = Modifier.fillMaxSize(), horizontalArrangement = Arrangement.Center) {
+            PreviousTurner()
+            Create()
+            NextTurner()
         }
     }
 
-    private fun List<Home>.getRows(): Int {
-        return if (isEmpty()) 0 else Math.ceilDiv(size, VIEWER_SINGLE_ROW)
-    }
-
-    private fun List<Home>.getRow(int: Int): List<Home> {
-        val start = int * VIEWER_SINGLE_ROW
-        val end = ((int + 1) * VIEWER_SINGLE_ROW).let { if (it < size) it else size }
-        return subList(start, end)
-    }
-
     @Composable
-    override fun Content() {
+    @Suppress("FunctionName")
+    private fun Create() {
         val player = LocalPlayer.current
-        val manager = koinInject<HomeManager>()
-        var state by rememberSaveable { mutableStateOf(LOADING) }
-        val currIndex = rememberSaveable { mutableStateOf(0) }
-        var maxIndex by rememberSaveable { mutableStateOf(0) }
-
-        val title by rememberSaveable {
-            derivedStateOf {
-                val viewingName = viewing.name ?: viewing.uniqueId
-                when (state) {
-                    LOADING -> UI_VIEWER_LOADING_TITLE
-                    else -> {
-                        val title = if (player != viewing) UI_HOME_TITLE else UI_HOME_TITLE_SELF
-                        title.replace("<player>", viewingName)
-                    }
-                }
-            }
-        }
-        val pages by rememberSaveable { mutableStateOf(ArrayListMultimap.create<Int, Home>()) }
-
-        LaunchedEffect(Unit) {
-            when (state) {
-                LOADING -> {
-                    val lookup = getPages(manager)
-                    if (lookup.isEmpty) {
-                        state = VIEWING_EMPTY
-                        return@LaunchedEffect
-                    }
-                    pages.putAll(lookup)
-                    maxIndex = lookup.keySet().size - 1
-                    state = VIEWING
-                }
-
-                else -> {}
-            }
-        }
-
-        DisposableEffect(Unit) {
-            onDispose {
-                pages.clear()
-                state = LOADING
-            }
-        }
-
-        CompositionLocalProvider(
-            localState provides state,
-            localCurrIndex provides currIndex,
-            localMaxIndex provides maxIndex,
-            localPages provides pages,
-        ) {
-            Chest(
-                title = title,
-                modifier = Modifier.height(5)
-            ) {
-                Column(modifier = Modifier.fillMaxSize()) {
-                    InnerContents()
-                }
-            }
-        }
-    }
-
-    @Composable
-    @Suppress("FunctionName")
-    private fun InnerContents() {
-        val state = localState.current
-        HorizontalBar()
-        Row(modifier = Modifier.fillMaxWidth().height(4)) {
-            VerticalBar()
-            when (state) {
-                LOADING -> LoadingSection()
-                VIEWING -> ViewingSection()
-                VIEWING_EMPTY -> EmptySection()
-            }
-            VerticalBar()
-        }
-    }
-
-    @Composable
-    @Suppress("FunctionName")
-    private fun HorizontalBar() {
-        val navigator = LocalNavigator.current
-        Box(modifier = Modifier.fillMaxWidth().height(1)) {
-            Row(modifier = Modifier.fillMaxSize()) {
-                repeat(9) {
-                    Placeholder()
-                }
-            }
-            if (navigator?.canPop == false) return@Box
-            Navigate()
-        }
-    }
-
-    @Composable
-    @Suppress("FunctionName")
-    private fun Navigate() {
         val navigator = LocalNavigator.currentOrThrow
+        if (player != viewing) {
+            Spacer(modifier = Modifier.height(1).width(1))
+            return
+        }
         Item(
-            material = Material.YELLOW_STAINED_GLASS_PANE,
-            name = UI_BACK,
+            material = Material.OAK_SIGN,
+            name = component {
+                text("创建家") with mochaText without italic()
+            },
+            lore = listOf(
+                Component.empty(),
+                component {
+                    text("左键 ") with mochaLavender without italic()
+                    text("在当前位置创建家") with mochaText without italic()
+                }
+            ),
             modifier = Modifier.clickable {
-                navigator.pop()
+                if (clickType != ClickType.LEFT) return@clickable
+                navigator.push(HomeCreatorScreen())
             }
         )
     }
 
     @Composable
-    @Suppress("FunctionName")
-    private fun VerticalBar() {
-        Column(modifier = Modifier.fillMaxHeight().width(1)) {
-            repeat(4) {
-                Placeholder()
-            }
-        }
-    }
-
-
-    inner class ViewingScreen(private val index: Int) : Screen {
-        override val key: ScreenKey = "essentials_home_viewer_nested_${viewing.uniqueId}"
-
-        @Composable
-        override fun Content() {
-            localCurrIndex.current.value = index
-            Column(modifier = Modifier.width(7).height(4)) {
-                Homes(index)
-                NavBar()
-            }
-        }
+    override fun modelProvider(): HomeViewerScreenModel {
+        return HomeViewerScreenModel(viewing)
     }
 
     @Composable
-    @Suppress("FunctionName")
-    private fun ViewingSection() {
-        Navigator(ViewingScreen(localCurrIndex.current.value))
-    }
-
-    @Composable
-    @Suppress("FunctionName")
-    private fun Homes(index: Int) {
-        val navigator = LocalNavigator.currentOrThrow
-        val page = localPages.current.get(index)
-        val rowCount = page.getRows()
-
-        if (rowCount <= 0) {
-            navigator.pop()
-            return
-        }
-
-        Column(modifier = Modifier.fillMaxWidth().height(3)) {
-            repeat(rowCount) {
-                Row(modifier = Modifier.fillMaxWidth().height(1)) {
-                    val row = page.getRow(it)
-                    row.forEach { if (it.isLoaded) Home(it) }
-                }
-            }
-        }
-    }
-
-    @Composable
-    @Suppress("FunctionName")
-    private fun Home(home: Home) {
+    override fun Element(obj: Home) {
         val player = LocalPlayer.current
-        val navigator = requireNotNull(LocalNavigator.current?.parent) { "Cannot obtain root navigator" }
+        val navigator = LocalNavigator.currentOrThrow
         Item(
-            material = if (!home.isPreferred) Material.PAPER else Material.SUNFLOWER,
-            name = UI_HOME_ITEM_NAME.replace("<name>", home.name),
-            lore = UI_HOME_ITEM_LORE(home),
-            enchantmentGlint = home.isPreferred || home.isStarred,
+            material = if (!obj.isPreferred) Material.PAPER else Material.SUNFLOWER,
+            name = component {
+                text(obj.name) with mochaYellow without italic()
+            },
+            lore = buildList {
+                add(component {
+                    val world = obj.location.world.aliasOrName
+                    val x = obj.location.blockX
+                    val y = obj.location.blockY
+                    val z = obj.location.blockZ
+                    text("$world $x, $y, $z") with mochaSubtext0 without italic()
+                })
+                if (obj.isPreferred) add(component {
+                    text("√ 首选的家") with mochaGreen without italic()
+                })
+                if (obj.isStarred) add(component {
+                    text("✨ 收藏的家") with mochaYellow without italic()
+                })
+                add(Component.empty())
+                add(component {
+                    text("左键 ") with mochaLavender without italic()
+                    text("传送到该位置") with mochaText without italic()
+                })
+                if (player != viewing) return@buildList
+                add(component {
+                    text("右键 ") with mochaLavender without italic()
+                    text("编辑家") with mochaText without italic()
+                })
+            },
+            enchantmentGlint = obj.isPreferred || obj.isStarred,
             modifier = Modifier.clickable {
                 when (clickType) {
                     ClickType.LEFT -> {
-                        home.teleport(player)
+                        obj.teleport(player)
                         sync {
                             player.closeInventory()
                         }
                     }
 
                     ClickType.RIGHT -> {
-                        navigator.push(HomeEditorScreen(home))
+                        if (player != viewing) return@clickable
+                        navigator.push(HomeEditorScreen(obj))
                     }
 
                     else -> {}
                 }
             }
-        )
-    }
-
-    @Composable
-    @Suppress("FunctionName")
-    private fun NavBar() {
-        val player = LocalPlayer.current
-        val max = localMaxIndex.current
-        Box(modifier = Modifier.fillMaxWidth().height(1)) {
-            Row(modifier = Modifier.fillMaxSize()) {
-                repeat(9) {
-                    Placeholder()
-                }
-            }
-            Row(modifier = Modifier.fillMaxSize(), horizontalArrangement = Arrangement.Center) {
-                if (player == viewing) {
-                    Create(true)
-                }
-                if (max > 0) {
-                    Placeholder()
-                    Paging()
-                }
-            }
-        }
-    }
-
-    @Composable
-    @Suppress("FunctionName")
-    private fun Paging() {
-        val curr = localCurrIndex.current.value
-        val max = localMaxIndex.current
-        val currPage = curr + 1
-        val totalPage = max + 1
-        val navigator = LocalNavigator.currentOrThrow
-
-        Item(
-            material = Material.ARROW,
-            name = VIEWER_PAGING
-                .replace("<curr>", "$currPage")
-                .replace("<total>", "$totalPage"),
-            lore = VIEWING_PAGE_LORE,
-            modifier = Modifier.clickable {
-                when (clickType) {
-                    ClickType.LEFT -> {
-                        if (curr < max) {
-                            navigator.push(ViewingScreen(curr + 1))
-                            whoClicked.playSound(VIEWER_PAGING_SOUND)
-                        }
-                    }
-
-                    ClickType.RIGHT -> {
-                        if (navigator.canPop) {
-                            navigator.pop()
-                            whoClicked.playSound(VIEWER_PAGING_SOUND)
-                        }
-                    }
-
-                    else -> {}
-                }
-            }
-        )
-    }
-
-    @Composable
-    @Suppress("FunctionName")
-    private fun Create(nested: Boolean = false) {
-        // 有在 ViewingScreen 和根菜单上展示两种情况
-        val navigator = if (nested) LocalNavigator.currentOrThrow.parent else LocalNavigator.currentOrThrow
-        Item(
-            material = Material.OAK_SIGN,
-            name = UI_HOME_VIEWER_CREATE,
-            lore = UI_HOME_VIEWER_CREATE_LORE,
-            modifier = Modifier.clickable {
-                if (clickType != ClickType.LEFT) return@clickable
-                navigator?.push(HomeCreatorScreen())
-            }
-        )
-    }
-
-    @Composable
-    @Suppress("FunctionName")
-    private fun LoadingSection() {
-        Column(modifier = Modifier.width(7).height(4)) {
-            Column(modifier = Modifier.fillMaxWidth().height(3), verticalArrangement = Arrangement.Center) {
-                Row(modifier = Modifier.fillMaxWidth().height(1), horizontalArrangement = Arrangement.Center) {
-                    Loading()
-                }
-            }
-            Row(modifier = Modifier.fillMaxWidth().height(1)) {
-                repeat(9) {
-                    Placeholder()
-                }
-            }
-        }
-    }
-
-    @Composable
-    @Suppress("FunctionName")
-    private fun Loading() {
-        Item(
-            material = Material.PAPER,
-            name = UI_VIEWER_LOADING
-        )
-    }
-
-    @Composable
-    @Suppress("FunctionName")
-    private fun EmptySection() {
-        Column(modifier = Modifier.width(7).height(4)) {
-            Column(modifier = Modifier.fillMaxWidth().height(3), verticalArrangement = Arrangement.Center) {
-                Row(modifier = Modifier.fillMaxWidth().height(1), horizontalArrangement = Arrangement.Center) {
-                    Empty()
-                }
-            }
-            Box(modifier = Modifier.fillMaxWidth().height(1)) {
-                Row(modifier = Modifier.fillMaxSize()) {
-                    repeat(9) {
-                        Placeholder()
-                    }
-                }
-                Row(modifier = Modifier.fillMaxSize(), horizontalArrangement = Arrangement.Center) {
-                    Create()
-                }
-            }
-        }
-    }
-
-    @Composable
-    @Suppress("FunctionName")
-    private fun Empty() {
-        val player = LocalPlayer.current
-        Item(
-            material = Material.MINECART,
-            name = UI_VIEWER_EMPTY,
-            lore = if (player == viewing) UI_HOME_EMPTY_LORE else UI_HOME_EMPTY_LORE_OTHER
         )
     }
 }

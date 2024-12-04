@@ -778,7 +778,7 @@ val UI_HOME_TITLE_SELF = component {
 }
 
 val UI_HOME_ITEM_NAME = component {
-    text("<name>") with mochaPink without italic()
+    text("<name>") with mochaYellow without italic()
 }
 
 private val UI_HOME_PREFERRED = component {
@@ -1052,46 +1052,6 @@ val UI_HOME_EDITOR_RENAME_SAVED = listOf(
 
 val UI_HOME_EDITOR_RENAME_INVALID_SOUND = sound {
     key(Key.key("block.note_block.didgeridoo"))
-}
-
-val FORM_VIEWER_LOADING = component {
-    text("正在加载中，马上就好...") with mochaText
-}
-
-val FORM_HOME_VIEWER_HEADER = component {
-    text("你一共有 ") with mochaSubtext0
-    text("<total> ") with mochaText
-    text("个家，此处将每页展示 ") with mochaSubtext0
-    text("<page> ") with mochaText
-    text("个") with mochaSubtext0
-    newline()
-    text("页 ") with mochaSubtext0
-    text("<curr>/<max>") with mochaText
-}
-
-val FORM_VIEWER_HEADER_EMPTY = component {
-    raw(UI_VIEWER_EMPTY)
-    raw(UI_HOME_EMPTY_PROMPT)
-}
-
-val FORM_VIEWER_PREVIOUS = component {
-    text("上一页")
-}
-
-val FORM_VIEWER_NEXT = component {
-    text("下一页")
-}
-
-@Suppress("FunctionName")
-fun FORM_HOME_ITEM(home: Home) = component {
-    val loc = home.location
-    text(
-        "${home.name} (<world> <x>, <y>, <z>)"
-            .replace("<world>", loc.world.aliasOrName)
-            .replace("<x>", "${loc.blockX}")
-            .replace("<y>", "${loc.blockY}")
-            .replace("<z>", "${loc.blockZ}")
-    )
 }
 
 val UI_HOME_CREATOR_TITLE = component {

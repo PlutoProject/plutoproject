@@ -1,6 +1,5 @@
 package ink.pmc.essentials.commands.home
 
-import cafe.adriel.voyager.navigator.Navigator
 import ink.pmc.essentials.HOMES_OTHER
 import ink.pmc.essentials.api.home.HomeManager
 import ink.pmc.essentials.screens.home.HomeViewerScreen
@@ -39,8 +38,6 @@ object HomesCommand {
                 return
             }
         }
-        GuiManager.startInventory(this) {
-            Navigator(HomeViewerScreen(actualPlayer))
-        }
+        GuiManager.startScreen(this, HomeViewerScreen(actualPlayer))
     }
 }

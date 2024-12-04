@@ -1,6 +1,5 @@
 package ink.pmc.essentials.commands.home
 
-import cafe.adriel.voyager.navigator.Navigator
 import ink.pmc.essentials.COMMAND_HOME_SUCCEED
 import ink.pmc.essentials.VIEWER_PAGING_SOUND
 import ink.pmc.essentials.api.home.Home
@@ -22,9 +21,7 @@ object HomeCommand {
         if (home == null) {
             val preferred = HomeManager.getPreferredHome(this)
             if (preferred == null) {
-                GuiManager.startInventory(this) {
-                    Navigator(HomeViewerScreen(this))
-                }
+                GuiManager.startScreen(this, HomeViewerScreen(this))
                 playSound(VIEWER_PAGING_SOUND)
                 return
             }
