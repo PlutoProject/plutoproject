@@ -315,7 +315,7 @@ class NotebookScreen : InteractiveScreen(), KoinComponent {
                     val spawn = (model.preferredSpawnState as PreferredSpawnState.Ready).spawn
                     val lore = buildList {
                         add(component {
-                            text("旅途的起始地") with mochaSubtext0 without italic()
+                            text("一切的起点") with mochaSubtext0 without italic()
                         })
                         add(Component.empty())
                         add(component {
