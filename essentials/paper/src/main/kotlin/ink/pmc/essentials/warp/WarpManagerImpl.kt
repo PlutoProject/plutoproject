@@ -104,8 +104,8 @@ class WarpManagerImpl : WarpManager, KoinComponent {
     override suspend fun getPreferredSpawn(player: OfflinePlayer): Warp? {
         val database = PlayerDb.getOrCreate(player.uniqueId)
         val spawnId = database.getString(preferredSpawnKey)?.uuidOrNull ?: return getDefaultSpawn()
-        val spawn = get(spawnId) ?: return null
-        return if (spawn.isSpawn) spawn else null
+        val spawn = get(spawnId) ?: return getDefaultSpawn()
+        return if (spawn.isSpawn) spawn else getDefaultSpawn()
     }
 
     override suspend fun setPreferredSpawn(player: OfflinePlayer, spawn: Warp) {
