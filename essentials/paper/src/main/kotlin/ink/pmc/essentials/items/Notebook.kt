@@ -11,9 +11,9 @@ import org.bukkit.NamespacedKey
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 
-private val key = NamespacedKey(plugin, "menu_item")
+private val key = NamespacedKey(plugin, "notebook_item")
 
-val MENU_ITEM = itemStack(Material.BOOK) {
+val NOTEBOOK_ITEM = itemStack(Material.BOOK) {
     meta {
         setEnchantmentGlintOverride(true)
         persistentDataContainer.set(key, PersistentDataType.BOOLEAN, true)
@@ -29,7 +29,7 @@ val MENU_ITEM = itemStack(Material.BOOK) {
     }
 }
 
-val ItemStack.isMenuItem: Boolean
+val ItemStack.isNotebookItem: Boolean
     get() {
         return itemMeta?.persistentDataContainer?.getOrDefault(
             key,

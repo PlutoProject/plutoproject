@@ -2,7 +2,7 @@ package ink.pmc.menu.commands
 
 import ink.pmc.framework.startScreen
 import ink.pmc.framework.utils.command.ensurePlayer
-import ink.pmc.menu.screens.MainMenuScreen
+import ink.pmc.menu.screens.NotebookScreen
 import org.bukkit.command.CommandSender
 import org.incendo.cloud.annotations.Command
 
@@ -10,6 +10,6 @@ import org.incendo.cloud.annotations.Command
 object MenuCommand {
     @Command("menu")
     fun CommandSender.menu() = ensurePlayer {
-        startScreen(MainMenuScreen())
+        startScreen(NotebookScreen())
     }
 }

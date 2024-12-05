@@ -11,7 +11,7 @@ import org.bukkit.NamespacedKey
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 
-private val key = NamespacedKey(plugin, "server_selector")
+private val key = NamespacedKey(plugin, "server_selector_item")
 
 val SERVER_SELECTOR_ITEM = itemStack(Material.COMPASS) {
     meta {

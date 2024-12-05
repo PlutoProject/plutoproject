@@ -1,7 +1,7 @@
 package ink.pmc.essentials.listeners
 
 import ink.pmc.essentials.config.EssentialsConfig
-import ink.pmc.essentials.items.isMenuItem
+import ink.pmc.essentials.items.isNotebookItem
 import ink.pmc.essentials.items.isServerSelectorItem
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -17,7 +17,7 @@ object ItemListener : Listener, KoinComponent {
 
     private fun PlayerInteractEvent.checkCondition(): Boolean {
         if (hand != EquipmentSlot.HAND) {
-            if (player.inventory.itemInMainHand.isMenuItem) {
+            if (player.inventory.itemInMainHand.isNotebookItem) {
                 isCancelled = true
             }
             return false
@@ -33,7 +33,7 @@ object ItemListener : Listener, KoinComponent {
         if (!config.menu) return
         if (!checkCondition()) return
         item?.let {
-            if (!it.isMenuItem) return
+            if (!it.isNotebookItem) return
             isCancelled = true
             player.performCommand("plutoproject_menu:menu")
         }
