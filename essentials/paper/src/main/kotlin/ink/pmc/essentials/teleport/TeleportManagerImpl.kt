@@ -74,7 +74,9 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
     override var state: TeleportManagerState = TeleportManagerState.IDLE
 
     init {
-        registerLocationChecker("void") { l, o -> if (o.avoidVoid) l.y >= l.world.minHeight else true }
+        registerLocationChecker("void") { l, o ->
+            if (o.avoidVoid) l.y >= l.world.minHeight else true
+        }
         registerLocationChecker("solid") { l, _ ->
             val foot = !l.block.isSolid
             val head = !l.clone().add(0.0, 1.0, 0.0).block.isSolid
@@ -87,7 +89,9 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
             val stand = !o.blacklistedBlocks.contains(l.clone().subtract(0.0, 1.0, 0.0).block.type)
             foot && head && stand
         }
-        registerLocationChecker("world_border") { l, _ -> l.world.worldBorder.isInside(l) }
+        registerLocationChecker("world_border") { l, _ ->
+            l.world.worldBorder.isInside(l)
+        }
     }
 
     override fun getWorldTeleportOptions(world: World): TeleportOptions {

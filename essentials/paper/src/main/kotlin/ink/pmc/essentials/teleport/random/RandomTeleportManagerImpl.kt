@@ -158,17 +158,20 @@ class RandomTeleportManagerImpl : RandomTeleportManager, KoinComponent {
             return false
         }
 
-        suspend fun safeBlock(x: Int, z: Int): Location? {
-            for (y in world.maxHeight downTo world.minHeight) {
+        suspend fun safeLocation(x: Int, z: Int): Location? {
+            val maxHeight = if (opt.maxHeight != -1) opt.maxHeight else world.maxHeight
+            val minHeight = if (opt.minHeight != -1) opt.minHeight else world.minHeight
+
+            for (y in maxHeight downTo minHeight) {
                 val stand = Location(world, x.toDouble(), y.toDouble(), z.toDouble())
                 val loc = stand.clone().add(0.0, 1.0, 0.0)
 
-                if (stand.block.type.isAir) continue
+                if (!stand.block.type.isSolid) continue
                 if (biome(loc)) continue
                 if (!teleport.isSafe(loc)) continue
                 if (opt.noCover && cover(loc)) continue
 
-                return stand
+                return loc
             }
 
             return null
@@ -177,7 +180,7 @@ class RandomTeleportManagerImpl : RandomTeleportManager, KoinComponent {
         suspend fun searchLocation(): Location? {
             val dx = baseX + random()
             val dz = baseZ + random()
-            return safeBlock(dx, dz)
+            return safeLocation(dx, dz)
         }
 
         return async<Location?> { searchLocation() }
