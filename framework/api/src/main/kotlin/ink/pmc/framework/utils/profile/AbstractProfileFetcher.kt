@@ -1,4 +1,4 @@
-package ink.pmc.whitelist.profile
+package ink.pmc.framework.utils.profile
 
 import okhttp3.OkHttpClient
 import java.util.*

@@ -18,7 +18,8 @@ data class EssentialsConfig(
     val recipe: Recipe,
     val join: Join,
     val disableJoinQuitMessage: DisableJoinQuitMessage = DisableJoinQuitMessage(),
-    val demoWorld: DemoWorld
+    val demoWorld: DemoWorld,
+    val head: Head = Head(),
 )
 
 data class Teleport(
@@ -146,4 +147,9 @@ data class Spawnpoint(
     val z: Double,
     val yaw: Float = 0.0F,
     val pitch: Float = 0.0F,
+)
+
+data class Head(
+    val enabled: Boolean = true,
+    val cost: Double = 3.0
 )

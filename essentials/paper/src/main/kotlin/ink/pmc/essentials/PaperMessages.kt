@@ -385,7 +385,7 @@ val COMMAND_ETP_SUCCEED_OTHER = component {
     text("<location>") with mochaText
 }
 
-val RANDOM_TELEPORT_SUCCED = component {
+val RANDOM_TELEPORT_SUCCEED = component {
     text("已将你传送到 ") with mochaPink
     text("<location>") with mochaText
     newline()
@@ -395,10 +395,10 @@ val RANDOM_TELEPORT_SUCCED = component {
     text("<lastLookupTime>") with mochaText
 }
 
-val RANDOM_TELEPORT_SUCCED_COST = component {
-    raw(RANDOM_TELEPORT_SUCCED)
+val RANDOM_TELEPORT_SUCCEED_COST = component {
+    raw(RANDOM_TELEPORT_SUCCEED)
     text("，花费 ") with mochaSubtext0
-    text("<amount> <symbol>") with mochaText
+    text("<amount><symbol>") with mochaText
 }
 
 val RANDOM_TELEPORT_SEARCHING_TITLE = title {

@@ -14,12 +14,8 @@ const val RANDOM_TELEPORT_SPECIFIC = "essentials.rtp.specific"
 
 const val HOMES_OTHER = "essentials.home.other"
 
-const val VIEWER_ROWS = 3
-
-const val VIEWER_SINGLE_ROW = 7
-
-const val VIEWER_SINGLE_PAGE = VIEWER_SINGLE_ROW * VIEWER_ROWS
-
 const val DEMO_WORLD_BYPASS = "essentials.demoworld.bypassw"
 
 const val COOLDOWN_BYPASS = "essentials.rtp.cooldown.bypass"
+
+const val HEAD_COST_BYPASS = "essentials.head.cost.bypass"

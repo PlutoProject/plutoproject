@@ -16,6 +16,7 @@ import ink.pmc.framework.utils.concurrent.async
 import ink.pmc.framework.utils.concurrent.submitAsync
 import ink.pmc.framework.utils.data.mapKv
 import ink.pmc.framework.utils.platform.paper
+import ink.pmc.framework.utils.trimmed
 import ink.pmc.framework.utils.world.Vec2
 import ink.pmc.framework.utils.world.addTicket
 import ink.pmc.framework.utils.world.removeTicket
@@ -261,14 +262,14 @@ class RandomTeleportManagerImpl : RandomTeleportManager, KoinComponent {
         if (!prompt) {
             return
         }
-        val message = if (!costed) RANDOM_TELEPORT_SUCCED else RANDOM_TELEPORT_SUCCED_COST
+        val message = if (!costed) RANDOM_TELEPORT_SUCCEED else RANDOM_TELEPORT_SUCCEED_COST
         player.sendMessage(
             message
                 .replace(
                     "<location>",
                     Component.text("${location.blockX}, ${location.blockY}, ${location.blockZ}")
                 )
-                .replace("<amount>", cost.currencyFormat())
+                .replace("<amount>", cost.trimmed())
                 .replace("<symbol>", symbol)
                 .replace("<attempts>", Component.text(attempts))
                 .replace("<lastLookupTime>", DURATION(java.time.Duration.ofMillis(time).toKotlinDuration()))

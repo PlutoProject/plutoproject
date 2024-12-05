@@ -4,6 +4,7 @@ import com.velocitypowered.api.command.CommandSource
 import ink.pmc.advkt.component.text
 import ink.pmc.advkt.send
 import ink.pmc.framework.utils.player.uuid
+import ink.pmc.framework.utils.profile.MojangProfileFetcher
 import ink.pmc.framework.utils.visual.mochaLavender
 import ink.pmc.framework.utils.visual.mochaMaroon
 import ink.pmc.framework.utils.visual.mochaPink
@@ -12,7 +13,6 @@ import ink.pmc.whitelist.models.AuthType
 import ink.pmc.whitelist.models.WhitelistModel
 import ink.pmc.whitelist.models.WhitelistState
 import ink.pmc.whitelist.models.createWhitelistModel
-import ink.pmc.whitelist.profile.MojangProfileFetcher
 import ink.pmc.whitelist.repositories.MemberRepository
 import ink.pmc.whitelist.repositories.WhitelistRepository
 import kotlinx.coroutines.TimeoutCancellationException

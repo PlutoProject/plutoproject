@@ -167,30 +167,64 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
                 AlignCommand,
                 GmCommand,
                 HatCommand,
-                ItemFrameCommand,
-                LecternCommand,
-                WarpCommons,
-                DelWarpCommand,
-                EditWarpCommand,
-                PreferredSpawnCommand,
-                SetWarpCommand,
-                SpawnCommand,
-                WarpCommand,
-                WarpsCommand,
-                TeleportCommons,
-                RtpCommand,
-                TpacceptCommand,
-                TpaCommand,
-                TpcancelCommand,
-                HomeCommons,
-                DelHomeCommand,
-                // EditHomeCommand,
-                HomeCommand,
-                HomesCommand,
-                SetHomeCommand,
-                BackCommand,
-                AfkCommand
             )
+
+            if (config.teleport.enabled) {
+                parse(
+                    TeleportCommons,
+                    TpacceptCommand,
+                    TpaCommand,
+                    TpcancelCommand
+                )
+            }
+
+            if (config.randomTeleport.enabled) {
+                parse(RtpCommand)
+            }
+
+            if (config.home.enabled) {
+                parse(
+                    HomeCommons,
+                    DelHomeCommand,
+                    HomeCommand,
+                    HomesCommand,
+                    SetHomeCommand
+                )
+            }
+
+            if (config.warp.enabled) {
+                parse(
+                    WarpCommons,
+                    DelWarpCommand,
+                    EditWarpCommand,
+                    PreferredSpawnCommand,
+                    SetWarpCommand,
+                    SpawnCommand,
+                    WarpCommand,
+                    WarpsCommand
+                )
+            }
+
+            if (config.back.enabled) {
+                parse(BackCommand)
+            }
+
+            if (config.afk.enabled) {
+                parse(AfkCommand)
+            }
+
+            if (config.containerProtection.enabled) {
+                if (config.containerProtection.itemframe) {
+                    parse(ItemFrameCommand)
+                }
+                if (config.containerProtection.lectern) {
+                    parse(LecternCommand)
+                }
+            }
+
+            if (config.head.enabled) {
+                parse(HeadCommand)
+            }
         }
 
         registerEvents()

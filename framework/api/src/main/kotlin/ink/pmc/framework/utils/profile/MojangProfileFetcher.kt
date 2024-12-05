@@ -1,4 +1,4 @@
-package ink.pmc.whitelist.profile
+package ink.pmc.framework.utils.profile
 
 import com.google.gson.JsonParser
 import ink.pmc.framework.utils.player.shortUUIDToLong
