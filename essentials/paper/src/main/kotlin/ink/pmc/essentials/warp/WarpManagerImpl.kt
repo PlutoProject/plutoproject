@@ -22,19 +22,18 @@ import org.bukkit.Material
 import org.bukkit.OfflinePlayer
 import org.bukkit.World
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.get
 import org.koin.core.component.inject
 import java.util.*
 import java.util.concurrent.ConcurrentMap
 import kotlin.math.ceil
 import kotlin.time.Duration
 
-private const val PREFERRED_SPAWN_KEY = "essentials.warp.preferred_spawn"
-private const val COLLECTION_KEY = "essentials.warp.collection"
-
 class WarpManagerImpl : WarpManager, KoinComponent {
-    private val config by lazy { get<EssentialsConfig>().warp }
+    private val config by inject<EssentialsConfig>()
+    private val warpConfig by lazy { config.warp }
     private val repo by inject<WarpRepository>()
+    private val preferredSpawnKey = "essentials.${config.serverName}.warp.preferred_spawn"
+    private val collectionKey = "essentials.${config.serverName}.warp.collection"
     private val cache = cacheBuilder<UUID, Warp?> { // null 值不会被存储到缓存
         refreshAfterWrite = Duration.parse("5m")
     }.build {
@@ -42,10 +41,10 @@ class WarpManagerImpl : WarpManager, KoinComponent {
         repo.findById(it)?.let { model -> WarpImpl(model) }
     }
 
-    override val blacklistedWorlds: Collection<World> = config.blacklistedWorlds
+    override val blacklistedWorlds: Collection<World> = warpConfig.blacklistedWorlds
         .filter { name -> paper.worlds.any { it.name == name } }
         .map { paper.getWorld(it)!! }
-    override val nameLengthLimit: Int = config.nameLengthLimit
+    override val nameLengthLimit: Int = warpConfig.nameLengthLimit
 
     private suspend fun isCached(name: String): Boolean {
         return cache.asMap().values.any { it?.name == name }
@@ -104,7 +103,7 @@ class WarpManagerImpl : WarpManager, KoinComponent {
 
     override suspend fun getPreferredSpawn(player: OfflinePlayer): Warp? {
         val database = PlayerDb.getOrCreate(player.uniqueId)
-        val spawnId = database.getString(PREFERRED_SPAWN_KEY)?.uuidOrNull ?: return getDefaultSpawn()
+        val spawnId = database.getString(preferredSpawnKey)?.uuidOrNull ?: return getDefaultSpawn()
         val spawn = get(spawnId) ?: return null
         return if (spawn.isSpawn) spawn else null
     }
@@ -112,12 +111,12 @@ class WarpManagerImpl : WarpManager, KoinComponent {
     override suspend fun setPreferredSpawn(player: OfflinePlayer, spawn: Warp) {
         require(spawn.isSpawn) { "Warp ${spawn.name} isn't a spawn" }
         val database = PlayerDb.getOrCreate(player.uniqueId)
-        database[PREFERRED_SPAWN_KEY] = spawn.id.toString()
+        database[preferredSpawnKey] = spawn.id.toString()
         database.update()
     }
 
     override suspend fun getCollection(player: OfflinePlayer): Collection<Warp> {
-        return PlayerDb.getOrCreate(player.uniqueId).getList<String>(COLLECTION_KEY)
+        return PlayerDb.getOrCreate(player.uniqueId).getList<String>(collectionKey)
             ?.mapNotNull { get(it.uuid) }
             ?: emptyList()
     }
@@ -136,7 +135,7 @@ class WarpManagerImpl : WarpManager, KoinComponent {
         val list = getCollection(player).toMutableList()
         list.add(warp)
         val db = PlayerDb.getOrCreate(player.uniqueId)
-        db[COLLECTION_KEY] = list.map { it.id.toString() }
+        db[collectionKey] = list.map { it.id.toString() }
         db.update()
     }
 
@@ -144,7 +143,7 @@ class WarpManagerImpl : WarpManager, KoinComponent {
         val list = getCollection(player).toMutableList()
         list.remove(warp)
         val db = PlayerDb.getOrCreate(player.uniqueId)
-        db[COLLECTION_KEY] = list.map { it.id.toString() }
+        db[collectionKey] = list.map { it.id.toString() }
         db.update()
     }
 
