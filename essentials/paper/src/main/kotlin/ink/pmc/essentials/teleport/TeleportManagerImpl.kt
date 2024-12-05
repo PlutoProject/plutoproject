@@ -24,6 +24,7 @@ import kotlinx.coroutines.future.await
 import org.bukkit.Location
 import org.bukkit.World
 import org.bukkit.block.BlockFace
+import org.bukkit.craftbukkit.block.CraftBlock
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 import org.koin.core.component.KoinComponent
@@ -81,6 +82,12 @@ class TeleportManagerImpl : TeleportManager, KoinComponent {
             val foot = !l.block.isSolid
             val head = !l.clone().add(0.0, 1.0, 0.0).block.isSolid
             val stand = l.clone().subtract(0.0, 1.0, 0.0).block.isSolid
+            foot && head && stand
+        }
+        registerLocationChecker("fluid_state") { l, _ ->
+            val foot = (l.block as CraftBlock).nmsFluid.isEmpty
+            val head = (l.clone().add(0.0, 1.0, 0.0).block as CraftBlock).nmsFluid.isEmpty
+            val stand = (l.clone().subtract(0.0, 1.0, 0.0).block as CraftBlock).nmsFluid.isEmpty
             foot && head && stand
         }
         registerLocationChecker("blacklist") { l, o ->
