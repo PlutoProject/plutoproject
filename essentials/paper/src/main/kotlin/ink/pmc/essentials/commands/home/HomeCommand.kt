@@ -5,7 +5,7 @@ import ink.pmc.essentials.VIEWER_PAGING_SOUND
 import ink.pmc.essentials.api.home.Home
 import ink.pmc.essentials.api.home.HomeManager
 import ink.pmc.essentials.screens.home.HomeListScreen
-import ink.pmc.framework.interactive.GuiManager
+import ink.pmc.framework.startScreen
 import ink.pmc.framework.utils.chat.replace
 import ink.pmc.framework.utils.command.ensurePlayer
 import org.bukkit.command.CommandSender
@@ -21,7 +21,7 @@ object HomeCommand {
         if (home == null) {
             val preferred = HomeManager.getPreferredHome(this)
             if (preferred == null) {
-                GuiManager.startScreen(this, HomeListScreen(this))
+                startScreen(HomeListScreen(this))
                 playSound(VIEWER_PAGING_SOUND)
                 return
             }

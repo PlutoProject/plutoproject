@@ -7,8 +7,8 @@ import ink.pmc.essentials.COMMAND_PREFERRED_SPAWN_SUCCEED
 import ink.pmc.essentials.COMMAND_PREFERRED_SPAWN_WARP_IS_NOT_SPAWN
 import ink.pmc.essentials.api.warp.Warp
 import ink.pmc.essentials.api.warp.WarpManager
-import ink.pmc.essentials.screens.warp.DefaultSpawnPickerMenu
-import ink.pmc.framework.interactive.GuiManager
+import ink.pmc.essentials.screens.warp.DefaultSpawnPickerScreen
+import ink.pmc.framework.startScreen
 import ink.pmc.framework.utils.chat.replace
 import ink.pmc.framework.utils.command.ensurePlayer
 import ink.pmc.framework.utils.concurrent.submitAsync
@@ -26,6 +26,7 @@ import org.incendo.cloud.context.CommandContext
 import org.incendo.cloud.context.CommandInput
 import org.incendo.cloud.parser.ArgumentParseResult
 import org.incendo.cloud.parser.ArgumentParser.FutureArgumentParser
+import org.incendo.cloud.suggestion.Suggestion
 import org.incendo.cloud.suggestion.SuggestionProvider
 import java.util.concurrent.CompletableFuture
 import kotlin.jvm.optionals.getOrNull
@@ -36,9 +37,7 @@ object PreferredSpawnCommand {
     @Permission("essentials.defaultspawn")
     suspend fun CommandSender.preferredSpawn(@Argument("spawn", parserName = "spawn") spawn: Warp?) = ensurePlayer {
         if (spawn == null) {
-            GuiManager.startInventory(this) {
-                DefaultSpawnPickerMenu()
-            }
+            startScreen(DefaultSpawnPickerScreen())
             return@ensurePlayer
         }
         val current = WarpManager.getPreferredSpawn(this)
@@ -64,7 +63,7 @@ object PreferredSpawnCommand {
     }
 }
 
-class SpawnParser : FutureArgumentParser<CommandSender, Warp> {
+class SpawnParser : FutureArgumentParser<CommandSender, Warp>, SuggestionProvider<CommandSender> {
     private val warpParser = WarpParser(false)
 
     override fun parseFuture(
@@ -82,8 +81,19 @@ class SpawnParser : FutureArgumentParser<CommandSender, Warp> {
         }
     }.asCompletableFuture()
 
+    override fun suggestionsFuture(
+        context: CommandContext<CommandSender>,
+        input: CommandInput
+    ): CompletableFuture<List<Suggestion>> = submitAsync<List<Suggestion>> {
+        WarpManager.listSpawns().map {
+            val name = it.name
+            val alias = it.alias
+            Suggestion.suggestion(if (alias == null) name else "$name-$alias")
+        }
+    }.asCompletableFuture()
+
     override fun suggestionProvider(): SuggestionProvider<CommandSender> {
-        return warpParser
+        return this
     }
 }
 

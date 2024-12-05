@@ -15,7 +15,7 @@ import ink.pmc.essentials.api.teleport.TeleportManager
 import ink.pmc.essentials.api.teleport.random.RandomTeleportManager
 import ink.pmc.essentials.screens.home.HomeListScreen
 import ink.pmc.essentials.screens.teleport.TeleportRequestScreen
-import ink.pmc.essentials.screens.warp.DefaultSpawnPickerMenu
+import ink.pmc.essentials.screens.warp.DefaultSpawnPickerScreen
 import ink.pmc.essentials.screens.warp.WarpListScreen
 import ink.pmc.framework.interactive.LocalPlayer
 import ink.pmc.framework.interactive.inventory.*
@@ -284,7 +284,7 @@ class MainMenuScreen : Screen, KoinComponent {
                         spawn.teleport(player)
                     }
 
-                    ClickType.RIGHT -> navigator.push(DefaultSpawnPickerMenu())
+                    ClickType.RIGHT -> navigator.push(DefaultSpawnPickerScreen())
                     else -> {}
                 }
             }

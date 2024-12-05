@@ -1,12 +1,11 @@
 package ink.pmc.essentials.commands.warp
 
-import cafe.adriel.voyager.navigator.Navigator
 import ink.pmc.essentials.COMMAND_WARP_SUCCEED
 import ink.pmc.essentials.COMMAND_WARP_SUCCEED_ALIAS
 import ink.pmc.essentials.VIEWER_PAGING_SOUND
 import ink.pmc.essentials.api.warp.Warp
 import ink.pmc.essentials.screens.warp.WarpListScreen
-import ink.pmc.framework.interactive.GuiManager
+import ink.pmc.framework.startScreen
 import ink.pmc.framework.utils.chat.replace
 import ink.pmc.framework.utils.command.ensurePlayer
 import org.bukkit.command.CommandSender
@@ -20,9 +19,7 @@ object WarpCommand {
     @Permission("essentials.warp")
     suspend fun CommandSender.warp(@Argument("warp", parserName = "warp") warp: Warp?) = ensurePlayer {
         if (warp == null) {
-            GuiManager.startInventory(this) {
-                Navigator(WarpListScreen())
-            }
+            startScreen(WarpListScreen())
             playSound(VIEWER_PAGING_SOUND)
             return
         }

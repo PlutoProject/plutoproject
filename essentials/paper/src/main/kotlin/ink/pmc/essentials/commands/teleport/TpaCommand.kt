@@ -8,7 +8,7 @@ import ink.pmc.essentials.api.teleport.TeleportDirection.GO
 import ink.pmc.essentials.api.teleport.TeleportManager
 import ink.pmc.essentials.config.EssentialsConfig
 import ink.pmc.essentials.screens.teleport.TeleportRequestScreen
-import ink.pmc.framework.interactive.GuiManager
+import ink.pmc.framework.startScreen
 import ink.pmc.framework.utils.chat.DURATION
 import ink.pmc.framework.utils.chat.replace
 import ink.pmc.framework.utils.command.ensurePlayer
@@ -36,7 +36,7 @@ object TpaCommand {
 
 private fun handleTpa(source: Player, destination: Player?, direction: TeleportDirection) {
     if (destination == null) {
-        GuiManager.startScreen(source, TeleportRequestScreen())
+        source.startScreen(TeleportRequestScreen())
         return
     }
 

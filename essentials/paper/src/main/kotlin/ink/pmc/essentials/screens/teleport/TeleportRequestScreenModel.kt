@@ -43,7 +43,6 @@ class TeleportRequestScreenModel(private val player: Player) : ListMenuModel<Pla
 
     override suspend fun fetchPageContents(): List<Player> {
         pageCount = ceil(onlinePlayers.size.toDouble() / PAGE_SIZE).toInt()
-        val skip = page * PAGE_SIZE
-        return onlinePlayers.drop(skip).take(PAGE_SIZE)
+        return onlinePlayers.drop(page * PAGE_SIZE).take(PAGE_SIZE)
     }
 }
