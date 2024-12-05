@@ -2,6 +2,7 @@ package ink.pmc.essentials.repositories
 
 import com.github.benmanes.caffeine.cache.Caffeine
 import com.mongodb.client.model.Filters.eq
+import com.mongodb.client.model.Filters.or
 import com.mongodb.client.model.Indexes.descending
 import ink.pmc.essentials.api.warp.WarpCategory
 import ink.pmc.essentials.api.warp.WarpType
@@ -47,7 +48,12 @@ class WarpRepository : KoinComponent {
     }
 
     suspend fun findSpawns(): Collection<WarpModel> {
-        return db.find(eq("type", WarpType.SPAWN)).sort(descending("createdAt")).toCollection(mutableListOf())
+        return db.find(
+            or(
+                eq("type", WarpType.SPAWN),
+                eq("type", WarpType.SPAWN_DEFAULT)
+            )
+        ).sort(descending("createdAt")).toCollection(mutableListOf())
     }
 
     suspend fun findByCategory(category: WarpCategory): Collection<WarpModel> {
