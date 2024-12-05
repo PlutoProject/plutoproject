@@ -70,8 +70,10 @@ class VelocityPlugin @Inject constructor(suspendingPluginContainer: SuspendingPl
 
     @Subscribe(order = PostOrder.FIRST)
     fun ProxyPingEvent.e() {
+        val clientVersion = connection.protocolVersion
+        val reportVersion = if (clientVersion.protocol in protocolRange) clientVersion.protocol else protocolRange.first
         val version = ServerPing.Version(
-            protocolRange.first,
+            reportVersion,
             if (serverBrand != null) "$serverBrand $VERSION_RANGE" else VERSION_RANGE
         )
         ping = ping.asBuilder()
