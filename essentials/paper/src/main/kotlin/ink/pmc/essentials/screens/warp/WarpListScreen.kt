@@ -2,7 +2,6 @@ package ink.pmc.essentials.screens.warp
 
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import cafe.adriel.voyager.core.screen.ScreenKey
 import ink.pmc.advkt.component.component
 import ink.pmc.advkt.component.italic
 import ink.pmc.advkt.component.text
@@ -30,8 +29,6 @@ import java.time.ZonedDateTime
 class WarpListScreen : FilterListMenu<Warp, WarpFilter, WarpListScreenModel>(
     filters = WarpFilter.entries.associateWith { it.filterName }
 ) {
-    override val key: ScreenKey = "essentials_warp_list"
-
     @Composable
     override fun MenuLayout() {
         LocalListMenuOptions.current.title = Component.text("地标")

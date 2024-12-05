@@ -1,7 +1,6 @@
 package ink.pmc.essentials.screens.home
 
 import androidx.compose.runtime.Composable
-import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import ink.pmc.advkt.component.component
@@ -26,8 +25,6 @@ import org.bukkit.event.inventory.ClickType
 import java.time.ZonedDateTime
 
 class HomeListScreen(private val viewing: OfflinePlayer) : ListMenu<Home, HomeListScreenModel>() {
-    override val key: ScreenKey = "essentials_home_list"
-
     @Composable
     override fun MenuLayout() {
         LocalListMenuOptions.current.title = Component.text("家")

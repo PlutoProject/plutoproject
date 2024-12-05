@@ -72,6 +72,7 @@ class InventoryScope(owner: Player, contents: ComposableFunction) : BaseScope<In
         nodeApplier.current.apply {
             measure(Constraints())
             render()
+            owner.updateInventory()
         }
     }
 

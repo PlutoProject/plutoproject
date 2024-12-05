@@ -2,14 +2,13 @@ package ink.pmc.daily.screens
 
 import androidx.compose.runtime.*
 import cafe.adriel.voyager.core.model.rememberScreenModel
-import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.core.screen.ScreenKey
 import ink.pmc.advkt.component.component
 import ink.pmc.advkt.component.italic
 import ink.pmc.advkt.component.text
 import ink.pmc.daily.*
 import ink.pmc.daily.api.Daily
 import ink.pmc.daily.api.DailyHistory
+import ink.pmc.framework.interactive.InteractiveScreen
 import ink.pmc.framework.interactive.LocalPlayer
 import ink.pmc.framework.interactive.inventory.*
 import ink.pmc.framework.interactive.inventory.click.clickable
@@ -37,8 +36,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZonedDateTime
 
-class DailyCalenderScreen : Screen {
-    override val key: ScreenKey = "daily_calendar"
+class DailyCalenderScreen : InteractiveScreen() {
     private val localModel: ProvidableCompositionLocal<DailyCalenderScreenModel> =
         staticCompositionLocalOf { error("Unexpected") }
 

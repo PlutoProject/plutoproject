@@ -1,12 +1,11 @@
 package ink.pmc.essentials.screens.home
 
 import androidx.compose.runtime.*
-import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import ink.pmc.essentials.*
 import ink.pmc.essentials.api.home.HomeManager
+import ink.pmc.framework.interactive.InteractiveScreen
 import ink.pmc.framework.interactive.LocalPlayer
 import ink.pmc.framework.interactive.inventory.canvas.Anvil
 import ink.pmc.framework.utils.concurrent.submitAsync
@@ -18,9 +17,7 @@ import org.bukkit.Material
 import org.koin.compose.koinInject
 import kotlin.time.Duration.Companion.seconds
 
-class HomeCreatorScreen : Screen {
-    override val key: ScreenKey = "essentials_home_creator"
-
+class HomeCreatorScreen : InteractiveScreen() {
     @Composable
     override fun Content() {
         val player = LocalPlayer.current

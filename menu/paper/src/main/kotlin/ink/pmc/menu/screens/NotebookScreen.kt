@@ -2,8 +2,6 @@ package ink.pmc.menu.screens
 
 import androidx.compose.runtime.*
 import cafe.adriel.voyager.core.model.rememberScreenModel
-import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import ink.pmc.advkt.component.component
@@ -20,6 +18,7 @@ import ink.pmc.essentials.screens.home.HomeListScreen
 import ink.pmc.essentials.screens.teleport.TeleportRequestScreen
 import ink.pmc.essentials.screens.warp.DefaultSpawnPickerScreen
 import ink.pmc.essentials.screens.warp.WarpListScreen
+import ink.pmc.framework.interactive.InteractiveScreen
 import ink.pmc.framework.interactive.LocalPlayer
 import ink.pmc.framework.interactive.inventory.*
 import ink.pmc.framework.interactive.inventory.canvas.Chest
@@ -67,22 +66,18 @@ private val LOADING_LORE = listOf(
     }
 )
 
-class NotebookScreen : Screen, KoinComponent {
+class NotebookScreen : InteractiveScreen(), KoinComponent {
     private val localScreenModel: ProvidableCompositionLocal<MainMenuModel> =
         staticCompositionLocalOf { error("Unexpected") }
-
-    override val key: ScreenKey = "menu_notebook"
 
     @Composable
     override fun Content() {
         val player = LocalPlayer.current
-        val screenModel = rememberScreenModel { MainMenuModel(player) }
+        val model = rememberScreenModel { MainMenuModel(player) }
 
         // 初次打开或翻到其他页面再回来时触发，重载可能被修改的数据
         LaunchedEffect(Unit) {
-            screenModel.refreshPreferredHome()
-            screenModel.refreshPreferredSpawn()
-            screenModel.refreshCheckInState()
+            model.loadInformation()
         }
 
         LaunchedEffect(Unit) {
@@ -101,7 +96,7 @@ class NotebookScreen : Screen, KoinComponent {
             db.update()
         }
 
-        CompositionLocalProvider(localScreenModel provides screenModel) {
+        CompositionLocalProvider(localScreenModel provides model) {
             Chest(
                 title = component {
                     text("手账")
@@ -593,9 +588,9 @@ class NotebookScreen : Screen, KoinComponent {
                         }
 
                         ClickType.RIGHT -> {
-                            player.performCommand(CO_NEAR_COMMAND)
                             player.playSound(UI_SUCCEED_SOUND)
                             sync {
+                                player.performCommand(CO_NEAR_COMMAND)
                                 player.closeInventory()
                             }
                         }

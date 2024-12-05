@@ -1,6 +1,5 @@
 package ink.pmc.framework.interactive
 
-import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.Navigator
 import ink.pmc.framework.frameworkPaper
 import ink.pmc.framework.interactive.inventory.InventoryScope
@@ -40,7 +39,7 @@ class GuiManagerImpl : GuiManager {
         }
     }
 
-    override fun startScreen(player: Player, screen: Screen) {
+    override fun startScreen(player: Player, screen: InteractiveScreen) {
         startInventory(player) {
             Navigator(screen)
         }

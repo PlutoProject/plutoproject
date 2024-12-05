@@ -1,7 +1,6 @@
 package ink.pmc.essentials.screens.teleport
 
 import androidx.compose.runtime.*
-import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import ink.pmc.advkt.component.component
@@ -35,8 +34,6 @@ import org.bukkit.inventory.meta.SkullMeta
 import kotlin.time.Duration.Companion.seconds
 
 class TeleportRequestScreen : ListMenu<Player, TeleportRequestScreenModel>() {
-    override val key: ScreenKey = "essentials_teleport_request"
-
     @Composable
     override fun modelProvider(): TeleportRequestScreenModel {
         val player = LocalPlayer.current

@@ -1,6 +1,5 @@
 package ink.pmc.framework.interactive
 
-import cafe.adriel.voyager.core.screen.Screen
 import ink.pmc.framework.interactive.inventory.layout.InventoryNode
 import ink.pmc.framework.utils.inject.inlinedGet
 import org.bukkit.entity.Player
@@ -21,7 +20,7 @@ interface GuiManager {
 
     fun startInventory(player: Player, contents: ComposableFunction): GuiInventoryScope
 
-    fun startScreen(player: Player, screen: Screen)
+    fun startScreen(player: Player, screen: InteractiveScreen)
 
     fun removeScope(scope: GuiScope<*>)
 

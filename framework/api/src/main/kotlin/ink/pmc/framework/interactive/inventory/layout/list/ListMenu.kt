@@ -3,10 +3,10 @@ package ink.pmc.framework.interactive.inventory.layout.list
 import androidx.compose.runtime.*
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.rememberScreenModel
-import cafe.adriel.voyager.core.screen.Screen
 import ink.pmc.advkt.component.component
 import ink.pmc.advkt.component.italic
 import ink.pmc.advkt.component.text
+import ink.pmc.framework.interactive.InteractiveScreen
 import ink.pmc.framework.interactive.inventory.*
 import ink.pmc.framework.interactive.inventory.components.SeparatePageTuner
 import ink.pmc.framework.interactive.inventory.components.SeparatePageTunerMode
@@ -17,7 +17,7 @@ import ink.pmc.framework.interactive.inventory.layout.Row
 import ink.pmc.framework.utils.visual.mochaSubtext0
 import org.bukkit.Material
 
-abstract class ListMenu<E, M : ListMenuModel<E>> : Screen {
+abstract class ListMenu<E, M : ListMenuModel<E>> : InteractiveScreen() {
     val LocalListMenuModel: ProvidableCompositionLocal<M> =
         staticCompositionLocalOf { error("Uninitialized") }
     val LocalListMenuOptions: ProvidableCompositionLocal<ListMenuOptions> =

@@ -1,8 +1,6 @@
 package ink.pmc.essentials.screens.home
 
 import androidx.compose.runtime.*
-import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import ink.pmc.essentials.*
@@ -13,6 +11,7 @@ import ink.pmc.essentials.screens.home.HomeEditorScreen.PreferState.PRRFERRED
 import ink.pmc.essentials.screens.home.HomeEditorScreen.StarState.NOT_STARRED
 import ink.pmc.essentials.screens.home.HomeEditorScreen.StarState.STARRED
 import ink.pmc.essentials.screens.home.HomeEditorScreen.State.*
+import ink.pmc.framework.interactive.InteractiveScreen
 import ink.pmc.framework.interactive.LocalPlayer
 import ink.pmc.framework.interactive.inventory.*
 import ink.pmc.framework.interactive.inventory.canvas.Anvil
@@ -33,9 +32,7 @@ import org.bukkit.event.inventory.ClickType
 import org.koin.compose.koinInject
 import kotlin.time.Duration.Companion.seconds
 
-class HomeEditorScreen(private val home: Home) : Screen {
-    override val key: ScreenKey = "essentials_home_editor"
-
+class HomeEditorScreen(private val home: Home) : InteractiveScreen() {
     @Composable
     override fun Content() {
         Chest(
@@ -102,9 +99,7 @@ class HomeEditorScreen(private val home: Home) : Screen {
         EDITING, INVALID, TOO_LONG, EXISTED, SUCCEED
     }
 
-    inner class RenameScreen : Screen {
-        override val key: ScreenKey = "essentials_home_editor_rename"
-
+    inner class RenameScreen : InteractiveScreen() {
         @Composable
         override fun Content() {
             val player = LocalPlayer.current

@@ -10,7 +10,6 @@ import ink.pmc.essentials.api.home.HomeManager
 import ink.pmc.essentials.api.teleport.random.RandomTeleportManager
 import ink.pmc.essentials.api.warp.Warp
 import ink.pmc.essentials.api.warp.WarpManager
-import ink.pmc.framework.utils.concurrent.submitAsync
 import ink.pmc.menu.inspecting
 import org.bukkit.entity.Player
 import kotlin.time.Duration
@@ -34,29 +33,29 @@ class MainMenuModel(private val player: Player) : ScreenModel {
         data object None : PreferredSpawnState()
     }
 
-    fun refreshPreferredHome() {
-        submitAsync {
-            val home = HomeManager.getPreferredHome(player)
-            preferredHomeState = if (home != null) PreferredHomeState.Ready(home) else PreferredHomeState.None
+    suspend fun loadInformation() {
+        loadPreferredHome()
+        loadPreferredSpawn()
+        loadDailyState()
+    }
+
+    private suspend fun loadPreferredHome() {
+        val home = HomeManager.getPreferredHome(player)
+        preferredHomeState = if (home != null) PreferredHomeState.Ready(home) else PreferredHomeState.None
+    }
+
+    private suspend fun loadPreferredSpawn() {
+        val spawn = WarpManager.getPreferredSpawn(player)
+        val defaultSpawn = WarpManager.getDefaultSpawn()
+        preferredSpawnState = when {
+            spawn != null -> PreferredSpawnState.Ready(spawn)
+            defaultSpawn != null -> PreferredSpawnState.Ready(defaultSpawn)
+            else -> PreferredSpawnState.None
         }
     }
 
-    fun refreshPreferredSpawn() {
-        submitAsync {
-            val spawn = WarpManager.getPreferredSpawn(player)
-            val defaultSpawn = WarpManager.getDefaultSpawn()
-            preferredSpawnState = when {
-                spawn != null -> PreferredSpawnState.Ready(spawn)
-                defaultSpawn != null -> PreferredSpawnState.Ready(defaultSpawn)
-                else -> PreferredSpawnState.None
-            }
-        }
-    }
-
-    fun refreshCheckInState() {
-        submitAsync {
-            isCheckedInToday = Daily.isCheckedInToday(player.uniqueId)
-        }
+    private suspend fun loadDailyState() {
+        isCheckedInToday = Daily.isCheckedInToday(player.uniqueId)
     }
 
     private fun rtpCooldownRemaining(): Duration {

@@ -2,17 +2,16 @@ package ink.pmc.framework.interactive.examples
 
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import ink.pmc.advkt.component.component
 import ink.pmc.advkt.component.italic
 import ink.pmc.advkt.component.text
+import ink.pmc.framework.interactive.InteractiveScreen
 import ink.pmc.framework.interactive.LocalPlayer
 import ink.pmc.framework.interactive.inventory.*
-import ink.pmc.framework.interactive.inventory.click.clickable
 import ink.pmc.framework.interactive.inventory.canvas.Chest
+import ink.pmc.framework.interactive.inventory.click.clickable
 import ink.pmc.framework.interactive.inventory.jetpack.Arrangement
 import ink.pmc.framework.interactive.inventory.layout.Box
 import ink.pmc.framework.interactive.inventory.layout.Column
@@ -25,9 +24,7 @@ import net.kyori.adventure.text.Component
 import org.bukkit.Material
 import kotlin.math.floor
 
-class ExampleScreen1 : Screen {
-
-    override val key: ScreenKey = "interactive_example_1"
+class ExampleScreen1 : InteractiveScreen() {
 
     @Composable
     override fun Content() {
