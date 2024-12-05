@@ -113,7 +113,7 @@ class TeleportRequestScreen : ListMenu<Player, TeleportRequestScreenModel>() {
             },
             modifier = Modifier.clickable {
                 if (model.isRequestSent || model.requestSentTo != null) return@clickable
-                if (TeleportManager.hasUnfinishedRequest(obj)) return@clickable
+                if (TeleportManager.hasUnfinishedRequest(player)) return@clickable
                 val direction = when (clickType) {
                     ClickType.LEFT -> TeleportDirection.GO
                     ClickType.RIGHT -> TeleportDirection.COME
