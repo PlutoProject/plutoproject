@@ -194,6 +194,7 @@ class DailyCalenderScreen : InteractiveScreen() {
                     }
 
                     ClickType.SHIFT_LEFT -> {
+                        if (model.yearMonth == model.realTime) return@clickable
                         model.backNow()
                         whoClicked.playSound(UI_PAGING_SOUND)
                     }
