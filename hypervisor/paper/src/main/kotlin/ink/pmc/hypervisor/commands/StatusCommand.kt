@@ -5,13 +5,13 @@ import ink.pmc.advkt.component.newline
 import ink.pmc.advkt.component.raw
 import ink.pmc.advkt.component.text
 import ink.pmc.advkt.send
-import ink.pmc.hypervisor.LoadLevel.*
-import ink.pmc.hypervisor.MeasuringTime
-import ink.pmc.hypervisor.StatisticProvider
 import ink.pmc.framework.utils.concurrent.sync
 import ink.pmc.framework.utils.platform.paper
 import ink.pmc.framework.utils.roundToTwoDecimals
 import ink.pmc.framework.utils.visual.*
+import ink.pmc.hypervisor.LoadLevel.*
+import ink.pmc.hypervisor.MeasuringTime
+import ink.pmc.hypervisor.StatisticProvider
 import net.kyori.adventure.text.Component
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Entity
@@ -57,8 +57,13 @@ object StatusCommand {
             text("» ") with mochaSubtext0
             text("ℹ 说明") with mochaBlue
             newline()
-            text("- ") with mochaSubtext0
-            raw(getPromptMessage())
+            val messages = getPromptMessage()
+            val last = messages.lastIndex
+            getPromptMessage().forEachIndexed { i, c ->
+                text("- ") with mochaSubtext0
+                raw(c)
+                if (i != last) newline()
+            }
         }
     }
 
@@ -86,19 +91,34 @@ object StatusCommand {
         }
     }
 
-    private fun getPromptMessage(): Component {
-        return component {
+    private fun getPromptMessage(): List<Component> {
+        return buildList {
             when (StatisticProvider.getLoadLevel()!!) {
                 LOW -> {
-                    text("服务器目前负载较低，可适量开启机器、进行跑图") with mochaGreen
+                    add(component {
+                        text("服务器目前负载较低") with mochaGreen
+                    })
+                    add(component {
+                        text("可适量开启机器、进行跑图") with mochaGreen
+                    })
                 }
 
                 MODERATE -> {
-                    text("服务器目前负载中等，建议关闭不在使用的机器、酌情降低跑图速度、离开村民交易所等多实体场景") with mochaYellow
+                    add(component {
+                        text("服务器目前负载中等") with mochaYellow
+                    })
+                    add(component {
+                        text("建议关闭不在使用的机器、酌情降低跑图速度、离开村民交易所等多实体场景") with mochaYellow
+                    })
                 }
 
                 HIGH -> {
-                    text("服务器目前已过载，请关闭正在运行的机器、暂缓跑图、离开村民交易所等多实体场景") with mochaMaroon
+                    add(component {
+                        text("服务器目前已过载") with mochaMaroon
+                    })
+                    add(component {
+                        text("请关闭正在运行的机器、暂缓跑图、离开村民交易所等多实体场景") with mochaMaroon
+                    })
                 }
             }
         }
