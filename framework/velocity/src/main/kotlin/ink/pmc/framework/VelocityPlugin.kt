@@ -30,6 +30,7 @@ import ink.pmc.framework.utils.inject.startKoinIfNotPresent
 import ink.pmc.framework.utils.platform.proxy
 import ink.pmc.framework.utils.platform.proxyThread
 import ink.pmc.framework.utils.platform.saveDefaultConfig
+import ink.pmc.framework.utils.player.profile.ProfileCacheListener
 import net.kyori.adventure.text.minimessage.MiniMessage
 import org.incendo.cloud.minecraft.extras.parser.ComponentParser
 import org.incendo.cloud.parser.standard.StringParser
@@ -73,6 +74,7 @@ class VelocityPlugin @Inject constructor(private val spc: SuspendingPluginContai
         }
         server.eventManager.registerSuspend(this, VelocityOptionsListener)
         server.eventManager.registerSuspend(this, BridgePlayerListener)
+        server.eventManager.registerSuspend(this, ProfileCacheListener)
     }
 
     @Subscribe

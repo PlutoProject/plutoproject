@@ -17,6 +17,9 @@ import ink.pmc.framework.rpc.RpcClientImpl
 import ink.pmc.framework.rpc.RpcServer
 import ink.pmc.framework.rpc.RpcServerImpl
 import ink.pmc.framework.utils.config.preconfiguredConfigLoaderBuilder
+import ink.pmc.framework.utils.player.profile.ProfileCache
+import ink.pmc.framework.utils.player.profile.ProfileCacheImpl
+import ink.pmc.framework.utils.player.profile.ProfileCacheRepository
 import ink.pmc.framework.visual.ToastFactoryImpl
 import ink.pmc.framework.visual.toast.ToastFactory
 import org.koin.core.qualifier.named
@@ -45,4 +48,6 @@ val commonModule = module {
     single<OptionsManager> { OptionsManagerImpl() }
     single<OptionDescriptorFactory> { OptionDescriptorFactoryImpl() }
     single<ToastFactory> { ToastFactoryImpl() }
+    single<ProfileCache> { ProfileCacheImpl() }
+    single<ProfileCacheRepository> { ProfileCacheRepository(getCollection("framework_utils_profile_cache")) }
 }

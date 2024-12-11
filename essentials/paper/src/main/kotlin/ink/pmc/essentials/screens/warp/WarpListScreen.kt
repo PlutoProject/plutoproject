@@ -16,6 +16,7 @@ import ink.pmc.framework.interactive.inventory.layout.list.FilterListMenu
 import ink.pmc.framework.utils.chat.UI_SUCCEED_SOUND
 import ink.pmc.framework.utils.chat.splitLines
 import ink.pmc.framework.utils.concurrent.sync
+import ink.pmc.framework.utils.player.profile.ProfileCache
 import ink.pmc.framework.utils.time.formatDate
 import ink.pmc.framework.utils.time.zoneId
 import ink.pmc.framework.utils.visual.*
@@ -49,9 +50,8 @@ class WarpListScreen : FilterListMenu<Warp, WarpFilter, WarpListScreenModel>(
         val isInCollection = model.collected.contains(obj)
         if (obj.founder != null) {
             LaunchedEffect(obj) {
-                founderName = obj.founder?.let {
-                    val founder = it.await()
-                    founder.name
+                founderName = obj.founderId?.let {
+                    ProfileCache.getByUuid(it)?.rawName
                 }
             }
         }
