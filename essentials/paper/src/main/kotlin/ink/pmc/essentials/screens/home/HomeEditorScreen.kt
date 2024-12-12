@@ -55,8 +55,8 @@ class HomeEditorScreen(private val home: Home) : InteractiveScreen() {
                 Prefer()
                 Star()
                 Rename()
-                ChangeLocation()
                 SetIcon()
+                ChangeLocation()
                 ItemSpacer()
                 Delete()
             }
