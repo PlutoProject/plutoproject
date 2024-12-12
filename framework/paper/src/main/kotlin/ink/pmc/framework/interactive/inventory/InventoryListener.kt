@@ -27,7 +27,7 @@ object InventoryListener : Listener {
         isCancelled = true
 
         val scope = ClickScope(
-            click, slot, cursor.takeIf { it.type != Material.AIR }, whoClicked
+            view, click, slot, cursor.takeIf { it.type != Material.AIR }, whoClicked
         )
         invHolder.scope.coroutineScope.launch {
             invHolder.processClick(scope, this@e)
@@ -55,7 +55,7 @@ object InventoryListener : Listener {
         if (newItems.size == 1 && inInv.size == 1) {
             isCancelled = true
             val clicked = inInv.entries.first()
-            val scope = ClickScope(LEFT, clicked.key, cursor?.takeIf { it.type != Material.AIR }, whoClicked)
+            val scope = ClickScope(view, LEFT, clicked.key, cursor?.takeIf { it.type != Material.AIR }, whoClicked)
             invHolder.scope.coroutineScope.launch {
                 invHolder.processClick(scope, this@e)
             }

@@ -20,6 +20,8 @@ import ink.pmc.framework.utils.chat.UI_INVALID_SOUND
 import ink.pmc.framework.utils.chat.UI_SUCCEED_SOUND
 import ink.pmc.framework.utils.chat.replace
 import ink.pmc.framework.utils.concurrent.submitAsync
+import ink.pmc.framework.utils.concurrent.sync
+import ink.pmc.framework.utils.player.addItemOrDrop
 import ink.pmc.framework.utils.visual.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -244,6 +246,7 @@ class HomeEditorScreen(private val home: Home) : InteractiveScreen() {
             } else component {
                 text("设置图标") with mochaText without italic()
             },
+            enchantmentGlint = state == SetIconState.SUCCEED,
             lore = when (state) {
                 SetIconState.NONE -> buildList {
                     add(component {
@@ -278,6 +281,7 @@ class HomeEditorScreen(private val home: Home) : InteractiveScreen() {
                 if (state != SetIconState.NONE) return@clickable
                 when (clickType) {
                     ClickType.LEFT -> {
+                        val carriedItem = cursor
                         val material = cursor?.type
                         if (material == null) {
                             state = SetIconState.NO_ITEM
@@ -292,6 +296,10 @@ class HomeEditorScreen(private val home: Home) : InteractiveScreen() {
                         home.icon = material
                         home.update()
                         current = material
+                        player.sync {
+                            view.setCursor(null)
+                            player.inventory.addItemOrDrop(carriedItem!!)
+                        }
                         state = SetIconState.SUCCEED
                         player.playSound(UI_SUCCEED_SOUND)
                         coroutineScope.launch {
