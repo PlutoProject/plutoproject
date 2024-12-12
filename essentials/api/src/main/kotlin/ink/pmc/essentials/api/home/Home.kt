@@ -1,6 +1,7 @@
 package ink.pmc.essentials.api.home
 
 import org.bukkit.Location
+import org.bukkit.Material
 import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
 import java.time.Instant
@@ -11,6 +12,7 @@ interface Home {
 
     val id: UUID
     var name: String
+    var icon: Material?
     val createdAt: Instant
     var location: Location
     val owner: OfflinePlayer

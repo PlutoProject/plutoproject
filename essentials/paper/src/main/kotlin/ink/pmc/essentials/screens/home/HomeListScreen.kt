@@ -79,7 +79,11 @@ class HomeListScreen(private val viewing: OfflinePlayer) : ListMenu<Home, HomeLi
         val player = LocalPlayer.current
         val navigator = LocalNavigator.currentOrThrow
         Item(
-            material = if (!obj.isPreferred) Material.PAPER else Material.SUNFLOWER,
+            material = when {
+                obj.icon != null -> obj.icon!!
+                obj.isPreferred -> Material.SUNFLOWER
+                else -> Material.PAPER
+            },
             name = component {
                 text(obj.name) with mochaYellow without italic()
             },

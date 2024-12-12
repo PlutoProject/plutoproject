@@ -11,6 +11,7 @@ import ink.pmc.framework.utils.concurrent.submitAsync
 import ink.pmc.framework.utils.storage.model
 import org.bukkit.Bukkit
 import org.bukkit.Location
+import org.bukkit.Material
 import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
 import org.koin.core.component.KoinComponent
@@ -25,6 +26,7 @@ class HomeImpl(private val model: HomeModel) : Home, KoinComponent {
 
     override val id: UUID = model.id
     override var name: String = model.name
+    override var icon: Material? = model.icon
     override val createdAt: Instant = Instant.ofEpochMilli(model.createdAt)
     override var location: Location =
         requireNotNull(model.location.location) {
@@ -76,6 +78,7 @@ class HomeImpl(private val model: HomeModel) : Home, KoinComponent {
     private fun toModel() = model.copy(
         id = id,
         name = name,
+        icon = icon,
         createdAt = createdAt.toEpochMilli(),
         location = location.model,
         owner = owner.uniqueId,
