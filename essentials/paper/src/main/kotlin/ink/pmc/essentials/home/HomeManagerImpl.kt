@@ -10,7 +10,6 @@ import ink.pmc.essentials.disabled
 import ink.pmc.essentials.essentialsScope
 import ink.pmc.essentials.models.HomeModel
 import ink.pmc.essentials.repositories.HomeRepository
-import ink.pmc.framework.utils.chat.isValidIdentifier
 import ink.pmc.framework.utils.platform.paper
 import ink.pmc.framework.utils.storage.model
 import kotlinx.coroutines.delay
@@ -137,6 +136,7 @@ class HomeManagerImpl : HomeManager, KoinComponent {
             ObjectId(),
             UUID.randomUUID(),
             name,
+            null,
             System.currentTimeMillis(),
             location.model,
             owner.uniqueId,
