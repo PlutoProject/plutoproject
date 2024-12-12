@@ -46,7 +46,8 @@ class HomeEditorScreen(private val home: Home) : InteractiveScreen() {
     override fun Content() {
         Menu(
             title = UI_HOME_EDITOR_TITLE.replace("<name>", home.name),
-            rows = 3
+            rows = 3,
+            centerBackground = true,
         ) {
             Row(modifier = Modifier.fillMaxHeight().width(7)) {
                 Prefer()
@@ -237,7 +238,7 @@ class HomeEditorScreen(private val home: Home) : InteractiveScreen() {
         var current by remember { mutableStateOf(home.icon) }
         var state by remember { mutableStateOf(SetIconState.NONE) }
         Item(
-            material = Material.ITEM_FRAME,
+            material = if (state == SetIconState.SUCCEED && current != null) current!! else Material.ITEM_FRAME,
             name = if (state == SetIconState.SUCCEED) component {
                 text("√ 已保存") with mochaGreen without italic()
             } else component {
@@ -246,7 +247,7 @@ class HomeEditorScreen(private val home: Home) : InteractiveScreen() {
             lore = when (state) {
                 SetIconState.NONE -> buildList {
                     add(component {
-                        text("将物品放置在此处以设置图标")
+                        text("将物品放置在此处以设置图标") with mochaSubtext0 without italic()
                     })
                     if (current != null) {
                         add(component {
@@ -259,6 +260,10 @@ class HomeEditorScreen(private val home: Home) : InteractiveScreen() {
                         text("左键 ") with mochaLavender without italic()
                         text("设置图标") with mochaText without italic()
                     })
+                    add(component {
+                        text("Shift + 左键 ") with mochaLavender without italic()
+                        text("恢复默认") with mochaText without italic()
+                    })
                 }
 
                 SetIconState.NO_ITEM -> buildList {
@@ -270,28 +275,44 @@ class HomeEditorScreen(private val home: Home) : InteractiveScreen() {
                 SetIconState.SUCCEED -> emptyList()
             },
             modifier = Modifier.clickable {
-                if (clickType != ClickType.LEFT) return@clickable
                 if (state != SetIconState.NONE) return@clickable
+                when (clickType) {
+                    ClickType.LEFT -> {
+                        val material = cursor?.type
+                        if (material == null) {
+                            state = SetIconState.NO_ITEM
+                            player.playSound(UI_INVALID_SOUND)
+                            coroutineScope.launch {
+                                delay(1.seconds)
+                                state = SetIconState.NONE
+                            }
+                            return@clickable
+                        }
 
-                val material = cursor?.type
-                if (material == null) {
-                    state = SetIconState.NO_ITEM
-                    player.playSound(UI_INVALID_SOUND)
-                    coroutineScope.launch {
-                        delay(1.seconds)
-                        state = SetIconState.NONE
+                        home.icon = material
+                        home.update()
+                        current = material
+                        state = SetIconState.SUCCEED
+                        player.playSound(UI_SUCCEED_SOUND)
+                        coroutineScope.launch {
+                            delay(1.seconds)
+                            state = SetIconState.NONE
+                        }
                     }
-                    return@clickable
-                }
 
-                home.icon = material
-                home.update()
-                current = material
-                state = SetIconState.SUCCEED
-                player.playSound(UI_SUCCEED_SOUND)
-                coroutineScope.launch {
-                    delay(1.seconds)
-                    state = SetIconState.NONE
+                    ClickType.SHIFT_LEFT -> {
+                        home.icon = null
+                        home.update()
+                        current = null
+                        state = SetIconState.SUCCEED
+                        player.playSound(UI_SUCCEED_SOUND)
+                        coroutineScope.launch {
+                            delay(1.seconds)
+                            state = SetIconState.NONE
+                        }
+                    }
+
+                    else -> {}
                 }
             }
         )
