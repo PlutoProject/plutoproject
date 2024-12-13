@@ -246,18 +246,22 @@ object BridgeRpc : BridgeRpcCoroutineImplBase(), KoinComponent {
         timeout = true
     }
 
+    private suspend fun handleSwitchServer(request: PlayerOperation, player: InternalPlayer): PlayerOperationResult {
+        runCatching {
+            player.switchServer(request.switchServer)
+        }.onFailure {
+            return playerOperationResult { serverOffline = true }
+        }
+        return playerOperationResult { ok = true }
+    }
+
     override suspend fun operatePlayer(request: PlayerOperation): PlayerOperationResult = rpcCatching {
         debugInfo("BridgeRpc - operatePlayer called: $request")
         if (!checkMultiple(
                 request.id != "",
                 request.executor != "",
                 request.playerUuid != "",
-                (request.hasInfoLookup()
-                        || request.hasSendMessage()
-                        || request.hasShowTitle()
-                        || request.hasPlaySound()
-                        || request.hasTeleport()
-                        || request.hasPerformCommand())
+                request.contentCase != CONTENT_NOT_SET
             )
         ) {
             return@rpcCatching playerOperationResult { missingFields = true }
@@ -271,6 +275,7 @@ object BridgeRpc : BridgeRpcCoroutineImplBase(), KoinComponent {
             PLAY_SOUND -> handlePlaySound(request)
             TELEPORT -> handleTeleport(request)
             PERFORM_COMMAND -> handlePerformCommand(request)
+            SWITCH_SERVER -> handleSwitchServer(request, localPlayer)
             CONTENT_NOT_SET -> throwContentNotSet("PlayerOperation")
         }
     }

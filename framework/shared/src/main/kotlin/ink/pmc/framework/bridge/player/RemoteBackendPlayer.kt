@@ -67,4 +67,14 @@ abstract class RemoteBackendPlayer : RemotePlayer() {
         })
         checkNoReturnResult(result)?.let { warn { throw it } }
     }
+
+    override suspend fun switchServer(server: String) {
+        val result = operatePlayer(playerOperation {
+            id = UUID.randomUUID().toString()
+            executor = this@RemoteBackendPlayer.server.id
+            playerUuid = uniqueId.toString()
+            switchServer = server
+        })
+        checkNoReturnResult(result)?.let { warn { throw it } }
+    }
 }

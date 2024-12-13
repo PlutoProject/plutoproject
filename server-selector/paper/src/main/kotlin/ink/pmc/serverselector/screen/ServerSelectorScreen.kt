@@ -14,11 +14,11 @@ import ink.pmc.framework.interactive.inventory.layout.Menu
 import ink.pmc.framework.interactive.inventory.layout.Row
 import ink.pmc.framework.utils.concurrent.submitAsync
 import ink.pmc.framework.utils.concurrent.sync
-import ink.pmc.framework.utils.player.switchServer
 import ink.pmc.framework.utils.visual.*
 import ink.pmc.serverselector.Ingredient
 import ink.pmc.serverselector.Server
 import ink.pmc.serverselector.ServerSelectorConfig
+import ink.pmc.serverselector.transferServer
 import kotlinx.coroutines.delay
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextDecoration
@@ -119,7 +119,7 @@ class ServerSelectorScreen : InteractiveScreen(), KoinComponent {
             modifier = Modifier.clickable {
                 if (clickType != ClickType.LEFT) return@clickable
                 submitAsync {
-                    player.switchServer(server.bridgeId)
+                    player.transferServer(server.bridgeId)
                 }
                 sync {
                     player.closeInventory()

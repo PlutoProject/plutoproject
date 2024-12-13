@@ -55,6 +55,8 @@ interface BridgePlayer : WorldElement<BridgePlayer> {
 
     suspend fun performCommand(command: String)
 
+    suspend fun switchServer(server: String)
+
     override fun convertElement(state: ServerState, type: ServerType): BridgePlayer? {
         if (serverState == state && serverType == type) return this
         return Bridge.servers.flatMap { it.players }.firstOrNull {
