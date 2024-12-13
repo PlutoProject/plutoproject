@@ -28,6 +28,11 @@ class PaperPlugin : SuspendingJavaPlugin() {
             modules(bukkitModule)
         }
         loadLobbyWorld()
+        startTimeSync()
         server.pluginManager.registerEvents(PlayerListener, this)
+    }
+
+    override fun onDisable() {
+        stopTimeSync()
     }
 }

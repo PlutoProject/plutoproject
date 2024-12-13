@@ -109,6 +109,12 @@ object PlayerListener : Listener {
     }
 
     @EventHandler
+    fun PlayerChangedWorldEvent.e() {
+        if (player.world == lobbyWorld) return
+        player.resetPlayerTime()
+    }
+
+    @EventHandler
     fun EntitySpawnEvent.e() {
         if (entity.world != lobbyWorld) return
         isCancelled = true
