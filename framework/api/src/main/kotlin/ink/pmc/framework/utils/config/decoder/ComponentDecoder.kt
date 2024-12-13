@@ -17,6 +17,6 @@ object ComponentDecoder : NullHandlingDecoder<Component> {
     }
 
     override fun supports(type: KType): Boolean {
-        return type.classifier == String::class
+        return type.classifier == Component::class
     }
 }

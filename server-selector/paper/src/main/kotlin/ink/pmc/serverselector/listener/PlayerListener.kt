@@ -2,12 +2,16 @@ package ink.pmc.serverselector.listener
 
 import com.destroystokyo.paper.event.player.PlayerAdvancementCriterionGrantEvent
 import com.destroystokyo.paper.event.player.PlayerPickupExperienceEvent
+import ink.pmc.framework.interactive.GuiManager
 import ink.pmc.serverselector.*
+import ink.pmc.serverselector.screen.ServerSelectorScreen
 import org.bukkit.GameMode
+import org.bukkit.Material
 import org.bukkit.attribute.Attribute
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
+import org.bukkit.event.block.Action
 import org.bukkit.event.entity.*
 import org.bukkit.event.player.*
 import org.bukkit.event.weather.WeatherChangeEvent
@@ -38,7 +42,11 @@ object PlayerListener : Listener {
     @EventHandler
     fun PlayerInteractEvent.e() {
         if (action.isRightClick && item?.isServerSelector == true) {
-            // TODO: 打开菜单
+            GuiManager.startScreen(player, ServerSelectorScreen())
+            isCancelled = true
+            return
+        }
+        if (action == Action.PHYSICAL && clickedBlock?.type == Material.FARMLAND) {
             isCancelled = true
             return
         }

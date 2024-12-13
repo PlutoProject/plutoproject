@@ -6,7 +6,7 @@ import org.bukkit.Material
 data class ServerSelectorConfig(
     val lobby: Lobby,
     val menu: Menu = Menu(),
-    val server: Map<String, Server> = mapOf()
+    val servers: List<Server> = listOf()
 )
 
 data class Lobby(
@@ -21,7 +21,7 @@ data class Lobby(
 data class Menu(
     val rows: Int = 3,
     val pattern: List<String> = listOf(),
-    val ingredient: Map<String, Ingredient> = mapOf(),
+    val ingredients: Map<String, Ingredient> = mapOf(),
 )
 
 data class Ingredient(
@@ -29,6 +29,7 @@ data class Ingredient(
 )
 
 data class Server(
+    val bridgeId: String,
     val menuIcon: String,
     val name: String,
     val displayName: Component = Component.text(name),
