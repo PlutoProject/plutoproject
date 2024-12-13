@@ -1,9 +1,8 @@
 package ink.pmc.serverselector.listener
 
+import com.destroystokyo.paper.event.player.PlayerAdvancementCriterionGrantEvent
 import com.destroystokyo.paper.event.player.PlayerPickupExperienceEvent
-import ink.pmc.serverselector.PROTECTION_BYPASS
-import ink.pmc.serverselector.ServerSelectorItem
-import ink.pmc.serverselector.isServerSelector
+import ink.pmc.serverselector.*
 import org.bukkit.GameMode
 import org.bukkit.attribute.Attribute
 import org.bukkit.entity.Player
@@ -28,11 +27,11 @@ object PlayerListener : Listener {
         ) {
             player.inventory.addItem(ServerSelectorItem)
         }
+        player.teleportAsync(lobbyWorldSpawn)
         player.health = player.getAttribute(Attribute.GENERIC_MAX_HEALTH)?.value ?: error("Unexpected")
         player.foodLevel = 20
         player.saturation = 20f
-        // TODO: 设置重生点到大厅
-        // TODO: 传送到大厅
+        player.setRespawnLocation(lobbyWorldSpawn, true)
         if (player.hasPermission(PROTECTION_BYPASS)) return
         player.gameMode = GameMode.SURVIVAL
     }
@@ -93,10 +92,20 @@ object PlayerListener : Listener {
     }
 
     @EventHandler
+    fun PlayerAdvancementCriterionGrantEvent.e() {
+        isCancelled = true
+    }
+
+    @EventHandler
+    fun PlayerRecipeDiscoverEvent.e() {
+        isCancelled = true
+    }
+
+    @EventHandler
     fun PlayerMoveEvent.e() {
-        // TODO: 检测是否在大厅
-        if (player.height < player.world.minHeight) {
-            // TODO: 传送到大厅
-        }
+        val world = player.world
+        if (world != lobbyWorld) return
+        if (player.location.blockY in world.minHeight..world.maxHeight) return
+        player.teleportAsync(lobbyWorldSpawn)
     }
 }

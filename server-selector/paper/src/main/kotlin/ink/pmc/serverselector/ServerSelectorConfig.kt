@@ -4,9 +4,18 @@ import net.kyori.adventure.text.Component
 import org.bukkit.Material
 
 data class ServerSelectorConfig(
-    val lobbyWorld: String = "transfer",
+    val lobby: Lobby,
     val menu: Menu = Menu(),
     val server: Map<String, Server> = mapOf()
+)
+
+data class Lobby(
+    val world: String,
+    val x: Double,
+    val y: Double,
+    val z: Double,
+    val yaw: Float,
+    val pitch: Float
 )
 
 data class Menu(

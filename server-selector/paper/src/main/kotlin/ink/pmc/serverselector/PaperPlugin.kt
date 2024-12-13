@@ -27,6 +27,7 @@ class PaperPlugin : SuspendingJavaPlugin() {
         startKoinIfNotPresent {
             modules(bukkitModule)
         }
+        loadLobbyWorld()
         server.pluginManager.registerEvents(PlayerListener, this)
     }
 }
