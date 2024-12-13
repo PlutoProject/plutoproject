@@ -1029,14 +1029,15 @@ val UI_HOME_EDITOR_RENAME_SAVE_INVALID_LORE = listOf(
     component { text("仅可使用字母、数字、下划线") with mochaMaroon without italic() }
 )
 
-val UI_HOME_EDITOR_RENAME_SAVE_TOO_LONG = listOf(
-    Component.empty(),
-    component {
-        text("名称过长，最多使用 ") with mochaMaroon without italic()
-        text("${HomeManager.nameLengthLimit} ") with mochaText without italic()
-        text("个字符") with mochaMaroon without italic()
-    }
-)
+val UI_HOME_EDITOR_RENAME_SAVE_TOO_LONG
+    get() = listOf(
+        Component.empty(),
+        component {
+            text("名称过长，最多使用 ") with mochaMaroon without italic()
+            text("${HomeManager.nameLengthLimit} ") with mochaText without italic()
+            text("个字符") with mochaMaroon without italic()
+        }
+    )
 
 val UI_HOME_EDITOR_RENAME_SAVE_EXISTED = listOf(
     Component.empty(),
