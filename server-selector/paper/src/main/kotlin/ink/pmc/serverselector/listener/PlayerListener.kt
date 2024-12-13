@@ -8,11 +8,9 @@ import org.bukkit.attribute.Attribute
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
-import org.bukkit.event.entity.EntityDamageByEntityEvent
-import org.bukkit.event.entity.EntityDamageEvent
-import org.bukkit.event.entity.EntityPickupItemEvent
-import org.bukkit.event.entity.FoodLevelChangeEvent
+import org.bukkit.event.entity.*
 import org.bukkit.event.player.*
+import org.bukkit.event.weather.WeatherChangeEvent
 
 @Suppress("UNUSED")
 object PlayerListener : Listener {
@@ -31,6 +29,7 @@ object PlayerListener : Listener {
         player.health = player.getAttribute(Attribute.GENERIC_MAX_HEALTH)?.value ?: error("Unexpected")
         player.foodLevel = 20
         player.saturation = 20f
+        player.clearActivePotionEffects()
         player.setRespawnLocation(lobbyWorldSpawn, true)
         if (player.hasPermission(PROTECTION_BYPASS)) return
         player.gameMode = GameMode.SURVIVAL
@@ -107,5 +106,17 @@ object PlayerListener : Listener {
         if (world != lobbyWorld) return
         if (player.location.blockY in world.minHeight..world.maxHeight) return
         player.teleportAsync(lobbyWorldSpawn)
+    }
+
+    @EventHandler
+    fun EntitySpawnEvent.e() {
+        if (entity.world != lobbyWorld) return
+        isCancelled = true
+    }
+
+    @EventHandler
+    fun WeatherChangeEvent.e() {
+        if (world != lobbyWorld) return
+        isCancelled = true
     }
 }

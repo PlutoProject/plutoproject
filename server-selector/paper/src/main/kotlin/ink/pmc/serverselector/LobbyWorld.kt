@@ -26,10 +26,12 @@ fun loadLobbyWorld() {
         difficulty = Difficulty.PEACEFUL
         spawnLocation = lobbyWorldSpawn
         setGameRule(GameRule.SPAWN_RADIUS, 0)
+        setGameRule(GameRule.RANDOM_TICK_SPEED, 0)
         setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false)
         setGameRule(GameRule.DO_WEATHER_CYCLE, false)
         setGameRule(GameRule.DO_MOB_SPAWNING, false)
         setGameRule(GameRule.DO_FIRE_TICK, false)
+        setGameRule(GameRule.MOB_GRIEFING, false)
         setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true)
         setGameRule(GameRule.KEEP_INVENTORY, true)
         setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false)
