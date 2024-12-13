@@ -4,6 +4,7 @@ import net.kyori.adventure.text.Component
 import org.bukkit.Material
 
 data class ServerSelectorConfig(
+    val lobbyWorld: String = "transfer",
     val menu: Menu = Menu(),
     val server: Map<String, Server> = mapOf()
 )
