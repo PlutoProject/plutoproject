@@ -18,11 +18,10 @@ object BsonUUIDSerializer : KSerializer<UUID> {
     override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("uuid_bson", PrimitiveKind.STRING)
 
     override fun deserialize(decoder: Decoder): UUID {
-        when (decoder) {
+        return when (decoder) {
             is BsonDecoder -> decoder.decodeBsonValue().asBinary().asUuid()
             else -> throw SerializationException("BsonValues are not supported by ${decoder::class}")
         }
-        return UUID.fromString(decoder.decodeString())
     }
 
     override fun serialize(encoder: Encoder, value: UUID) {

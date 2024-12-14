@@ -6,7 +6,8 @@ import ink.pmc.framework.options.OptionsManager
 import ink.pmc.framework.utils.config.preconfiguredConfigLoaderBuilder
 import ink.pmc.framework.utils.inject.startKoinIfNotPresent
 import ink.pmc.framework.utils.storage.saveResourceIfNotExisted
-import ink.pmc.serverselector.listener.PlayerListener
+import ink.pmc.serverselector.listener.LobbyListener
+import ink.pmc.serverselector.listener.TimeSyncListener
 import org.bukkit.plugin.java.JavaPlugin
 import org.koin.dsl.module
 
@@ -29,12 +30,12 @@ class PaperPlugin : SuspendingJavaPlugin() {
             modules(sharedModule, bukkitModule)
         }
         loadLobbyWorld()
-        startTimeSync()
         OptionsManager.registerOptionDescriptor(AUTO_JOIN_DESCRIPTOR)
-        server.pluginManager.registerEvents(PlayerListener, this)
+        server.pluginManager.registerEvents(LobbyListener, this)
+        server.pluginManager.registerEvents(TimeSyncListener, this)
     }
 
     override fun onDisable() {
-        stopTimeSync()
+        stopTimeSyncJobs()
     }
 }

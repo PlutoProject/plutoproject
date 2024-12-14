@@ -17,7 +17,7 @@ import org.bukkit.event.player.*
 import org.bukkit.event.weather.WeatherChangeEvent
 
 @Suppress("UNUSED")
-object PlayerListener : Listener {
+object LobbyListener : Listener {
     @EventHandler
     fun PlayerJoinEvent.e() {
         if (!player.hasPermission(PROTECTION_BYPASS)) {
