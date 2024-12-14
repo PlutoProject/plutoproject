@@ -9,19 +9,21 @@ import ink.pmc.framework.interactive.InteractiveScreen
 import ink.pmc.framework.interactive.LocalPlayer
 import ink.pmc.framework.interactive.inventory.*
 import ink.pmc.framework.interactive.inventory.click.clickable
+import ink.pmc.framework.interactive.inventory.jetpack.Arrangement
 import ink.pmc.framework.interactive.inventory.layout.Column
 import ink.pmc.framework.interactive.inventory.layout.Menu
 import ink.pmc.framework.interactive.inventory.layout.Row
+import ink.pmc.framework.options.OptionsManager
+import ink.pmc.framework.utils.chat.UI_SUCCEED_SOUND
 import ink.pmc.framework.utils.concurrent.submitAsync
 import ink.pmc.framework.utils.concurrent.sync
 import ink.pmc.framework.utils.visual.*
-import ink.pmc.serverselector.Ingredient
-import ink.pmc.serverselector.Server
-import ink.pmc.serverselector.ServerSelectorConfig
-import ink.pmc.serverselector.transferServer
+import ink.pmc.serverselector.*
+import ink.pmc.serverselector.screen.ServerSelectorScreen.AutoJoinState.*
 import kotlinx.coroutines.delay
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextDecoration
+import org.bukkit.Material
 import org.bukkit.event.inventory.ClickType
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -34,7 +36,12 @@ class ServerSelectorScreen : InteractiveScreen(), KoinComponent {
     override fun Content() {
         Menu(
             title = Component.text("选择服务器"),
-            rows = config.menu.rows
+            rows = config.menu.rows,
+            bottomBorderAttachment = {
+                Row(modifier = Modifier.fillMaxSize(), horizontalArrangement = Arrangement.Center) {
+                    AutoJoin()
+                }
+            }
         ) {
             println("---------- Menu Start ----------")
             Column(modifier = Modifier.fillMaxSize()) {
@@ -127,5 +134,65 @@ class ServerSelectorScreen : InteractiveScreen(), KoinComponent {
             }
         )
         println("---------- Server end ----------")
+    }
+
+    private enum class AutoJoinState {
+        LOADING, ENABLED, DISABLED
+    }
+
+    @Suppress("FunctionName")
+    @Composable
+    private fun AutoJoin() {
+        val player = LocalPlayer.current
+        var state by remember { mutableStateOf(LOADING) }
+        LaunchedEffect(Unit) {
+            val options = OptionsManager.getOptions(player.uniqueId)
+            val entry = options?.getEntry(AUTO_JOIN_DESCRIPTOR)
+            if (options == null || entry == null || !entry.value) {
+                state = DISABLED
+                return@LaunchedEffect
+            }
+            state = ENABLED
+        }
+
+        Item(
+            material = Material.TRIPWIRE_HOOK,
+            name = when (state) {
+                LOADING -> component {
+                    text("正在加载...") with mochaSubtext0 without italic()
+                }
+
+                ENABLED -> component {
+                    text("自动加入 ") with mochaText without italic()
+                    text("开") with mochaGreen without italic()
+                }
+
+                DISABLED -> component {
+                    text("自动加入 ") with mochaText without italic()
+                    text("关") with mochaMaroon without italic()
+                }
+            },
+            enchantmentGlint = state == ENABLED,
+            lore = if (state == LOADING) emptyList() else buildList {
+                add(component {
+                    text("下次进入时，自动加入上次选择的服务器") with mochaSubtext0 without italic()
+                })
+                add(Component.empty())
+                add(component {
+                    text("左键 ") with mochaLavender without italic()
+                    if (state == DISABLED) {
+                        text("开启") with mochaText without italic()
+                    } else {
+                        text("关闭") with mochaText without italic()
+                    }
+                })
+            },
+            modifier = Modifier.clickable {
+                if (clickType != ClickType.LEFT) return@clickable
+                if (state == LOADING) return@clickable
+                // TODO: 切换状态
+                player.playSound(UI_SUCCEED_SOUND)
+            }
+        )
     }
 }
