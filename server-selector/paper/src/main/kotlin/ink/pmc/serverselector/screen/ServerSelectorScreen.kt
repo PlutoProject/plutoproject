@@ -144,16 +144,21 @@ class ServerSelectorScreen : InteractiveScreen(), KoinComponent {
     @Suppress("FunctionName")
     @Composable
     private fun AutoJoin() {
+        println("---------- AutoJoin start ----------")
         val player = LocalPlayer.current
         var state by remember { mutableStateOf(LOADING) }
         LaunchedEffect(Unit) {
+            println("---------- LaunchedEffect start ----------")
             val options = OptionsManager.getOptions(player.uniqueId)
             val entry = options?.getEntry(AUTO_JOIN_DESCRIPTOR)
             if (options == null || entry == null || !entry.value) {
+                println("AutoJoin disabled: ${player.name}")
                 state = DISABLED
                 return@LaunchedEffect
             }
             state = ENABLED
+            println("AutoJoin enabled: ${player.name}")
+            println("---------- LaunchedEffect end ----------")
         }
 
         Item(
@@ -195,5 +200,6 @@ class ServerSelectorScreen : InteractiveScreen(), KoinComponent {
                 player.playSound(UI_SUCCEED_SOUND)
             }
         )
+        println("---------- AutoJoin end ----------")
     }
 }
