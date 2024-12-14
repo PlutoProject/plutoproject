@@ -3,24 +3,55 @@ package ink.pmc.serverselector
 import com.github.shynixn.mccoroutine.velocity.SuspendingPluginContainer
 import com.github.shynixn.mccoroutine.velocity.registerSuspend
 import com.google.inject.Inject
+import com.sksamuel.hoplite.PropertySource
 import com.velocitypowered.api.plugin.annotation.DataDirectory
 import com.velocitypowered.api.proxy.ProxyServer
 import ink.pmc.framework.options.OptionsManager
+import ink.pmc.framework.utils.command.annotationParser
+import ink.pmc.framework.utils.command.commandManager
+import ink.pmc.framework.utils.config.preconfiguredConfigLoaderBuilder
 import ink.pmc.framework.utils.inject.startKoinIfNotPresent
+import ink.pmc.framework.utils.platform.saveResourceIfNotExisted
+import ink.pmc.serverselector.commands.LobbyCommand
 import ink.pmc.serverselector.listeners.AutoJoinListener
+import org.koin.dsl.module
+import java.io.File
 import java.nio.file.Path
 import java.util.logging.Logger
 
+lateinit var dataFolder: File
+
 @Suppress("UNUSED", "UNUSED_PARAMETER")
-class VelocityPlugin @Inject constructor(spc: SuspendingPluginContainer) {
+class VelocityPlugin @Inject constructor(private val spc: SuspendingPluginContainer) {
+    private val velocityModule = module {
+        single<VelocityServerSelectorConfig> {
+            preconfiguredConfigLoaderBuilder()
+                .addPropertySource(
+                    PropertySource.file(
+                        saveResourceIfNotExisted(
+                            VelocityPlugin::class.java,
+                            "proxy_config.conf",
+                            File(dataFolder, "config.conf")
+                        )
+                    )
+                )
+                .build()
+                .loadConfigOrThrow()
+        }
+    }
+
     init {
         spc.initialize(this)
     }
 
     @Inject
     fun serverSelector(server: ProxyServer, logger: Logger, @DataDirectory dataDirectoryPath: Path) {
+        dataFolder = dataDirectoryPath.toFile()
         startKoinIfNotPresent {
-            modules(sharedModule)
+            modules(sharedModule, velocityModule)
+        }
+        spc.commandManager().annotationParser().apply {
+            parse(LobbyCommand)
         }
         OptionsManager.registerOptionDescriptor(AUTO_JOIN_DESCRIPTOR)
         server.eventManager.registerSuspend(this, AutoJoinListener)

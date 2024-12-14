@@ -43,46 +43,37 @@ class ServerSelectorScreen : InteractiveScreen(), KoinComponent {
                 }
             }
         ) {
-            println("---------- Menu Start ----------")
             Column(modifier = Modifier.fillMaxSize()) {
                 config.menu.pattern.forEach {
-                    println("Pattern forEach: $it")
                     PatternLine(it)
                 }
             }
-            println("---------- Menu End ----------")
         }
     }
 
     @Suppress("FunctionName")
     @Composable
     private fun PatternLine(pattern: String) {
-        println("---------- Pattern Line start: $pattern ----------")
         Row(modifier = Modifier.fillMaxWidth().height(1)) {
             pattern.forEach { char ->
-                println("Pattern Line forEach: $char")
                 if (char.isWhitespace()) {
-                    println("Char is whitespace (char = $char), put ItemSpacer")
                     ItemSpacer()
                     return@forEach
                 }
                 val server = config.servers.firstOrNull { it.menuIcon.first() == char }
                 val ingredient = config.menu.ingredients[char.toString()]
                 if (ingredient == null || server == null) {
-                    println("Ingredient or server is null (ingredient = $ingredient, server = $server), put ItemSpacer")
                     ItemSpacer()
                     return@forEach
                 }
                 Server(server, ingredient)
             }
         }
-        println("---------- Pattern line end ----------")
     }
 
     @Suppress("FunctionName")
     @Composable
     private fun Server(server: Server, ingredient: Ingredient) {
-        println("---------- Server start: ${server.name}, ${server.menuIcon}, ${server.bridgeId} ----------")
         val player = LocalPlayer.current
         var bridgeServer by remember(server) { mutableStateOf(Bridge.getServer(server.bridgeId)) }
         var isOnline by remember(server) { mutableStateOf(bridgeServer?.isOnline ?: false) }
@@ -134,7 +125,6 @@ class ServerSelectorScreen : InteractiveScreen(), KoinComponent {
                 }
             }
         )
-        println("---------- Server end ----------")
     }
 
     private enum class AutoJoinState {
@@ -144,21 +134,16 @@ class ServerSelectorScreen : InteractiveScreen(), KoinComponent {
     @Suppress("FunctionName")
     @Composable
     private fun AutoJoin() {
-        println("---------- AutoJoin start ----------")
         val player = LocalPlayer.current
         var state by remember { mutableStateOf(LOADING) }
         LaunchedEffect(Unit) {
-            println("---------- LaunchedEffect start ----------")
             val options = OptionsManager.getOptions(player.uniqueId)
             val entry = options?.getEntry(AUTO_JOIN_DESCRIPTOR)
             if (options == null || entry == null || !entry.value) {
-                println("AutoJoin disabled: ${player.name}")
                 state = DISABLED
                 return@LaunchedEffect
             }
             state = ENABLED
-            println("AutoJoin enabled: ${player.name}")
-            println("---------- LaunchedEffect end ----------")
         }
 
         Item(
@@ -169,12 +154,12 @@ class ServerSelectorScreen : InteractiveScreen(), KoinComponent {
                 }
 
                 ENABLED -> component {
-                    text("自动加入 ") with mochaText without italic()
+                    text("自动传送 ") with mochaText without italic()
                     text("开") with mochaGreen without italic()
                 }
 
                 DISABLED -> component {
-                    text("自动加入 ") with mochaText without italic()
+                    text("自动传送 ") with mochaText without italic()
                     text("关") with mochaMaroon without italic()
                 }
             },
@@ -183,20 +168,23 @@ class ServerSelectorScreen : InteractiveScreen(), KoinComponent {
                 add(component {
                     text("下次进入时，自动传送上次选择的服务器") with mochaSubtext0 without italic()
                 })
+                add(component {
+                    text("若需返回此大厅，请使用 ") with mochaSubtext0 without italic()
+                    text("/lobby") with mochaLavender without italic()
+                })
                 add(Component.empty())
                 add(component {
                     text("左键 ") with mochaLavender without italic()
                     if (state == DISABLED) {
-                        text("开启") with mochaText without italic()
+                        text("开启功能") with mochaText without italic()
                     } else {
-                        text("关闭") with mochaText without italic()
+                        text("关闭功能") with mochaText without italic()
                     }
                 })
             },
             modifier = Modifier.clickable {
                 if (clickType != ClickType.LEFT) return@clickable
                 if (state == LOADING) return@clickable
-                // TODO: 切换状态
                 val options = OptionsManager.getOptionsOrCreate(player.uniqueId)
                 if (state == DISABLED) {
                     options.setEntry(AUTO_JOIN_DESCRIPTOR, true)
@@ -209,6 +197,5 @@ class ServerSelectorScreen : InteractiveScreen(), KoinComponent {
                 player.playSound(UI_SUCCEED_SOUND)
             }
         )
-        println("---------- AutoJoin end ----------")
     }
 }
