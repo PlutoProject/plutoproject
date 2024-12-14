@@ -125,6 +125,7 @@ class ServerSelectorScreen : InteractiveScreen(), KoinComponent {
             },
             modifier = Modifier.clickable {
                 if (clickType != ClickType.LEFT) return@clickable
+                if (!isOnline) return@clickable
                 submitAsync {
                     player.transferServer(server.bridgeId)
                 }
