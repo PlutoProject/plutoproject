@@ -50,3 +50,8 @@ include("whitelist:velocity")
 include("runtime")
 include("runtime:paper")
 include("runtime:velocity")
+
+include("server-selector")
+include("server-selector:paper")
+include("server-selector:shared")
+include("server-selector:velocity")

@@ -41,6 +41,11 @@ class BackendRemoteProxyPlayer(
             ?: warn { error("Unsupported") }
     }
 
+    override suspend fun switchServer(server: String) {
+        convertElement(ServerState.REMOTE, ServerType.BACKEND)?.switchServer(server)
+            ?: warn { error("Unsupported") }
+    }
+
     override suspend fun operatePlayer(request: PlayerOperation): PlayerOperationResult {
         val result = bridgeStub.operatePlayer(request)
         checkPlayerOperationResult(request, result)

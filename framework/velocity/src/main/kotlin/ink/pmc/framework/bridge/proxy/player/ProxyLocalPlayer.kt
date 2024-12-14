@@ -10,6 +10,7 @@ import ink.pmc.framework.bridge.server.ServerType
 import ink.pmc.framework.bridge.warn
 import ink.pmc.framework.bridge.world.BridgeLocation
 import ink.pmc.framework.bridge.world.BridgeWorld
+import ink.pmc.framework.utils.player.switchServer
 import kotlinx.coroutines.Deferred
 import net.kyori.adventure.sound.Sound
 import net.kyori.adventure.text.Component
@@ -54,5 +55,9 @@ class ProxyLocalPlayer(private val actual: Player, server: BridgeServer) : Inter
     override suspend fun performCommand(command: String) {
         convertElement(ServerState.REMOTE, ServerType.BACKEND)?.performCommand(command)
             ?: warn { error("Unsupported") }
+    }
+
+    override suspend fun switchServer(server: String) {
+        actual.switchServer(server)
     }
 }

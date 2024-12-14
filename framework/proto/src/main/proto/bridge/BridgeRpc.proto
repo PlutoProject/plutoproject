@@ -154,6 +154,7 @@ message PlayerOperation {
     SoundInfo play_sound = 9;
     LocationInfo teleport = 10;
     string perform_command = 11;
+    string switch_server = 12;
   }
 }
 

@@ -1,4 +1,4 @@
-package ink.pmc.framework.utils.data
+package ink.pmc.framework.utils.data.serializers
 
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.PrimitiveKind

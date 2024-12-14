@@ -10,7 +10,6 @@ import ink.pmc.framework.bridge.backend.handlers.NotificationHandler
 import ink.pmc.framework.bridge.backend.server.localServer
 import ink.pmc.framework.bridge.player.createInfoWithoutLocation
 import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.Notification
-import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.PlayerOperation
 import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.PlayerOperation.ContentCase.*
 import ink.pmc.framework.bridge.proto.playerOperationAck
 import ink.pmc.framework.bridge.world.createInfo
@@ -64,7 +63,8 @@ object PlayerOperationHandler : NotificationHandler {
             }
 
             PERFORM_COMMAND -> localPlayer.performCommand(msg.performCommand)
-            PlayerOperation.ContentCase.CONTENT_NOT_SET -> warn { throwContentNotSet("PlayerOperation") }
+            CONTENT_NOT_SET -> warn { throwContentNotSet("PlayerOperation") }
+            SWITCH_SERVER -> error("Unexpected")
         }
         val result = bridgeStub.ackPlayerOperation(playerOperationAck {
             id = request.playerOperation.id
