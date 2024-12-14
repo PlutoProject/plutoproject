@@ -1,6 +1,6 @@
 package ink.pmc.framework.utils.player.profile
 
-import ink.pmc.framework.utils.data.UUIDSerializer
+import ink.pmc.framework.utils.data.serializers.UUIDSerializer
 import kotlinx.serialization.Serializable
 import java.util.*
 

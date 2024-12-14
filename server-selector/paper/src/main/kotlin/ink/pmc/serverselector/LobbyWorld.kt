@@ -1,11 +1,11 @@
 package ink.pmc.serverselector
 
 import ink.pmc.framework.utils.currentUnixTimestamp
+import ink.pmc.framework.utils.inject.koin
 import org.bukkit.*
-import org.koin.java.KoinJavaComponent.getKoin
 import java.io.File
 
-private val config = getKoin().get<ServerSelectorConfig>().lobby
+private val config = koin.get<ServerSelectorConfig>().lobby
 private val worldName = config.world
 
 val lobbyWorld: World

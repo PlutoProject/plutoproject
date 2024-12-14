@@ -1,5 +1,6 @@
 package ink.pmc.framework.utils.inject
 
+import org.koin.core.Koin
 import org.koin.core.KoinApplication
 import org.koin.core.context.GlobalContext
 import org.koin.core.context.startKoin
@@ -21,3 +22,7 @@ inline fun <reified T> inlinedGet(
 ): T {
     return getKoin().get(qualifier, parameters)
 }
+
+// IDE 只补全在 compose 包下的那个 getKoin()，加一个这个方便些
+inline val koin: Koin
+    get() = getKoin()

@@ -181,7 +181,7 @@ class ServerSelectorScreen : InteractiveScreen(), KoinComponent {
             enchantmentGlint = state == ENABLED,
             lore = if (state == LOADING) emptyList() else buildList {
                 add(component {
-                    text("下次进入时，自动加入上次选择的服务器") with mochaSubtext0 without italic()
+                    text("下次进入时，自动传送上次选择的服务器") with mochaSubtext0 without italic()
                 })
                 add(Component.empty())
                 add(component {
@@ -197,6 +197,15 @@ class ServerSelectorScreen : InteractiveScreen(), KoinComponent {
                 if (clickType != ClickType.LEFT) return@clickable
                 if (state == LOADING) return@clickable
                 // TODO: 切换状态
+                val options = OptionsManager.getOptionsOrCreate(player.uniqueId)
+                if (state == DISABLED) {
+                    options.setEntry(AUTO_JOIN_DESCRIPTOR, true)
+                    state = ENABLED
+                } else {
+                    options.setEntry(AUTO_JOIN_DESCRIPTOR, false)
+                    state = DISABLED
+                }
+                options.save()
                 player.playSound(UI_SUCCEED_SOUND)
             }
         )

@@ -2,6 +2,7 @@ package ink.pmc.serverselector
 
 import com.github.shynixn.mccoroutine.bukkit.SuspendingJavaPlugin
 import com.sksamuel.hoplite.PropertySource
+import ink.pmc.framework.options.OptionsManager
 import ink.pmc.framework.utils.config.preconfiguredConfigLoaderBuilder
 import ink.pmc.framework.utils.inject.startKoinIfNotPresent
 import ink.pmc.framework.utils.storage.saveResourceIfNotExisted
@@ -29,6 +30,7 @@ class PaperPlugin : SuspendingJavaPlugin() {
         }
         loadLobbyWorld()
         startTimeSync()
+        OptionsManager.registerOptionDescriptor(AUTO_JOIN_DESCRIPTOR)
         server.pluginManager.registerEvents(PlayerListener, this)
     }
 
