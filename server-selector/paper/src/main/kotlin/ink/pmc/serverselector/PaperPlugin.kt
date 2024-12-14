@@ -26,7 +26,7 @@ class PaperPlugin : SuspendingJavaPlugin() {
     override suspend fun onEnableAsync() {
         plugin = this
         startKoinIfNotPresent {
-            modules(bukkitModule)
+            modules(sharedModule, bukkitModule)
         }
         loadLobbyWorld()
         startTimeSync()
