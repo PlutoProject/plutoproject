@@ -7,8 +7,7 @@ import ink.pmc.advkt.send
 import ink.pmc.advkt.title.*
 import ink.pmc.essentials.TELEPORT_FAILED_SOUND
 import ink.pmc.essentials.TELEPORT_SUCCEED_SOUND
-import ink.pmc.essentials.TELEPORT_SUCCEED_TITLE
-import ink.pmc.framework.bridge.Bridge
+import ink.pmc.framework.bridge.player.toBridge
 import ink.pmc.framework.utils.command.ensurePlayer
 import ink.pmc.framework.utils.player.switchServer
 import ink.pmc.framework.utils.visual.mochaMaroon
@@ -34,13 +33,11 @@ object LobbyCommand : KoinComponent {
             return@ensurePlayer
         }
         if (switchServer(config.transferServer).isSuccessful) {
-            val remotePlayer = Bridge.getPlayer(uniqueId) ?: error("Unexpected")
-            remotePlayer.showTitle(TELEPORT_SUCCEED_TITLE)
-            remotePlayer.playSound(TELEPORT_SUCCEED_SOUND)
+            toBridge().playSound(TELEPORT_SUCCEED_SOUND)
             return@ensurePlayer
         }
-        val remotePlayer = Bridge.getPlayer(uniqueId) ?: error("Unexpected")
-        remotePlayer.showTitle {
+        val bridge = toBridge()
+        bridge.showTitle {
             times {
                 fadeIn(Ticks.duration(5))
                 stay(Ticks.duration(35))
@@ -53,6 +50,6 @@ object LobbyCommand : KoinComponent {
                 text("请再试一次") with mochaText
             }
         }
-        remotePlayer.playSound(TELEPORT_FAILED_SOUND)
+        bridge.playSound(TELEPORT_FAILED_SOUND)
     }
 }

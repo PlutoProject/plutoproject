@@ -2,9 +2,15 @@ package ink.pmc.serverselector.listener
 
 import com.destroystokyo.paper.event.player.PlayerAdvancementCriterionGrantEvent
 import com.destroystokyo.paper.event.player.PlayerPickupExperienceEvent
+import ink.pmc.advkt.component.text
+import ink.pmc.advkt.showTitle
+import ink.pmc.advkt.title.*
 import ink.pmc.framework.interactive.GuiManager
+import ink.pmc.framework.utils.concurrent.submitAsync
 import ink.pmc.serverselector.*
 import ink.pmc.serverselector.screen.ServerSelectorScreen
+import ink.pmc.serverselector.storage.UserRepository
+import net.kyori.adventure.util.Ticks
 import org.bukkit.GameMode
 import org.bukkit.Material
 import org.bukkit.attribute.Attribute
@@ -15,9 +21,26 @@ import org.bukkit.event.block.Action
 import org.bukkit.event.entity.*
 import org.bukkit.event.player.*
 import org.bukkit.event.weather.WeatherChangeEvent
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
+
+val KAOMOJIS = arrayOf(
+    "ヽ( ° ▽°)ノ",
+    "(｢･ω･)｢",
+    "╰(*°▽°*)╯",
+    "ヾ(´︶`*)ﾉ♬",
+    "( ～'ω')～",
+    "(*´∀`)~♥",
+    "(￣▽￣)/",
+    "( ^ω^)",
+    "(๑¯∀¯๑)",
+    "(〃´∀｀)"
+)
 
 @Suppress("UNUSED")
-object LobbyListener : Listener {
+object LobbyListener : Listener, KoinComponent {
+    private val userRepo by inject<UserRepository>()
+
     @EventHandler
     fun PlayerJoinEvent.e() {
         if (!player.hasPermission(PROTECTION_BYPASS)) {
@@ -35,8 +58,34 @@ object LobbyListener : Listener {
         player.saturation = 20f
         player.clearActivePotionEffects()
         player.setRespawnLocation(lobbyWorldSpawn, true)
+        submitAsync {
+            player.showPromptTitle()
+        }
         if (player.hasPermission(PROTECTION_BYPASS)) return
         player.gameMode = GameMode.SURVIVAL
+    }
+
+    private suspend fun Player.showPromptTitle() {
+        val userModel = userRepo.findOrCreate(uniqueId)
+        showTitle {
+            times {
+                fadeIn(Ticks.duration(5))
+                stay(Ticks.duration(35))
+                fadeOut(Ticks.duration(20))
+            }
+            mainTitle {
+                if (userModel.hasJoinedBefore) {
+                    text("欢迎回来") with ink.pmc.framework.utils.visual.mochaPink
+                } else {
+                    text("很高兴见到你！") with ink.pmc.framework.utils.visual.mochaPink
+                }
+            }
+            subTitle {
+                text("使用指南针来传送服务器 ${KAOMOJIS.random()}") with ink.pmc.framework.utils.visual.mochaText
+            }
+        }
+        if (userModel.hasJoinedBefore) return
+        userRepo.saveOrUpdate(userModel.copy(hasJoinedBefore = true))
     }
 
     @EventHandler

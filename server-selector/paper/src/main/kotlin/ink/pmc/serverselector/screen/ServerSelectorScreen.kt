@@ -29,13 +29,21 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import kotlin.time.Duration.Companion.seconds
 
+private val TITLES = arrayOf(
+    "开始新的征程！",
+    "去往何处？",
+    "下一个目标是？",
+    "踏上新的旅途吧！",
+    "向着诗与远方！"
+)
+
 class ServerSelectorScreen : InteractiveScreen(), KoinComponent {
     private val config by inject<ServerSelectorConfig>()
 
     @Composable
     override fun Content() {
         Menu(
-            title = Component.text("选择服务器"),
+            title = Component.text(TITLES.random()),
             rows = config.menu.rows,
             bottomBorderAttachment = {
                 Row(modifier = Modifier.fillMaxSize(), horizontalArrangement = Arrangement.Center) {

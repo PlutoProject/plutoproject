@@ -20,6 +20,7 @@ class UserRepository(private val collection: MongoCollection<UserModel>) {
     suspend fun create(uuid: UUID): UserModel {
         val data = UserModel(
             uuid = uuid,
+            hasJoinedBefore = false,
             previouslyJoinedServer = null
         )
         saveOrUpdate(data)

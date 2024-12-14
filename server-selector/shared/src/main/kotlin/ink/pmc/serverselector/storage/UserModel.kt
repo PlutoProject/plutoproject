@@ -7,5 +7,6 @@ import java.util.*
 @Serializable
 data class UserModel(
     @Serializable(BsonUUIDSerializer::class) val uuid: UUID,
+    val hasJoinedBefore: Boolean,
     val previouslyJoinedServer: String?
 )

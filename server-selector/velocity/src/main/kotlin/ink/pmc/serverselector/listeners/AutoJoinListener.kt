@@ -1,5 +1,6 @@
 package ink.pmc.serverselector.listeners
 
+import com.velocitypowered.api.event.PostOrder
 import com.velocitypowered.api.event.Subscribe
 import com.velocitypowered.api.event.player.PlayerChooseInitialServerEvent
 import ink.pmc.framework.options.OptionsManager
@@ -10,10 +11,11 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import kotlin.jvm.optionals.getOrNull
 
+@Suppress("UNUSED")
 object AutoJoinListener : KoinComponent {
     private val userRepo by inject<UserRepository>()
 
-    @Subscribe
+    @Subscribe(order = PostOrder.FIRST)
     suspend fun PlayerChooseInitialServerEvent.e() {
         val uuid = player.uniqueId
         val options = OptionsManager.getOptions(uuid) ?: return

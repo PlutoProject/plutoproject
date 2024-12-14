@@ -6,7 +6,6 @@ import ink.pmc.advkt.title.*
 import ink.pmc.essentials.TELEPORT_FAILED_SOUND
 import ink.pmc.essentials.TELEPORT_SUCCEED_SOUND
 import ink.pmc.essentials.TELEPORT_SUCCEED_TITLE
-import ink.pmc.framework.bridge.Bridge
 import ink.pmc.framework.bridge.player.toBridge
 import ink.pmc.framework.utils.inject.koin
 import ink.pmc.framework.utils.visual.mochaMaroon
@@ -18,9 +17,8 @@ import org.bukkit.entity.Player
 private val userRepo by koin.inject<UserRepository>()
 
 suspend fun Player.transferServer(id: String) {
-    val bridgePlayer = toBridge()
     runCatching {
-        bridgePlayer.switchServer(id)
+        toBridge().switchServer(id)
     }.onFailure {
         showTitle {
             times {
@@ -38,9 +36,9 @@ suspend fun Player.transferServer(id: String) {
         playSound(TELEPORT_FAILED_SOUND)
         return
     }
-    val remotePlayer = Bridge.getPlayer(uniqueId) ?: error("Unexpected")
-    remotePlayer.showTitle(TELEPORT_SUCCEED_TITLE)
-    remotePlayer.playSound(TELEPORT_SUCCEED_SOUND)
+    val bridge = toBridge()
+    bridge.showTitle(TELEPORT_SUCCEED_TITLE)
+    bridge.playSound(TELEPORT_SUCCEED_SOUND)
     val userModel = userRepo.findOrCreate(uniqueId)
     userRepo.saveOrUpdate(userModel.copy(previouslyJoinedServer = id))
 }
