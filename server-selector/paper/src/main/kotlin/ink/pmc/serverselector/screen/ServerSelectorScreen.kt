@@ -113,7 +113,7 @@ class ServerSelectorScreen : InteractiveScreen(), KoinComponent {
                 add(Component.empty())
                 add(component {
                     text("左键 ") with mochaLavender without italic()
-                    text("前往") with mochaText without italic()
+                    text("传送至此处") with mochaText without italic()
                 })
             },
             modifier = Modifier.clickable {
