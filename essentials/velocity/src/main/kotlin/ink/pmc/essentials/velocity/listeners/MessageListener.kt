@@ -2,7 +2,7 @@ package ink.pmc.essentials.velocity.listeners
 
 import com.velocitypowered.api.event.Subscribe
 import com.velocitypowered.api.event.connection.DisconnectEvent
-import com.velocitypowered.api.event.player.ServerConnectedEvent
+import com.velocitypowered.api.event.player.ServerPostConnectEvent
 import ink.pmc.essentials.velocity.EssentialsProxyConfig
 import ink.pmc.framework.utils.chat.broadcast
 import ink.pmc.framework.utils.platform.proxy
@@ -15,8 +15,9 @@ object MessageListener : KoinComponent {
     private val config by lazy { get<EssentialsProxyConfig>().message }
 
     @Subscribe
-    fun ServerConnectedEvent.e() {
+    fun ServerPostConnectEvent.e() {
         if (!config.enabled) return
+        if (previousServer != null) return
         proxy.broadcast(MiniMessage.miniMessage().deserialize(config.join.replace("\$player", player.username)))
     }
 
