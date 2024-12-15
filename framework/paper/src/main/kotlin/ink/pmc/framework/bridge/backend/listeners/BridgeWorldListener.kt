@@ -9,6 +9,8 @@ import ink.pmc.framework.bridge.proto.worldLoad
 import ink.pmc.framework.bridge.throwLocalWorldNotFound
 import ink.pmc.framework.bridge.warn
 import ink.pmc.framework.bridge.world.createInfo
+import org.bukkit.event.EventHandler
+import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import org.bukkit.event.world.SpawnChangeEvent
 import org.bukkit.event.world.WorldLoadEvent
@@ -16,6 +18,7 @@ import org.bukkit.event.world.WorldUnloadEvent
 
 @Suppress("UnusedReceiverParameter")
 object BridgeWorldListener : Listener {
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     suspend fun WorldLoadEvent.e() {
         val localWorld = BackendLocalWorld(world, localServer)
         localServer.worlds.add(localWorld)
@@ -23,6 +26,7 @@ object BridgeWorldListener : Listener {
         checkCommonResult(result)
     }
 
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     suspend fun SpawnChangeEvent.e() {
         val localWorld = world.getBridge()
             ?: return warn { throwLocalWorldNotFound(world.name) }
@@ -30,6 +34,7 @@ object BridgeWorldListener : Listener {
         checkCommonResult(result)
     }
 
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     suspend fun WorldUnloadEvent.e() {
         val localWorld = localServer.getWorld(world.name)
             ?: return warn { throwLocalWorldNotFound(world.name) }

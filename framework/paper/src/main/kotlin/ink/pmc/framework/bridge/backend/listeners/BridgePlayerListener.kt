@@ -7,7 +7,6 @@ import ink.pmc.framework.bridge.backend.server.localServer
 import ink.pmc.framework.bridge.player.createInfoWithoutLocation
 import ink.pmc.framework.bridge.server.ServerState
 import ink.pmc.framework.bridge.server.ServerType
-import ink.pmc.framework.utils.currentUnixTimestamp
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
