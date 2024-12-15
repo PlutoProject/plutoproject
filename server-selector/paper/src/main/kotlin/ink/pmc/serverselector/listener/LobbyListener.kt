@@ -22,6 +22,7 @@ import org.bukkit.event.entity.*
 import org.bukkit.event.player.*
 import org.bukkit.event.weather.WeatherChangeEvent
 import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
 import org.koin.core.component.inject
 
 val KAOMOJIS = arrayOf(
@@ -40,6 +41,7 @@ val KAOMOJIS = arrayOf(
 @Suppress("UNUSED")
 object LobbyListener : Listener, KoinComponent {
     private val userRepo by inject<UserRepository>()
+    private val config by lazy { get<ServerSelectorConfig>().lobby }
 
     @EventHandler
     fun PlayerJoinEvent.e() {
@@ -174,6 +176,7 @@ object LobbyListener : Listener, KoinComponent {
     @EventHandler
     fun EntitySpawnEvent.e() {
         if (entity.world != lobbyWorld) return
+        if (config.entitySpawning.whitelist.contains(entity.type)) return
         isCancelled = true
     }
 

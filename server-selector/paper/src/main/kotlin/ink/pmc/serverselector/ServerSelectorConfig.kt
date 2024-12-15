@@ -2,6 +2,7 @@ package ink.pmc.serverselector
 
 import net.kyori.adventure.text.Component
 import org.bukkit.Material
+import org.bukkit.entity.EntityType
 
 data class ServerSelectorConfig(
     val lobby: Lobby,
@@ -11,11 +12,20 @@ data class ServerSelectorConfig(
 
 data class Lobby(
     val world: String,
+    val spawnpoint: Spawnpoint,
+    val entitySpawning: EntitySpawning = EntitySpawning()
+)
+
+data class Spawnpoint(
     val x: Double,
     val y: Double,
     val z: Double,
     val yaw: Float,
     val pitch: Float
+)
+
+data class EntitySpawning(
+    val whitelist: List<EntityType> = listOf()
 )
 
 data class Menu(

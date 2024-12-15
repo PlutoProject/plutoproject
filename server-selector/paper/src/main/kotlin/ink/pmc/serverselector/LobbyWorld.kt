@@ -12,7 +12,14 @@ val lobbyWorld: World
     get() = Bukkit.getWorld(worldName) ?: error("Unable to get lobby world")
 
 val lobbyWorldSpawn
-    get() = Location(lobbyWorld, config.x, config.y, config.z, config.yaw, config.pitch)
+    get() = Location(
+        lobbyWorld,
+        config.spawnpoint.x,
+        config.spawnpoint.y,
+        config.spawnpoint.z,
+        config.spawnpoint.yaw,
+        config.spawnpoint.pitch
+    )
 
 fun loadLobbyWorld() {
     if (Bukkit.getWorld(worldName) != null) return
