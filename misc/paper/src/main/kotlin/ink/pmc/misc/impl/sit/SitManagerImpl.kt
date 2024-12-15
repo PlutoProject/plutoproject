@@ -1,24 +1,25 @@
 package ink.pmc.misc.impl.sit
 
+import ink.pmc.framework.utils.entity.entity
+import ink.pmc.framework.utils.player.bukkitPlayer
+import ink.pmc.framework.utils.player.threadSafeTeleport
+import ink.pmc.framework.utils.world.eraseAngle
 import ink.pmc.misc.*
 import ink.pmc.misc.api.sit.SitManager
 import ink.pmc.misc.api.sit.isSitting
 import ink.pmc.misc.api.sit.sitter
 import ink.pmc.misc.api.sit.stand
-import ink.pmc.framework.utils.entity.entity
-import ink.pmc.framework.utils.player.bukkitPlayer
-import ink.pmc.framework.utils.player.threadSafeTeleport
-import ink.pmc.framework.utils.world.eraseAngle
 import net.kyori.adventure.text.Component
 import org.bukkit.Location
+import org.bukkit.Material
+import org.bukkit.Sound
+import org.bukkit.SoundCategory
 import org.bukkit.block.data.type.Campfire
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 import java.util.*
 
-
 class SitManagerImpl : SitManager {
-
     private val playerToSitLocationMap = mutableMapOf<UUID, Location>()
     private val playerToSeatMap = mutableMapOf<UUID, UUID>()
     override val sitters: Set<Player>
@@ -58,10 +59,27 @@ class SitManagerImpl : SitManager {
         val armorStand = createArmorStand(sitLoc)
         markAsSeat(armorStand, player)
         armorStand.addPassenger(player)
+        player.playSitSound()
 
         playerToSitLocationMap[player.uniqueId] = sitLoc
         playerToSeatMap[player.uniqueId] = armorStand.uniqueId
         markDelay(player)
+    }
+
+    private fun Player.playSitSound() {
+        val leggings = inventory.leggings
+        val sound = if (leggings == null) {
+            Sound.ITEM_ARMOR_EQUIP_GENERIC
+        } else when (leggings.type) {
+            Material.LEATHER_LEGGINGS -> Sound.ITEM_ARMOR_EQUIP_LEATHER
+            Material.CHAINMAIL_LEGGINGS -> Sound.ITEM_ARMOR_EQUIP_CHAIN
+            Material.IRON_LEGGINGS -> Sound.ITEM_ARMOR_EQUIP_IRON
+            Material.GOLDEN_LEGGINGS -> Sound.ITEM_ARMOR_EQUIP_GOLD
+            Material.DIAMOND_LEGGINGS -> Sound.ITEM_ARMOR_EQUIP_DIAMOND
+            Material.NETHERITE_LEGGINGS -> Sound.ITEM_ARMOR_EQUIP_NETHERITE
+            else -> Sound.ITEM_ARMOR_EQUIP_GENERIC
+        }
+        world.playSound(location, sound, SoundCategory.BLOCKS, 1f, 1f)
     }
 
     override fun isSitting(player: Player): Boolean {
@@ -85,6 +103,7 @@ class SitManagerImpl : SitManager {
         * */
         player.threadSafeTeleport(standLocation)
         player.sendActionBar(Component.text(" "))
+        player.playSitSound()
 
         playerToSitLocationMap.remove(playerId)
         cleanArmorStand(armorStandId)
@@ -132,5 +151,4 @@ class SitManagerImpl : SitManager {
 
         playerToSeatMap.entries.removeIf { it.value == uuid }
     }
-
 }

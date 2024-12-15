@@ -1,10 +1,10 @@
 package ink.pmc.misc
 
-import ink.pmc.misc.api.sit.*
 import ink.pmc.framework.utils.concurrent.submitAsync
 import ink.pmc.framework.utils.entity.ensureThreadSafe
 import ink.pmc.framework.utils.world.ensureThreadSafe
 import ink.pmc.framework.utils.world.eraseAngle
+import ink.pmc.misc.api.sit.*
 import kotlinx.coroutines.delay
 import org.bukkit.Chunk
 import org.bukkit.Location
@@ -186,6 +186,7 @@ fun handleSitClick(event: PlayerInteractEvent) {
     }
 
     event.isCancelled = true
+    player.swingMainHand()
     player.sit(location)
 }
 
@@ -227,7 +228,7 @@ fun handleSitLocationBroke(event: Event) {
     when (event) {
         is BlockEvent -> {
             locations.add(event.block.location.eraseAngle())
-            when(event) {
+            when (event) {
                 is BlockPistonExtendEvent -> event.blocks.map { it.location.eraseAngle() }.toCollection(locations)
                 is BlockPistonRetractEvent -> event.blocks.map { it.location.eraseAngle() }.toCollection(locations)
                 is BlockExplodeEvent -> event.blockList().map { it.location.eraseAngle() }.toCollection(locations)

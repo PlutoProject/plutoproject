@@ -1,6 +1,8 @@
 package ink.pmc.misc
 
-import ink.pmc.advkt.component.*
+import ink.pmc.advkt.component.component
+import ink.pmc.advkt.component.keybind
+import ink.pmc.advkt.component.text
 import ink.pmc.advkt.sound.*
 import ink.pmc.advkt.title.*
 import ink.pmc.framework.utils.visual.*
@@ -104,24 +106,37 @@ val ELEVATOR_WORK_SOUND = sound {
     pitch(1f)
 }
 
-val HEAD_GET_LOAD_DATA = component {
-    text("请稍等，正在获取数据") with mochaFlamingo
+val LEATHER_SIT_SOUND = sound {
+    key(Key.key("item.armor.equip_leather"))
+    source(Sound.Source.BLOCK)
 }
 
-val HEAD_GET_SUCCEED = component {
-    text("已成功获取正版玩家 ") with mochaPink
-    text("<player> ") with mochaFlamingo
-    text("的头颅") with mochaPink
-    newline()
-    text("此功能目前正处于测试阶段，请勿滥用") with mochaSubtext0
+val CHAINMAIL_SIT_SOUND = sound {
+    key(Key.key("item.armor.equip_chain"))
+    source(Sound.Source.BLOCK)
 }
 
-val HEAD_GET_FAILED = component {
-    text("查询失败，请检查输入的玩家名是否正确") with mochaMaroon
-    newline()
-    text("若玩家名无误，可能是查询接口限额或无法访问，请稍后再试") with mochaSubtext0
+val IRON_SIT_SOUND = sound {
+    key(Key.key("item.armor.equip_iron"))
+    source(Sound.Source.BLOCK)
 }
 
-val HEAD_GET_FAILED_INV_FULL = component {
-    text("背包已满，请腾出空间后再试") with mochaSubtext0
+val GOLD_SIT_SOUND = sound {
+    key(Key.key("item.armor.equip_gold"))
+    source(Sound.Source.BLOCK)
+}
+
+val DIAMOND_SIT_SOUND = sound {
+    key(Key.key("item.armor.equip_diamond"))
+    source(Sound.Source.BLOCK)
+}
+
+val NETHERITE_SIT_SOUND = sound {
+    key(Key.key("item.armor.equip_netherite"))
+    source(Sound.Source.BLOCK)
+}
+
+val GENERIC_SIT_SOUND = sound {
+    key(Key.key("item.armor.equip_generic"))
+    source(Sound.Source.BLOCK)
 }

@@ -12,7 +12,6 @@ import ink.pmc.misc.commands.SuicideCommand
 import ink.pmc.misc.impl.elevator.ElevatorManagerImpl
 import ink.pmc.misc.impl.elevator.builders.IronElevatorBuilder
 import ink.pmc.misc.impl.sit.SitManagerImpl
-import ink.pmc.misc.listeners.ChatListener
 import ink.pmc.misc.listeners.CreeperAntiExplodeListener
 import ink.pmc.misc.listeners.ElevatorListener
 import ink.pmc.misc.listeners.SitListener
@@ -66,10 +65,6 @@ class PaperPlugin : JavaPlugin() {
             runActionBarOverrideTask()
         }
 
-        if (MiscConfig.chat) {
-            server.pluginManager.registerSuspendingEvents(ChatListener, this)
-        }
-
         if (MiscConfig.elevator) {
             if (MiscConfig.elevatorRegisterDefaultBuilder) {
                 ElevatorManager.registerBuilder(IronElevatorBuilder)
@@ -89,12 +84,10 @@ class PaperPlugin : JavaPlugin() {
 
     private fun loadConfigValues() {
         MiscConfig.sit = fileConfig.get("sit.enabled")
-        MiscConfig.head = fileConfig.get("head.enabled")
         MiscConfig.elevator = fileConfig.get("elevator.enabled")
         MiscConfig.elevatorRegisterDefaultBuilder = fileConfig.get("elevator.register-default-builder")
         MiscConfig.creeperAntiExplode = fileConfig.get("creeper-anti-explode.enabled")
         MiscConfig.creeperAntiExplodeFirework = fileConfig.get("creeper-anti-explode.firework")
-        MiscConfig.chat = fileConfig.get("chat.enabled")
     }
 
     private fun File.loadConfig(): FileConfig {
