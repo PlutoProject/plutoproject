@@ -111,7 +111,6 @@ data class Action(
 data class Item(
     val enabled: Boolean,
     val menu: Boolean,
-    val serverSelector: Boolean
 )
 
 data class Recipe(
@@ -124,7 +123,6 @@ data class Recipe(
 data class Join(
     val enabled: Boolean,
     val menuItem: Boolean,
-    val serverSelectorItem: Boolean
 )
 
 data class DisableJoinQuitMessage(

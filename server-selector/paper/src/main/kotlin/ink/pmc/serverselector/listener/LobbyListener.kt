@@ -93,8 +93,9 @@ object LobbyListener : Listener, KoinComponent {
     @EventHandler
     fun PlayerInteractEvent.e() {
         if (action.isRightClick && item?.isServerSelector == true) {
-            GuiManager.startScreen(player, ServerSelectorScreen())
             isCancelled = true
+            hand?.let { player.swingHand(it) }
+            GuiManager.startScreen(player, ServerSelectorScreen())
             return
         }
         if (action == Action.PHYSICAL && clickedBlock?.type == Material.FARMLAND) {

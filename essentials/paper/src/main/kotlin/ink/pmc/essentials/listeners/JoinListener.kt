@@ -2,7 +2,6 @@ package ink.pmc.essentials.listeners
 
 import ink.pmc.essentials.config.EssentialsConfig
 import ink.pmc.essentials.items.NOTEBOOK_ITEM
-import ink.pmc.essentials.items.SERVER_SELECTOR_ITEM
 import ink.pmc.framework.playerdb.PlayerDb
 import ink.pmc.framework.utils.inventory.isFull
 import org.bukkit.entity.Player
@@ -34,13 +33,5 @@ object JoinListener : Listener, KoinComponent {
         if (player.isItemGiven("notebook") || player.inventory.isFull) return
         player.inventory.addItem(NOTEBOOK_ITEM)
         player.setItemGiven("notebook")
-    }
-
-    @EventHandler
-    suspend fun PlayerJoinEvent.serverSelectorItem() {
-        if (!joinConfig.serverSelectorItem) return
-        if (player.isItemGiven("server_selector") || player.inventory.isFull) return
-        player.inventory.addItem(SERVER_SELECTOR_ITEM)
-        player.setItemGiven("server_selector")
     }
 }

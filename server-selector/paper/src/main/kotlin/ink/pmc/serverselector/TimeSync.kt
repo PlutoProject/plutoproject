@@ -21,10 +21,11 @@ private val timeSyncJobs = mutableMapOf<Player, Job>()
 
 fun Player.startTimeSync() {
     val tz = zoneId // cache
+    syncTime(tz)
     timeSyncJobs[this] = submitAsync {
         while (true) {
-            syncTime(tz)
             delay(SYNC_CYCLE_SECS.seconds)
+            syncTime(tz)
         }
     }
 }
@@ -43,7 +44,7 @@ fun stopTimeSyncJobs() {
     }
 }
 
-private fun Player.syncTime(tz: ZoneId) {
+fun Player.syncTime(tz: ZoneId) {
     val time = realWorldTimeToGameTime(tz) + getServerFoundGameTimeOffset(tz)
     setPlayerTime(time, false)
 }
