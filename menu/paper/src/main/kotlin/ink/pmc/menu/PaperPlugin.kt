@@ -15,6 +15,7 @@ import ink.pmc.menu.factory.ButtonDescriptorFactoryImpl
 import ink.pmc.menu.factory.PageDescriptorFactoryImpl
 import ink.pmc.menu.prebuilt.button.*
 import ink.pmc.menu.prebuilt.page.ASSISTANT_PAGE_DESCRIPTOR
+import ink.pmc.menu.prebuilt.page.HOME_PAGE_DESCRIPTOR
 import org.bukkit.plugin.java.JavaPlugin
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -48,6 +49,7 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
     }
 
     private fun registerPrebuiltPages() {
+        MenuService.registerPage(HOME_PAGE_DESCRIPTOR)
         if (config.prebuiltPages.assistant) {
             MenuService.registerPage(ASSISTANT_PAGE_DESCRIPTOR)
         }

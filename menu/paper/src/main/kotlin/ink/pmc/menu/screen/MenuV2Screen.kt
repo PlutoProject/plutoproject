@@ -19,7 +19,6 @@ import ink.pmc.framework.utils.visual.mochaLavender
 import ink.pmc.framework.utils.visual.mochaText
 import ink.pmc.menu.Button
 import ink.pmc.menu.MenuConfig
-import ink.pmc.menu.MenuScopeImpl
 import ink.pmc.menu.Page
 import ink.pmc.menu.api.LocalMenuScreenModel
 import ink.pmc.menu.api.MenuService
