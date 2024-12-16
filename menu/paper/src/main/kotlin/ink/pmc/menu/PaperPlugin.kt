@@ -7,7 +7,7 @@ import ink.pmc.framework.utils.command.commandManager
 import ink.pmc.framework.utils.config.preconfiguredConfigLoaderBuilder
 import ink.pmc.framework.utils.inject.startKoinIfNotPresent
 import ink.pmc.framework.utils.storage.saveResourceIfNotExisted
-import ink.pmc.menu.api.MenuService
+import ink.pmc.menu.api.MenuManager
 import ink.pmc.menu.api.factory.ButtonDescriptorFactory
 import ink.pmc.menu.api.factory.PageDescriptorFactory
 import ink.pmc.menu.command.MenuCommand
@@ -33,7 +33,7 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
                 .build()
                 .loadConfigOrThrow()
         }
-        single<MenuService> { MenuServiceImpl() }
+        single<MenuManager> { MenuManagerImpl() }
         single<PageDescriptorFactory> { PageDescriptorFactoryImpl() }
         single<ButtonDescriptorFactory> { ButtonDescriptorFactoryImpl() }
     }
@@ -49,21 +49,21 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
     }
 
     private fun registerPrebuiltPages() {
-        MenuService.registerPage(HOME_PAGE_DESCRIPTOR)
+        MenuManager.registerPage(HOME_PAGE_DESCRIPTOR)
         if (config.prebuiltPages.assistant) {
-            MenuService.registerPage(ASSISTANT_PAGE_DESCRIPTOR)
+            MenuManager.registerPage(ASSISTANT_PAGE_DESCRIPTOR)
         }
     }
 
     private fun registerPrebuiltButtons() {
         if (config.prebuiltButtons.wiki) {
-            MenuService.registerButton(WIKI_BUTTON_DESCRIPTOR, ::Wiki)
+            MenuManager.registerButton(WIKI_BUTTON_DESCRIPTOR, ::Wiki)
         }
         if (config.prebuiltButtons.inspect) {
-            MenuService.registerButton(INSPECT_BUTTON_DESCRIPTOR, ::Inspect)
+            MenuManager.registerButton(INSPECT_BUTTON_DESCRIPTOR, ::Inspect)
         }
         if (config.prebuiltButtons.balance) {
-            MenuService.registerButton(BALANCE_BUTTON_DESCRIPTOR, ::Balance)
+            MenuManager.registerButton(BALANCE_BUTTON_DESCRIPTOR, ::Balance)
         }
     }
 }

@@ -2,11 +2,14 @@ package ink.pmc.menu.screen
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import cafe.adriel.voyager.core.model.rememberScreenModel
 import ink.pmc.advkt.component.component
 import ink.pmc.advkt.component.italic
+import ink.pmc.advkt.component.keybind
 import ink.pmc.advkt.component.text
+import ink.pmc.advkt.send
 import ink.pmc.framework.interactive.InteractiveScreen
 import ink.pmc.framework.interactive.LocalPlayer
 import ink.pmc.framework.interactive.inventory.*
@@ -14,6 +17,7 @@ import ink.pmc.framework.interactive.inventory.click.clickable
 import ink.pmc.framework.interactive.inventory.layout.Column
 import ink.pmc.framework.interactive.inventory.layout.Menu
 import ink.pmc.framework.interactive.inventory.layout.Row
+import ink.pmc.framework.playerdb.PlayerDb
 import ink.pmc.framework.utils.chat.UI_PAGING_SOUND
 import ink.pmc.framework.utils.visual.mochaLavender
 import ink.pmc.framework.utils.visual.mochaText
@@ -21,7 +25,7 @@ import ink.pmc.menu.Button
 import ink.pmc.menu.MenuConfig
 import ink.pmc.menu.Page
 import ink.pmc.menu.api.LocalMenuScreenModel
-import ink.pmc.menu.api.MenuService
+import ink.pmc.menu.api.MenuManager
 import ink.pmc.menu.api.descriptor.PageDescriptor
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextDecoration
@@ -29,13 +33,32 @@ import org.bukkit.event.inventory.ClickType
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-class MenuV2Screen : InteractiveScreen(), KoinComponent {
+private const val FIRST_OPEN_PROMPT_KEY = "menu.notebook.was_opened_before"
+
+class MenuScreen : InteractiveScreen(), KoinComponent {
     private val config by inject<MenuConfig>()
 
     @Composable
     override fun Content() {
-        val screenModel = rememberScreenModel { MenuV2ScreenModel() }
-        val menuScope = remember { MenuScopeImpl(screenModel) }
+        val player = LocalPlayer.current
+        val screenModel = rememberScreenModel { MenuScreenModelImpl() }
+
+        LaunchedEffect(Unit) {
+            val db = PlayerDb.getOrCreate(player.uniqueId)
+            if (db.getBoolean(FIRST_OPEN_PROMPT_KEY)) return@LaunchedEffect
+            player.send {
+                text("小提示: 你可以使用 ") with mochaText
+                keybind("key.sneak") with mochaLavender
+                text(" + ") with mochaLavender
+                keybind("key.swapOffhand") with mochaLavender
+                text(" 或 ") with mochaText
+                text("/menu ") with mochaLavender
+                text("来打开「手账」") with mochaText
+            }
+            db[FIRST_OPEN_PROMPT_KEY] = true
+            db.update()
+        }
+
         CompositionLocalProvider(
             LocalMenuScreenModel provides screenModel,
         ) {
@@ -44,7 +67,7 @@ class MenuV2Screen : InteractiveScreen(), KoinComponent {
                 rows = 5,
                 topBorderAttachment = {
                     ItemSpacer()
-                    val pages = MenuService.pages.take(7)
+                    val pages = MenuManager.pages.take(7)
                     val canAddCap = pages.size in 2..4
                     pages.forEachIndexed { i, e ->
                         Paging(e)
@@ -57,7 +80,7 @@ class MenuV2Screen : InteractiveScreen(), KoinComponent {
             ) {
                 val currentPageId = screenModel.currentPageId
                 val currentPage = remember(currentPageId) {
-                    MenuService.getPageDescriptor(currentPageId)
+                    MenuManager.getPageDescriptor(currentPageId)
                         ?: error("PageDescriptor with id $currentPageId not registered")
                 }
                 Page(currentPage)
@@ -71,9 +94,9 @@ class MenuV2Screen : InteractiveScreen(), KoinComponent {
         val screenModel = LocalMenuScreenModel.current
         val customButtonId = descriptor.customPagingButtonId
         if (customButtonId != null) {
-            val button = MenuService.getButtonDescriptor(customButtonId)
+            val button = MenuManager.getButtonDescriptor(customButtonId)
                 ?: error("Custom page button with id $customButtonId not registered")
-            val buttonComponent = MenuService.getButton(button)
+            val buttonComponent = MenuManager.getButton(button)
                 ?: error("Unexpected")
             buttonComponent()
             return
@@ -134,11 +157,11 @@ class MenuV2Screen : InteractiveScreen(), KoinComponent {
     @Composable
     private fun Button(button: Button) {
         val descriptor = remember(button) {
-            MenuService.getButtonDescriptor(button.id)
+            MenuManager.getButtonDescriptor(button.id)
                 ?: error("ButtonDescriptor with id ${button.id} not registered")
         }
         val buttonComponent = remember(button) {
-            MenuService.getButton(descriptor) ?: error("Unexpected")
+            MenuManager.getButton(descriptor) ?: error("Unexpected")
         }
         buttonComponent()
     }

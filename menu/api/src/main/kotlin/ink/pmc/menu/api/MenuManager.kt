@@ -5,8 +5,8 @@ import ink.pmc.framework.utils.inject.inlinedGet
 import ink.pmc.menu.api.descriptor.ButtonDescriptor
 import ink.pmc.menu.api.descriptor.PageDescriptor
 
-interface MenuService {
-    companion object : MenuService by inlinedGet()
+interface MenuManager {
+    companion object : MenuManager by inlinedGet()
 
     val pages: List<PageDescriptor>
 

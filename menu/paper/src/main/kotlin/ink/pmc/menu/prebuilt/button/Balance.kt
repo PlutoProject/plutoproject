@@ -7,6 +7,7 @@ import ink.pmc.advkt.component.text
 import ink.pmc.essentials.DEFAULT_ECONOMY_SYMBOL
 import ink.pmc.framework.interactive.LocalPlayer
 import ink.pmc.framework.interactive.inventory.Item
+import ink.pmc.framework.interactive.inventory.components.NotAvailable
 import ink.pmc.framework.utils.hook.vaultHook
 import ink.pmc.framework.utils.trimmed
 import ink.pmc.framework.utils.visual.mochaSubtext0

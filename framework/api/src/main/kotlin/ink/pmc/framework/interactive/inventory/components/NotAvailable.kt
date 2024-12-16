@@ -1,4 +1,4 @@
-package ink.pmc.menu.prebuilt.button
+package ink.pmc.framework.interactive.inventory.components
 
 import androidx.compose.runtime.Composable
 import ink.pmc.advkt.component.component
