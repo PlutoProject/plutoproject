@@ -2,6 +2,7 @@ package ink.pmc.framework.interactive.inventory
 
 import ink.pmc.framework.interactive.canvas.GuiInventoryHolder
 import ink.pmc.framework.interactive.inventory.click.ClickScope
+import ink.pmc.framework.utils.player.catchExceptionInteraction
 import kotlinx.coroutines.launch
 import org.bukkit.Material
 import org.bukkit.entity.Player
@@ -30,7 +31,9 @@ object InventoryListener : Listener {
             view, click, slot, cursor.takeIf { it.type != Material.AIR }, whoClicked
         )
         invHolder.scope.coroutineScope.launch {
-            invHolder.processClick(scope, this@e)
+            catchExceptionInteraction(whoClicked) {
+                invHolder.processClick(scope, this@e)
+            }
         }
     }
 
@@ -57,7 +60,9 @@ object InventoryListener : Listener {
             val clicked = inInv.entries.first()
             val scope = ClickScope(view, LEFT, clicked.key, cursor?.takeIf { it.type != Material.AIR }, whoClicked)
             invHolder.scope.coroutineScope.launch {
-                invHolder.processClick(scope, this@e)
+                catchExceptionInteraction(whoClicked) {
+                    invHolder.processClick(scope, this@e)
+                }
             }
         } else if (inInv.isNotEmpty()) {
             isCancelled = true

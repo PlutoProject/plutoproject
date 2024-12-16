@@ -39,8 +39,7 @@ import ink.pmc.framework.utils.visual.*
 import ink.pmc.framework.utils.world.aliasOrName
 import ink.pmc.hypervisor.DynamicScheduling
 import ink.pmc.hypervisor.DynamicViewDistanceState.*
-import ink.pmc.menu.button.Wiki
-import ink.pmc.menu.economy
+import ink.pmc.menu.prebuilt.button.Wiki
 import ink.pmc.menu.screen.MainMenuModel.PreferredHomeState
 import ink.pmc.menu.screen.MainMenuModel.PreferredSpawnState
 import ink.pmc.menu.screen.MainMenuModel.Tab.ASSIST
@@ -205,7 +204,6 @@ class NotebookScreen : InteractiveScreen(), KoinComponent {
         }
         Row(modifier = Modifier.fillMaxWidth().height(1), horizontalArrangement = Arrangement.Center) {
             Daily()
-            Coin()
             Wiki()
         }
     }
@@ -215,7 +213,6 @@ class NotebookScreen : InteractiveScreen(), KoinComponent {
     @Suppress("FunctionName")
     private fun AssistTab() {
         Row(modifier = Modifier.fillMaxWidth().height(1), horizontalArrangement = Arrangement.Center) {
-            Lookup()
             ItemEmpty()
             ViewBoost()
         }

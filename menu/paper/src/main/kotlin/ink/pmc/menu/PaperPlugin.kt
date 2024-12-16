@@ -10,10 +10,11 @@ import ink.pmc.framework.utils.storage.saveResourceIfNotExisted
 import ink.pmc.menu.api.MenuService
 import ink.pmc.menu.api.factory.ButtonDescriptorFactory
 import ink.pmc.menu.api.factory.PageDescriptorFactory
-import ink.pmc.menu.button.*
 import ink.pmc.menu.command.MenuCommand
 import ink.pmc.menu.factory.ButtonDescriptorFactoryImpl
 import ink.pmc.menu.factory.PageDescriptorFactoryImpl
+import ink.pmc.menu.prebuilt.button.*
+import ink.pmc.menu.prebuilt.page.ASSISTANT_PAGE_DESCRIPTOR
 import org.bukkit.plugin.java.JavaPlugin
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -47,7 +48,9 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
     }
 
     private fun registerPrebuiltPages() {
-
+        if (config.prebuiltPages.assistant) {
+            MenuService.registerPage(ASSISTANT_PAGE_DESCRIPTOR)
+        }
     }
 
     private fun registerPrebuiltButtons() {

@@ -1,2 +1,0 @@
-package ink.pmc.menu
-
