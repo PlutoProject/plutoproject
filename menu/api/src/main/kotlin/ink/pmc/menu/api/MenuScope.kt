@@ -1,5 +1,7 @@
 package ink.pmc.menu.api
 
-interface MenuScope {
-    val menuScreenModel: MenuScreenModel
-}
+import androidx.compose.runtime.ProvidableCompositionLocal
+import androidx.compose.runtime.staticCompositionLocalOf
+
+val LocalMenuScreenModel: ProvidableCompositionLocal<MenuScreenModel> =
+    staticCompositionLocalOf { error("Unexpected") }

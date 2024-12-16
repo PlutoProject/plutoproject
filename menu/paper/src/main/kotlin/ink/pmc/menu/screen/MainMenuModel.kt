@@ -1,4 +1,4 @@
-package ink.pmc.menu.screens
+package ink.pmc.menu.screen
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -10,7 +10,7 @@ import ink.pmc.essentials.api.home.HomeManager
 import ink.pmc.essentials.api.teleport.random.RandomTeleportManager
 import ink.pmc.essentials.api.warp.Warp
 import ink.pmc.essentials.api.warp.WarpManager
-import ink.pmc.menu.inspecting
+import ink.pmc.menu.hook.isInspecting
 import org.bukkit.entity.Player
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
@@ -69,7 +69,7 @@ class MainMenuModel(private val player: Player) : ScreenModel {
     var tab by mutableStateOf(Tab.HOME)
     var preferredHomeState by mutableStateOf<PreferredHomeState>(PreferredHomeState.Loading)
     var preferredSpawnState by mutableStateOf<PreferredSpawnState>(PreferredSpawnState.Loading)
-    var lookupModeEnabled by mutableStateOf(player.inspecting)
+    var lookupModeEnabled by mutableStateOf(player.isInspecting)
     var isCheckedInToday by mutableStateOf(false)
     var rtpCooldownRemaining by mutableStateOf(rtpCooldownRemaining())
 }

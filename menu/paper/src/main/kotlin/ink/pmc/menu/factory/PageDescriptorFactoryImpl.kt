@@ -1,8 +1,8 @@
-package ink.pmc.menu.factories
+package ink.pmc.menu.factory
 
 import ink.pmc.menu.api.descriptor.PageDescriptor
 import ink.pmc.menu.api.factory.PageDescriptorFactory
-import ink.pmc.menu.descriptors.PageDescriptorImpl
+import ink.pmc.menu.descriptor.PageDescriptorImpl
 import net.kyori.adventure.text.Component
 import org.bukkit.Material
 

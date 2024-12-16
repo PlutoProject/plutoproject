@@ -7,11 +7,13 @@ data class MenuConfig(
 )
 
 data class PrebuiltPages(
-    val assistant: Boolean = false,
+    val assistant: Boolean = false
 )
 
 data class PrebuiltButtons(
-    val coreprotectLookup: Boolean = false
+    val inspect: Boolean = false,
+    val wiki: Boolean = false,
+    val balance: Boolean = false
 )
 
 data class Page(

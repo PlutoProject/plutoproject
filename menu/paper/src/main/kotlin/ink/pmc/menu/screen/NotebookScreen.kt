@@ -1,4 +1,4 @@
-package ink.pmc.menu.screens
+package ink.pmc.menu.screen
 
 import androidx.compose.runtime.*
 import cafe.adriel.voyager.core.model.rememberScreenModel
@@ -32,22 +32,20 @@ import ink.pmc.framework.utils.chat.UI_PAGING_SOUND
 import ink.pmc.framework.utils.chat.UI_SUCCEED_SOUND
 import ink.pmc.framework.utils.chat.replace
 import ink.pmc.framework.utils.concurrent.sync
-import ink.pmc.framework.utils.hook.economyHook
+import ink.pmc.framework.utils.hook.vaultHook
 import ink.pmc.framework.utils.time.formatDuration
 import ink.pmc.framework.utils.trimmed
 import ink.pmc.framework.utils.visual.*
 import ink.pmc.framework.utils.world.aliasOrName
 import ink.pmc.hypervisor.DynamicScheduling
 import ink.pmc.hypervisor.DynamicViewDistanceState.*
-import ink.pmc.menu.CO_NEAR_COMMAND
-import ink.pmc.menu.components.Wiki
+import ink.pmc.menu.button.Wiki
 import ink.pmc.menu.economy
-import ink.pmc.menu.inspecting
-import ink.pmc.menu.screens.MainMenuModel.PreferredHomeState
-import ink.pmc.menu.screens.MainMenuModel.PreferredSpawnState
-import ink.pmc.menu.screens.MainMenuModel.Tab.ASSIST
-import ink.pmc.menu.screens.MainMenuModel.Tab.HOME
-import ink.pmc.menu.screens.NotebookScreen.RandomTeleportState.*
+import ink.pmc.menu.screen.MainMenuModel.PreferredHomeState
+import ink.pmc.menu.screen.MainMenuModel.PreferredSpawnState
+import ink.pmc.menu.screen.MainMenuModel.Tab.ASSIST
+import ink.pmc.menu.screen.MainMenuModel.Tab.HOME
+import ink.pmc.menu.screen.NotebookScreen.RandomTeleportState.*
 import kotlinx.coroutines.delay
 import net.kyori.adventure.text.Component
 import org.bukkit.Material
@@ -440,7 +438,7 @@ class NotebookScreen : InteractiveScreen(), KoinComponent {
         )
     }
 
-    private val economySymbol = economyHook?.provider?.currencyNameSingular() ?: DEFAULT_ECONOMY_SYMBOL
+    private val economySymbol = vaultHook?.economy?.currencyNameSingular() ?: DEFAULT_ECONOMY_SYMBOL
 
     /*
     * 随机传送
@@ -532,83 +530,7 @@ class NotebookScreen : InteractiveScreen(), KoinComponent {
     /*
     * 查询周围
     */
-    @Composable
-    @Suppress("FunctionName")
-    private fun Lookup() {
-        val player = LocalPlayer.current
-        val model = localScreenModel.current
-        Item(
-            material = Material.ENDER_EYE,
-            name = if (!model.lookupModeEnabled) component {
-                text("观察模式 ") with mochaText without italic()
-                text("关") with mochaMaroon without italic()
-            } else component {
-                text("观察模式 ") with mochaText without italic()
-                text("开") with mochaGreen without italic()
-            },
-            lore = if (!model.lookupModeEnabled) buildList {
-                add(component {
-                    text("将周围的变化一览无余") with mochaSubtext0 without italic()
-                })
-                add(Component.empty())
-                add(component {
-                    text("左键 ") with mochaLavender without italic()
-                    text("开启观察模式") with mochaText without italic()
-                })
-                add(component {
-                    text("右键 ") with mochaLavender without italic()
-                    text("观察四周变化") with mochaText without italic()
-                })
-            } else buildList {
-                add(component {
-                    text("将周围的变化一览无余") with mochaSubtext0 without italic()
-                })
-                add(Component.empty())
-                add(component {
-                    text("观察模式已开启") with mochaSubtext0 without italic()
-                })
-                add(component {
-                    text("使用左键或右键点击来观察变化") with mochaSubtext0 without italic()
-                })
-                add(Component.empty())
-                add(component {
-                    text("左键 ") with mochaLavender without italic()
-                    text("关闭观察模式") with mochaText without italic()
-                })
-            },
-            enchantmentGlint = model.lookupModeEnabled,
-            modifier = Modifier.clickable {
-                if (!model.lookupModeEnabled) {
-                    when (clickType) {
-                        ClickType.LEFT -> {
-                            player.inspecting = true
-                            model.lookupModeEnabled = true
-                            player.playSound(UI_SUCCEED_SOUND)
-                            return@clickable
-                        }
 
-                        ClickType.RIGHT -> {
-                            player.playSound(UI_SUCCEED_SOUND)
-                            sync {
-                                player.performCommand(CO_NEAR_COMMAND)
-                                player.closeInventory()
-                            }
-                        }
-
-                        else -> {}
-                    }
-                    return@clickable
-                }
-
-                if (model.lookupModeEnabled && clickType == ClickType.LEFT && player.inspecting) {
-                    player.inspecting = false
-                    model.lookupModeEnabled = false
-                    player.playSound(UI_SUCCEED_SOUND)
-                    return@clickable
-                }
-            }
-        )
-    }
 
     private val dailyOperation = component {
         text("左键 ") with mochaLavender without italic()
@@ -650,31 +572,6 @@ class NotebookScreen : InteractiveScreen(), KoinComponent {
             modifier = Modifier.clickable {
                 if (clickType != ClickType.LEFT) return@clickable
                 navigator.push(DailyCalenderScreen())
-            }
-        )
-    }
-
-    /*
-    * 货币信息
-    */
-    @Composable
-    @Suppress("FunctionName")
-    private fun Coin() {
-        val player = LocalPlayer.current
-        Item(
-            material = Material.SUNFLOWER,
-            name = component {
-                text("货币") with mochaYellow without italic()
-            },
-            lore = buildList {
-                add(component {
-                    val balance = economy.getBalance(player).trimmed()
-                    text("你的余额: ") with mochaSubtext0 without italic()
-                    text("$balance$DEFAULT_ECONOMY_SYMBOL") with mochaText without italic()
-                })
-                add(component {
-                    text("可在「礼记」中到访来获取货币") with mochaSubtext0 without italic()
-                })
             }
         )
     }

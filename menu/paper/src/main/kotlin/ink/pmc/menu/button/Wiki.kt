@@ -1,4 +1,4 @@
-package ink.pmc.menu.components
+package ink.pmc.menu.button
 
 import androidx.compose.runtime.Composable
 import ink.pmc.advkt.component.*
@@ -11,9 +11,14 @@ import ink.pmc.framework.utils.concurrent.sync
 import ink.pmc.framework.utils.visual.mochaLavender
 import ink.pmc.framework.utils.visual.mochaSubtext0
 import ink.pmc.framework.utils.visual.mochaText
+import ink.pmc.menu.api.dsl.buttonDescriptor
 import net.kyori.adventure.text.Component
 import org.bukkit.Material
 import org.bukkit.event.inventory.ClickType
+
+val WIKI_BUTTON_DESCRIPTOR = buttonDescriptor {
+    id = "menu:wiki"
+}
 
 @Composable
 @Suppress("FunctionName")

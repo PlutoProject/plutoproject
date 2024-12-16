@@ -1,6 +1,8 @@
-package ink.pmc.menu.screens
+package ink.pmc.menu.screen
 
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.remember
 import cafe.adriel.voyager.core.model.rememberScreenModel
 import ink.pmc.advkt.component.component
 import ink.pmc.advkt.component.italic
@@ -19,8 +21,7 @@ import ink.pmc.menu.Button
 import ink.pmc.menu.MenuConfig
 import ink.pmc.menu.MenuScopeImpl
 import ink.pmc.menu.Page
-import ink.pmc.menu.api.MenuScope
-import ink.pmc.menu.api.MenuScreenModel
+import ink.pmc.menu.api.LocalMenuScreenModel
 import ink.pmc.menu.api.MenuService
 import ink.pmc.menu.api.descriptor.PageDescriptor
 import net.kyori.adventure.text.Component
@@ -31,18 +32,13 @@ import org.koin.core.component.inject
 
 class MenuV2Screen : InteractiveScreen(), KoinComponent {
     private val config by inject<MenuConfig>()
-    private val localScreenModel: ProvidableCompositionLocal<MenuScreenModel> =
-        staticCompositionLocalOf { error("Unexpected") }
-    private val localMenuScope: ProvidableCompositionLocal<MenuScope> =
-        staticCompositionLocalOf { error("Unexpected") }
 
     @Composable
     override fun Content() {
         val screenModel = rememberScreenModel { MenuV2ScreenModel() }
         val menuScope = remember { MenuScopeImpl(screenModel) }
         CompositionLocalProvider(
-            localScreenModel provides screenModel,
-            localMenuScope provides menuScope
+            LocalMenuScreenModel provides screenModel,
         ) {
             Menu(
                 title = Component.text("手账"),
@@ -73,15 +69,14 @@ class MenuV2Screen : InteractiveScreen(), KoinComponent {
     @Suppress("FunctionName")
     @Composable
     private fun Paging(descriptor: PageDescriptor) {
-        val screenModel = localScreenModel.current
-        val menuScope = localMenuScope.current
+        val screenModel = LocalMenuScreenModel.current
         val customButtonId = descriptor.customPagingButtonId
         if (customButtonId != null) {
             val button = MenuService.getButtonDescriptor(customButtonId)
                 ?: error("Custom page button with id $customButtonId not registered")
             val buttonComponent = MenuService.getButton(button)
                 ?: error("Unexpected")
-            menuScope.buttonComponent()
+            buttonComponent()
             return
         }
         val player = LocalPlayer.current
@@ -139,7 +134,6 @@ class MenuV2Screen : InteractiveScreen(), KoinComponent {
     @Suppress("FunctionName")
     @Composable
     private fun Button(button: Button) {
-        val menuScope = localMenuScope.current
         val descriptor = remember(button) {
             MenuService.getButtonDescriptor(button.id)
                 ?: error("ButtonDescriptor with id ${button.id} not registered")
@@ -147,6 +141,6 @@ class MenuV2Screen : InteractiveScreen(), KoinComponent {
         val buttonComponent = remember(button) {
             MenuService.getButton(descriptor) ?: error("Unexpected")
         }
-        menuScope.buttonComponent()
+        buttonComponent()
     }
 }

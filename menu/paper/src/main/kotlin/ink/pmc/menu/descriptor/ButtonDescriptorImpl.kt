@@ -1,4 +1,4 @@
-package ink.pmc.menu.descriptors
+package ink.pmc.menu.descriptor
 
 import ink.pmc.menu.api.descriptor.ButtonDescriptor
 

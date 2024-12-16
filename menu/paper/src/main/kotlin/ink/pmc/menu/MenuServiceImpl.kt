@@ -1,13 +1,13 @@
 package ink.pmc.menu
 
-import ink.pmc.menu.api.MenuScopedComposableFunction
+import ink.pmc.framework.interactive.ComposableFunction
 import ink.pmc.menu.api.MenuService
 import ink.pmc.menu.api.descriptor.ButtonDescriptor
 import ink.pmc.menu.api.descriptor.PageDescriptor
 
 class MenuServiceImpl : MenuService {
     private val registeredPages = mutableListOf<PageDescriptor>()
-    private val registeredButtons = mutableMapOf<ButtonDescriptor, MenuScopedComposableFunction>()
+    private val registeredButtons = mutableMapOf<ButtonDescriptor, ComposableFunction>()
     override val pages: List<PageDescriptor>
         get() = registeredPages
 
@@ -16,7 +16,7 @@ class MenuServiceImpl : MenuService {
         registeredPages.add(descriptor)
     }
 
-    override fun registerButton(descriptor: ButtonDescriptor, button: MenuScopedComposableFunction) {
+    override fun registerButton(descriptor: ButtonDescriptor, button: ComposableFunction) {
         require(!registeredButtons.keys.any { it.id == descriptor.id }) { "ButtonDescriptor for ${descriptor.id} already registered" }
         registeredButtons[descriptor] = button
     }
@@ -29,7 +29,7 @@ class MenuServiceImpl : MenuService {
         return registeredButtons.keys.firstOrNull { it.id == id }
     }
 
-    override fun getButton(descriptor: ButtonDescriptor): MenuScopedComposableFunction? {
+    override fun getButton(descriptor: ButtonDescriptor): ComposableFunction? {
         return registeredButtons[descriptor]
     }
 }

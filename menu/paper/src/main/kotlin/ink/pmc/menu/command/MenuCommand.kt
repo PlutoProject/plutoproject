@@ -1,8 +1,8 @@
-package ink.pmc.menu.commands
+package ink.pmc.menu.command
 
 import ink.pmc.framework.startScreen
 import ink.pmc.framework.utils.command.ensurePlayer
-import ink.pmc.menu.screens.MenuV2Screen
+import ink.pmc.menu.screen.MenuV2Screen
 import org.bukkit.command.CommandSender
 import org.incendo.cloud.annotations.Command
 
