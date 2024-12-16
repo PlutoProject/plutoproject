@@ -7,7 +7,6 @@ data class MenuConfig(
 )
 
 data class PrebuiltPages(
-    val home: Boolean = false,
     val assistant: Boolean = false,
 )
 

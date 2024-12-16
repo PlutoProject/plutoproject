@@ -10,3 +10,14 @@ fun <T> Iterable<T>.safeSubList(fromIndex: Int, toIndex: Int): List<T> {
     val endIndex = if (toIndex > size) size else toIndex
     return list.subList(fromIndex, endIndex)
 }
+
+fun <T> List<T>.interleaveWith(element: T): List<T> = buildList {
+    val source = this@interleaveWith
+    val lastIndex = source.lastIndex
+    source.forEachIndexed { i, e ->
+        add(source[i])
+        if (i != lastIndex) {
+            add(e)
+        }
+    }
+}
