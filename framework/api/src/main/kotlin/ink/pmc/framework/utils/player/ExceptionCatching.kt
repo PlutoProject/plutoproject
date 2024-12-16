@@ -9,8 +9,8 @@ import net.kyori.adventure.audience.Audience
 import java.util.logging.Level
 
 inline fun <T> T.catchException(
-    audience: Audience?,
-    onFailure: Audience.(Throwable) -> Unit,
+    audience: Audience? = null,
+    onFailure: Audience.(Throwable) -> Unit = {},
     failureLog: String = "Exception caught",
     action: T.() -> Unit
 ) {
