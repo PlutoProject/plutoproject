@@ -1,6 +1,8 @@
 package ink.pmc.menu.api
 
 import ink.pmc.framework.utils.inject.inlinedGet
+import ink.pmc.menu.api.descriptors.ButtonDescriptor
+import ink.pmc.menu.api.descriptors.PageDescriptor
 
 interface MenuService {
     companion object : MenuService by inlinedGet()

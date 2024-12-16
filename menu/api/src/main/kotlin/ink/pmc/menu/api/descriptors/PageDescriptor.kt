@@ -1,4 +1,4 @@
-package ink.pmc.menu.api
+package ink.pmc.menu.api.descriptors
 
 import net.kyori.adventure.text.Component
 import org.bukkit.Material

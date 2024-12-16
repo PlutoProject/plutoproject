@@ -22,7 +22,7 @@ import ink.pmc.menu.Page
 import ink.pmc.menu.api.MenuScope
 import ink.pmc.menu.api.MenuScreenModel
 import ink.pmc.menu.api.MenuService
-import ink.pmc.menu.api.PageDescriptor
+import ink.pmc.menu.api.descriptors.PageDescriptor
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.event.inventory.ClickType

@@ -1,9 +1,9 @@
 package ink.pmc.menu
 
-import ink.pmc.menu.api.ButtonDescriptor
 import ink.pmc.menu.api.MenuScopedComposableFunction
 import ink.pmc.menu.api.MenuService
-import ink.pmc.menu.api.PageDescriptor
+import ink.pmc.menu.api.descriptors.ButtonDescriptor
+import ink.pmc.menu.api.descriptors.PageDescriptor
 
 class MenuServiceImpl : MenuService {
     private val registeredPages = mutableListOf<PageDescriptor>()
