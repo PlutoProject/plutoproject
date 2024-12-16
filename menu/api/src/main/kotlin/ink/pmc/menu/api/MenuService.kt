@@ -3,8 +3,8 @@ package ink.pmc.menu.api
 import ink.pmc.framework.interactive.ComposableFunction
 import ink.pmc.framework.utils.inject.inlinedGet
 
-interface Menu {
-    companion object : Menu by inlinedGet()
+interface MenuService {
+    companion object : MenuService by inlinedGet()
 
     fun registerPage(descriptor: PageDescriptor)
 

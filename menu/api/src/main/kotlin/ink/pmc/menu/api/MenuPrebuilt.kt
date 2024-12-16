@@ -8,5 +8,6 @@ object MenuPrebuilt {
 
     object Buttons {
         const val COREPROTECT_LOOKUP_BUTTON_ID: String = "menu:coreprotect_lookup"
+        const val WIKI_BUTTON_ID: String = "menu:wiki"
     }
 }
