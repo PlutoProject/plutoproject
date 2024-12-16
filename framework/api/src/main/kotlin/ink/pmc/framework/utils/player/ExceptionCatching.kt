@@ -18,7 +18,7 @@ inline fun <T> T.catchException(
         action()
     }.onFailure {
         audience?.onFailure(it)
-        frameworkLogger.log(Level.WARNING, failureLog, it)
+        frameworkLogger.log(Level.SEVERE, failureLog, it)
     }
 }
 
