@@ -7,6 +7,7 @@ import ink.pmc.framework.utils.command.commandManager
 import ink.pmc.framework.utils.config.preconfiguredConfigLoaderBuilder
 import ink.pmc.framework.utils.inject.startKoinIfNotPresent
 import ink.pmc.framework.utils.storage.saveResourceIfNotExisted
+import ink.pmc.menu.api.Menu
 import ink.pmc.menu.commands.MenuCommand
 import net.milkbowl.vault.economy.Economy
 import org.bukkit.plugin.java.JavaPlugin
@@ -24,6 +25,7 @@ class PaperPlugin : SuspendingJavaPlugin() {
                 .build()
                 .loadConfigOrThrow()
         }
+        single<Menu> { MenuImpl() }
     }
 
     override suspend fun onEnableAsync() {

@@ -2,7 +2,7 @@ package ink.pmc.menu
 
 data class MenuConfig(
     val prebuiltPages: PrebuiltPages = PrebuiltPages(),
-    val prebuiltIngredients: PrebuiltIngredients = PrebuiltIngredients(),
+    val prebuiltButtons: PrebuiltButtons = PrebuiltButtons(),
     val pages: List<Page> = listOf()
 )
 
@@ -11,17 +11,17 @@ data class PrebuiltPages(
     val assistant: Boolean = false,
 )
 
-data class PrebuiltIngredients(
+data class PrebuiltButtons(
     val coreprotectLookup: Boolean = false
 )
 
 data class Page(
     val id: String,
     val patterns: List<String> = listOf(),
-    val ingredients: List<Ingredient> = listOf()
+    val buttons: List<Button> = listOf()
 )
 
-data class Ingredient(
+data class Button(
     val id: String,
     val pattern: Char
 )
