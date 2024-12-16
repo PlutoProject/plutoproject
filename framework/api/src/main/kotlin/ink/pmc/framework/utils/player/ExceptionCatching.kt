@@ -32,7 +32,7 @@ inline fun <T> T.catchExceptionInteraction(audience: Audience? = null, action: T
                 text("请将其反馈给管理组以便我们尽快解决") with mochaMaroon
             }
         },
-        failureLog = "Exception caught when handling interaction"
+        failureLog = "Exception caught while handling interaction"
     ) {
         action()
     }
