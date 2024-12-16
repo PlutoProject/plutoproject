@@ -1,6 +1,6 @@
 package ink.pmc.menu.descriptors
 
-import ink.pmc.menu.api.descriptors.PageDescriptor
+import ink.pmc.menu.api.descriptor.PageDescriptor
 import net.kyori.adventure.text.Component
 import org.bukkit.Material
 

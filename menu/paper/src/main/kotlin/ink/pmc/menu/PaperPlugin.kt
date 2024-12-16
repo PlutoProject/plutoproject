@@ -8,7 +8,11 @@ import ink.pmc.framework.utils.config.preconfiguredConfigLoaderBuilder
 import ink.pmc.framework.utils.inject.startKoinIfNotPresent
 import ink.pmc.framework.utils.storage.saveResourceIfNotExisted
 import ink.pmc.menu.api.MenuService
+import ink.pmc.menu.api.factory.ButtonDescriptorFactory
+import ink.pmc.menu.api.factory.PageDescriptorFactory
 import ink.pmc.menu.commands.MenuCommand
+import ink.pmc.menu.factories.ButtonDescriptorFactoryImpl
+import ink.pmc.menu.factories.PageDescriptorFactoryImpl
 import net.milkbowl.vault.economy.Economy
 import org.bukkit.plugin.java.JavaPlugin
 import org.koin.dsl.module
@@ -26,6 +30,8 @@ class PaperPlugin : SuspendingJavaPlugin() {
                 .loadConfigOrThrow()
         }
         single<MenuService> { MenuServiceImpl() }
+        single<PageDescriptorFactory> { PageDescriptorFactoryImpl() }
+        single<ButtonDescriptorFactory> { ButtonDescriptorFactoryImpl() }
     }
 
     override suspend fun onEnableAsync() {

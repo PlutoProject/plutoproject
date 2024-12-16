@@ -1,8 +1,5 @@
 package ink.pmc.menu.descriptors
 
-import ink.pmc.menu.api.descriptors.ButtonDescriptor
+import ink.pmc.menu.api.descriptor.ButtonDescriptor
 
-data class ButtonDescriptorImpl(
-    override val id: String,
-    override val pageId: String
-) : ButtonDescriptor
+data class ButtonDescriptorImpl(override val id: String) : ButtonDescriptor
