@@ -50,7 +50,7 @@ class MenuV2Screen : InteractiveScreen(), KoinComponent {
                 topBorderAttachment = {
                     ItemSpacer()
                     val pages = MenuService.pages.take(7)
-                    val canAddCap = pages.size % 2 == 0 && pages.size <= 4
+                    val canAddCap = pages.size in 2..4
                     pages.forEachIndexed { i, e ->
                         Paging(e)
                         if (canAddCap && i != pages.lastIndex) {
