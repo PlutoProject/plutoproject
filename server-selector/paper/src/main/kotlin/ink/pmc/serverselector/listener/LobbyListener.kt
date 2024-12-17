@@ -5,7 +5,7 @@ import com.destroystokyo.paper.event.player.PlayerPickupExperienceEvent
 import ink.pmc.advkt.component.text
 import ink.pmc.advkt.showTitle
 import ink.pmc.advkt.title.*
-import ink.pmc.framework.interactive.GuiManager
+import ink.pmc.framework.startScreen
 import ink.pmc.framework.utils.concurrent.submitAsync
 import ink.pmc.serverselector.*
 import ink.pmc.serverselector.screen.ServerSelectorScreen
@@ -45,9 +45,11 @@ object LobbyListener : Listener, KoinComponent {
 
     @EventHandler
     fun PlayerJoinEvent.e() {
+        /*
         if (!player.hasPermission(PROTECTION_BYPASS)) {
             player.inventory.clear()
         }
+        */
         if (!player.inventory.contents
                 .filterNotNull()
                 .any { it.isServerSelector }
@@ -95,7 +97,7 @@ object LobbyListener : Listener, KoinComponent {
         if (action.isRightClick && item?.isServerSelector == true) {
             isCancelled = true
             hand?.let { player.swingHand(it) }
-            GuiManager.startScreen(player, ServerSelectorScreen())
+            player.startScreen(ServerSelectorScreen())
             return
         }
         if (action == Action.PHYSICAL && clickedBlock?.type == Material.FARMLAND) {

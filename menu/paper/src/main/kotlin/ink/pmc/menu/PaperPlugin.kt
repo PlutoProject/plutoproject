@@ -1,7 +1,10 @@
 package ink.pmc.menu
 
 import com.github.shynixn.mccoroutine.bukkit.SuspendingJavaPlugin
+import com.github.shynixn.mccoroutine.bukkit.registerSuspendingEvents
 import com.sksamuel.hoplite.PropertySource
+import ink.pmc.framework.provider.Provider
+import ink.pmc.framework.provider.getCollection
 import ink.pmc.framework.utils.command.annotationParser
 import ink.pmc.framework.utils.command.commandManager
 import ink.pmc.framework.utils.config.preconfiguredConfigLoaderBuilder
@@ -13,9 +16,12 @@ import ink.pmc.menu.api.factory.PageDescriptorFactory
 import ink.pmc.menu.command.MenuCommand
 import ink.pmc.menu.factory.ButtonDescriptorFactoryImpl
 import ink.pmc.menu.factory.PageDescriptorFactoryImpl
+import ink.pmc.menu.item.MenuItemRecipe
+import ink.pmc.menu.listener.ItemListener
 import ink.pmc.menu.prebuilt.button.*
 import ink.pmc.menu.prebuilt.page.ASSISTANT_PAGE_DESCRIPTOR
 import ink.pmc.menu.prebuilt.page.HOME_PAGE_DESCRIPTOR
+import ink.pmc.menu.repository.UserRepository
 import org.bukkit.plugin.java.JavaPlugin
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -36,6 +42,7 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
         single<MenuManager> { MenuManagerImpl() }
         single<PageDescriptorFactory> { PageDescriptorFactoryImpl() }
         single<ButtonDescriptorFactory> { ButtonDescriptorFactoryImpl() }
+        single<UserRepository> { UserRepository(Provider.getCollection("menu_user_data")) }
     }
 
     override suspend fun onEnableAsync() {
@@ -48,6 +55,8 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
         }
         registerPrebuiltPages()
         registerPrebuiltButtons()
+        registerEvents()
+        registerItemRecipe()
     }
 
     private fun registerPrebuiltPages() {
@@ -67,5 +76,15 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
         if (config.prebuiltButtons.balance) {
             MenuManager.registerButton(BALANCE_BUTTON_DESCRIPTOR) { Balance() }
         }
+    }
+
+    private fun registerEvents() {
+        if (!config.item.enabled) return
+        server.pluginManager.registerSuspendingEvents(ItemListener, this)
+    }
+
+    private fun registerItemRecipe() {
+        if (!config.item.registerRecipe) return
+        server.addRecipe(MenuItemRecipe)
     }
 }

@@ -1,7 +1,6 @@
 package ink.pmc.essentials.listeners
 
 import ink.pmc.essentials.config.EssentialsConfig
-import ink.pmc.essentials.items.NOTEBOOK_ITEM
 import ink.pmc.framework.playerdb.PlayerDb
 import ink.pmc.framework.utils.inventory.isFull
 import org.bukkit.entity.Player
@@ -25,13 +24,5 @@ object JoinListener : Listener, KoinComponent {
         val db = PlayerDb.getOrCreate(uniqueId)
         db["essentials.${config.serverName}.join.item.$name"] = true
         db.update()
-    }
-
-    @EventHandler
-    suspend fun PlayerJoinEvent.menu() {
-        if (!joinConfig.menuItem) return
-        if (player.isItemGiven("notebook") || player.inventory.isFull) return
-        player.inventory.addItem(NOTEBOOK_ITEM)
-        player.setItemGiven("notebook")
     }
 }

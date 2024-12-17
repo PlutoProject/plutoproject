@@ -105,24 +105,20 @@ data class ContainerProtection(
 
 data class Action(
     val enabled: Boolean,
-    val sneakSwapMenu: Boolean
 )
 
 data class Item(
     val enabled: Boolean,
-    val menu: Boolean,
 )
 
 data class Recipe(
     val enabled: Boolean,
     val autoUnlock: Boolean,
-    val menuItem: Boolean,
     val vanillaExtend: Boolean
 )
 
 data class Join(
     val enabled: Boolean,
-    val menuItem: Boolean,
 )
 
 data class DisableJoinQuitMessage(

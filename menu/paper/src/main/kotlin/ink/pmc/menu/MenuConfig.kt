@@ -1,9 +1,18 @@
 package ink.pmc.menu
 
 data class MenuConfig(
+    val serverName: String,
+    val item: Item = Item(),
     val prebuiltPages: PrebuiltPages = PrebuiltPages(),
     val prebuiltButtons: PrebuiltButtons = PrebuiltButtons(),
     val pages: List<Page> = listOf()
+)
+
+data class Item(
+    val enabled: Boolean = true,
+    val giveWhenJoin: Boolean = true,
+    val alwaysGive: Boolean = false,
+    val registerRecipe: Boolean = true
 )
 
 data class PrebuiltPages(

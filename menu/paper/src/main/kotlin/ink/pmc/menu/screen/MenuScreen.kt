@@ -18,7 +18,6 @@ import ink.pmc.framework.interactive.inventory.jetpack.Arrangement
 import ink.pmc.framework.interactive.inventory.layout.Column
 import ink.pmc.framework.interactive.inventory.layout.Menu
 import ink.pmc.framework.interactive.inventory.layout.Row
-import ink.pmc.framework.playerdb.PlayerDb
 import ink.pmc.framework.utils.chat.UI_PAGING_SOUND
 import ink.pmc.framework.utils.visual.mochaLavender
 import ink.pmc.framework.utils.visual.mochaText
@@ -28,16 +27,16 @@ import ink.pmc.menu.Page
 import ink.pmc.menu.api.LocalMenuScreenModel
 import ink.pmc.menu.api.MenuManager
 import ink.pmc.menu.api.descriptor.PageDescriptor
+import ink.pmc.menu.repository.UserRepository
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.event.inventory.ClickType
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-private const val FIRST_OPEN_PROMPT_KEY = "menu.notebook.was_opened_before"
-
 class MenuScreen : InteractiveScreen(), KoinComponent {
     private val config by inject<MenuConfig>()
+    private val userRepo by inject<UserRepository>()
 
     @Composable
     override fun Content() {
@@ -45,8 +44,8 @@ class MenuScreen : InteractiveScreen(), KoinComponent {
         val screenModel = rememberScreenModel { MenuScreenModelImpl() }
 
         LaunchedEffect(Unit) {
-            val db = PlayerDb.getOrCreate(player.uniqueId)
-            if (db.getBoolean(FIRST_OPEN_PROMPT_KEY)) return@LaunchedEffect
+            val userModel = userRepo.findOrCreate(player.uniqueId)
+            if (userModel.wasOpenedBefore) return@LaunchedEffect
             player.send {
                 text("小提示: 你可以使用 ") with mochaText
                 keybind("key.sneak") with mochaLavender
@@ -56,8 +55,11 @@ class MenuScreen : InteractiveScreen(), KoinComponent {
                 text("/menu ") with mochaLavender
                 text("来打开「手账」") with mochaText
             }
-            db[FIRST_OPEN_PROMPT_KEY] = true
-            db.update()
+            userRepo.saveOrUpdate(
+                userModel.copy(
+                    wasOpenedBefore = true
+                )
+            )
         }
 
         CompositionLocalProvider(

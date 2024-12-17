@@ -29,7 +29,6 @@ import ink.pmc.essentials.config.EssentialsConfig
 import ink.pmc.essentials.home.HomeManagerImpl
 import ink.pmc.essentials.hooks.EconomyHook
 import ink.pmc.essentials.listeners.*
-import ink.pmc.essentials.recipes.NOTEBOOK_RECIPE
 import ink.pmc.essentials.recipes.registerVanillaExtend
 import ink.pmc.essentials.repositories.BackRepository
 import ink.pmc.essentials.repositories.HomeRepository
@@ -263,9 +262,6 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
         if (config.recipe.enabled) {
             if (config.recipe.autoUnlock) {
                 server.pluginManager.registerSuspendingEvents(RecipeListener, this)
-            }
-            if (config.recipe.menuItem) {
-                server.addRecipe(NOTEBOOK_RECIPE)
             }
             if (config.recipe.vanillaExtend) {
                 server.registerVanillaExtend()
