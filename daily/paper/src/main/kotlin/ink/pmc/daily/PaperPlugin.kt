@@ -63,7 +63,7 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
         }
 
         if (isMenuAvailable) {
-            MenuManager.registerButton(DAILY_BUTTON_DESCRIPTOR, ::Daily)
+            MenuManager.registerButton(DAILY_BUTTON_DESCRIPTOR) { Daily() }
         }
         server.pluginManager.registerEvents(DailyListener, this)
         server.servicesManager.getRegistration(Economy::class.java)?.provider?.also { economy = it }

@@ -66,7 +66,7 @@ fun RandomTeleport() {
 
     val teleportCost = RandomTeleportManager.getRandomTeleportOptions(player.world).cost.trimmed()
     val teleportCostMessage = "$teleportCost$economySymbol"
-    var cooldownRemaining by mutableStateOf(player.cooldownRemaining)
+    var cooldownRemaining by remember { mutableStateOf(player.cooldownRemaining) }
 
     LaunchedEffect(Unit) {
         while (true) {

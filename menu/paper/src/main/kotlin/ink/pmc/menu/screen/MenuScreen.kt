@@ -14,6 +14,7 @@ import ink.pmc.framework.interactive.InteractiveScreen
 import ink.pmc.framework.interactive.LocalPlayer
 import ink.pmc.framework.interactive.inventory.*
 import ink.pmc.framework.interactive.inventory.click.clickable
+import ink.pmc.framework.interactive.inventory.jetpack.Arrangement
 import ink.pmc.framework.interactive.inventory.layout.Column
 import ink.pmc.framework.interactive.inventory.layout.Menu
 import ink.pmc.framework.interactive.inventory.layout.Row
@@ -64,15 +65,17 @@ class MenuScreen : InteractiveScreen(), KoinComponent {
         ) {
             Menu(
                 title = Component.text("手账"),
-                rows = 5,
+                rows = 6,
                 topBorderAttachment = {
                     ItemSpacer()
-                    val pages = MenuManager.pages.take(7)
-                    val canAddCap = pages.size in 2..4
-                    pages.forEachIndexed { i, e ->
-                        Paging(e)
-                        if (canAddCap && i != pages.lastIndex) {
-                            ItemSpacer()
+                    Row(modifier = Modifier.height(1).width(7), horizontalArrangement = Arrangement.Center) {
+                        val pages = MenuManager.pages.take(7)
+                        val canAddCap = pages.size in 2..4
+                        pages.forEachIndexed { i, e ->
+                            Paging(e)
+                            if (canAddCap && i != pages.lastIndex) {
+                                ItemSpacer()
+                            }
                         }
                     }
                     ItemSpacer()

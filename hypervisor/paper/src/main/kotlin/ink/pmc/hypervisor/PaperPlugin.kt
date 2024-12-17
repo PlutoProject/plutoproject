@@ -83,7 +83,7 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
         annotationParser.parse(DynamicSchedulingCommand)
 
         if (isMenuAvailable) {
-            MenuManager.registerButton(VIEW_BOOST_BUTTON_DESCRIPTOR, ::ViewBoost)
+            MenuManager.registerButton(VIEW_BOOST_BUTTON_DESCRIPTOR) { ViewBoost() }
         }
         OptionsManager.registerOptionDescriptor(DYNAMIC_VIEW_DISTANCE)
 

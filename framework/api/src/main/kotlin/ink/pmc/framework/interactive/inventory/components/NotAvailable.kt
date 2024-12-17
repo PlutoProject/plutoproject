@@ -6,6 +6,7 @@ import ink.pmc.advkt.component.italic
 import ink.pmc.advkt.component.text
 import ink.pmc.framework.interactive.inventory.Item
 import ink.pmc.framework.utils.visual.mochaMaroon
+import ink.pmc.framework.utils.visual.mochaSubtext0
 import net.kyori.adventure.text.Component
 import org.bukkit.Material
 
@@ -23,7 +24,7 @@ fun NotAvailable(
                 text("因服务器内部问题，此功能不可用") with mochaMaroon without italic()
             })
             add(component {
-                text("请将其反馈给管理组以便我们尽快解决") with mochaMaroon without italic()
+                text("请将其反馈给管理组以便我们尽快解决") with mochaSubtext0 without italic()
             })
         }
     )

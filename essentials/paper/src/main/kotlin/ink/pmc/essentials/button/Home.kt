@@ -48,7 +48,7 @@ private sealed class PreferredHomeState {
 fun Home() {
     val player = LocalPlayer.current
     val navigator = LocalNavigator.currentOrThrow
-    var preferredHomeState by mutableStateOf<PreferredHomeState>(PreferredHomeState.Loading)
+    var preferredHomeState by remember { mutableStateOf<PreferredHomeState>(PreferredHomeState.Loading) }
 
     LaunchedEffect(Unit) {
         val home = HomeManager.getPreferredHome(player)

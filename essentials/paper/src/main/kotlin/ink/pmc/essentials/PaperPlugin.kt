@@ -197,14 +197,14 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
                 TpcancelCommand
             )
             if (isMenuAvailable) {
-                MenuManager.registerButton(TELEPORT_BUTTON_DESCRIPTOR, ::Teleport)
+                MenuManager.registerButton(TELEPORT_BUTTON_DESCRIPTOR) { Teleport() }
             }
         }
         if (config.randomTeleport.enabled) {
             server.pluginManager.registerSuspendingEvents(RandomTeleportListener, this)
             annotationParser.parse(RtpCommand)
             if (isMenuAvailable) {
-                MenuManager.registerButton(RANDOM_TELEPORT_BUTTON_DESCRIPTOR, ::RandomTeleport)
+                MenuManager.registerButton(RANDOM_TELEPORT_BUTTON_DESCRIPTOR) { RandomTeleport() }
             }
         }
         if (config.home.enabled) {
@@ -217,7 +217,7 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
                 SetHomeCommand
             )
             if (isMenuAvailable) {
-                MenuManager.registerButton(HOME_BUTTON_DESCRIPTOR, ::Home)
+                MenuManager.registerButton(HOME_BUTTON_DESCRIPTOR) { Home() }
             }
         }
         if (config.warp.enabled) {
@@ -232,8 +232,8 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
                 WarpsCommand
             )
             if (isMenuAvailable) {
-                MenuManager.registerButton(WARP_BUTTON_DESCRIPTOR, ::Warp)
-                MenuManager.registerButton(SPAWN_BUTTON_DESCRIPTOR, ::Spawn)
+                MenuManager.registerButton(WARP_BUTTON_DESCRIPTOR) { Warp() }
+                MenuManager.registerButton(SPAWN_BUTTON_DESCRIPTOR) { Spawn() }
             }
         }
         if (config.back.enabled) {

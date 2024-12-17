@@ -4,7 +4,6 @@ import androidx.compose.runtime.Composable
 import ink.pmc.advkt.component.component
 import ink.pmc.advkt.component.italic
 import ink.pmc.advkt.component.text
-import ink.pmc.essentials.DEFAULT_ECONOMY_SYMBOL
 import ink.pmc.framework.interactive.LocalPlayer
 import ink.pmc.framework.interactive.inventory.Item
 import ink.pmc.framework.interactive.inventory.components.NotAvailable
@@ -24,7 +23,8 @@ val BALANCE_BUTTON_DESCRIPTOR = buttonDescriptor {
 @Composable
 fun Balance() {
     val player = LocalPlayer.current
-    if (vaultHook?.economy == null) {
+    val economy = vaultHook?.economy
+    if (economy == null) {
         NotAvailable(
             material = Material.SUNFLOWER,
             name = component {
@@ -40,9 +40,10 @@ fun Balance() {
         },
         lore = buildList {
             add(component {
-                val balance = vaultHook!!.economy!!.getBalance(player).trimmed()
+                val balance = economy.getBalance(player).trimmed()
+                val economySymbol = economy.currencyNameSingular()
                 text("你的余额: ") with mochaSubtext0 without italic()
-                text("$balance$DEFAULT_ECONOMY_SYMBOL") with mochaText without italic()
+                text("$balance$economySymbol") with mochaText without italic()
             })
             add(component {
                 text("可在「礼记」中到访来获取货币") with mochaSubtext0 without italic()

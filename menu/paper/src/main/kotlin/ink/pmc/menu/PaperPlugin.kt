@@ -46,6 +46,8 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
         commandManager().annotationParser().apply {
             parse(MenuCommand)
         }
+        registerPrebuiltPages()
+        registerPrebuiltButtons()
     }
 
     private fun registerPrebuiltPages() {
@@ -57,13 +59,13 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
 
     private fun registerPrebuiltButtons() {
         if (config.prebuiltButtons.wiki) {
-            MenuManager.registerButton(WIKI_BUTTON_DESCRIPTOR, ::Wiki)
+            MenuManager.registerButton(WIKI_BUTTON_DESCRIPTOR) { Wiki() }
         }
         if (config.prebuiltButtons.inspect) {
-            MenuManager.registerButton(INSPECT_BUTTON_DESCRIPTOR, ::Inspect)
+            MenuManager.registerButton(INSPECT_BUTTON_DESCRIPTOR) { Inspect() }
         }
         if (config.prebuiltButtons.balance) {
-            MenuManager.registerButton(BALANCE_BUTTON_DESCRIPTOR, ::Balance)
+            MenuManager.registerButton(BALANCE_BUTTON_DESCRIPTOR) { Balance() }
         }
     }
 }

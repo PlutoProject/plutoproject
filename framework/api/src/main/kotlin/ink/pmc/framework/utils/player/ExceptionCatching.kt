@@ -5,6 +5,7 @@ import ink.pmc.advkt.component.text
 import ink.pmc.advkt.send
 import ink.pmc.framework.frameworkLogger
 import ink.pmc.framework.utils.visual.mochaMaroon
+import ink.pmc.framework.utils.visual.mochaSubtext0
 import net.kyori.adventure.audience.Audience
 import java.util.logging.Level
 
@@ -29,7 +30,7 @@ inline fun <T> T.catchExceptionInteraction(audience: Audience? = null, action: T
             send {
                 text("处理交互时出现服务器内部错误") with mochaMaroon
                 newline()
-                text("请将其反馈给管理组以便我们尽快解决") with mochaMaroon
+                text("请将其反馈给管理组以便我们尽快解决") with mochaSubtext0
             }
         },
         failureLog = "Exception caught while handling interaction"
