@@ -7,6 +7,7 @@ import ink.pmc.advkt.showTitle
 import ink.pmc.advkt.title.*
 import ink.pmc.framework.startScreen
 import ink.pmc.framework.utils.concurrent.submitAsync
+import ink.pmc.framework.utils.player.addItemOrDrop
 import ink.pmc.serverselector.*
 import ink.pmc.serverselector.screen.ServerSelectorScreen
 import ink.pmc.serverselector.storage.UserRepository
@@ -21,6 +22,8 @@ import org.bukkit.event.block.Action
 import org.bukkit.event.entity.*
 import org.bukkit.event.player.*
 import org.bukkit.event.weather.WeatherChangeEvent
+import org.bukkit.inventory.ItemStack
+import org.bukkit.inventory.PlayerInventory
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import org.koin.core.component.inject
@@ -54,7 +57,8 @@ object LobbyListener : Listener, KoinComponent {
                 .filterNotNull()
                 .any { it.isServerSelector }
         ) {
-            player.inventory.addItem(ServerSelectorItem)
+            // 玩家在此处更多使用的是选择服务器物品，将其放置在物品栏第一位
+            player.inventory.addToFirstHotbarSlot(ServerSelectorItem)
         }
         player.teleportAsync(lobbyWorldSpawn)
         player.health = player.getAttribute(Attribute.GENERIC_MAX_HEALTH)?.value ?: error("Unexpected")
@@ -67,6 +71,21 @@ object LobbyListener : Listener, KoinComponent {
         }
         if (player.hasPermission(PROTECTION_BYPASS)) return
         player.gameMode = GameMode.SURVIVAL
+    }
+
+    private fun PlayerInventory.addToFirstHotbarSlot(itemStack: ItemStack) {
+        if (isEmpty) {
+            addItem(itemStack)
+            return
+        }
+        val air = ItemStack(Material.AIR)
+        val keepHotbar = mutableListOf<ItemStack>()
+        for (i in 0..8) {
+            keepHotbar.add(getItem(i) ?: continue)
+            setItem(i, air)
+        }
+        setItem(0, itemStack)
+        addItemOrDrop(*keepHotbar.toTypedArray())
     }
 
     private suspend fun Player.showPromptTitle() {

@@ -5,7 +5,9 @@ import ink.pmc.advkt.component.italic
 import ink.pmc.advkt.component.text
 import ink.pmc.framework.utils.visual.mochaLavender
 import ink.pmc.framework.utils.visual.mochaSubtext0
+import ink.pmc.framework.utils.visual.mochaText
 import ink.pmc.menu.plugin
+import net.kyori.adventure.text.Component
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.inventory.ItemStack
@@ -26,7 +28,7 @@ object MenuItem : ItemStack(Material.BOOK) {
             it.setEnchantmentGlintOverride(true)
             it.persistentDataContainer.set(key, PersistentDataType.BOOLEAN, true)
             it.displayName(component {
-                text("手账") with mochaLavender without italic()
+                text("手账") with mochaText without italic()
             })
             it.lore(buildList {
                 add(component {
@@ -34,6 +36,11 @@ object MenuItem : ItemStack(Material.BOOK) {
                 })
                 add(component {
                     text("若不慎丢失的话，可以在工作台里再打造一本。") with mochaSubtext0 without italic()
+                })
+                add(Component.empty())
+                add(component {
+                    text("手持右键 ") with mochaLavender without italic()
+                    text("打开手账") with mochaText without italic()
                 })
             })
         }

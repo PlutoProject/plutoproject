@@ -38,7 +38,7 @@ fun ServerSelector() {
             add(Component.empty())
             add(component {
                 text("左键 ") with mochaLavender without italic()
-                text("打开服务器选择菜单") with mochaText without italic()
+                text("选择服务器") with mochaText without italic()
             })
         },
         modifier = Modifier.clickable {
