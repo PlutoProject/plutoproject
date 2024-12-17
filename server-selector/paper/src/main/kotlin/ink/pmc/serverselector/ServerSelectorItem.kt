@@ -31,7 +31,7 @@ object ServerSelectorItem : ItemStack(Material.COMPASS) {
                 })
                 add(Component.empty())
                 add(component {
-                    text("右键点击 ") with mochaLavender without italic()
+                    text("手持右键 ") with mochaLavender without italic()
                     text("选择服务器") with mochaText without italic()
                 })
             })

@@ -1,7 +1,6 @@
 package ink.pmc.essentials.listeners
 
 import ink.pmc.essentials.config.EssentialsConfig
-import ink.pmc.essentials.recipes.NOTEBOOK_RECIPE
 import ink.pmc.essentials.recipes.vanillaExtendRecipes
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -16,7 +15,6 @@ object RecipeListener : Listener, KoinComponent {
     @EventHandler
     fun PlayerJoinEvent.e() {
         if (!config.autoUnlock) return
-        player.discoverRecipe(NOTEBOOK_RECIPE.key)
         player.discoverRecipes(vanillaExtendRecipes.map { it.key })
     }
 }

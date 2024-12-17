@@ -38,6 +38,7 @@ include("essentials:velocity")
 include("essentials:api")
 
 include("menu")
+include("menu:api")
 include("menu:paper")
 
 include("daily")

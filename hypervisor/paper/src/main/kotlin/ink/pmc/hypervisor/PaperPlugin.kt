@@ -3,8 +3,15 @@ package ink.pmc.hypervisor
 import com.github.shynixn.mccoroutine.bukkit.SuspendingJavaPlugin
 import com.github.shynixn.mccoroutine.bukkit.registerSuspendingEvents
 import com.sksamuel.hoplite.PropertySource
+import ink.pmc.framework.options.OptionsManager
+import ink.pmc.framework.utils.config.preconfiguredConfigLoaderBuilder
+import ink.pmc.framework.utils.inject.startKoinIfNotPresent
+import ink.pmc.framework.utils.jvm.findClass
+import ink.pmc.framework.utils.storage.saveResourceIfNotExisted
 import ink.pmc.hypervisor.StatisticProviderType.NATIVE
 import ink.pmc.hypervisor.StatisticProviderType.SPARK
+import ink.pmc.hypervisor.button.VIEW_BOOST_BUTTON_DESCRIPTOR
+import ink.pmc.hypervisor.button.ViewBoost
 import ink.pmc.hypervisor.commands.DynamicSchedulingCommand
 import ink.pmc.hypervisor.commands.StatusCommand
 import ink.pmc.hypervisor.config.HypervisorConfig
@@ -12,11 +19,8 @@ import ink.pmc.hypervisor.listeners.DynamicViewDistanceListener
 import ink.pmc.hypervisor.listeners.StatusCommandListener
 import ink.pmc.hypervisor.providers.NativeStatisticProvider
 import ink.pmc.hypervisor.providers.SparkStatisticProvider
-import ink.pmc.framework.options.OptionsManager
-import ink.pmc.framework.utils.config.preconfiguredConfigLoaderBuilder
-import ink.pmc.framework.utils.inject.startKoinIfNotPresent
-import ink.pmc.framework.utils.jvm.findClass
-import ink.pmc.framework.utils.storage.saveResourceIfNotExisted
+import ink.pmc.menu.api.MenuManager
+import ink.pmc.menu.api.isMenuAvailable
 import org.bukkit.command.CommandSender
 import org.bukkit.plugin.java.JavaPlugin
 import org.incendo.cloud.annotations.AnnotationParser
@@ -78,6 +82,9 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
         annotationParser.installCoroutineSupport()
         annotationParser.parse(DynamicSchedulingCommand)
 
+        if (isMenuAvailable) {
+            MenuManager.registerButton(VIEW_BOOST_BUTTON_DESCRIPTOR) { ViewBoost() }
+        }
         OptionsManager.registerOptionDescriptor(DYNAMIC_VIEW_DISTANCE)
 
         if (config.dynamicScheduling.enabled) {

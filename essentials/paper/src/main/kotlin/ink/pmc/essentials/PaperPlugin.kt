@@ -14,6 +14,7 @@ import ink.pmc.essentials.api.teleport.random.RandomTeleportManager
 import ink.pmc.essentials.api.warp.Warp
 import ink.pmc.essentials.api.warp.WarpManager
 import ink.pmc.essentials.back.BackManagerImpl
+import ink.pmc.essentials.button.*
 import ink.pmc.essentials.commands.*
 import ink.pmc.essentials.commands.afk.AfkCommand
 import ink.pmc.essentials.commands.back.BackCommand
@@ -28,7 +29,6 @@ import ink.pmc.essentials.config.EssentialsConfig
 import ink.pmc.essentials.home.HomeManagerImpl
 import ink.pmc.essentials.hooks.EconomyHook
 import ink.pmc.essentials.listeners.*
-import ink.pmc.essentials.recipes.NOTEBOOK_RECIPE
 import ink.pmc.essentials.recipes.registerVanillaExtend
 import ink.pmc.essentials.repositories.BackRepository
 import ink.pmc.essentials.repositories.HomeRepository
@@ -43,6 +43,8 @@ import ink.pmc.framework.utils.command.suggestion.PaperPrivilegedSuggestion
 import ink.pmc.framework.utils.config.preconfiguredConfigLoaderBuilder
 import ink.pmc.framework.utils.inject.startKoinIfNotPresent
 import ink.pmc.framework.utils.storage.saveResourceIfNotExisted
+import ink.pmc.menu.api.MenuManager
+import ink.pmc.menu.api.isMenuAvailable
 import io.leangen.geantyref.TypeToken
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -50,6 +52,7 @@ import kotlinx.coroutines.cancel
 import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.command.CommandSender
 import org.bukkit.plugin.Plugin
+import org.incendo.cloud.annotations.AnnotationParser
 import org.incendo.cloud.bukkit.parser.OfflinePlayerParser
 import org.incendo.cloud.bukkit.parser.WorldParser
 import org.incendo.cloud.minecraft.extras.parser.ComponentParser
@@ -68,8 +71,8 @@ val essentialsScope = CoroutineScope(Dispatchers.Default)
 
 @Suppress("UNUSED")
 class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
-
     private val config by inject<EssentialsConfig>()
+    private lateinit var annotationParser: AnnotationParser<CommandSender>
     private val bukkitModule = module {
         single<EssentialsConfig> {
             preconfiguredConfigLoaderBuilder()
@@ -113,7 +116,7 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
             modules(bukkitModule)
         }
 
-        commandManager().apply {
+        val commandManager = commandManager().apply {
             parserRegistry().apply {
                 registerSuggestionProvider(
                     "rtp-world",
@@ -161,74 +164,10 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
                     it.cloudSuggestions().to { StringArgumentType.greedyString() }
                 }
             }
-        }.annotationParser().apply {
-            parse(
-                EssentialsCommand,
-                AlignCommand,
-                GmCommand,
-                HatCommand,
-            )
-
-            if (config.teleport.enabled) {
-                parse(
-                    TeleportCommons,
-                    TpacceptCommand,
-                    TpaCommand,
-                    TpcancelCommand
-                )
-            }
-
-            if (config.randomTeleport.enabled) {
-                parse(RtpCommand)
-            }
-
-            if (config.home.enabled) {
-                parse(
-                    HomeCommons,
-                    DelHomeCommand,
-                    HomeCommand,
-                    HomesCommand,
-                    SetHomeCommand
-                )
-            }
-
-            if (config.warp.enabled) {
-                parse(
-                    WarpCommons,
-                    DelWarpCommand,
-                    EditWarpCommand,
-                    PreferredSpawnCommand,
-                    SetWarpCommand,
-                    SpawnCommand,
-                    WarpCommand,
-                    WarpsCommand
-                )
-            }
-
-            if (config.back.enabled) {
-                parse(BackCommand)
-            }
-
-            if (config.afk.enabled) {
-                parse(AfkCommand)
-            }
-
-            if (config.containerProtection.enabled) {
-                if (config.containerProtection.itemframe) {
-                    parse(ItemFrameCommand)
-                }
-                if (config.containerProtection.lectern) {
-                    parse(LecternCommand)
-                }
-            }
-
-            if (config.head.enabled) {
-                parse(HeadCommand)
-            }
         }
+        annotationParser = commandManager.annotationParser()
 
-        registerEvents()
-        registerRecipes()
+        register()
         initialize()
         disabled = false
     }
@@ -241,75 +180,110 @@ class PaperPlugin : SuspendingJavaPlugin(), KoinComponent {
         }
     }
 
-    private fun registerEvents() {
+    private fun register() {
+        annotationParser.parse(
+            EssentialsCommand,
+            AlignCommand,
+            GmCommand,
+            HatCommand,
+        )
         if (config.teleport.enabled) {
             server.pluginManager.registerSuspendingEvents(TeleportListener, this)
+            annotationParser.parse(
+                TeleportCommons,
+                TpacceptCommand,
+                TpaCommand,
+                TpcancelCommand
+            )
+            if (isMenuAvailable) {
+                MenuManager.registerButton(TELEPORT_BUTTON_DESCRIPTOR) { Teleport() }
+            }
         }
-
         if (config.randomTeleport.enabled) {
             server.pluginManager.registerSuspendingEvents(RandomTeleportListener, this)
+            annotationParser.parse(RtpCommand)
+            if (isMenuAvailable) {
+                MenuManager.registerButton(RANDOM_TELEPORT_BUTTON_DESCRIPTOR) { RandomTeleport() }
+            }
         }
-
         if (config.home.enabled) {
             server.pluginManager.registerSuspendingEvents(HomeListener, this)
+            annotationParser.parse(
+                HomeCommons,
+                DelHomeCommand,
+                HomeCommand,
+                HomesCommand,
+                SetHomeCommand
+            )
+            if (isMenuAvailable) {
+                MenuManager.registerButton(HOME_BUTTON_DESCRIPTOR) { Home() }
+            }
         }
-
+        if (config.warp.enabled) {
+            annotationParser.parse(
+                WarpCommons,
+                DelWarpCommand,
+                EditWarpCommand,
+                PreferredSpawnCommand,
+                SetWarpCommand,
+                SpawnCommand,
+                WarpCommand,
+                WarpsCommand
+            )
+            if (isMenuAvailable) {
+                MenuManager.registerButton(WARP_BUTTON_DESCRIPTOR) { Warp() }
+                MenuManager.registerButton(SPAWN_BUTTON_DESCRIPTOR) { Spawn() }
+            }
+        }
         if (config.back.enabled) {
             server.pluginManager.registerSuspendingEvents(BackListener, this)
+            annotationParser.parse(BackCommand)
         }
-
         if (config.afk.enabled) {
             server.pluginManager.registerSuspendingEvents(AfkListener, this)
+            annotationParser.parse(AfkCommand)
         }
-
         if (config.containerProtection.enabled) {
             if (config.containerProtection.itemframe) {
                 server.pluginManager.registerSuspendingEvents(ItemFrameListener, this)
+                annotationParser.parse(ItemFrameCommand)
             }
             if (config.containerProtection.lectern) {
                 server.pluginManager.registerSuspendingEvents(LecternListener, this)
+                annotationParser.parse(LecternCommand)
             }
         }
-
         if (config.action.enabled) {
             server.pluginManager.registerSuspendingEvents(ActionListener, this)
         }
-
         if (config.item.enabled) {
             server.pluginManager.registerSuspendingEvents(ItemListener, this)
         }
-
         if (config.recipe.enabled) {
-            server.pluginManager.registerSuspendingEvents(RecipeListener, this)
+            if (config.recipe.autoUnlock) {
+                server.pluginManager.registerSuspendingEvents(RecipeListener, this)
+            }
+            if (config.recipe.vanillaExtend) {
+                server.registerVanillaExtend()
+            }
         }
-
         if (config.join.enabled) {
             server.pluginManager.registerSuspendingEvents(JoinListener, this)
         }
-
+        if (config.head.enabled) {
+            annotationParser.parse(HeadCommand)
+        }
         if (config.disableJoinQuitMessage.enabled) {
             server.pluginManager.registerSuspendingEvents(DisableJoinQuitMessageListener, this)
         }
-
         if (config.demoWorld.enabled) {
             server.pluginManager.registerSuspendingEvents(DemoWorldListener, this)
-        }
-    }
-
-    private fun registerRecipes() {
-        if (!config.recipe.enabled) return
-        if (config.recipe.menuItem) {
-            server.addRecipe(NOTEBOOK_RECIPE)
-        }
-        if (config.recipe.vanillaExtend) {
-            server.registerVanillaExtend()
         }
     }
 
     private fun initialize() {
         // 初始化 AfkManager，开始后台任务
         if (config.afk.enabled) get<AfkManager>()
-
         if (server.pluginManager.getPlugin("Vault") != null) {
             economyHook = EconomyHook()
         }

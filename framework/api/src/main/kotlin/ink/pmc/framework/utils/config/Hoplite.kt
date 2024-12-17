@@ -3,6 +3,7 @@ package ink.pmc.framework.utils.config
 import com.sksamuel.hoplite.ConfigLoaderBuilder
 import com.sksamuel.hoplite.ExperimentalHoplite
 import ink.pmc.framework.runtimeClassLoader
+import ink.pmc.framework.utils.config.decoder.CharDecoder
 import ink.pmc.framework.utils.config.decoder.ComponentDecoder
 
 @OptIn(ExperimentalHoplite::class)
@@ -13,4 +14,5 @@ inline fun preconfiguredConfigLoaderBuilder(): ConfigLoaderBuilder {
         .withExplicitSealedTypes()
         .addDefaults()
         .addDecoder(ComponentDecoder)
+        .addDecoder(CharDecoder)
 }
