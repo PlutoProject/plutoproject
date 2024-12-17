@@ -6,6 +6,10 @@ import ink.pmc.framework.options.OptionsManager
 import ink.pmc.framework.utils.config.preconfiguredConfigLoaderBuilder
 import ink.pmc.framework.utils.inject.startKoinIfNotPresent
 import ink.pmc.framework.utils.storage.saveResourceIfNotExisted
+import ink.pmc.menu.api.MenuManager
+import ink.pmc.menu.api.isMenuAvailable
+import ink.pmc.serverselector.button.SERVER_SELECTOR_BUTTON_DESCRIPTOR
+import ink.pmc.serverselector.button.ServerSelector
 import ink.pmc.serverselector.listener.LobbyListener
 import ink.pmc.serverselector.listener.TimeSyncListener
 import org.bukkit.plugin.java.JavaPlugin
@@ -31,6 +35,9 @@ class PaperPlugin : SuspendingJavaPlugin() {
         }
         loadLobbyWorld()
         OptionsManager.registerOptionDescriptor(AUTO_JOIN_DESCRIPTOR)
+        if (isMenuAvailable) {
+            MenuManager.registerButton(SERVER_SELECTOR_BUTTON_DESCRIPTOR) { ServerSelector() }
+        }
         server.pluginManager.registerEvents(LobbyListener, this)
         server.pluginManager.registerEvents(TimeSyncListener, this)
     }
