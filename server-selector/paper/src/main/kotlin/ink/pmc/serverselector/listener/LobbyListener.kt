@@ -69,8 +69,8 @@ object LobbyListener : Listener, KoinComponent {
         submitAsync {
             player.showPromptTitle()
         }
-        if (player.hasPermission(PROTECTION_BYPASS)) return
-        player.gameMode = GameMode.SURVIVAL
+        // if (player.hasPermission(PROTECTION_BYPASS)) return
+        player.gameMode = GameMode.ADVENTURE
     }
 
     private fun PlayerInventory.addToFirstHotbarSlot(itemStack: ItemStack) {
