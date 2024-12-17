@@ -16,6 +16,7 @@ import ink.pmc.menu.api.dsl.buttonDescriptor
 import ink.pmc.serverselector.screen.ServerSelectorScreen
 import net.kyori.adventure.text.Component
 import org.bukkit.Material
+import org.bukkit.event.inventory.ClickType
 
 val SERVER_SELECTOR_BUTTON_DESCRIPTOR = buttonDescriptor {
     id = "server_selector:server_selector"
@@ -41,6 +42,7 @@ fun ServerSelector() {
             })
         },
         modifier = Modifier.clickable {
+            if (clickType != ClickType.LEFT) return@clickable
             navigator.push(ServerSelectorScreen())
         }
     )

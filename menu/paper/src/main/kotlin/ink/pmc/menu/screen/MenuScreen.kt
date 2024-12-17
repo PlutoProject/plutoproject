@@ -114,6 +114,7 @@ class MenuScreen : InteractiveScreen(), KoinComponent {
                 addAll(descriptor.description.map { desc ->
                     desc.decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE)
                 })
+                if (screenModel.currentPageId == descriptor.id) return@buildList
                 add(Component.empty())
                 add(component {
                     text("左键 ") with mochaLavender without italic()
@@ -122,6 +123,7 @@ class MenuScreen : InteractiveScreen(), KoinComponent {
             },
             modifier = Modifier.clickable {
                 if (clickType != ClickType.LEFT) return@clickable
+                if (screenModel.currentPageId == descriptor.id) return@clickable
                 screenModel.currentPageId = descriptor.id
                 player.playSound(UI_PAGING_SOUND)
             }
