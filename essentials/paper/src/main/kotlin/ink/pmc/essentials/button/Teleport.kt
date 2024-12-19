@@ -9,9 +9,9 @@ import ink.pmc.advkt.component.text
 import ink.pmc.essentials.api.teleport.TeleportManager
 import ink.pmc.essentials.screens.teleport.TeleportRequestScreen
 import ink.pmc.framework.interactive.LocalPlayer
-import ink.pmc.framework.interactive.inventory.Item
-import ink.pmc.framework.interactive.inventory.Modifier
-import ink.pmc.framework.interactive.inventory.click.clickable
+import ink.pmc.framework.interactive.Item
+import ink.pmc.framework.interactive.Modifier
+import ink.pmc.framework.interactive.click.clickable
 import ink.pmc.framework.chat.mochaGreen
 import ink.pmc.framework.chat.mochaLavender
 import ink.pmc.framework.chat.mochaSubtext0

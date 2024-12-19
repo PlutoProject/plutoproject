@@ -7,9 +7,9 @@ import ink.pmc.advkt.component.component
 import ink.pmc.advkt.component.italic
 import ink.pmc.advkt.component.text
 import ink.pmc.essentials.screens.warp.WarpListScreen
-import ink.pmc.framework.interactive.inventory.Item
-import ink.pmc.framework.interactive.inventory.Modifier
-import ink.pmc.framework.interactive.inventory.click.clickable
+import ink.pmc.framework.interactive.Item
+import ink.pmc.framework.interactive.Modifier
+import ink.pmc.framework.interactive.click.clickable
 import ink.pmc.framework.chat.mochaLavender
 import ink.pmc.framework.chat.mochaSapphire
 import ink.pmc.framework.chat.mochaSubtext0

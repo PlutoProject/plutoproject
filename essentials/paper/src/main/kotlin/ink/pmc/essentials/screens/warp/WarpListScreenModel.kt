@@ -4,7 +4,7 @@ import androidx.compose.runtime.mutableStateListOf
 import ink.pmc.essentials.api.warp.Warp
 import ink.pmc.essentials.api.warp.WarpCategory
 import ink.pmc.essentials.api.warp.WarpManager
-import ink.pmc.framework.interactive.inventory.layout.list.FilterListMenuModel
+import ink.pmc.framework.interactive.layout.list.FilterListMenuModel
 import org.bukkit.entity.Player
 
 enum class WarpFilter(val filterName: String) {

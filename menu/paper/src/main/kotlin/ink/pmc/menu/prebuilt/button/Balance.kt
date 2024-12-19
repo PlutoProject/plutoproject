@@ -5,8 +5,8 @@ import ink.pmc.advkt.component.component
 import ink.pmc.advkt.component.italic
 import ink.pmc.advkt.component.text
 import ink.pmc.framework.interactive.LocalPlayer
-import ink.pmc.framework.interactive.inventory.Item
-import ink.pmc.framework.interactive.inventory.components.NotAvailable
+import ink.pmc.framework.interactive.Item
+import ink.pmc.framework.interactive.components.NotAvailable
 import ink.pmc.framework.hook.vaultHook
 import ink.pmc.framework.trimmed
 import ink.pmc.framework.chat.mochaSubtext0

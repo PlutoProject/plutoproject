@@ -3,9 +3,9 @@ package ink.pmc.menu.prebuilt.button
 import androidx.compose.runtime.Composable
 import ink.pmc.advkt.component.*
 import ink.pmc.framework.interactive.LocalPlayer
-import ink.pmc.framework.interactive.inventory.Item
-import ink.pmc.framework.interactive.inventory.Modifier
-import ink.pmc.framework.interactive.inventory.click.clickable
+import ink.pmc.framework.interactive.Item
+import ink.pmc.framework.interactive.Modifier
+import ink.pmc.framework.interactive.click.clickable
 import ink.pmc.framework.chat.MESSAGE_SOUND
 import ink.pmc.framework.concurrent.sync
 import ink.pmc.framework.chat.mochaLavender

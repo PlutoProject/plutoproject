@@ -8,10 +8,10 @@ import ink.pmc.essentials.DEFAULT_ECONOMY_SYMBOL
 import ink.pmc.essentials.RANDOM_TELEPORT_COST_BYPASS
 import ink.pmc.essentials.api.teleport.random.RandomTeleportManager
 import ink.pmc.framework.interactive.LocalPlayer
-import ink.pmc.framework.interactive.inventory.Item
-import ink.pmc.framework.interactive.inventory.Modifier
-import ink.pmc.framework.interactive.inventory.click.clickable
-import ink.pmc.framework.interactive.inventory.components.NotAvailable
+import ink.pmc.framework.interactive.Item
+import ink.pmc.framework.interactive.Modifier
+import ink.pmc.framework.interactive.click.clickable
+import ink.pmc.framework.interactive.components.NotAvailable
 import ink.pmc.framework.concurrent.sync
 import ink.pmc.framework.hook.vaultHook
 import ink.pmc.framework.time.formatDuration

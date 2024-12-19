@@ -6,10 +6,10 @@ import ink.pmc.advkt.component.italic
 import ink.pmc.advkt.component.text
 import ink.pmc.framework.chat.*
 import ink.pmc.framework.interactive.LocalPlayer
-import ink.pmc.framework.interactive.inventory.Item
-import ink.pmc.framework.interactive.inventory.Modifier
-import ink.pmc.framework.interactive.inventory.click.clickable
-import ink.pmc.framework.interactive.inventory.components.NotAvailable
+import ink.pmc.framework.interactive.Item
+import ink.pmc.framework.interactive.Modifier
+import ink.pmc.framework.interactive.click.clickable
+import ink.pmc.framework.interactive.components.NotAvailable
 import ink.pmc.framework.concurrent.sync
 import ink.pmc.menu.api.dsl.buttonDescriptor
 import ink.pmc.menu.hook.CO_NEAR_COMMAND

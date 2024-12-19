@@ -6,9 +6,9 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import ink.pmc.advkt.component.component
 import ink.pmc.advkt.component.italic
 import ink.pmc.advkt.component.text
-import ink.pmc.framework.interactive.inventory.Item
-import ink.pmc.framework.interactive.inventory.Modifier
-import ink.pmc.framework.interactive.inventory.click.clickable
+import ink.pmc.framework.interactive.Item
+import ink.pmc.framework.interactive.Modifier
+import ink.pmc.framework.interactive.click.clickable
 import ink.pmc.framework.chat.mochaLavender
 import ink.pmc.framework.chat.mochaSubtext0
 import ink.pmc.framework.chat.mochaText

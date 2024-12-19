@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import ink.pmc.essentials.api.warp.Warp
 import ink.pmc.essentials.api.warp.WarpManager
-import ink.pmc.framework.interactive.inventory.layout.list.ListMenuModel
+import ink.pmc.framework.interactive.layout.list.ListMenuModel
 import kotlin.math.ceil
 
 private const val PAGE_SIZE = 28

@@ -8,14 +8,11 @@ import ink.pmc.advkt.component.text
 import ink.pmc.daily.*
 import ink.pmc.daily.api.Daily
 import ink.pmc.daily.api.DailyHistory
-import ink.pmc.framework.interactive.InteractiveScreen
-import ink.pmc.framework.interactive.LocalPlayer
-import ink.pmc.framework.interactive.inventory.*
-import ink.pmc.framework.interactive.inventory.click.clickable
-import ink.pmc.framework.interactive.inventory.jetpack.Arrangement
-import ink.pmc.framework.interactive.inventory.layout.Column
-import ink.pmc.framework.interactive.inventory.layout.Menu
-import ink.pmc.framework.interactive.inventory.layout.Row
+import ink.pmc.framework.interactive.click.clickable
+import ink.pmc.framework.interactive.jetpack.Arrangement
+import ink.pmc.framework.interactive.layout.Column
+import ink.pmc.framework.interactive.layout.Menu
+import ink.pmc.framework.interactive.layout.Row
 import ink.pmc.framework.chat.UI_PAGING_SOUND
 import ink.pmc.framework.chat.UI_SUCCEED_SOUND
 import ink.pmc.framework.chat.replace
@@ -27,6 +24,7 @@ import ink.pmc.framework.trimmed
 import ink.pmc.framework.chat.mochaFlamingo
 import ink.pmc.framework.chat.mochaSubtext0
 import ink.pmc.framework.chat.mochaText
+import ink.pmc.framework.interactive.*
 import kotlinx.coroutines.launch
 import net.kyori.adventure.text.Component
 import org.bukkit.Material

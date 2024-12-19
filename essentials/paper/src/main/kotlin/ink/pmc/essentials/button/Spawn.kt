@@ -10,9 +10,9 @@ import ink.pmc.essentials.api.warp.Warp
 import ink.pmc.essentials.api.warp.WarpManager
 import ink.pmc.essentials.screens.warp.DefaultSpawnPickerScreen
 import ink.pmc.framework.interactive.LocalPlayer
-import ink.pmc.framework.interactive.inventory.Item
-import ink.pmc.framework.interactive.inventory.Modifier
-import ink.pmc.framework.interactive.inventory.click.clickable
+import ink.pmc.framework.interactive.Item
+import ink.pmc.framework.interactive.Modifier
+import ink.pmc.framework.interactive.click.clickable
 import ink.pmc.framework.chat.replace
 import ink.pmc.framework.chat.mochaFlamingo
 import ink.pmc.framework.chat.mochaLavender

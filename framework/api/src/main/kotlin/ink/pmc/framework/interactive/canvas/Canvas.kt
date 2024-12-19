@@ -1,6 +1,6 @@
 package ink.pmc.framework.interactive.canvas
 
-import ink.pmc.framework.interactive.inventory.state.IntCoordinates
+import ink.pmc.framework.interactive.state.IntCoordinates
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap
 import org.bukkit.inventory.ItemStack
 
