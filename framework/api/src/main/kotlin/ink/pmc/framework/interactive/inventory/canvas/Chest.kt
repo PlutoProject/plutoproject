@@ -11,7 +11,7 @@ import ink.pmc.framework.interactive.inventory.nodes.StaticMeasurePolicy
 import ink.pmc.framework.interactive.inventory.onSizeChanged
 import ink.pmc.framework.interactive.inventory.sizeIn
 import ink.pmc.framework.interactive.inventory.state.IntCoordinates
-import ink.pmc.framework.utils.inventory.title
+import ink.pmc.framework.inventory.title
 import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player

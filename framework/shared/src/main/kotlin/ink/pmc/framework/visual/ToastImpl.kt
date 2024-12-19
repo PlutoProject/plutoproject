@@ -1,6 +1,6 @@
 package ink.pmc.framework.visual
 
-import ink.pmc.framework.utils.item.KeyedMaterial
+import ink.pmc.framework.item.KeyedMaterial
 import ink.pmc.framework.visual.toast.ToastFrame
 import ink.pmc.framework.visual.toast.ToastType
 import net.kyori.adventure.text.Component

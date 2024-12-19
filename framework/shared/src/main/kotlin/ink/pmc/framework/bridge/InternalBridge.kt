@@ -6,7 +6,7 @@ import ink.pmc.framework.bridge.server.*
 import ink.pmc.framework.bridge.world.InternalWorld
 import ink.pmc.framework.bridge.world.RemoteBackendWorld
 import ink.pmc.framework.bridge.world.createBridge
-import ink.pmc.framework.utils.player.uuid
+import ink.pmc.framework.player.uuid
 import org.koin.java.KoinJavaComponent.getKoin
 import java.util.*
 

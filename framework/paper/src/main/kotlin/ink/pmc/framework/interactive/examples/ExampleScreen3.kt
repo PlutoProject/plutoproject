@@ -11,7 +11,7 @@ import ink.pmc.framework.interactive.inventory.VerticalGrid
 import ink.pmc.framework.interactive.inventory.click.clickable
 import ink.pmc.framework.interactive.inventory.canvas.Chest
 import ink.pmc.framework.interactive.inventory.fillMaxSize
-import ink.pmc.framework.utils.visual.mochaText
+import ink.pmc.framework.chat.mochaText
 import net.kyori.adventure.text.Component
 import org.bukkit.Material
 

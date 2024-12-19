@@ -7,7 +7,7 @@ import ink.pmc.framework.bridge.server.InternalServer
 import ink.pmc.framework.bridge.server.ServerState
 import ink.pmc.framework.bridge.server.ServerType
 import ink.pmc.framework.bridge.world.BridgeWorld
-import ink.pmc.framework.utils.platform.proxy
+import ink.pmc.framework.platform.proxy
 import java.util.*
 
 internal inline val localServer: ProxyLocalServer

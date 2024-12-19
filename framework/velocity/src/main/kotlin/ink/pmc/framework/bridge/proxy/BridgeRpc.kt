@@ -16,10 +16,10 @@ import ink.pmc.framework.bridge.server.*
 import ink.pmc.framework.frameworkLogger
 import ink.pmc.framework.concurrent.frameworkIoScope
 import ink.pmc.framework.concurrent.submitAsync
-import ink.pmc.framework.utils.data.NoReplayNotifyFlow
-import ink.pmc.framework.utils.player.switchServer
-import ink.pmc.framework.utils.player.uuid
-import ink.pmc.framework.utils.structure.checkMultiple
+import ink.pmc.framework.data.NoReplayNotifyFlow
+import ink.pmc.framework.player.switchServer
+import ink.pmc.framework.player.uuid
+import ink.pmc.framework.structure.checkMultiple
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow

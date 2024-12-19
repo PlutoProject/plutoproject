@@ -1,6 +1,6 @@
 package ink.pmc.whitelist.models
 
-import ink.pmc.framework.utils.currentUnixTimestamp
+import ink.pmc.framework.currentUnixTimestamp
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import java.util.*

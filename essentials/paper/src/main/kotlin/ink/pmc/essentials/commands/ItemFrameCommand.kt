@@ -4,7 +4,7 @@ import ink.pmc.essentials.*
 import ink.pmc.framework.chat.replace
 import ink.pmc.framework.command.ensurePlayer
 import ink.pmc.framework.concurrent.sync
-import ink.pmc.framework.utils.player.uuidOrNull
+import ink.pmc.framework.player.uuidOrNull
 import org.bukkit.Bukkit
 import org.bukkit.NamespacedKey
 import org.bukkit.OfflinePlayer

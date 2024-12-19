@@ -4,10 +4,10 @@ import com.velocitypowered.api.command.CommandSource
 import ink.pmc.advkt.component.text
 import ink.pmc.advkt.send
 import ink.pmc.framework.rpc.RpcServer
-import ink.pmc.framework.utils.visual.mochaFlamingo
-import ink.pmc.framework.utils.visual.mochaMaroon
-import ink.pmc.framework.utils.visual.mochaSubtext0
-import ink.pmc.framework.utils.visual.mochaText
+import ink.pmc.framework.chat.mochaFlamingo
+import ink.pmc.framework.chat.mochaMaroon
+import ink.pmc.framework.chat.mochaSubtext0
+import ink.pmc.framework.chat.mochaText
 import org.incendo.cloud.annotations.Command
 import org.incendo.cloud.annotations.Permission
 

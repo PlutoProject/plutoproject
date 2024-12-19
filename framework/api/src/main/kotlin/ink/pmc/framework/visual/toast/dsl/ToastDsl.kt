@@ -1,7 +1,7 @@
 package ink.pmc.framework.visual.toast.dsl
 
 import ink.pmc.advkt.component.RootComponentKt
-import ink.pmc.framework.utils.item.KeyedMaterial
+import ink.pmc.framework.item.KeyedMaterial
 import ink.pmc.framework.visual.toast.Toast
 import ink.pmc.framework.visual.toast.ToastFactory
 import ink.pmc.framework.visual.toast.ToastFrame

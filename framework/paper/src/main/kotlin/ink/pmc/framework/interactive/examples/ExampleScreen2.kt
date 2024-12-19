@@ -16,8 +16,8 @@ import ink.pmc.framework.interactive.inventory.layout.Box
 import ink.pmc.framework.interactive.inventory.layout.Column
 import ink.pmc.framework.interactive.inventory.layout.Row
 import ink.pmc.framework.concurrent.submitAsync
-import ink.pmc.framework.utils.visual.mochaRed
-import ink.pmc.framework.utils.visual.mochaSubtext0
+import ink.pmc.framework.chat.mochaRed
+import ink.pmc.framework.chat.mochaSubtext0
 import net.kyori.adventure.text.Component
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack

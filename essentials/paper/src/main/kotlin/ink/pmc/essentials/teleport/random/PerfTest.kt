@@ -2,7 +2,7 @@ package ink.pmc.essentials.teleport.random
 
 import ink.pmc.essentials.api.teleport.random.RandomTeleportManager
 import ink.pmc.essentials.essentialsScope
-import ink.pmc.framework.utils.time.ticks
+import ink.pmc.framework.time.ticks
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.bukkit.entity.Player

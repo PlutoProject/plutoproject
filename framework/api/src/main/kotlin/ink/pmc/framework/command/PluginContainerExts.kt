@@ -9,7 +9,7 @@ import ink.pmc.framework.bridge.command.parsers.BridgePlayerNotFoundException
 import ink.pmc.framework.bridge.command.parsers.BridgeServerNotFoundException
 import ink.pmc.framework.bridge.command.parsers.bridgePlayerParser
 import ink.pmc.framework.bridge.command.parsers.bridgeServerParser
-import ink.pmc.framework.utils.platform.proxy
+import ink.pmc.framework.platform.proxy
 import org.incendo.cloud.SenderMapper
 import org.incendo.cloud.execution.ExecutionCoordinator
 import org.incendo.cloud.velocity.VelocityCommandManager

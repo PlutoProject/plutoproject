@@ -7,7 +7,9 @@ import ink.pmc.advkt.showTitle
 import ink.pmc.advkt.title.*
 import ink.pmc.framework.startScreen
 import ink.pmc.framework.concurrent.submitAsync
-import ink.pmc.framework.utils.player.addItemOrDrop
+import ink.pmc.framework.player.addItemOrDrop
+import ink.pmc.framework.chat.mochaPink
+import ink.pmc.framework.chat.mochaText
 import ink.pmc.serverselector.*
 import ink.pmc.serverselector.screen.ServerSelectorScreen
 import ink.pmc.serverselector.storage.UserRepository
@@ -98,13 +100,13 @@ object LobbyListener : Listener, KoinComponent {
             }
             mainTitle {
                 if (userModel.hasJoinedBefore) {
-                    text("欢迎回来") with ink.pmc.framework.utils.visual.mochaPink
+                    text("欢迎回来") with mochaPink
                 } else {
-                    text("很高兴见到你！") with ink.pmc.framework.utils.visual.mochaPink
+                    text("很高兴见到你！") with mochaPink
                 }
             }
             subTitle {
-                text("使用指南针来传送服务器 ${KAOMOJIS.random()}") with ink.pmc.framework.utils.visual.mochaText
+                text("使用指南针来传送服务器 ${KAOMOJIS.random()}") with mochaText
             }
         }
         if (userModel.hasJoinedBefore) return

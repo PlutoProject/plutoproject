@@ -2,8 +2,8 @@ package ink.pmc.essentials.api.teleport.random
 
 import com.google.common.collect.Multimap
 import ink.pmc.essentials.api.teleport.ManagerState
-import ink.pmc.framework.utils.inject.inlinedGet
-import ink.pmc.framework.utils.world.Vec2
+import ink.pmc.framework.inject.inlinedGet
+import ink.pmc.framework.world.Vec2
 import org.bukkit.Location
 import org.bukkit.World
 import org.bukkit.entity.Player

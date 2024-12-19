@@ -3,9 +3,9 @@ package ink.pmc.serverselector
 import ink.pmc.advkt.component.component
 import ink.pmc.advkt.component.italic
 import ink.pmc.advkt.component.text
-import ink.pmc.framework.utils.visual.mochaLavender
-import ink.pmc.framework.utils.visual.mochaSubtext0
-import ink.pmc.framework.utils.visual.mochaText
+import ink.pmc.framework.chat.mochaLavender
+import ink.pmc.framework.chat.mochaSubtext0
+import ink.pmc.framework.chat.mochaText
 import net.kyori.adventure.text.Component
 import org.bukkit.Material
 import org.bukkit.NamespacedKey

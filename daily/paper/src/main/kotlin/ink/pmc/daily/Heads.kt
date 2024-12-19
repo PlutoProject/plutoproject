@@ -1,6 +1,6 @@
 package ink.pmc.daily
 
-import ink.pmc.framework.utils.player.setHeadTexture
+import ink.pmc.framework.player.setHeadTexture
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
 

@@ -1,6 +1,6 @@
 package ink.pmc.menu.api.dsl
 
-import ink.pmc.framework.utils.structure.Builder
+import ink.pmc.framework.structure.Builder
 import ink.pmc.menu.api.descriptor.ButtonDescriptor
 import ink.pmc.menu.api.factory.ButtonDescriptorFactory
 

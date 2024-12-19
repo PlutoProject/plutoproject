@@ -13,10 +13,10 @@ import ink.pmc.framework.concurrent.async
 import ink.pmc.framework.concurrent.compose
 import ink.pmc.framework.concurrent.submitAsync
 import ink.pmc.framework.datastructure.mapKv
-import ink.pmc.framework.utils.entity.teleportSuspend
-import ink.pmc.framework.utils.platform.paper
-import ink.pmc.framework.utils.world.ValueVec2
-import ink.pmc.framework.utils.world.getChunkViaSource
+import ink.pmc.framework.entity.teleportSuspend
+import ink.pmc.framework.platform.paper
+import ink.pmc.framework.world.ValueVec2
+import ink.pmc.framework.world.getChunkViaSource
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.future.asCompletableFuture

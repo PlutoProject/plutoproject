@@ -11,7 +11,7 @@ import ink.pmc.framework.bridge.world.BridgeLocation
 import ink.pmc.framework.bridge.world.BridgeLocationImpl
 import ink.pmc.framework.bridge.world.BridgeWorld
 import ink.pmc.framework.bridge.world.InternalWorld
-import ink.pmc.framework.utils.world.alias
+import ink.pmc.framework.world.alias
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.World

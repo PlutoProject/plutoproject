@@ -12,8 +12,8 @@ import ink.pmc.framework.startScreen
 import ink.pmc.framework.chat.replace
 import ink.pmc.framework.command.ensurePlayer
 import ink.pmc.framework.concurrent.submitAsync
-import ink.pmc.framework.utils.visual.mochaSubtext0
-import ink.pmc.framework.utils.visual.mochaText
+import ink.pmc.framework.chat.mochaSubtext0
+import ink.pmc.framework.chat.mochaText
 import kotlinx.coroutines.future.asCompletableFuture
 import kotlinx.coroutines.future.await
 import net.kyori.adventure.text.Component

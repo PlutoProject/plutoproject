@@ -1,6 +1,8 @@
 package ink.pmc.framework.utils.player.profile
 
-import ink.pmc.framework.utils.profile.MojangProfileFetcher
+import ink.pmc.framework.player.profile.CachedProfile
+import ink.pmc.framework.player.profile.ProfileCache
+import ink.pmc.framework.player.profile.MojangProfileFetcher
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.*

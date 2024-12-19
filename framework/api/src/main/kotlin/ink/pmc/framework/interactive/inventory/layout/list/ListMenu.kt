@@ -14,7 +14,7 @@ import ink.pmc.framework.interactive.inventory.jetpack.Arrangement
 import ink.pmc.framework.interactive.inventory.layout.Column
 import ink.pmc.framework.interactive.inventory.layout.Menu
 import ink.pmc.framework.interactive.inventory.layout.Row
-import ink.pmc.framework.utils.visual.mochaSubtext0
+import ink.pmc.framework.chat.mochaSubtext0
 import org.bukkit.Material
 
 abstract class ListMenu<E, M : ListMenuModel<E>> : InteractiveScreen() {

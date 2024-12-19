@@ -1,7 +1,7 @@
 package ink.pmc.serverselector
 
-import ink.pmc.framework.utils.currentUnixTimestamp
-import ink.pmc.framework.utils.inject.koin
+import ink.pmc.framework.currentUnixTimestamp
+import ink.pmc.framework.inject.koin
 import org.bukkit.*
 import java.io.File
 

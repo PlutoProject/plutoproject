@@ -3,6 +3,7 @@ package ink.pmc.framework.utils.player.profile
 import com.mongodb.client.model.Filters.eq
 import com.mongodb.client.model.ReplaceOptions
 import com.mongodb.kotlin.client.coroutine.MongoCollection
+import ink.pmc.framework.player.profile.CachedProfile
 import kotlinx.coroutines.flow.firstOrNull
 import java.util.*
 

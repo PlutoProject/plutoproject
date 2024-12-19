@@ -1,9 +1,9 @@
 package ink.pmc.framework.concurrent
 
 import ink.pmc.framework.frameworkPaper
-import ink.pmc.framework.utils.platform.internal
-import ink.pmc.framework.utils.platform.isFolia
-import ink.pmc.framework.utils.platform.paper
+import ink.pmc.framework.platform.internal
+import ink.pmc.framework.platform.isFolia
+import ink.pmc.framework.platform.paper
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.asCoroutineDispatcher
 import org.bukkit.Chunk

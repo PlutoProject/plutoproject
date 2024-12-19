@@ -11,8 +11,8 @@ import ink.pmc.framework.interactive.LocalPlayer
 import ink.pmc.framework.interactive.inventory.*
 import ink.pmc.framework.interactive.inventory.canvas.Chest
 import ink.pmc.framework.interactive.inventory.jetpack.Arrangement
-import ink.pmc.framework.utils.visual.mochaMaroon
-import ink.pmc.framework.utils.visual.mochaSubtext0
+import ink.pmc.framework.chat.mochaMaroon
+import ink.pmc.framework.chat.mochaSubtext0
 import net.kyori.adventure.text.Component
 import java.util.logging.Level
 

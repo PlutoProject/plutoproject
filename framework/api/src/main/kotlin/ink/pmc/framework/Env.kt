@@ -1,6 +1,6 @@
 package ink.pmc.framework
 
-import ink.pmc.framework.utils.jvm.findClass
+import ink.pmc.framework.jvm.findClass
 import java.io.File
 import java.util.logging.Logger
 

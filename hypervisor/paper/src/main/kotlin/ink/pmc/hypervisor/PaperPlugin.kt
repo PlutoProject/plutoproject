@@ -4,10 +4,10 @@ import com.github.shynixn.mccoroutine.bukkit.SuspendingJavaPlugin
 import com.github.shynixn.mccoroutine.bukkit.registerSuspendingEvents
 import com.sksamuel.hoplite.PropertySource
 import ink.pmc.framework.options.OptionsManager
-import ink.pmc.framework.utils.config.preconfiguredConfigLoaderBuilder
-import ink.pmc.framework.utils.inject.startKoinIfNotPresent
-import ink.pmc.framework.utils.jvm.findClass
-import ink.pmc.framework.utils.storage.saveResourceIfNotExisted
+import ink.pmc.framework.config.preconfiguredConfigLoaderBuilder
+import ink.pmc.framework.inject.startKoinIfNotPresent
+import ink.pmc.framework.jvm.findClass
+import ink.pmc.framework.storage.saveResourceIfNotExisted
 import ink.pmc.hypervisor.StatisticProviderType.NATIVE
 import ink.pmc.hypervisor.StatisticProviderType.SPARK
 import ink.pmc.hypervisor.button.VIEW_BOOST_BUTTON_DESCRIPTOR

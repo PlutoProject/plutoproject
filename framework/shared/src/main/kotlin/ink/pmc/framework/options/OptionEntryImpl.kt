@@ -2,7 +2,7 @@ package ink.pmc.framework.options
 
 import ink.pmc.framework.options.EntryValueType.*
 import ink.pmc.framework.options.models.OptionEntryModel
-import ink.pmc.framework.utils.json.toObject
+import ink.pmc.framework.json.toObject
 import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.serializerOrNull

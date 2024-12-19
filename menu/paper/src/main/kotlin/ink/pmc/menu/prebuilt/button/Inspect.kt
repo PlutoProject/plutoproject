@@ -4,14 +4,13 @@ import androidx.compose.runtime.*
 import ink.pmc.advkt.component.component
 import ink.pmc.advkt.component.italic
 import ink.pmc.advkt.component.text
+import ink.pmc.framework.chat.*
 import ink.pmc.framework.interactive.LocalPlayer
 import ink.pmc.framework.interactive.inventory.Item
 import ink.pmc.framework.interactive.inventory.Modifier
 import ink.pmc.framework.interactive.inventory.click.clickable
 import ink.pmc.framework.interactive.inventory.components.NotAvailable
-import ink.pmc.framework.chat.UI_SUCCEED_SOUND
 import ink.pmc.framework.concurrent.sync
-import ink.pmc.framework.utils.visual.*
 import ink.pmc.menu.api.dsl.buttonDescriptor
 import ink.pmc.menu.hook.CO_NEAR_COMMAND
 import ink.pmc.menu.hook.isCoreProtectAvailable

@@ -20,7 +20,7 @@ import ink.pmc.framework.interactive.inventory.nodes.StaticMeasurePolicy
 import ink.pmc.framework.interactive.inventory.state.IntCoordinates
 import ink.pmc.framework.concurrent.submitSync
 import ink.pmc.framework.concurrent.sync
-import ink.pmc.framework.utils.time.ticks
+import ink.pmc.framework.time.ticks
 import kotlinx.coroutines.delay
 import org.bukkit.entity.Player
 import org.bukkit.event.Cancellable

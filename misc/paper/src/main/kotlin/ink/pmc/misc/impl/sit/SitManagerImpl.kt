@@ -1,9 +1,9 @@
 package ink.pmc.misc.impl.sit
 
-import ink.pmc.framework.utils.entity.entity
-import ink.pmc.framework.utils.player.bukkitPlayer
-import ink.pmc.framework.utils.player.threadSafeTeleport
-import ink.pmc.framework.utils.world.eraseAngle
+import ink.pmc.framework.entity.entity
+import ink.pmc.framework.player.bukkitPlayer
+import ink.pmc.framework.player.threadSafeTeleport
+import ink.pmc.framework.world.eraseAngle
 import ink.pmc.misc.*
 import ink.pmc.misc.api.sit.SitManager
 import ink.pmc.misc.api.sit.isSitting

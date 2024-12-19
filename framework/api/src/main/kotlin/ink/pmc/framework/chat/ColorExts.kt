@@ -1,5 +1,6 @@
 package ink.pmc.framework.chat
 
+import net.kyori.adventure.text.format.TextColor
 import java.awt.Color
 
 inline val Int.rgbaColor: Color
@@ -11,3 +12,8 @@ inline val Int.rgbaColor: Color
             (this shr 24) and 0xFF
         )
     }
+
+@Suppress("UNUSED", "NOTHING_TO_INLINE")
+inline fun Color.toTextColor(): TextColor {
+    return TextColor.color(red, green, blue)
+}

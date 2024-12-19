@@ -7,9 +7,9 @@ import ink.pmc.framework.provider.Provider
 import ink.pmc.framework.provider.getCollection
 import ink.pmc.framework.command.annotationParser
 import ink.pmc.framework.command.commandManager
-import ink.pmc.framework.utils.config.preconfiguredConfigLoaderBuilder
-import ink.pmc.framework.utils.inject.startKoinIfNotPresent
-import ink.pmc.framework.utils.storage.saveResourceIfNotExisted
+import ink.pmc.framework.config.preconfiguredConfigLoaderBuilder
+import ink.pmc.framework.inject.startKoinIfNotPresent
+import ink.pmc.framework.storage.saveResourceIfNotExisted
 import ink.pmc.menu.api.MenuManager
 import ink.pmc.menu.api.factory.ButtonDescriptorFactory
 import ink.pmc.menu.api.factory.PageDescriptorFactory

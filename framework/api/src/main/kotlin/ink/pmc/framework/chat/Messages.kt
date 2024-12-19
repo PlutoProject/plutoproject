@@ -3,11 +3,7 @@ package ink.pmc.framework.chat
 import ink.pmc.advkt.component.*
 import ink.pmc.advkt.sound.key
 import ink.pmc.advkt.sound.sound
-import ink.pmc.framework.utils.time.formatDuration
-import ink.pmc.framework.utils.visual.mochaMaroon
-import ink.pmc.framework.utils.visual.mochaSubtext0
-import ink.pmc.framework.utils.visual.mochaText
-import ink.pmc.framework.utils.visual.mochaYellow
+import ink.pmc.framework.time.formatDuration
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
 import kotlin.time.Duration

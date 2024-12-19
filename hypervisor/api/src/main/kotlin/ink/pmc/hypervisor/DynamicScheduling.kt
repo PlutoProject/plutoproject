@@ -1,6 +1,6 @@
 package ink.pmc.hypervisor
 
-import ink.pmc.framework.utils.inject.inlinedGet
+import ink.pmc.framework.inject.inlinedGet
 import org.apache.commons.math3.analysis.polynomials.PolynomialFunction
 import org.bukkit.World
 import org.bukkit.entity.Player

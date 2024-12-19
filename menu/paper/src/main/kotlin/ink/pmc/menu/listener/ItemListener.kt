@@ -1,7 +1,7 @@
 package ink.pmc.menu.listener
 
 import ink.pmc.framework.startScreen
-import ink.pmc.framework.utils.player.addItemOrDrop
+import ink.pmc.framework.player.addItemOrDrop
 import ink.pmc.menu.MenuConfig
 import ink.pmc.menu.item.MenuItem
 import ink.pmc.menu.item.MenuItemRecipe

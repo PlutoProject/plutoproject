@@ -1,8 +1,8 @@
 package ink.pmc.essentials.teleport.random
 
 import ink.pmc.essentials.api.teleport.random.Cooldown
-import ink.pmc.framework.utils.data.getValue
-import ink.pmc.framework.utils.data.setValue
+import ink.pmc.framework.data.getValue
+import ink.pmc.framework.data.setValue
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlin.coroutines.CoroutineContext

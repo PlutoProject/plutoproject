@@ -10,8 +10,8 @@ import ink.pmc.essentials.disabled
 import ink.pmc.essentials.essentialsScope
 import ink.pmc.essentials.models.HomeModel
 import ink.pmc.essentials.repositories.HomeRepository
-import ink.pmc.framework.utils.platform.paper
-import ink.pmc.framework.utils.storage.model
+import ink.pmc.framework.platform.paper
+import ink.pmc.framework.storage.model
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.bson.types.ObjectId

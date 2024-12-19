@@ -1,6 +1,6 @@
 package ink.pmc.essentials.api.warp
 
-import ink.pmc.framework.utils.inject.inlinedGet
+import ink.pmc.framework.inject.inlinedGet
 import net.kyori.adventure.text.Component
 import org.bukkit.Location
 import org.bukkit.Material

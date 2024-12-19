@@ -4,7 +4,7 @@ import com.maxmind.geoip2.DatabaseReader
 import com.mongodb.kotlin.client.coroutine.MongoClient
 import com.mongodb.kotlin.client.coroutine.MongoCollection
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
-import ink.pmc.framework.utils.inject.inlinedGet
+import ink.pmc.framework.inject.inlinedGet
 import java.io.Closeable
 
 inline fun <reified T : Any> Provider.getCollection(name: String): MongoCollection<T> {

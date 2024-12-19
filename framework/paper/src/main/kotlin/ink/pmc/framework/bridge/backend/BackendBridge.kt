@@ -13,7 +13,7 @@ import ink.pmc.framework.bridge.server.BridgeServer
 import ink.pmc.framework.bridge.server.InternalServer
 import ink.pmc.framework.bridge.throwRemoteServerNotFound
 import ink.pmc.framework.bridge.warn
-import ink.pmc.framework.utils.player.uuid
+import ink.pmc.framework.player.uuid
 
 class BackendBridge : InternalBridge() {
     override val local: BridgeServer = BackendLocalServer()

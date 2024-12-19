@@ -5,7 +5,7 @@ import ink.pmc.advkt.component.keybind
 import ink.pmc.advkt.component.text
 import ink.pmc.advkt.sound.*
 import ink.pmc.advkt.title.*
-import ink.pmc.framework.utils.visual.*
+import ink.pmc.framework.chat.*
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.sound.Sound
 import net.kyori.adventure.title.Title

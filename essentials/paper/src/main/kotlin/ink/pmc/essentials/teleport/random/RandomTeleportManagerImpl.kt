@@ -15,11 +15,11 @@ import ink.pmc.framework.chat.replace
 import ink.pmc.framework.concurrent.async
 import ink.pmc.framework.concurrent.submitAsync
 import ink.pmc.framework.datastructure.mapKv
-import ink.pmc.framework.utils.platform.paper
-import ink.pmc.framework.utils.trimmed
-import ink.pmc.framework.utils.world.Vec2
-import ink.pmc.framework.utils.world.addTicket
-import ink.pmc.framework.utils.world.removeTicket
+import ink.pmc.framework.platform.paper
+import ink.pmc.framework.trimmed
+import ink.pmc.framework.world.Vec2
+import ink.pmc.framework.world.addTicket
+import ink.pmc.framework.world.removeTicket
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
 import net.kyori.adventure.text.Component

@@ -9,7 +9,7 @@ import ink.pmc.framework.interactive.inventory.components.Selector
 import ink.pmc.framework.interactive.inventory.fillMaxSize
 import ink.pmc.framework.interactive.inventory.jetpack.Arrangement
 import ink.pmc.framework.interactive.inventory.layout.Row
-import ink.pmc.framework.utils.visual.mochaText
+import ink.pmc.framework.chat.mochaText
 
 abstract class FilterListMenu<E, F : Any, M : FilterListMenuModel<E, F>>(
     private val filters: Map<F, String>

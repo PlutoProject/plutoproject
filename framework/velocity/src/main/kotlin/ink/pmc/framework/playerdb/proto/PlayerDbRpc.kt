@@ -1,12 +1,12 @@
 package ink.pmc.framework.playerdb.proto
 
 import com.google.protobuf.Empty
-import ink.pmc.framework.playerdb.PlayerDb
+import ink.pmc.framework.player.db.PlayerDb
 import ink.pmc.framework.playerdb.proto.PlayerDbRpcGrpcKt.PlayerDbRpcCoroutineImplBase
 import ink.pmc.framework.playerdb.proto.PlayerDbRpcOuterClass.DatabaseIdentifier
 import ink.pmc.framework.concurrent.submitAsync
-import ink.pmc.framework.utils.player.uuid
-import ink.pmc.framework.utils.proto.empty
+import ink.pmc.framework.player.uuid
+import ink.pmc.framework.proto.empty
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import org.koin.core.component.KoinComponent

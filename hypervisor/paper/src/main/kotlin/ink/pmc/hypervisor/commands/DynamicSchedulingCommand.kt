@@ -4,8 +4,8 @@ import ink.pmc.advkt.component.newline
 import ink.pmc.advkt.component.raw
 import ink.pmc.advkt.component.text
 import ink.pmc.advkt.send
-import ink.pmc.framework.utils.network.formatted
-import ink.pmc.framework.utils.visual.*
+import ink.pmc.framework.chat.*
+import ink.pmc.framework.network.formatted
 import ink.pmc.hypervisor.DynamicScheduling
 import net.kyori.adventure.text.Component
 import org.bukkit.World

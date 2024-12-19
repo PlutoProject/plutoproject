@@ -1,6 +1,6 @@
 package ink.pmc.essentials.api.teleport
 
-import ink.pmc.framework.utils.world.ValueVec2
+import ink.pmc.framework.world.ValueVec2
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import java.util.*

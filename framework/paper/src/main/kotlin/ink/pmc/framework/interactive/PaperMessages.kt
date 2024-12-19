@@ -3,8 +3,8 @@ package ink.pmc.framework.interactive
 import ink.pmc.advkt.component.component
 import ink.pmc.advkt.component.newline
 import ink.pmc.advkt.component.text
-import ink.pmc.framework.utils.visual.mochaMaroon
-import ink.pmc.framework.utils.visual.mochaSubtext0
+import ink.pmc.framework.chat.mochaMaroon
+import ink.pmc.framework.chat.mochaSubtext0
 
 val UI_RENDER_FAILED = component {
     text("渲染菜单时出现异常") with mochaMaroon

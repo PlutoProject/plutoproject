@@ -13,10 +13,10 @@ import ink.pmc.framework.interactive.LocalPlayer
 import ink.pmc.framework.interactive.inventory.Item
 import ink.pmc.framework.interactive.inventory.Modifier
 import ink.pmc.framework.interactive.inventory.click.clickable
-import ink.pmc.framework.utils.visual.mochaLavender
-import ink.pmc.framework.utils.visual.mochaSubtext0
-import ink.pmc.framework.utils.visual.mochaText
-import ink.pmc.framework.utils.visual.mochaYellow
+import ink.pmc.framework.chat.mochaLavender
+import ink.pmc.framework.chat.mochaSubtext0
+import ink.pmc.framework.chat.mochaText
+import ink.pmc.framework.chat.mochaYellow
 import ink.pmc.menu.api.dsl.buttonDescriptor
 import net.kyori.adventure.text.Component
 import org.bukkit.Material

@@ -4,7 +4,7 @@ import com.velocitypowered.api.event.PostOrder
 import com.velocitypowered.api.event.Subscribe
 import com.velocitypowered.api.event.player.PlayerChooseInitialServerEvent
 import ink.pmc.framework.options.OptionsManager
-import ink.pmc.framework.utils.platform.proxy
+import ink.pmc.framework.platform.proxy
 import ink.pmc.serverselector.AUTO_JOIN_DESCRIPTOR
 import ink.pmc.serverselector.storage.UserRepository
 import org.koin.core.component.KoinComponent
