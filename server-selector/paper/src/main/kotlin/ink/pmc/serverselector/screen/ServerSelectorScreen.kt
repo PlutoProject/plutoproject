@@ -6,15 +6,15 @@ import ink.pmc.advkt.component.italic
 import ink.pmc.advkt.component.text
 import ink.pmc.framework.bridge.Bridge
 import ink.pmc.framework.chat.*
+import ink.pmc.framework.concurrent.submitAsync
+import ink.pmc.framework.concurrent.sync
+import ink.pmc.framework.interactive.*
 import ink.pmc.framework.interactive.click.clickable
 import ink.pmc.framework.interactive.jetpack.Arrangement
 import ink.pmc.framework.interactive.layout.Column
 import ink.pmc.framework.interactive.layout.Menu
 import ink.pmc.framework.interactive.layout.Row
 import ink.pmc.framework.options.OptionsManager
-import ink.pmc.framework.concurrent.submitAsync
-import ink.pmc.framework.concurrent.sync
-import ink.pmc.framework.interactive.*
 import ink.pmc.serverselector.*
 import ink.pmc.serverselector.screen.ServerSelectorScreen.AutoJoinState.*
 import kotlinx.coroutines.delay
@@ -113,11 +113,13 @@ class ServerSelectorScreen : InteractiveScreen(), KoinComponent {
                 addAll(server.description.map {
                     it.decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE)
                 })
-                add(Component.empty())
-                add(component {
-                    text("左键 ") with mochaLavender without italic()
-                    text("传送至此处") with mochaText without italic()
-                })
+                if (isOnline) {
+                    add(Component.empty())
+                    add(component {
+                        text("左键 ") with mochaLavender without italic()
+                        text("传送至此处") with mochaText without italic()
+                    })
+                }
             },
             modifier = Modifier.clickable {
                 if (clickType != ClickType.LEFT) return@clickable
