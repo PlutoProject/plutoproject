@@ -1,7 +1,7 @@
 package ink.pmc.essentials.api.home
 
 import com.google.common.collect.ListMultimap
-import ink.pmc.framework.utils.inject.inlinedGet
+import ink.pmc.framework.inject.inlinedGet
 import org.bukkit.Location
 import org.bukkit.OfflinePlayer
 import org.bukkit.World

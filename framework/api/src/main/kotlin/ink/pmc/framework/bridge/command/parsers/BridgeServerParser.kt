@@ -3,7 +3,7 @@ package ink.pmc.framework.bridge.command.parsers
 import ink.pmc.framework.bridge.Bridge
 import ink.pmc.framework.bridge.server.BridgeGroup
 import ink.pmc.framework.bridge.server.BridgeServer
-import ink.pmc.framework.utils.concurrent.submitAsync
+import ink.pmc.framework.concurrent.submitAsync
 import kotlinx.coroutines.future.asCompletableFuture
 import kotlinx.coroutines.future.await
 import org.incendo.cloud.context.CommandContext

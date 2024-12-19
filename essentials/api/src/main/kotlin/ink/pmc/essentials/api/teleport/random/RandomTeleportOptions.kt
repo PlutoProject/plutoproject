@@ -1,6 +1,6 @@
 package ink.pmc.essentials.api.teleport.random
 
-import ink.pmc.framework.utils.world.Vec2
+import ink.pmc.framework.world.Vec2
 import org.bukkit.block.Biome
 
 data class RandomTeleportOptions(

@@ -1,6 +1,6 @@
 package ink.pmc.misc.api.elevator
 
-import ink.pmc.framework.utils.inject.inlinedGet
+import ink.pmc.framework.inject.inlinedGet
 import org.bukkit.Location
 import org.bukkit.Material
 

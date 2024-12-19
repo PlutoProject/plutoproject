@@ -7,7 +7,7 @@ import ink.pmc.essentials.ITEMFRAME_PROTECT_BYPASS
 import ink.pmc.essentials.commands.isProtected
 import ink.pmc.essentials.commands.protector
 import ink.pmc.essentials.commands.protectorName
-import ink.pmc.framework.utils.chat.replace
+import ink.pmc.framework.chat.replace
 import io.papermc.paper.event.player.PlayerItemFrameChangeEvent
 import io.papermc.paper.event.player.PlayerItemFrameChangeEvent.ItemFrameChangeAction
 import net.kyori.adventure.inventory.Book

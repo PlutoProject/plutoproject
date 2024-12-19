@@ -4,7 +4,7 @@ import ink.pmc.essentials.COMMAND_ESS_RTP
 import ink.pmc.essentials.COMMAND_ESS_RTP_PERF_END
 import ink.pmc.essentials.COMMAND_ESS_RTP_PERF_START
 import ink.pmc.essentials.teleport.random.PerfTest
-import ink.pmc.framework.utils.command.ensurePlayer
+import ink.pmc.framework.command.ensurePlayer
 import org.bukkit.command.CommandSender
 import org.incendo.cloud.annotations.Command
 import org.incendo.cloud.annotations.Permission

@@ -4,7 +4,7 @@ import ink.pmc.framework.bridge.player.BridgePlayer
 import ink.pmc.framework.bridge.player.PlayerLookup
 import ink.pmc.framework.bridge.server.*
 import ink.pmc.framework.bridge.world.BridgeWorld
-import ink.pmc.framework.utils.inject.inlinedGet
+import ink.pmc.framework.inject.inlinedGet
 import java.util.*
 
 const val RESERVED_MASTER_ID = "_master"

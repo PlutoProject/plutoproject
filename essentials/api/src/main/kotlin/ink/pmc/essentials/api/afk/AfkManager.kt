@@ -1,6 +1,6 @@
 package ink.pmc.essentials.api.afk
 
-import ink.pmc.framework.utils.inject.inlinedGet
+import ink.pmc.framework.inject.inlinedGet
 import org.bukkit.entity.Player
 import kotlin.time.Duration
 

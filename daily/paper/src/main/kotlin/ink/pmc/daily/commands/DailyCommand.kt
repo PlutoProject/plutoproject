@@ -4,7 +4,7 @@ import ink.pmc.advkt.component.text
 import ink.pmc.advkt.send
 import ink.pmc.daily.PERMISSION_CMD_DAILY
 import ink.pmc.daily.plugin
-import ink.pmc.framework.utils.visual.mochaPink
+import ink.pmc.framework.chat.mochaPink
 import org.bukkit.command.CommandSender
 import org.incendo.cloud.annotations.Command
 import org.incendo.cloud.annotations.Permission

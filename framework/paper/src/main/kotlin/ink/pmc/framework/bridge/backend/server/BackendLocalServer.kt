@@ -6,7 +6,7 @@ import ink.pmc.framework.bridge.RESERVED_MASTER_ID
 import ink.pmc.framework.bridge.backend.player.BackendLocalPlayer
 import ink.pmc.framework.bridge.backend.world.BackendLocalWorld
 import ink.pmc.framework.bridge.server.*
-import ink.pmc.framework.utils.platform.paper
+import ink.pmc.framework.platform.paper
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 

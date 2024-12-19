@@ -9,9 +9,9 @@ import ink.pmc.essentials.api.teleport.TeleportManager
 import ink.pmc.essentials.config.EssentialsConfig
 import ink.pmc.essentials.screens.teleport.TeleportRequestScreen
 import ink.pmc.framework.startScreen
-import ink.pmc.framework.utils.chat.DURATION
-import ink.pmc.framework.utils.chat.replace
-import ink.pmc.framework.utils.command.ensurePlayer
+import ink.pmc.framework.chat.DURATION
+import ink.pmc.framework.chat.replace
+import ink.pmc.framework.command.ensurePlayer
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.incendo.cloud.annotations.Argument

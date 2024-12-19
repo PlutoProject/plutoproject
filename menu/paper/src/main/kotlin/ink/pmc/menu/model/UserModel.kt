@@ -1,6 +1,6 @@
 package ink.pmc.menu.model
 
-import ink.pmc.framework.utils.data.serializers.bson.BsonUUIDSerializer
+import ink.pmc.framework.serialize.bson.BsonUUIDSerializer
 import kotlinx.serialization.Serializable
 import java.util.*
 

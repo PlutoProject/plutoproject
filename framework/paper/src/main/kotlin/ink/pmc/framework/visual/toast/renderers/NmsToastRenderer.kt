@@ -1,11 +1,11 @@
 package ink.pmc.framework.visual.toast.renderers
 
-import ink.pmc.framework.utils.chat.internal
-import ink.pmc.framework.utils.data.namespacedKey
-import ink.pmc.framework.utils.item.bukkit
-import ink.pmc.framework.utils.player.sendPacket
-import ink.pmc.framework.utils.structure.emptyOptional
-import ink.pmc.framework.utils.structure.optional
+import ink.pmc.framework.chat.internal
+import ink.pmc.framework.datastructure.namespacedKey
+import ink.pmc.framework.item.bukkit
+import ink.pmc.framework.player.sendPacket
+import ink.pmc.framework.structure.emptyOptional
+import ink.pmc.framework.structure.optional
 import ink.pmc.framework.visual.toast.ToastRenderer
 import ink.pmc.framework.visual.toast.ToastType
 import net.kyori.adventure.text.Component

@@ -15,8 +15,8 @@ import com.velocitypowered.api.plugin.annotation.DataDirectory
 import com.velocitypowered.api.proxy.ProxyServer
 import com.velocitypowered.api.proxy.server.ServerPing
 import com.velocitypowered.api.proxy.server.ServerPing.SamplePlayer
-import ink.pmc.framework.utils.platform.proxy
-import ink.pmc.framework.utils.platform.saveDefaultConfig
+import ink.pmc.framework.platform.proxy
+import ink.pmc.framework.platform.saveDefaultConfig
 import java.io.File
 import java.nio.file.Path
 import java.util.logging.Logger

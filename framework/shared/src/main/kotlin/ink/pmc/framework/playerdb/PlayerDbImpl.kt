@@ -1,7 +1,9 @@
 package ink.pmc.framework.playerdb
 
 import com.github.benmanes.caffeine.cache.Caffeine
-import ink.pmc.framework.utils.concurrent.submitAsync
+import ink.pmc.framework.concurrent.submitAsync
+import ink.pmc.framework.player.db.Database
+import ink.pmc.framework.player.db.PlayerDb
 import kotlinx.coroutines.future.asCompletableFuture
 import kotlinx.coroutines.future.await
 import org.bson.BsonDocument

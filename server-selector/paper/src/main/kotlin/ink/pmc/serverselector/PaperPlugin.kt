@@ -3,9 +3,9 @@ package ink.pmc.serverselector
 import com.github.shynixn.mccoroutine.bukkit.SuspendingJavaPlugin
 import com.sksamuel.hoplite.PropertySource
 import ink.pmc.framework.options.OptionsManager
-import ink.pmc.framework.utils.config.preconfiguredConfigLoaderBuilder
-import ink.pmc.framework.utils.inject.startKoinIfNotPresent
-import ink.pmc.framework.utils.storage.saveResourceIfNotExisted
+import ink.pmc.framework.config.preconfiguredConfigLoaderBuilder
+import ink.pmc.framework.inject.startKoinIfNotPresent
+import ink.pmc.framework.storage.saveResourceIfNotExisted
 import ink.pmc.menu.api.MenuManager
 import ink.pmc.menu.api.isMenuAvailable
 import ink.pmc.serverselector.button.SERVER_SELECTOR_BUTTON_DESCRIPTOR

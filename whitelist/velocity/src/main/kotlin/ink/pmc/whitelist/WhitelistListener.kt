@@ -7,8 +7,8 @@ import com.velocitypowered.api.event.connection.LoginEvent
 import ink.pmc.advkt.component.component
 import ink.pmc.advkt.component.newline
 import ink.pmc.advkt.component.text
-import ink.pmc.framework.utils.concurrent.submitAsync
-import ink.pmc.framework.utils.visual.mochaMaroon
+import ink.pmc.framework.concurrent.submitAsync
+import ink.pmc.framework.chat.mochaMaroon
 import ink.pmc.whitelist.repositories.WhitelistRepository
 import kotlinx.coroutines.runBlocking
 import org.koin.core.component.KoinComponent

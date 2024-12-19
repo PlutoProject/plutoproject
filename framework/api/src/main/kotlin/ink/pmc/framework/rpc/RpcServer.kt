@@ -1,6 +1,6 @@
 package ink.pmc.framework.rpc
 
-import ink.pmc.framework.utils.inject.inlinedGet
+import ink.pmc.framework.inject.inlinedGet
 import io.grpc.Server
 import io.grpc.ServerBuilder
 

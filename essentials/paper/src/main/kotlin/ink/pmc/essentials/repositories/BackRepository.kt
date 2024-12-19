@@ -5,7 +5,7 @@ import com.mongodb.client.model.ReplaceOptions
 import ink.pmc.essentials.config.EssentialsConfig
 import ink.pmc.essentials.models.BackModel
 import ink.pmc.framework.provider.Provider
-import ink.pmc.framework.utils.storage.model
+import ink.pmc.framework.storage.model
 import kotlinx.coroutines.flow.firstOrNull
 import org.bson.types.ObjectId
 import org.bukkit.Location

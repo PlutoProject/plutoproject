@@ -6,8 +6,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.github.shynixn.mccoroutine.bukkit.registerSuspendingEvents
 import ink.pmc.essentials.plugin
-import ink.pmc.framework.interactive.inventory.layout.list.ListMenuModel
-import ink.pmc.framework.utils.platform.paper
+import ink.pmc.framework.interactive.layout.list.ListMenuModel
+import ink.pmc.framework.platform.paper
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.HandlerList

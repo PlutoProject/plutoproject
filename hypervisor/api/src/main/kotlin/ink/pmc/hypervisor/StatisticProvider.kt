@@ -1,6 +1,6 @@
 package ink.pmc.hypervisor
 
-import ink.pmc.framework.utils.inject.inlinedGet
+import ink.pmc.framework.inject.inlinedGet
 
 interface StatisticProvider {
     companion object : StatisticProvider by inlinedGet()

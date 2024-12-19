@@ -2,8 +2,8 @@ package ink.pmc.misc
 
 import com.destroystokyo.paper.event.player.PlayerJumpEvent
 import ink.pmc.misc.api.elevator.ElevatorManager
-import ink.pmc.framework.utils.concurrent.async
-import ink.pmc.framework.utils.platform.isFolia
+import ink.pmc.framework.concurrent.async
+import ink.pmc.framework.platform.isFolia
 import org.bukkit.event.player.PlayerToggleSneakEvent
 
 suspend fun handlePlayerJumpFloorUp(event: PlayerJumpEvent) {

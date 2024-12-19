@@ -5,7 +5,7 @@ import ink.pmc.framework.interactive.examples.ExampleScreen1
 import ink.pmc.framework.interactive.examples.ExampleScreen2
 import ink.pmc.framework.interactive.examples.ExampleScreen3
 import ink.pmc.framework.startInventory
-import ink.pmc.framework.utils.command.ensurePlayer
+import ink.pmc.framework.command.ensurePlayer
 import org.bukkit.command.CommandSender
 import org.incendo.cloud.annotations.Command
 import org.incendo.cloud.annotations.Permission

@@ -4,7 +4,7 @@ import ink.pmc.framework.options.EntryValueType
 import ink.pmc.framework.options.Limitation
 import ink.pmc.framework.options.OptionDescriptor
 import ink.pmc.framework.options.factory.OptionDescriptorFactory
-import ink.pmc.framework.utils.structure.Builder
+import ink.pmc.framework.structure.Builder
 
 class OptionDescriptorDsl<T> : Builder<OptionDescriptor<T>> {
     var key: String? = null

@@ -1,9 +1,9 @@
 package ink.pmc.misc
 
-import ink.pmc.framework.utils.concurrent.submitAsync
-import ink.pmc.framework.utils.entity.ensureThreadSafe
-import ink.pmc.framework.utils.world.ensureThreadSafe
-import ink.pmc.framework.utils.world.eraseAngle
+import ink.pmc.framework.concurrent.submitAsync
+import ink.pmc.framework.entity.ensureThreadSafe
+import ink.pmc.framework.world.ensureThreadSafe
+import ink.pmc.framework.world.eraseAngle
 import ink.pmc.misc.api.sit.*
 import kotlinx.coroutines.delay
 import org.bukkit.Chunk

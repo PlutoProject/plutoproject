@@ -1,8 +1,7 @@
 package ink.pmc.daily
 
 import ink.pmc.advkt.component.*
-import ink.pmc.framework.utils.chat.ECONOMY_SYMBOL
-import ink.pmc.framework.utils.visual.*
+import ink.pmc.framework.chat.*
 import net.kyori.adventure.text.Component
 
 val CHECK_IN = component {

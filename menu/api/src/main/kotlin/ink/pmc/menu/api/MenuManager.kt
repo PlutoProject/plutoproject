@@ -1,7 +1,7 @@
 package ink.pmc.menu.api
 
 import ink.pmc.framework.interactive.ComposableFunction
-import ink.pmc.framework.utils.inject.inlinedGet
+import ink.pmc.framework.inject.inlinedGet
 import ink.pmc.menu.api.descriptor.ButtonDescriptor
 import ink.pmc.menu.api.descriptor.PageDescriptor
 

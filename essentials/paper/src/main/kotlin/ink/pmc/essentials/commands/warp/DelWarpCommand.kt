@@ -4,8 +4,8 @@ import ink.pmc.essentials.COMMAND_DELWARP_SUCCEED
 import ink.pmc.essentials.COMMAND_DELWARP_SUCCEED_ALIAS
 import ink.pmc.essentials.api.warp.Warp
 import ink.pmc.essentials.api.warp.WarpManager
-import ink.pmc.framework.utils.chat.replace
-import ink.pmc.framework.utils.concurrent.submitAsync
+import ink.pmc.framework.chat.replace
+import ink.pmc.framework.concurrent.submitAsync
 import org.bukkit.command.CommandSender
 import org.incendo.cloud.annotations.Argument
 import org.incendo.cloud.annotations.Command

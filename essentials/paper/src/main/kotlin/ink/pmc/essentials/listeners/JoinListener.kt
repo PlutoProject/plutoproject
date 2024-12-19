@@ -1,12 +1,9 @@
 package ink.pmc.essentials.listeners
 
 import ink.pmc.essentials.config.EssentialsConfig
-import ink.pmc.framework.playerdb.PlayerDb
-import ink.pmc.framework.utils.inventory.isFull
+import ink.pmc.framework.player.db.PlayerDb
 import org.bukkit.entity.Player
-import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
-import org.bukkit.event.player.PlayerJoinEvent
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 

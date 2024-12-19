@@ -11,8 +11,8 @@ import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.PlayerOperationResult
 import ink.pmc.framework.bridge.server.BridgeServer
 import ink.pmc.framework.bridge.world.BridgeLocation
 import ink.pmc.framework.bridge.world.BridgeWorld
-import ink.pmc.framework.utils.concurrent.sync
-import ink.pmc.framework.utils.entity.teleportSuspend
+import ink.pmc.framework.concurrent.sync
+import ink.pmc.framework.entity.teleportSuspend
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Deferred
 import net.kyori.adventure.sound.Sound

@@ -1,6 +1,6 @@
 package ink.pmc.essentials.hooks
 
-import ink.pmc.framework.utils.platform.paper
+import ink.pmc.framework.platform.paper
 import net.milkbowl.vault.economy.Economy
 
 class EconomyHook {

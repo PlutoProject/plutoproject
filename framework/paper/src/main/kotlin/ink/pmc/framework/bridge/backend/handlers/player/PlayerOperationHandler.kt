@@ -13,8 +13,8 @@ import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.Notification
 import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.PlayerOperation.ContentCase.*
 import ink.pmc.framework.bridge.proto.playerOperationAck
 import ink.pmc.framework.bridge.world.createInfo
-import ink.pmc.framework.utils.currentUnixTimestamp
-import ink.pmc.framework.utils.player.uuid
+import ink.pmc.framework.currentUnixTimestamp
+import ink.pmc.framework.player.uuid
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.sound.Sound
 

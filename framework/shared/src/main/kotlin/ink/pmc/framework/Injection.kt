@@ -8,7 +8,7 @@ import ink.pmc.framework.options.OptionsManagerImpl
 import ink.pmc.framework.options.factory.OptionDescriptorFactory
 import ink.pmc.framework.options.repositories.OptionsContainerRepository
 import ink.pmc.framework.playerdb.DatabaseRepository
-import ink.pmc.framework.playerdb.PlayerDb
+import ink.pmc.framework.player.db.PlayerDb
 import ink.pmc.framework.playerdb.PlayerDbImpl
 import ink.pmc.framework.provider.Provider
 import ink.pmc.framework.provider.ProviderImpl
@@ -16,8 +16,8 @@ import ink.pmc.framework.rpc.RpcClient
 import ink.pmc.framework.rpc.RpcClientImpl
 import ink.pmc.framework.rpc.RpcServer
 import ink.pmc.framework.rpc.RpcServerImpl
-import ink.pmc.framework.utils.config.preconfiguredConfigLoaderBuilder
-import ink.pmc.framework.utils.player.profile.ProfileCache
+import ink.pmc.framework.config.preconfiguredConfigLoaderBuilder
+import ink.pmc.framework.player.profile.ProfileCache
 import ink.pmc.framework.utils.player.profile.ProfileCacheImpl
 import ink.pmc.framework.utils.player.profile.ProfileCacheRepository
 import ink.pmc.framework.visual.ToastFactoryImpl

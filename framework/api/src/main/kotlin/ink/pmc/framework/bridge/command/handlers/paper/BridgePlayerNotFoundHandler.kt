@@ -2,7 +2,7 @@ package ink.pmc.framework.bridge.command.handlers.paper
 
 import ink.pmc.framework.bridge.command.handlers.bridgePlayerNotFound
 import ink.pmc.framework.bridge.command.parsers.BridgePlayerNotFoundException
-import ink.pmc.framework.utils.chat.replace
+import ink.pmc.framework.chat.replace
 import org.bukkit.command.CommandSender
 import org.incendo.cloud.exception.handling.ExceptionContext
 import org.incendo.cloud.exception.handling.ExceptionHandler

@@ -5,10 +5,10 @@ import cafe.adriel.voyager.core.model.ScreenModel
 import ink.pmc.daily.api.Daily
 import ink.pmc.daily.api.DailyHistory
 import ink.pmc.daily.api.DailyUser
-import ink.pmc.framework.utils.time.atEndOfDay
-import ink.pmc.framework.utils.time.atStartOfMonth
-import ink.pmc.framework.utils.time.toOffset
-import ink.pmc.framework.utils.time.zoneId
+import ink.pmc.framework.time.atEndOfDay
+import ink.pmc.framework.time.atStartOfMonth
+import ink.pmc.framework.time.toOffset
+import ink.pmc.framework.time.zoneId
 import org.bukkit.entity.Player
 import java.time.LocalDate
 import java.time.YearMonth

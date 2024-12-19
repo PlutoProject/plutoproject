@@ -4,11 +4,11 @@ import ink.pmc.essentials.COMMAND_HAT_FAILED_EMPTY_HAND
 import ink.pmc.essentials.COMMAND_HAT_FAILED_EXISTED_OTHER
 import ink.pmc.essentials.COMMAND_HAT_SUCCEED
 import ink.pmc.essentials.COMMAND_HAT_SUCCEED_OTHER
-import ink.pmc.framework.utils.chat.NO_PERMISSON
-import ink.pmc.framework.utils.chat.replace
-import ink.pmc.framework.utils.command.ensurePlayer
-import ink.pmc.framework.utils.command.selectPlayer
-import ink.pmc.framework.utils.concurrent.sync
+import ink.pmc.framework.chat.NO_PERMISSON
+import ink.pmc.framework.chat.replace
+import ink.pmc.framework.command.ensurePlayer
+import ink.pmc.framework.command.selectPlayer
+import ink.pmc.framework.concurrent.sync
 import org.bukkit.Material
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player

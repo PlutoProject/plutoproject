@@ -5,10 +5,10 @@ import ink.pmc.advkt.component.newline
 import ink.pmc.advkt.component.raw
 import ink.pmc.advkt.component.text
 import ink.pmc.advkt.send
-import ink.pmc.framework.utils.concurrent.sync
-import ink.pmc.framework.utils.platform.paper
-import ink.pmc.framework.utils.roundToTwoDecimals
-import ink.pmc.framework.utils.visual.*
+import ink.pmc.framework.chat.*
+import ink.pmc.framework.concurrent.sync
+import ink.pmc.framework.platform.paper
+import ink.pmc.framework.roundToTwoDecimals
 import ink.pmc.hypervisor.LoadLevel.*
 import ink.pmc.hypervisor.MeasuringTime
 import ink.pmc.hypervisor.StatisticProvider

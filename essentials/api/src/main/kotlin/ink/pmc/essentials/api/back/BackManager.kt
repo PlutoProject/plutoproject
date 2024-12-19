@@ -1,6 +1,6 @@
 package ink.pmc.essentials.api.back
 
-import ink.pmc.framework.utils.inject.inlinedGet
+import ink.pmc.framework.inject.inlinedGet
 import org.bukkit.Location
 import org.bukkit.entity.Player
 

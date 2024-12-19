@@ -4,8 +4,8 @@ import com.destroystokyo.paper.event.server.ServerTickEndEvent
 import ink.pmc.essentials.TELEPORT_REQUEST_CANCELED_OFFLINE
 import ink.pmc.essentials.TELEPORT_REQUEST_CANCELLED_SOUND
 import ink.pmc.essentials.api.teleport.TeleportManager
-import ink.pmc.framework.utils.chat.replace
-import ink.pmc.framework.utils.concurrent.submitAsync
+import ink.pmc.framework.chat.replace
+import ink.pmc.framework.concurrent.submitAsync
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerQuitEvent

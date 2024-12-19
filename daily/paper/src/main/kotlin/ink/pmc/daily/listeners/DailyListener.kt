@@ -3,7 +3,7 @@ package ink.pmc.daily.listeners
 import ink.pmc.daily.PLAYER_NOT_CHECKIN_JOIN
 import ink.pmc.daily.api.Daily
 import ink.pmc.daily.checkCheckInDate
-import ink.pmc.framework.utils.concurrent.submitAsyncIO
+import ink.pmc.framework.concurrent.submitAsyncIO
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent

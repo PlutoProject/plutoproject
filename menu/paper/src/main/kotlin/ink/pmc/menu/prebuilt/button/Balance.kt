@@ -5,13 +5,13 @@ import ink.pmc.advkt.component.component
 import ink.pmc.advkt.component.italic
 import ink.pmc.advkt.component.text
 import ink.pmc.framework.interactive.LocalPlayer
-import ink.pmc.framework.interactive.inventory.Item
-import ink.pmc.framework.interactive.inventory.components.NotAvailable
-import ink.pmc.framework.utils.hook.vaultHook
-import ink.pmc.framework.utils.trimmed
-import ink.pmc.framework.utils.visual.mochaSubtext0
-import ink.pmc.framework.utils.visual.mochaText
-import ink.pmc.framework.utils.visual.mochaYellow
+import ink.pmc.framework.interactive.Item
+import ink.pmc.framework.interactive.components.NotAvailable
+import ink.pmc.framework.hook.vaultHook
+import ink.pmc.framework.trimmed
+import ink.pmc.framework.chat.mochaSubtext0
+import ink.pmc.framework.chat.mochaText
+import ink.pmc.framework.chat.mochaYellow
 import ink.pmc.menu.api.dsl.buttonDescriptor
 import org.bukkit.Material
 

@@ -2,7 +2,7 @@ package ink.pmc.essentials.screens.home
 
 import ink.pmc.essentials.api.home.Home
 import ink.pmc.essentials.api.home.HomeManager
-import ink.pmc.framework.interactive.inventory.layout.list.ListMenuModel
+import ink.pmc.framework.interactive.layout.list.ListMenuModel
 import org.bukkit.OfflinePlayer
 import kotlin.math.ceil
 

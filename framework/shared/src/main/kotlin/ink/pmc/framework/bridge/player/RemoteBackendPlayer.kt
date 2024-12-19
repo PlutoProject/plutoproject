@@ -8,8 +8,8 @@ import ink.pmc.framework.bridge.warn
 import ink.pmc.framework.bridge.world.BridgeLocation
 import ink.pmc.framework.bridge.world.BridgeLocationImpl
 import ink.pmc.framework.bridge.world.createInfo
-import ink.pmc.framework.utils.concurrent.submitAsync
-import ink.pmc.framework.utils.proto.empty
+import ink.pmc.framework.concurrent.submitAsync
+import ink.pmc.framework.proto.empty
 import kotlinx.coroutines.Deferred
 import java.util.*
 

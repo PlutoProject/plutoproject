@@ -1,6 +1,7 @@
 package ink.pmc.essentials
 
 import ink.pmc.advkt.component.*
+import ink.pmc.advkt.component.replace
 import ink.pmc.advkt.sound.key
 import ink.pmc.advkt.sound.sound
 import ink.pmc.advkt.title.*
@@ -9,9 +10,8 @@ import ink.pmc.essentials.api.home.HomeManager
 import ink.pmc.essentials.api.teleport.random.RandomTeleportManager
 import ink.pmc.essentials.api.warp.Warp
 import ink.pmc.essentials.api.warp.WarpManager
-import ink.pmc.framework.utils.chat.DURATION
-import ink.pmc.framework.utils.visual.*
-import ink.pmc.framework.utils.world.aliasOrName
+import ink.pmc.framework.chat.*
+import ink.pmc.framework.world.aliasOrName
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.util.Ticks

@@ -1,7 +1,7 @@
 package ink.pmc.misc.commands
 
-import ink.pmc.framework.utils.command.ensurePlayer
-import ink.pmc.framework.utils.concurrent.sync
+import ink.pmc.framework.command.ensurePlayer
+import ink.pmc.framework.concurrent.sync
 import ink.pmc.misc.SUICIDE
 import org.bukkit.command.CommandSender
 import org.incendo.cloud.annotations.Command

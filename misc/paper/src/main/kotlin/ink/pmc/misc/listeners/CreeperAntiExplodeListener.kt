@@ -2,7 +2,7 @@ package ink.pmc.misc.listeners
 
 import com.catppuccin.Palette
 import ink.pmc.misc.MiscConfig
-import ink.pmc.framework.utils.visual.bukkitColor
+import ink.pmc.framework.chat.bukkitColor
 import org.bukkit.Color
 import org.bukkit.FireworkEffect
 import org.bukkit.Location

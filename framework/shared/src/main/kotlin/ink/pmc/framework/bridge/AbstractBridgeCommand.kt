@@ -9,7 +9,7 @@ import ink.pmc.framework.bridge.player.BridgePlayer
 import ink.pmc.framework.bridge.server.BridgeServer
 import ink.pmc.framework.bridge.world.BridgeLocation
 import ink.pmc.framework.bridge.world.BridgeWorld
-import ink.pmc.framework.utils.visual.*
+import ink.pmc.framework.chat.*
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
 import kotlin.time.Duration

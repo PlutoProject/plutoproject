@@ -8,9 +8,9 @@ import com.velocitypowered.api.plugin.annotation.DataDirectory
 import com.velocitypowered.api.proxy.ProxyServer
 import ink.pmc.essentials.velocity.EssentialsProxyConfig
 import ink.pmc.essentials.velocity.listeners.MessageListener
-import ink.pmc.framework.utils.config.preconfiguredConfigLoaderBuilder
-import ink.pmc.framework.utils.inject.startKoinIfNotPresent
-import ink.pmc.framework.utils.platform.saveResourceIfNotExisted
+import ink.pmc.framework.config.preconfiguredConfigLoaderBuilder
+import ink.pmc.framework.inject.startKoinIfNotPresent
+import ink.pmc.framework.platform.saveResourceIfNotExisted
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.dsl.module

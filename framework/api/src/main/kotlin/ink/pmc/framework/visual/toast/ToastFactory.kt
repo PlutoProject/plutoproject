@@ -1,7 +1,7 @@
 package ink.pmc.framework.visual.toast
 
-import ink.pmc.framework.utils.inject.inlinedGet
-import ink.pmc.framework.utils.item.KeyedMaterial
+import ink.pmc.framework.inject.inlinedGet
+import ink.pmc.framework.item.KeyedMaterial
 import net.kyori.adventure.text.Component
 
 @Suppress("UNUSED")

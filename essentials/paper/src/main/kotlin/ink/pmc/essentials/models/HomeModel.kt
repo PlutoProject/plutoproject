@@ -1,7 +1,7 @@
 package ink.pmc.essentials.models
 
-import ink.pmc.framework.utils.data.serializers.UUIDSerializer
-import ink.pmc.framework.utils.storage.LocationModel
+import ink.pmc.framework.serialize.UUIDSerializer
+import ink.pmc.framework.storage.LocationModel
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

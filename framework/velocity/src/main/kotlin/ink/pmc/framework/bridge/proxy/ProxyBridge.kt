@@ -10,8 +10,8 @@ import ink.pmc.framework.bridge.server.BridgeServer
 import ink.pmc.framework.bridge.server.InternalServer
 import ink.pmc.framework.bridge.throwRemoteServerNotFound
 import ink.pmc.framework.bridge.warn
-import ink.pmc.framework.utils.platform.proxy
-import ink.pmc.framework.utils.player.uuid
+import ink.pmc.framework.platform.proxy
+import ink.pmc.framework.player.uuid
 
 class ProxyBridge : InternalBridge() {
     override val local: BridgeServer = ProxyLocalServer()

@@ -7,9 +7,9 @@ import ink.pmc.essentials.TELEPORT_FAILED_SOUND
 import ink.pmc.essentials.TELEPORT_SUCCEED_SOUND
 import ink.pmc.essentials.TELEPORT_SUCCEED_TITLE
 import ink.pmc.framework.bridge.player.toBridge
-import ink.pmc.framework.utils.inject.koin
-import ink.pmc.framework.utils.visual.mochaMaroon
-import ink.pmc.framework.utils.visual.mochaText
+import ink.pmc.framework.inject.koin
+import ink.pmc.framework.chat.mochaMaroon
+import ink.pmc.framework.chat.mochaText
 import ink.pmc.serverselector.storage.UserRepository
 import net.kyori.adventure.util.Ticks
 import org.bukkit.entity.Player

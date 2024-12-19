@@ -2,6 +2,8 @@ package ink.pmc.framework.utils.player.profile
 
 import com.velocitypowered.api.event.Subscribe
 import com.velocitypowered.api.event.connection.LoginEvent
+import ink.pmc.framework.player.profile.CachedProfile
+import ink.pmc.framework.player.profile.ProfileCache
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
