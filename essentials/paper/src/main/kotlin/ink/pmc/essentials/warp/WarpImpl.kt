@@ -12,8 +12,8 @@ import ink.pmc.essentials.api.warp.WarpType
 import ink.pmc.essentials.home.loadFailed
 import ink.pmc.essentials.models.WarpModel
 import ink.pmc.essentials.repositories.WarpRepository
-import ink.pmc.framework.utils.concurrent.async
-import ink.pmc.framework.utils.concurrent.submitAsync
+import ink.pmc.framework.concurrent.async
+import ink.pmc.framework.concurrent.submitAsync
 import ink.pmc.framework.utils.player.uuid
 import ink.pmc.framework.utils.storage.model
 import ink.pmc.framework.utils.time.formatDate

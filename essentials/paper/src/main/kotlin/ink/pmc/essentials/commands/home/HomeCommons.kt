@@ -3,7 +3,7 @@ package ink.pmc.essentials.commands.home
 import ink.pmc.essentials.COMMAND_HOME_NOT_EXISTED
 import ink.pmc.essentials.api.home.Home
 import ink.pmc.essentials.api.home.HomeManager
-import ink.pmc.framework.utils.chat.replace
+import ink.pmc.framework.chat.replace
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.incendo.cloud.annotations.exception.ExceptionHandler

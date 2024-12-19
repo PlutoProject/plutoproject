@@ -9,7 +9,7 @@ import ink.pmc.essentials.api.home.HomeManager
 import ink.pmc.essentials.api.teleport.random.RandomTeleportManager
 import ink.pmc.essentials.api.warp.Warp
 import ink.pmc.essentials.api.warp.WarpManager
-import ink.pmc.framework.utils.chat.DURATION
+import ink.pmc.framework.chat.DURATION
 import ink.pmc.framework.utils.visual.*
 import ink.pmc.framework.utils.world.aliasOrName
 import net.kyori.adventure.key.Key

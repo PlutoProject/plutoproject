@@ -4,8 +4,8 @@ import ink.pmc.daily.CHECKED_IN
 import ink.pmc.daily.api.Daily
 import ink.pmc.daily.screens.DailyCalenderScreen
 import ink.pmc.framework.startScreen
-import ink.pmc.framework.utils.chat.UI_SUCCEED_SOUND
-import ink.pmc.framework.utils.command.ensurePlayer
+import ink.pmc.framework.chat.UI_SUCCEED_SOUND
+import ink.pmc.framework.command.ensurePlayer
 import org.bukkit.command.CommandSender
 import org.incendo.cloud.annotations.Command
 

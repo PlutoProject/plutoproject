@@ -5,7 +5,7 @@ import ink.pmc.advkt.component.newline
 import ink.pmc.advkt.component.raw
 import ink.pmc.advkt.component.text
 import ink.pmc.advkt.send
-import ink.pmc.framework.utils.concurrent.sync
+import ink.pmc.framework.concurrent.sync
 import ink.pmc.framework.utils.platform.paper
 import ink.pmc.framework.utils.roundToTwoDecimals
 import ink.pmc.framework.utils.visual.*

@@ -4,7 +4,7 @@ import ink.pmc.advkt.component.replace
 import ink.pmc.essentials.COMMAND_WARP_NOT_EXISTED
 import ink.pmc.essentials.api.warp.Warp
 import ink.pmc.essentials.api.warp.WarpManager
-import ink.pmc.framework.utils.concurrent.submitAsync
+import ink.pmc.framework.concurrent.submitAsync
 import kotlinx.coroutines.future.asCompletableFuture
 import org.bukkit.command.CommandSender
 import org.incendo.cloud.annotations.exception.ExceptionHandler

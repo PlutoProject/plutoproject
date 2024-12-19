@@ -8,7 +8,7 @@ import ink.pmc.advkt.send
 import ink.pmc.essentials.HEAD_COST_BYPASS
 import ink.pmc.essentials.config.EssentialsConfig
 import ink.pmc.essentials.economyHook
-import ink.pmc.framework.utils.command.ensurePlayer
+import ink.pmc.framework.command.ensurePlayer
 import ink.pmc.framework.utils.dsl.itemStack
 import ink.pmc.framework.utils.inventory.isFull
 import ink.pmc.framework.utils.platform.paper

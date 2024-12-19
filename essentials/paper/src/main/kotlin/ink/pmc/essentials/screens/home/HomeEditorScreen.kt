@@ -16,11 +16,11 @@ import ink.pmc.framework.interactive.inventory.*
 import ink.pmc.framework.interactive.inventory.click.clickable
 import ink.pmc.framework.interactive.inventory.layout.Menu
 import ink.pmc.framework.interactive.inventory.layout.Row
-import ink.pmc.framework.utils.chat.UI_INVALID_SOUND
-import ink.pmc.framework.utils.chat.UI_SUCCEED_SOUND
-import ink.pmc.framework.utils.chat.replace
-import ink.pmc.framework.utils.concurrent.submitAsync
-import ink.pmc.framework.utils.concurrent.sync
+import ink.pmc.framework.chat.UI_INVALID_SOUND
+import ink.pmc.framework.chat.UI_SUCCEED_SOUND
+import ink.pmc.framework.chat.replace
+import ink.pmc.framework.concurrent.submitAsync
+import ink.pmc.framework.concurrent.sync
 import ink.pmc.framework.utils.player.addItemOrDrop
 import ink.pmc.framework.utils.visual.*
 import kotlinx.coroutines.delay

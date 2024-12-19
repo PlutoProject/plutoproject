@@ -16,7 +16,7 @@ import ink.pmc.framework.interactive.inventory.jetpack.Arrangement
 import ink.pmc.framework.interactive.inventory.layout.Box
 import ink.pmc.framework.interactive.inventory.layout.Column
 import ink.pmc.framework.interactive.inventory.layout.Row
-import ink.pmc.framework.utils.concurrent.sync
+import ink.pmc.framework.concurrent.sync
 import ink.pmc.framework.utils.time.ticks
 import ink.pmc.framework.utils.visual.*
 import kotlinx.coroutines.delay

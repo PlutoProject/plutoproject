@@ -6,7 +6,7 @@ import ink.pmc.advkt.component.text
 import ink.pmc.advkt.showTitle
 import ink.pmc.advkt.title.*
 import ink.pmc.framework.startScreen
-import ink.pmc.framework.utils.concurrent.submitAsync
+import ink.pmc.framework.concurrent.submitAsync
 import ink.pmc.framework.utils.player.addItemOrDrop
 import ink.pmc.serverselector.*
 import ink.pmc.serverselector.screen.ServerSelectorScreen

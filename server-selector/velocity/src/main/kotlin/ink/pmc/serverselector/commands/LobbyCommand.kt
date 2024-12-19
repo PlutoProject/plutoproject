@@ -8,7 +8,7 @@ import ink.pmc.advkt.title.*
 import ink.pmc.essentials.TELEPORT_FAILED_SOUND
 import ink.pmc.essentials.TELEPORT_SUCCEED_SOUND
 import ink.pmc.framework.bridge.player.toBridge
-import ink.pmc.framework.utils.command.ensurePlayer
+import ink.pmc.framework.command.ensurePlayer
 import ink.pmc.framework.utils.player.switchServer
 import ink.pmc.framework.utils.visual.mochaMaroon
 import ink.pmc.framework.utils.visual.mochaText

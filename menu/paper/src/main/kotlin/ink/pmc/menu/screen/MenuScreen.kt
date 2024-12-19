@@ -18,7 +18,7 @@ import ink.pmc.framework.interactive.inventory.jetpack.Arrangement
 import ink.pmc.framework.interactive.inventory.layout.Column
 import ink.pmc.framework.interactive.inventory.layout.Menu
 import ink.pmc.framework.interactive.inventory.layout.Row
-import ink.pmc.framework.utils.chat.UI_PAGING_SOUND
+import ink.pmc.framework.chat.UI_PAGING_SOUND
 import ink.pmc.framework.utils.visual.mochaLavender
 import ink.pmc.framework.utils.visual.mochaText
 import ink.pmc.menu.Button

@@ -3,7 +3,7 @@ package ink.pmc.framework.interactive.inventory
 import androidx.compose.runtime.Composable
 import cafe.adriel.voyager.navigator.LocalNavigator
 import ink.pmc.framework.interactive.inventory.click.clickable
-import ink.pmc.framework.utils.chat.UI_BACK
+import ink.pmc.framework.chat.UI_BACK
 import org.bukkit.Material
 
 @Composable

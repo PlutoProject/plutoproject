@@ -14,8 +14,8 @@ import ink.pmc.framework.bridge.proxy.player.ProxyRemoteBackendPlayer
 import ink.pmc.framework.bridge.proxy.server.localServer
 import ink.pmc.framework.bridge.server.*
 import ink.pmc.framework.frameworkLogger
-import ink.pmc.framework.utils.concurrent.frameworkIoScope
-import ink.pmc.framework.utils.concurrent.submitAsync
+import ink.pmc.framework.concurrent.frameworkIoScope
+import ink.pmc.framework.concurrent.submitAsync
 import ink.pmc.framework.utils.data.NoReplayNotifyFlow
 import ink.pmc.framework.utils.player.switchServer
 import ink.pmc.framework.utils.player.uuid

@@ -5,7 +5,7 @@ import ink.pmc.advkt.send
 import ink.pmc.essentials.api.warp.Warp
 import ink.pmc.essentials.api.warp.WarpCategory
 import ink.pmc.essentials.api.warp.WarpManager
-import ink.pmc.framework.utils.command.ensurePlayer
+import ink.pmc.framework.command.ensurePlayer
 import ink.pmc.framework.utils.visual.mochaMaroon
 import ink.pmc.framework.utils.visual.mochaPink
 import ink.pmc.framework.utils.visual.mochaText

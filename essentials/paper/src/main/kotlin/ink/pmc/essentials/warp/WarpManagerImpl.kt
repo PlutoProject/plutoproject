@@ -9,8 +9,8 @@ import ink.pmc.essentials.config.EssentialsConfig
 import ink.pmc.essentials.models.WarpModel
 import ink.pmc.essentials.repositories.WarpRepository
 import ink.pmc.framework.playerdb.PlayerDb
-import ink.pmc.framework.utils.chat.gsonComponentSerializer
-import ink.pmc.framework.utils.data.safeSubList
+import ink.pmc.framework.chat.gsonComponentSerializer
+import ink.pmc.framework.datastructure.safeSubList
 import ink.pmc.framework.utils.platform.paper
 import ink.pmc.framework.utils.player.uuid
 import ink.pmc.framework.utils.player.uuidOrNull

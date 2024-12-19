@@ -16,9 +16,9 @@ import ink.pmc.framework.interactive.inventory.jetpack.Arrangement
 import ink.pmc.framework.interactive.inventory.layout.Column
 import ink.pmc.framework.interactive.inventory.layout.Menu
 import ink.pmc.framework.interactive.inventory.layout.Row
-import ink.pmc.framework.utils.chat.UI_PAGING_SOUND
-import ink.pmc.framework.utils.chat.UI_SUCCEED_SOUND
-import ink.pmc.framework.utils.chat.replace
+import ink.pmc.framework.chat.UI_PAGING_SOUND
+import ink.pmc.framework.chat.UI_SUCCEED_SOUND
+import ink.pmc.framework.chat.replace
 import ink.pmc.framework.utils.dsl.itemStack
 import ink.pmc.framework.utils.time.formatDate
 import ink.pmc.framework.utils.time.formatTime

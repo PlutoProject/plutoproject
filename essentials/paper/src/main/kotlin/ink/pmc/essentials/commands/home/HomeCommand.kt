@@ -6,8 +6,8 @@ import ink.pmc.essentials.api.home.Home
 import ink.pmc.essentials.api.home.HomeManager
 import ink.pmc.essentials.screens.home.HomeListScreen
 import ink.pmc.framework.startScreen
-import ink.pmc.framework.utils.chat.replace
-import ink.pmc.framework.utils.command.ensurePlayer
+import ink.pmc.framework.chat.replace
+import ink.pmc.framework.command.ensurePlayer
 import org.bukkit.command.CommandSender
 import org.incendo.cloud.annotations.Argument
 import org.incendo.cloud.annotations.Command

@@ -7,8 +7,8 @@ import ink.pmc.daily.api.DailyUser
 import ink.pmc.daily.models.DailyUserModel
 import ink.pmc.daily.repositories.DailyHistoryRepository
 import ink.pmc.daily.repositories.DailyUserRepository
-import ink.pmc.framework.utils.concurrent.submitAsync
-import ink.pmc.framework.utils.concurrent.submitAsyncIO
+import ink.pmc.framework.concurrent.submitAsync
+import ink.pmc.framework.concurrent.submitAsyncIO
 import ink.pmc.framework.utils.player.uuid
 import ink.pmc.framework.utils.time.atEndOfDay
 import ink.pmc.framework.utils.time.currentZoneId

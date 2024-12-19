@@ -1,6 +1,6 @@
 package ink.pmc.framework.utils.entity
 
-import ink.pmc.framework.utils.concurrent.submitSync
+import ink.pmc.framework.concurrent.submitSync
 import ink.pmc.framework.utils.platform.isFoliaOrAsync
 import kotlinx.coroutines.future.await
 import org.bukkit.Location

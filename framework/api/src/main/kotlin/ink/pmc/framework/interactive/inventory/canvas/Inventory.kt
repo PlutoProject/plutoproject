@@ -18,8 +18,8 @@ import ink.pmc.framework.interactive.inventory.nodes.BaseInventoryNode
 import ink.pmc.framework.interactive.inventory.nodes.InventoryCloseScope
 import ink.pmc.framework.interactive.inventory.nodes.StaticMeasurePolicy
 import ink.pmc.framework.interactive.inventory.state.IntCoordinates
-import ink.pmc.framework.utils.concurrent.submitSync
-import ink.pmc.framework.utils.concurrent.sync
+import ink.pmc.framework.concurrent.submitSync
+import ink.pmc.framework.concurrent.sync
 import ink.pmc.framework.utils.time.ticks
 import kotlinx.coroutines.delay
 import org.bukkit.entity.Player

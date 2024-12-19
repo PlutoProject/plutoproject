@@ -10,7 +10,7 @@ import ink.pmc.framework.interactive.inventory.Modifier
 import ink.pmc.framework.interactive.inventory.click.clickable
 import ink.pmc.framework.interactive.inventory.components.SeparatePageTunerMode.NEXT
 import ink.pmc.framework.interactive.inventory.components.SeparatePageTunerMode.PREVIOUS
-import ink.pmc.framework.utils.chat.UI_PAGING_SOUND
+import ink.pmc.framework.chat.UI_PAGING_SOUND
 import ink.pmc.framework.utils.visual.mochaLavender
 import ink.pmc.framework.utils.visual.mochaText
 import net.kyori.adventure.text.Component

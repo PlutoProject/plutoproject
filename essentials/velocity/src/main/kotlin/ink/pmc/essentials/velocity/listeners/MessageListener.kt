@@ -4,7 +4,7 @@ import com.velocitypowered.api.event.Subscribe
 import com.velocitypowered.api.event.connection.DisconnectEvent
 import com.velocitypowered.api.event.player.ServerPostConnectEvent
 import ink.pmc.essentials.velocity.EssentialsProxyConfig
-import ink.pmc.framework.utils.chat.broadcast
+import ink.pmc.framework.chat.broadcast
 import ink.pmc.framework.utils.platform.proxy
 import net.kyori.adventure.text.minimessage.MiniMessage
 import org.koin.core.component.KoinComponent

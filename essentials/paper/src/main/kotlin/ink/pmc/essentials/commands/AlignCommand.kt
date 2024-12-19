@@ -3,7 +3,7 @@ package ink.pmc.essentials.commands
 import ink.pmc.essentials.COMMAND_ALIGN_POS_SUCCEED
 import ink.pmc.essentials.COMMAND_ALIGN_SUCCEED
 import ink.pmc.essentials.COMMAND_ALIGN_VIEW_SUCCEED
-import ink.pmc.framework.utils.command.ensurePlayer
+import ink.pmc.framework.command.ensurePlayer
 import ink.pmc.framework.utils.entity.teleportSuspend
 import org.bukkit.block.BlockFace.*
 import org.bukkit.command.CommandSender

@@ -8,7 +8,7 @@ import ink.pmc.essentials.api.home.HomeManager
 import ink.pmc.framework.interactive.InteractiveScreen
 import ink.pmc.framework.interactive.LocalPlayer
 import ink.pmc.framework.interactive.inventory.canvas.Anvil
-import ink.pmc.framework.utils.concurrent.submitAsync
+import ink.pmc.framework.concurrent.submitAsync
 import ink.pmc.framework.utils.dsl.itemStack
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

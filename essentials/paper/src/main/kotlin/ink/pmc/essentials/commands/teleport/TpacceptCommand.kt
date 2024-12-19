@@ -3,8 +3,8 @@ package ink.pmc.essentials.commands.teleport
 import ink.pmc.essentials.*
 import ink.pmc.essentials.api.teleport.TeleportManager
 import ink.pmc.essentials.api.teleport.TeleportRequest
-import ink.pmc.framework.utils.chat.replace
-import ink.pmc.framework.utils.command.ensurePlayer
+import ink.pmc.framework.chat.replace
+import ink.pmc.framework.command.ensurePlayer
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.incendo.cloud.annotations.Argument

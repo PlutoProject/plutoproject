@@ -25,9 +25,9 @@ import ink.pmc.framework.playerdb.startPlayerDbMonitor
 import ink.pmc.framework.playerdb.stopPlayerDbMonitor
 import ink.pmc.framework.provider.Provider
 import ink.pmc.framework.rpc.RpcClient
-import ink.pmc.framework.utils.command.annotationParser
-import ink.pmc.framework.utils.command.commandManager
-import ink.pmc.framework.utils.concurrent.cancelFrameworkScopes
+import ink.pmc.framework.command.annotationParser
+import ink.pmc.framework.command.commandManager
+import ink.pmc.framework.concurrent.cancelFrameworkScopes
 import ink.pmc.framework.utils.currentUnixTimestamp
 import ink.pmc.framework.utils.hook.initPaperHooks
 import ink.pmc.framework.utils.inject.startKoinIfNotPresent

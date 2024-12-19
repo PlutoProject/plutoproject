@@ -1,6 +1,6 @@
 package ink.pmc.framework.utils.world
 
-import ink.pmc.framework.utils.concurrent.submitSync
+import ink.pmc.framework.concurrent.submitSync
 import ink.pmc.framework.utils.platform.isFoliaOrAsync
 import net.minecraft.server.level.TicketType
 import org.bukkit.Chunk

@@ -13,7 +13,7 @@ import ink.pmc.framework.interactive.inventory.click.clickable
 import ink.pmc.framework.interactive.inventory.jetpack.Arrangement
 import ink.pmc.framework.interactive.inventory.layout.Row
 import ink.pmc.framework.interactive.inventory.layout.list.ListMenu
-import ink.pmc.framework.utils.concurrent.sync
+import ink.pmc.framework.concurrent.sync
 import ink.pmc.framework.utils.time.formatDate
 import ink.pmc.framework.utils.time.zoneId
 import ink.pmc.framework.utils.visual.*

@@ -7,7 +7,7 @@ import ink.pmc.framework.bridge.proto.BridgeRpcOuterClass.ServerInfo
 import ink.pmc.framework.bridge.proto.serverInfo
 import ink.pmc.framework.bridge.world.BridgeWorld
 import ink.pmc.framework.bridge.world.createInfo
-import ink.pmc.framework.utils.data.mutableConcurrentSetOf
+import ink.pmc.framework.datastructure.mutableConcurrentSetOf
 
 fun BridgeServer.createInfo(): ServerInfo {
     val server = this

@@ -6,8 +6,8 @@ import ink.pmc.essentials.api.home.HomeTeleportEvent
 import ink.pmc.essentials.api.teleport.TeleportManager
 import ink.pmc.essentials.models.HomeModel
 import ink.pmc.essentials.repositories.HomeRepository
-import ink.pmc.framework.utils.concurrent.async
-import ink.pmc.framework.utils.concurrent.submitAsync
+import ink.pmc.framework.concurrent.async
+import ink.pmc.framework.concurrent.submitAsync
 import ink.pmc.framework.utils.storage.model
 import org.bukkit.Bukkit
 import org.bukkit.Location

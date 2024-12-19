@@ -14,9 +14,9 @@ import ink.pmc.framework.interactive.inventory.layout.Column
 import ink.pmc.framework.interactive.inventory.layout.Menu
 import ink.pmc.framework.interactive.inventory.layout.Row
 import ink.pmc.framework.options.OptionsManager
-import ink.pmc.framework.utils.chat.UI_SUCCEED_SOUND
-import ink.pmc.framework.utils.concurrent.submitAsync
-import ink.pmc.framework.utils.concurrent.sync
+import ink.pmc.framework.chat.UI_SUCCEED_SOUND
+import ink.pmc.framework.concurrent.submitAsync
+import ink.pmc.framework.concurrent.sync
 import ink.pmc.framework.utils.visual.*
 import ink.pmc.serverselector.*
 import ink.pmc.serverselector.screen.ServerSelectorScreen.AutoJoinState.*

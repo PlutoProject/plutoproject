@@ -2,7 +2,7 @@ package ink.pmc.framework.interactive.inventory
 
 import ink.pmc.framework.interactive.canvas.GuiInventoryHolder
 import ink.pmc.framework.interactive.inventory.click.ClickScope
-import ink.pmc.framework.utils.concurrent.submitAsync
+import ink.pmc.framework.concurrent.submitAsync
 import ink.pmc.framework.utils.player.catchExceptionInteraction
 import org.bukkit.Material
 import org.bukkit.entity.Player

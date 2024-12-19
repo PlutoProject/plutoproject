@@ -4,9 +4,9 @@ import ink.pmc.essentials.COMMAND_RTP_COOLDOWN
 import ink.pmc.essentials.COMMAND_RTP_NOT_ENABLED
 import ink.pmc.essentials.RANDOM_TELEPORT_SPECIFIC
 import ink.pmc.essentials.api.teleport.random.RandomTeleportManager
-import ink.pmc.framework.utils.chat.NO_PERMISSON
-import ink.pmc.framework.utils.chat.replace
-import ink.pmc.framework.utils.command.ensurePlayer
+import ink.pmc.framework.chat.NO_PERMISSON
+import ink.pmc.framework.chat.replace
+import ink.pmc.framework.command.ensurePlayer
 import ink.pmc.framework.utils.time.formatDuration
 import org.bukkit.World
 import org.bukkit.command.CommandSender

@@ -1,7 +1,7 @@
 package ink.pmc.framework.bridge.command.parsers
 
 import ink.pmc.framework.bridge.player.BridgePlayer
-import ink.pmc.framework.utils.concurrent.submitAsync
+import ink.pmc.framework.concurrent.submitAsync
 import kotlinx.coroutines.future.asCompletableFuture
 import kotlinx.coroutines.future.await
 import org.incendo.cloud.context.CommandContext

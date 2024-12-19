@@ -8,7 +8,7 @@ import ink.pmc.daily.models.DailyUserModel
 import ink.pmc.daily.models.toModel
 import ink.pmc.daily.repositories.DailyHistoryRepository
 import ink.pmc.daily.repositories.DailyUserRepository
-import ink.pmc.framework.utils.chat.replace
+import ink.pmc.framework.chat.replace
 import ink.pmc.framework.utils.currentUnixTimestamp
 import ink.pmc.framework.utils.player.uuid
 import ink.pmc.framework.utils.time.currentZoneId

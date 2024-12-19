@@ -4,8 +4,8 @@ import ink.pmc.essentials.api.back.BackManager
 import ink.pmc.essentials.api.back.BackTeleportEvent
 import ink.pmc.essentials.api.teleport.TeleportManager
 import ink.pmc.essentials.repositories.BackRepository
-import ink.pmc.framework.utils.concurrent.async
-import ink.pmc.framework.utils.concurrent.submitAsync
+import ink.pmc.framework.concurrent.async
+import ink.pmc.framework.concurrent.submitAsync
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.koin.core.component.KoinComponent

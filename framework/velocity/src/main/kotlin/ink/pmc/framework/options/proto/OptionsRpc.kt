@@ -4,7 +4,7 @@ import com.google.protobuf.Empty
 import ink.pmc.framework.options.OptionsManager
 import ink.pmc.framework.options.proto.OptionsRpcGrpcKt.OptionsRpcCoroutineImplBase
 import ink.pmc.framework.options.proto.OptionsUpdateNotifyOuterClass.OptionsUpdateNotify
-import ink.pmc.framework.utils.concurrent.submitAsyncIO
+import ink.pmc.framework.concurrent.submitAsyncIO
 import ink.pmc.framework.utils.player.uuid
 import ink.pmc.framework.utils.proto.empty
 import kotlinx.coroutines.flow.Flow

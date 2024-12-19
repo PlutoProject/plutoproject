@@ -23,9 +23,9 @@ import ink.pmc.framework.playerdb.ProxyDatabaseNotifier
 import ink.pmc.framework.playerdb.proto.PlayerDbRpc
 import ink.pmc.framework.provider.Provider
 import ink.pmc.framework.rpc.RpcServer
-import ink.pmc.framework.utils.command.annotationParser
-import ink.pmc.framework.utils.command.commandManager
-import ink.pmc.framework.utils.concurrent.cancelFrameworkScopes
+import ink.pmc.framework.command.annotationParser
+import ink.pmc.framework.command.commandManager
+import ink.pmc.framework.concurrent.cancelFrameworkScopes
 import ink.pmc.framework.utils.inject.startKoinIfNotPresent
 import ink.pmc.framework.utils.platform.proxy
 import ink.pmc.framework.utils.platform.proxyThread

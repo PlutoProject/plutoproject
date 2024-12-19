@@ -1,7 +1,7 @@
 package ink.pmc.misc.impl.elevator.builders
 
 import ink.pmc.misc.api.elevator.ElevatorBuilder
-import ink.pmc.framework.utils.concurrent.submitSync
+import ink.pmc.framework.concurrent.submitSync
 import ink.pmc.framework.utils.world.eraseAngle
 import org.bukkit.Location
 import org.bukkit.Material

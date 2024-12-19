@@ -6,7 +6,7 @@ import ink.pmc.essentials.api.teleport.RequestState
 import ink.pmc.essentials.api.teleport.RequestStateChangeEvent
 import ink.pmc.essentials.api.teleport.random.RandomTeleportEvent
 import ink.pmc.essentials.api.warp.WarpTeleportEvent
-import ink.pmc.framework.utils.concurrent.submitAsync
+import ink.pmc.framework.concurrent.submitAsync
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener

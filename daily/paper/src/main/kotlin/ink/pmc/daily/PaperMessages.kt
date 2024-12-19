@@ -1,7 +1,7 @@
 package ink.pmc.daily
 
 import ink.pmc.advkt.component.*
-import ink.pmc.framework.utils.chat.ECONOMY_SYMBOL
+import ink.pmc.framework.chat.ECONOMY_SYMBOL
 import ink.pmc.framework.utils.visual.*
 import net.kyori.adventure.text.Component
 

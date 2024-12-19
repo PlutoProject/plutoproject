@@ -1,6 +1,6 @@
 package ink.pmc.serverselector
 
-import ink.pmc.framework.utils.concurrent.submitAsync
+import ink.pmc.framework.concurrent.submitAsync
 import ink.pmc.framework.utils.time.zoneId
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay

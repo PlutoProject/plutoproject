@@ -9,8 +9,8 @@ import ink.pmc.framework.interactive.inventory.Item
 import ink.pmc.framework.interactive.inventory.Modifier
 import ink.pmc.framework.interactive.inventory.click.clickable
 import ink.pmc.framework.interactive.inventory.components.NotAvailable
-import ink.pmc.framework.utils.chat.UI_SUCCEED_SOUND
-import ink.pmc.framework.utils.concurrent.sync
+import ink.pmc.framework.chat.UI_SUCCEED_SOUND
+import ink.pmc.framework.concurrent.sync
 import ink.pmc.framework.utils.visual.*
 import ink.pmc.menu.api.dsl.buttonDescriptor
 import ink.pmc.menu.hook.CO_NEAR_COMMAND

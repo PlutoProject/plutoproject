@@ -5,7 +5,7 @@ import ink.pmc.essentials.COMMAND_TPACCEPT_FAILED_NO_REQUEST
 import ink.pmc.essentials.COMMAND_TPACCEPT_FAILED_NO_REQUEST_ID
 import ink.pmc.essentials.api.teleport.TeleportManager
 import ink.pmc.essentials.api.teleport.TeleportRequest
-import ink.pmc.framework.utils.chat.replace
+import ink.pmc.framework.chat.replace
 import ink.pmc.framework.utils.platform.paper
 import ink.pmc.framework.utils.player.uuidOrNull
 import org.bukkit.command.CommandSender

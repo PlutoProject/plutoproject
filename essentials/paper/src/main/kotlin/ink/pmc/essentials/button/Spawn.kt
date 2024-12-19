@@ -13,7 +13,7 @@ import ink.pmc.framework.interactive.LocalPlayer
 import ink.pmc.framework.interactive.inventory.Item
 import ink.pmc.framework.interactive.inventory.Modifier
 import ink.pmc.framework.interactive.inventory.click.clickable
-import ink.pmc.framework.utils.chat.replace
+import ink.pmc.framework.chat.replace
 import ink.pmc.framework.utils.visual.mochaFlamingo
 import ink.pmc.framework.utils.visual.mochaLavender
 import ink.pmc.framework.utils.visual.mochaSubtext0

@@ -15,7 +15,7 @@ import ink.pmc.framework.interactive.inventory.jetpack.Arrangement
 import ink.pmc.framework.interactive.inventory.layout.Box
 import ink.pmc.framework.interactive.inventory.layout.Column
 import ink.pmc.framework.interactive.inventory.layout.Row
-import ink.pmc.framework.utils.concurrent.submitAsync
+import ink.pmc.framework.concurrent.submitAsync
 import ink.pmc.framework.utils.visual.mochaRed
 import ink.pmc.framework.utils.visual.mochaSubtext0
 import net.kyori.adventure.text.Component

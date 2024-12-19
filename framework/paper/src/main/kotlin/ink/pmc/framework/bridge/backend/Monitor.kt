@@ -11,7 +11,7 @@ import ink.pmc.framework.bridge.proto.serverInfo
 import ink.pmc.framework.bridge.world.createInfo
 import ink.pmc.framework.frameworkLogger
 import ink.pmc.framework.rpc.RpcClient
-import ink.pmc.framework.utils.concurrent.submitAsync
+import ink.pmc.framework.concurrent.submitAsync
 import ink.pmc.framework.utils.currentUnixTimestamp
 import ink.pmc.framework.utils.data.getValue
 import ink.pmc.framework.utils.data.setValue

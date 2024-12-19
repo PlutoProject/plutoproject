@@ -2,8 +2,8 @@ package ink.pmc.framework.utils.player
 
 import com.google.common.io.ByteStreams
 import ink.pmc.framework.frameworkPaper
-import ink.pmc.framework.utils.concurrent.io
-import ink.pmc.framework.utils.concurrent.submitSync
+import ink.pmc.framework.concurrent.io
+import ink.pmc.framework.concurrent.submitSync
 import ink.pmc.framework.utils.platform.isAsync
 import ink.pmc.framework.utils.platform.isFolia
 import net.minecraft.network.protocol.Packet

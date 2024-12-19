@@ -12,7 +12,7 @@ import ink.pmc.framework.interactive.inventory.Item
 import ink.pmc.framework.interactive.inventory.Modifier
 import ink.pmc.framework.interactive.inventory.click.clickable
 import ink.pmc.framework.interactive.inventory.components.NotAvailable
-import ink.pmc.framework.utils.concurrent.sync
+import ink.pmc.framework.concurrent.sync
 import ink.pmc.framework.utils.hook.vaultHook
 import ink.pmc.framework.utils.time.formatDuration
 import ink.pmc.framework.utils.trimmed

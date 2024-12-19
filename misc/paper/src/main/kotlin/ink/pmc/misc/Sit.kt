@@ -1,6 +1,6 @@
 package ink.pmc.misc
 
-import ink.pmc.framework.utils.concurrent.submitAsync
+import ink.pmc.framework.concurrent.submitAsync
 import ink.pmc.framework.utils.entity.ensureThreadSafe
 import ink.pmc.framework.utils.world.ensureThreadSafe
 import ink.pmc.framework.utils.world.eraseAngle

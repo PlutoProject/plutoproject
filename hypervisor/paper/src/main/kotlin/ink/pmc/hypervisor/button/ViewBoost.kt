@@ -11,7 +11,7 @@ import ink.pmc.framework.interactive.LocalPlayer
 import ink.pmc.framework.interactive.inventory.Item
 import ink.pmc.framework.interactive.inventory.Modifier
 import ink.pmc.framework.interactive.inventory.click.clickable
-import ink.pmc.framework.utils.chat.UI_SUCCEED_SOUND
+import ink.pmc.framework.chat.UI_SUCCEED_SOUND
 import ink.pmc.framework.utils.visual.*
 import ink.pmc.hypervisor.DynamicScheduling
 import ink.pmc.hypervisor.DynamicViewDistanceState.*
