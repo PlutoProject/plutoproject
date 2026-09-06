@@ -13,6 +13,8 @@ dependencies {
     implementation(projects.capability.charonflow.velocity)
     implementation(projects.capability.geoip.velocity)
     implementation(projects.capability.serverIdentifier.velocity)
+    implementation(projects.capability.redis.velocity)
+    implementation(projects.capability.flag.velocity)
     implementation(projects.capability.databasePersist.velocity)
     implementation(projects.capability.profile.velocity)
     implementation(projects.capability.legacyCloudCommands.velocity)

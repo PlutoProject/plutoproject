@@ -14,6 +14,8 @@ dependencies {
     implementation(projects.capability.charonflow.paper)
     implementation(projects.capability.geoip.paper)
     implementation(projects.capability.serverIdentifier.paper)
+    implementation(projects.capability.redis.paper)
+    implementation(projects.capability.flag.paper)
     implementation(projects.capability.databasePersist.paper)
     implementation(projects.capability.profile.paper)
     implementation(projects.capability.interactive.paper)
